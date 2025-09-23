@@ -10,7 +10,7 @@ datasource db {
 model Artwork {
   id        String   @id @default(cuid())
   title     String
-  price     Int
+  price     Int      // cents
   thumbnail String
   artist    String
   tags      String[]
