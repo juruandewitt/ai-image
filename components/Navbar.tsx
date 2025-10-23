@@ -11,18 +11,25 @@ const links = [
 export default function Navbar() {
   const pathname = usePathname()
   return (
-    <header className="border-b bg-white/80 backdrop-blur">
-      <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-        <Link href="/" className="flex items-center">
-  <Image src="/logo.png" alt="AI Image" width={120} height={120} />
-</Link>
-        <nav className="flex gap-6 text-sm">
-          {links.map((l) => (
-            <Link key={l.href} href={l.href}
-              className={"hover:text-indigo-600 " + (pathname === l.href ? 'text-indigo-600 font-semibold' : 'text-neutral-600')}>{l.label}</Link>
-          ))}
-        </nav>
-      </div>
-    </header>
+   <header className="border-b bg-white/80 backdrop-blur h-16 flex items-center overflow-hidden">
+  <div className="container mx-auto px-4 flex items-center justify-between">
+    <Link href="/" className="flex items-center">
+      <Image
+        src="/logo.png"               // or your file path
+        alt="AI Image"
+        width={320}                    // intrinsic size (can be larger than display)
+        height={64}
+        className="h-12 w-auto md:h-14 shrink-0"  // display size: fills but stays inside navbar
+        priority
+      />
+    </Link>
+
+    <nav className="flex gap-6 text-sm">
+      <Link href="/" className="hover:text-indigo-600 text-neutral-600">Home</Link>
+      <Link href="/explore" className="hover:text-indigo-600 text-neutral-600">Explore</Link>
+    </nav>
+  </div>
+</header>
+
   )
 }
