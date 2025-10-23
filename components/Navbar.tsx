@@ -14,7 +14,7 @@ export default function Navbar() {
     <header className="border-b bg-white/80 backdrop-blur">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2">
-          <Image src="/logo.svg" alt="AI Image" width={32} height={32} />
+          <Image src="/AI%20Image%20Logo.PNG" alt="AI Image" width={48} height={48} />
           <span className="font-bold tracking-tight text-gray-900">AI Image</span>
         </Link>
         <nav className="flex gap-6 text-sm">
