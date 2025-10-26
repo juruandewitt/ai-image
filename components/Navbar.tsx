@@ -1,3 +1,4 @@
+// components/Navbar.tsx (dark theme to match background)
 'use client'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -11,12 +12,12 @@ const links = [
 export default function Navbar() {
   const pathname = usePathname()
   return (
-    // Clean, non-glass header: solid white with subtle border, sticky on top
-    <header className="sticky top-0 z-40 border-b bg-white">
+    // Dark solid header with subtle border
+    <header className="sticky top-0 z-40 border-b border-slate-800 bg-slate-950/95 text-slate-100">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         <Link href="/" className="flex items-center">
           <Image
-            src="/logo.png"           // adjust if your filename differs
+            src="/logo.png"
             alt="AI Image"
             width={320}
             height={64}
@@ -30,8 +31,8 @@ export default function Navbar() {
               key={l.href}
               href={l.href}
               className={
-                "hover:text-indigo-600 " +
-                (pathname === l.href ? 'text-indigo-600 font-semibold' : 'text-neutral-600')
+                "hover:text-amber-400 transition-colors " +
+                (pathname === l.href ? 'text-amber-400 font-semibold' : 'text-slate-300')
               }
             >
               {l.label}
