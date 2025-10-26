@@ -1,17 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-/* === Brand Colors === */
-:root {
-  --color-primary: #0F172A;   /* midnight navy */
-  --color-accent:  #6366F1;   /* indigo glow  */
-  --color-highlight:#F59E0B;  /* amber        */
-  --color-bg:      #F8FAFC;   /* off-white    */
-}
 
-body {
-  background-color: var(--color-bg);
-  color: var(--color-primary);
-}
-a { color: var(--color-accent); }
-a:hover { color: var(--color-highlight); }
+/* Optional: tiny polish */
+:root { color-scheme: light; }
+
+/* Keep content comfortable on large screens */
+.container { max-width: 1100px; }
