@@ -1,9 +1,7 @@
+/* app/globals.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-/* Optional: tiny polish */
-:root { color-scheme: light; }
 
 /* Keep content comfortable on large screens */
 .container { max-width: 1100px; }
