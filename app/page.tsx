@@ -15,21 +15,17 @@ export default async function HomePage() {
 
   return (
     <div className="space-y-24">
-      {/* HERO (Parallax + motion in components/Hero.tsx) */}
+      {/* HERO SECTION */}
       <Hero />
 
       {/* FEATURED SECTION */}
       <section className="space-y-8 rounded-2xl">
         <div className="flex items-end justify-between">
           <h2 className="text-3xl font-semibold text-gray-900 drop-shadow">Featured Artworks</h2>
-          <Link
-            href="/explore"
-            className="text-sm font-medium text-indigo-600 hover:underline"
-          >
+          <Link href="/explore" className="text-sm font-medium text-indigo-600 hover:underline">
             View all
           </Link>
         </div>
-
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {featured.map((a, i) => (
             <MotionCard key={a.id} delay={i * 0.05}>
