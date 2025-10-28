@@ -13,21 +13,11 @@ export default function Hero() {
 
   return (
     <section ref={ref} className="relative overflow-hidden rounded-2xl">
-      {/* Background gradient with parallax */}
       <motion.div
         style={{ y: yBg, filter: blur as any }}
         className="absolute inset-0 -z-10 bg-gradient-to-br from-indigo-600 via-purple-600 to-amber-500"
       />
-      {/* Optional: video texture overlay – drop /public/hero.mp4 and uncomment below */}
-      {/*
-      <video
-        className="absolute inset-0 -z-10 w-full h-full object-cover opacity-25"
-        autoPlay muted loop playsInline src="/hero.mp4"
-      />
-      */}
-      {/* Subtle texture */}
       <div className="absolute inset-0 -z-10 opacity-30 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]" />
-
       <motion.div
         variants={stagger}
         initial="initial"
@@ -49,7 +39,6 @@ export default function Hero() {
           </Link>
         </motion.div>
       </motion.div>
-
       <div className="absolute bottom-0 w-full h-24 bg-gradient-to-t from-black/30 to-transparent" />
     </section>
   )
