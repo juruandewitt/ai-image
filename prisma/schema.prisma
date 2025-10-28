@@ -7,14 +7,37 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Category {
+  ABSTRACT
+  LANDSCAPE
+  PORTRAIT
+  SURREAL
+  SCI_FI
+  MINIMAL
+}
+
+enum Status {
+  DRAFT
+  PUBLISHED
+}
+
 model Artwork {
-  id        String   @id @default(cuid())
-  title     String
-  price     Int      // cents
-  thumbnail String
-  artist    String
-  tags      String[]
-  createdAt DateTime @default(now())
+  id         String    @id @default(cuid())
+  title      String
+  price      Int       // cents
+  thumbnail  String
+  artist     String
+  tags       String[]
+  category   Category  @default(ABSTRACT)
+  status     Status    @default(PUBLISHED)
+  featured   Boolean   @default(false)
+  createdAt  DateTime  @default(now())
+
+  // indexes to speed up filters
+  @@index([category])
+  @@index([status])
+  @@index([createdAt])
+  @@fulltext([title, artist])
 }
 
 model Order {

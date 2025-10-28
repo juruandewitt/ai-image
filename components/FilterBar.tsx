@@ -1,57 +1,89 @@
 'use client'
-import { useRouter, useSearchParams } from 'next/navigation'
-import { useTransition, useState } from 'react'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { useCallback, useMemo, useState } from 'react'
+
+const CATEGORIES = [
+  { key: 'ABSTRACT',  label: 'Abstract' },
+  { key: 'LANDSCAPE', label: 'Landscape' },
+  { key: 'PORTRAIT',  label: 'Portrait' },
+  { key: 'SURREAL',   label: 'Surreal' },
+  { key: 'SCI_FI',    label: 'Sci‑Fi' },
+  { key: 'MINIMAL',   label: 'Minimal' },
+]
+
+const SORTS = [
+  { key: 'new',        label: 'Newest' },
+  { key: 'featured',   label: 'Featured' },
+  { key: 'price_asc',  label: 'Price ↑' },
+  { key: 'price_desc', label: 'Price ↓' },
+]
 
 export default function FilterBar() {
   const router = useRouter()
+  const pathname = usePathname()
   const sp = useSearchParams()
-  const [pending, start] = useTransition()
-  const [q, setQ] = useState<string>(sp.get('q') ?? '')
-  const sort = sp.get('sort') ?? 'NEW'
 
-  function push(next: Record<string,string>) {
+  const [q, setQ] = useState(sp.get('q') || '')
+  const activeSort = sp.get('sort') || 'new'
+  const activeCats = (sp.getAll('category') || [])
+
+  const apply = useCallback((patch: Record<string,string|string[]|null>) => {
     const params = new URLSearchParams(sp.toString())
-    Object.entries(next).forEach(([k,v]) => {
-      if (!v) params.delete(k); else params.set(k, v)
-    })
-    params.set('page','1') // reset to page 1 on any filter change
-    start(() => router.push(`/explore?${params.toString()}`))
+    for (const [k,v] of Object.entries(patch)) {
+      params.delete(k)
+      if (v == null) continue
+      if (Array.isArray(v)) v.forEach(val => params.append(k, val))
+      else if (v !== '') params.set(k, v)
+    }
+    params.set('page', '1') // reset pagination on any change
+    router.push(`${pathname}?${params.toString()}`)
+  }, [router, pathname, sp])
+
+  const toggleCat = (key: string) => {
+    const next = new Set(activeCats)
+    if (next.has(key)) next.delete(key); else next.add(key)
+    apply({ category: Array.from(next) })
   }
 
-  return (
-    <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between p-4 rounded-xl bg-slate-900/40 border border-slate-800">
-      {/* search */}
-      <div className="flex items-center gap-2 w-full md:max-w-md">
-        <input
-          className="w-full rounded-md bg-slate-900 border border-slate-700 px-3 py-2 text-slate-100 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-indigo-500"
-          placeholder="Search artworks, artists…"
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-          onKeyDown={(e) => { if (e.key === 'Enter') push({ q }) }}
-        />
-        <button
-          onClick={() => push({ q })}
-          className="px-3 py-2 rounded-md bg-indigo-600 text-white hover:bg-indigo-500"
-          disabled={pending}
-        >
-          Search
-        </button>
-      </div>
+  const setSort = (key: string) => apply({ sort: key })
 
-      {/* sort */}
-      <div className="flex items-center gap-2">
-        <label className="text-slate-300 text-sm">Sort</label>
-        <select
-          className="rounded-md bg-slate-900 border border-slate-700 px-3 py-2 text-slate-100"
-          value={sort}
-          onChange={(e) => push({ sort: e.target.value })}
-          disabled={pending}
-        >
-          <option value="NEW">Newest</option>
-          <option value="PRICE_ASC">Price ↑</option>
-          <option value="PRICE_DESC">Price ↓</option>
-        </select>
-      </div>
+  const onSubmit = (e: React.FormEvent) => { e.preventDefault(); apply({ q }) }
+
+  const isActive = useCallback((key: string) => activeCats.includes(key), [activeCats])
+
+  return (
+    <div className="rounded-xl border bg-black/20 backdrop-blur px-4 py-3 text-sm text-neutral-200">
+      <form onSubmit={onSubmit} className="flex flex-col md:flex-row md:items-center gap-3">
+        <input
+          value={q}
+          onChange={e => setQ(e.target.value)}
+          placeholder="Search title, artist or tag…"
+          className="flex-1 rounded-md border bg-black/30 px-3 py-2 outline-none"
+        />
+        <div className="flex flex-wrap gap-2">
+          {CATEGORIES.map(c => (
+            <button
+              key={c.key}
+              type="button"
+              onClick={() => toggleCat(c.key)}
+              className={`px-3 py-1.5 rounded-full border ${isActive(c.key) ? 'bg-indigo-600 border-indigo-500 text-white' : 'bg-black/30'}`}
+            >
+              {c.label}
+            </button>
+          ))}
+        </div>
+        <div className="flex items-center gap-2 ml-auto">
+          <label className="opacity-80">Sort</label>
+          <select
+            className="rounded-md border bg-black/30 px-2 py-1.5"
+            value={activeSort}
+            onChange={e => setSort(e.target.value)}
+          >
+            {SORTS.map(s => <option key={s.key} value={s.key}>{s.label}</option>)}
+          </select>
+        </div>
+        <button className="px-4 py-2 rounded-md bg-indigo-600 text-white md:ml-2">Apply</button>
+      </form>
     </div>
   )
 }
