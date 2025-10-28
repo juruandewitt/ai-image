@@ -15,17 +15,17 @@ export default async function HomePage() {
 
   return (
     <div className="space-y-24">
-      {/* HERO SECTION */}
       <Hero />
 
       {/* FEATURED SECTION */}
       <section className="space-y-8 rounded-2xl">
         <div className="flex items-end justify-between">
-          <h2 className="text-3xl font-semibold text-gray-900 drop-shadow">Featured Artworks</h2>
-          <Link href="/explore" className="text-sm font-medium text-indigo-600 hover:underline">
+          <h2 className="text-3xl font-semibold text-white drop-shadow">Featured Artworks</h2>
+          <Link href="/explore" className="text-sm font-medium text-indigo-300 hover:underline">
             View all
           </Link>
         </div>
+
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {featured.map((a, i) => (
             <MotionCard key={a.id} delay={i * 0.05}>
@@ -37,7 +37,7 @@ export default async function HomePage() {
                   height={400}
                   className="object-cover w-full h-64 group-hover:scale-105 transition-transform"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-70 group-hover:opacity-90 transition-opacity" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-80 group-hover:opacity-90 transition-opacity" />
                 <div className="absolute bottom-4 left-4 text-white space-y-1">
                   <h3 className="text-xl font-semibold drop-shadow">{a.title}</h3>
                   <p className="text-sm text-indigo-200">by {a.artist}</p>
@@ -49,14 +49,14 @@ export default async function HomePage() {
       </section>
 
       {/* CTA SECTION */}
-      <section className="text-center py-16 bg-gradient-to-r from-gray-900 via-indigo-900 to-purple-900 text-white rounded-2xl">
+      <section className="text-center py-16 bg-gradient-to-r from-indigo-950 via-slate-900 to-black text-white rounded-2xl">
         <h2 className="text-4xl font-bold mb-4 drop-shadow-lg">Start Your AI Art Journey</h2>
         <p className="text-indigo-200 mb-8">
           Join a community of creators pushing the boundaries of technology and imagination.
         </p>
         <Link
           href="/explore"
-          className="px-8 py-3 rounded-md bg-indigo-500 text-white font-semibold hover:bg-indigo-400 transition"
+          className="px-8 py-3 rounded-md bg-indigo-600 text-white font-semibold hover:bg-indigo-500 transition"
         >
           Browse Now →
         </Link>

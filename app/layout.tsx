@@ -11,11 +11,12 @@ export const metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className="min-h-screen text-slate-900 bg-gradient-to-br from-indigo-50 via-white to-amber-50">
+      {/* Dark global gradient + soft neon glows */}
+      <body className="min-h-screen text-slate-100 bg-gradient-to-br from-slate-950 via-slate-900 to-black">
         <div className="fixed inset-0 -z-10 pointer-events-none">
-          <div className="absolute inset-0 opacity-50 [background:
-              radial-gradient(800px_500px_at_10%_-10%,rgba(99,102,241,0.15),transparent),
-              radial-gradient(700px_400px_at_90%_0%,rgba(245,158,11,0.12),transparent)
+          <div className="absolute inset-0 opacity-60 [background:
+            radial-gradient(900px_600px_at_12%_-10%,rgba(99,102,241,0.25),transparent),
+            radial-gradient(700px_450px_at_90%_0%,rgba(245,158,11,0.18),transparent)
           ]" />
         </div>
 
