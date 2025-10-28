@@ -33,11 +33,10 @@ model Artwork {
   featured   Boolean   @default(false)
   createdAt  DateTime  @default(now())
 
-  // indexes to speed up filters
   @@index([category])
   @@index([status])
   @@index([createdAt])
-  @@fulltext([title, artist])
+  @@index([title, artist])
 }
 
 model Order {
