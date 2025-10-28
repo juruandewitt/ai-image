@@ -6,7 +6,7 @@ import { searchArtworks } from '@/lib/catalog'
 export const dynamic = 'force-dynamic'
 
 export default async function ExplorePage({ searchParams }: { searchParams: any }) {
-  const { items, total, page, perPage, totalPages } = await searchArtworks({
+  const { items, total, page, totalPages } = await searchArtworks({
     q: searchParams.q,
     category: searchParams.category,
     tag: searchParams.tag,

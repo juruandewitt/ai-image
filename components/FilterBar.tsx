@@ -1,16 +1,15 @@
 'use client'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { useCallback, useMemo, useState } from 'react'
+import { useState, useCallback } from 'react'
 
 const CATEGORIES = [
   { key: 'ABSTRACT',  label: 'Abstract' },
   { key: 'LANDSCAPE', label: 'Landscape' },
   { key: 'PORTRAIT',  label: 'Portrait' },
   { key: 'SURREAL',   label: 'Surreal' },
-  { key: 'SCI_FI',    label: 'Sci‑Fi' },
+  { key: 'SCI_FI',    label: 'Sci-Fi' },
   { key: 'MINIMAL',   label: 'Minimal' },
 ]
-
 const SORTS = [
   { key: 'new',        label: 'Newest' },
   { key: 'featured',   label: 'Featured' },
@@ -25,7 +24,7 @@ export default function FilterBar() {
 
   const [q, setQ] = useState(sp.get('q') || '')
   const activeSort = sp.get('sort') || 'new'
-  const activeCats = (sp.getAll('category') || [])
+  const activeCats = sp.getAll('category')
 
   const apply = useCallback((patch: Record<string,string|string[]|null>) => {
     const params = new URLSearchParams(sp.toString())
@@ -35,50 +34,33 @@ export default function FilterBar() {
       if (Array.isArray(v)) v.forEach(val => params.append(k, val))
       else if (v !== '') params.set(k, v)
     }
-    params.set('page', '1') // reset pagination on any change
+    params.set('page','1')
     router.push(`${pathname}?${params.toString()}`)
   }, [router, pathname, sp])
 
   const toggleCat = (key: string) => {
     const next = new Set(activeCats)
-    if (next.has(key)) next.delete(key); else next.add(key)
+    next.has(key) ? next.delete(key) : next.add(key)
     apply({ category: Array.from(next) })
   }
-
   const setSort = (key: string) => apply({ sort: key })
-
   const onSubmit = (e: React.FormEvent) => { e.preventDefault(); apply({ q }) }
-
-  const isActive = useCallback((key: string) => activeCats.includes(key), [activeCats])
+  const isActive = (key: string) => activeCats.includes(key)
 
   return (
-    <div className="rounded-xl border bg-black/20 backdrop-blur px-4 py-3 text-sm text-neutral-200">
+    <div className="rounded-xl border border-white/10 bg-black/20 backdrop-blur px-4 py-3 text-sm text-neutral-200">
       <form onSubmit={onSubmit} className="flex flex-col md:flex-row md:items-center gap-3">
-        <input
-          value={q}
-          onChange={e => setQ(e.target.value)}
-          placeholder="Search title, artist or tag…"
-          className="flex-1 rounded-md border bg-black/30 px-3 py-2 outline-none"
-        />
+        <input value={q} onChange={e=>setQ(e.target.value)} placeholder="Search title, artist or tag…" className="flex-1 rounded-md border border-white/10 bg-black/30 px-3 py-2 outline-none" />
         <div className="flex flex-wrap gap-2">
           {CATEGORIES.map(c => (
-            <button
-              key={c.key}
-              type="button"
-              onClick={() => toggleCat(c.key)}
-              className={`px-3 py-1.5 rounded-full border ${isActive(c.key) ? 'bg-indigo-600 border-indigo-500 text-white' : 'bg-black/30'}`}
-            >
+            <button key={c.key} type="button" onClick={()=>toggleCat(c.key)} className={`px-3 py-1.5 rounded-full border ${isActive(c.key) ? 'bg-indigo-600 border-indigo-500 text-white' : 'bg-black/30 border-white/10 text-neutral-200'}`}>
               {c.label}
             </button>
           ))}
         </div>
-        <div className="flex items-center gap-2 ml-auto">
+        <div className="flex items-center gap-2 md:ml-auto">
           <label className="opacity-80">Sort</label>
-          <select
-            className="rounded-md border bg-black/30 px-2 py-1.5"
-            value={activeSort}
-            onChange={e => setSort(e.target.value)}
-          >
+          <select value={activeSort} onChange={e=>setSort(e.target.value)} className="rounded-md border border-white/10 bg-black/30 px-2 py-1.5">
             {SORTS.map(s => <option key={s.key} value={s.key}>{s.label}</option>)}
           </select>
         </div>

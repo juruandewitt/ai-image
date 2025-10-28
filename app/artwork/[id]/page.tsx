@@ -6,7 +6,7 @@ function money(cents: number) { return `$${(cents/100).toFixed(2)}` }
 
 export default async function ArtworkDetail({ params }: { params: { id: string } }) {
   const a = await prisma.artwork.findUnique({ where: { id: params.id } })
-  if (!a) return <p className="text-sm text-neutral-500">Not found.</p>
+  if (!a) return <p className="text-sm text-neutral-400">Not found.</p>
 
   const related = await prisma.artwork.findMany({
     where: { category: a.category, id: { not: a.id }, status: 'PUBLISHED' },
@@ -17,7 +17,7 @@ export default async function ArtworkDetail({ params }: { params: { id: string }
   return (
     <div className="space-y-10">
       <article className="grid md:grid-cols-2 gap-8">
-        <div className="aspect-[4/3] relative rounded-lg overflow-hidden">
+        <div className="aspect-[4/3] relative rounded-lg overflow-hidden border border-white/10">
           <Image src={a.thumbnail} alt={a.title} fill className="object-cover" />
         </div>
         <div className="space-y-4">
