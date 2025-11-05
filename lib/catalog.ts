@@ -22,6 +22,11 @@ export function buildWhere(params: ExploreParams): Prisma.ArtworkWhereInput {
 
   const where: Prisma.ArtworkWhereInput = { status: 'PUBLISHED', AND: [] }
 
+  if (params.style) {
+    const k = params.style.toUpperCase().replace(/-/g,'_');
+    (where.AND as Prisma.ArtworkWhereInput[]).push({ style: k as any })
+  }
+
   if (params.q) {
     const q = params.q.trim()
     ;(where.AND as Prisma.ArtworkWhereInput[]).push({

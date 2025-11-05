@@ -1,7 +1,6 @@
 generator client {
   provider = "prisma-client-js"
 }
-
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -15,12 +14,10 @@ enum Category {
   SCI_FI
   MINIMAL
 }
-
 enum Status {
   DRAFT
   PUBLISHED
 }
-
 enum Style {
   VAN_GOGH
   REMBRANDT
@@ -33,11 +30,16 @@ enum Style {
   DA_VINCI
   POLLOCK
 }
+enum ImageFormat {
+  PNG
+  JPG
+  WEBP
+}
 
 model Artwork {
   id         String    @id @default(cuid())
   title      String
-  price      Int       // cents
+  price      Int       // base price (cents) - kept for compatibility, not used at checkout when variants exist
   thumbnail  String
   artist     String
   tags       String[]
@@ -47,12 +49,39 @@ model Artwork {
   createdAt  DateTime  @default(now())
   style      Style     @default(VAN_GOGH)
 
-  // indexes (Postgres-safe; no fulltext)
+  assets     Asset[]
+
   @@index([category])
   @@index([status])
   @@index([createdAt])
   @@index([title, artist])
   @@index([style])
+}
+
+model Asset {
+  id         String    @id @default(cuid())
+  artworkId  String
+  artwork    Artwork   @relation(fields: [artworkId], references: [id], onDelete: Cascade)
+  provider   String    // "openai" | "stability" | "manual"
+  prompt     String
+  seed       String?
+  originalUrl String
+  createdAt  DateTime  @default(now())
+
+  variants   Variant[]
+}
+
+model Variant {
+  id         String      @id @default(cuid())
+  assetId    String
+  asset      Asset       @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  format     ImageFormat
+  width      Int
+  height     Int
+  url        String
+  priceCents Int
+
+  @@index([assetId])
 }
 
 model Order {

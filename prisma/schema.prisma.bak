@@ -1,7 +1,6 @@
 generator client {
   provider = "prisma-client-js"
 }
-
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -15,16 +14,28 @@ enum Category {
   SCI_FI
   MINIMAL
 }
-
 enum Status {
   DRAFT
   PUBLISHED
 }
 
+
+enum Style {
+  VAN_GOGH
+  REMBRANDT
+  PICASSO
+  VERMEER
+  MONET
+  MICHELANGELO
+  DALI
+  CARAVAGGIO
+  DA_VINCI
+  POLLOCK
+}
 model Artwork {
   id         String    @id @default(cuid())
   title      String
-  price      Int
+  price      Int       // cents
   thumbnail  String
   artist     String
   tags       String[]
@@ -32,12 +43,13 @@ model Artwork {
   status     Status    @default(PUBLISHED)
   featured   Boolean   @default(false)
   createdAt  DateTime  @default(now())
+  style      Style     @default(VAN_GOGH)
 
   @@index([category])
   @@index([status])
   @@index([createdAt])
   @@index([title, artist])
-}
+
 
 model Order {
   id        String   @id @default(cuid())
