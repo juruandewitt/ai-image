@@ -4,7 +4,6 @@ import { styleSlugToKey, styleKeyToLabel } from '@/lib/styles'
 import Image from 'next/image'
 import Link from 'next/link'
 
-export const dynamic = 'force-dynamic'
 
 export default async function StyleAllPage({ params }: { params: { style: string } }) {
   const key = styleSlugToKey(params.style)

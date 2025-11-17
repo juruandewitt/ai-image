@@ -1,5 +1,4 @@
 export const dynamic = 'force-dynamic'
-export const dynamic = 'force-dynamic'
 import { prisma } from '@/lib/prisma'
 import { STYLE_ORDER, STYLE_LABELS, styleKeyToSlug } from '@/lib/styles'
 import Image from 'next/image'
@@ -14,7 +13,6 @@ function shuffle<T>(arr: T[]) {
   return a
 }
 
-export const dynamic = 'force-dynamic'
 
 export default async function ExploreDirectory() {
   // For each style: fetch up to 60 recent and show 6 random
