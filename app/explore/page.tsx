@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+export const dynamic = 'force-dynamic'
 import { prisma } from '@/lib/prisma'
 import { STYLE_ORDER, STYLE_LABELS, styleKeyToSlug } from '@/lib/styles'
 import Image from 'next/image'
