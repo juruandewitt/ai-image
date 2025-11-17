@@ -54,9 +54,21 @@ async function generateImageWithOpenAI(prompt: string): Promise<Buffer> {
     prompt,
     size: '1024x1024',
   })
-  const url = resp.data[0].url!
-  const res = await fetch(url)
-  return Buffer.from(await res.arrayBuffer())
+
+  const first: any = (resp as any)?.data?.[0]
+  const url: string | undefined = first?.url
+  const b64: string | undefined = first?.b64_json
+
+  if (!url && !b64) {
+    throw new Error('OpenAI Images API returned no data (url/b64_json missing)')
+  }
+
+  if (url) {
+    const r = await fetch(url)
+    return Buffer.from(await r.arrayBuffer())
+  } else {
+    return Buffer.from(b64!, 'base64')
+  }
 }
 
 async function generateBuffer(prompt: string) {
