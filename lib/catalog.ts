@@ -21,7 +21,7 @@ export type ExploreResult = {
 const PAGE_SIZE = 24 as const
 
 export async function getExplore(params: ExploreParams): Promise<ExploreResult> {
-  const where: Prisma.ArtworkWhereInput = { status: 'PUBLISHED', AND: [] , NOT: { tags: { has: smoketest } } }
+  const where: Prisma.ArtworkWhereInput = { status: 'PUBLISHED', AND: [] , NOT: { tags: { has: 'smoketest' } } }
 
   // style filter (?style=van-gogh, da-vinci, etc.)
   if (params.style && params.style.trim()) {
