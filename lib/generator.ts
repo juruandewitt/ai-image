@@ -1,45 +1,39 @@
+
 import { prisma } from '@/lib/prisma'
 import { put } from '@vercel/blob'
 import sharp from 'sharp'
 
 // ---- SETTINGS ----
-export const VARIANT_SIZES = [1024, 2048] as const // add 4096 if you like
+export const VARIANT_SIZES = [1024, 2048] as const
 export const VARIANT_FORMATS = ['PNG','JPG','WEBP'] as const
-export type ProviderName = 'openai' | 'stability'
-export const PROVIDER: ProviderName = (process.env.IMAGE_PROVIDER as ProviderName) || 'openai'
+export type ProviderName = 'openai'
+export const PROVIDER: ProviderName = 'openai'
 
-// simple pricing ladder: cents by size
 export function priceFor(width: number) {
   if (width >= 4096) return 9900
   if (width >= 2048) return 4900
-  return 1900 // 1024
+  return 1900
 }
 
-// Famous works per master (seed list)
 export const MASTERWORKS: Record<string, string[]> = {
-  VAN_GOGH: [
-    'Starry Night', 'Sunflowers', 'Café Terrace at Night', 'Irises',
-    'Wheatfield with Crows', 'Bedroom in Arles',
-  ],
-  REMBRANDT: ['The Night Watch', 'The Storm on the Sea of Galilee', 'The Jewish Bride'],
-  PICASSO: ['Les Demoiselles d’Avignon', 'Guernica', 'The Weeping Woman'],
-  VERMEER: ['Girl with a Pearl Earring', 'The Milkmaid', 'View of Delft'],
-  MONET: ['Water Lilies', 'Impression, Sunrise', 'Haystacks'],
-  MICHELANGELO: ['Creation of Adam', 'David', 'Pietà'],
-  DALI: ['The Persistence of Memory', 'Swans Reflecting Elephants'],
-  CARAVAGGIO: ['The Calling of Saint Matthew', 'Judith Beheading Holofernes'],
-  DA_VINCI: ['Mona Lisa', 'The Last Supper', 'Vitruvian Man'],
-  POLLOCK: ['Number 1 (Lavender Mist)', 'Blue Poles'],
+  VAN_GOGH: ['Starry Night','Sunflowers','Café Terrace at Night','Irises','Wheatfield with Crows','Bedroom in Arles'],
+  REMBRANDT: ['The Night Watch','The Storm on the Sea of Galilee','The Jewish Bride'],
+  PICASSO: ['Les Demoiselles d’Avignon','Guernica','The Weeping Woman'],
+  VERMEER: ['Girl with a Pearl Earring','The Milkmaid','View of Delft'],
+  MONET: ['Water Lilies','Impression, Sunrise','Haystacks'],
+  MICHELANGELO: ['Creation of Adam','David','Pietà'],
+  DALI: ['The Persistence of Memory','Swans Reflecting Elephants'],
+  CARAVAGGIO: ['The Calling of Saint Matthew','Judith Beheading Holofernes'],
+  DA_VINCI: ['Mona Lisa','The Last Supper','Vitruvian Man'],
+  POLLOCK: ['Number 1 (Lavender Mist)','Blue Poles'],
 }
 
-// All style keys (must match Prisma enum)
 export const STYLES = [
   'VAN_GOGH','REMBRANDT','PICASSO','VERMEER','MONET',
   'MICHELANGELO','DALI','CARAVAGGIO','DA_VINCI','POLLOCK'
 ] as const
 export type StyleKey = typeof STYLES[number]
 
-// Random scene seeds for “filler” images
 export const RANDOM_SCENES = [
   'surreal neon city at dusk',
   'misty forest clearing with glowing mushrooms',
@@ -51,11 +45,10 @@ export const RANDOM_SCENES = [
   'desert dunes with mirrored monoliths',
 ]
 
-// ---- Provider calls (stubbed to two options) ----
+// ---- Provider: OpenAI only ----
 async function generateImageWithOpenAI(prompt: string): Promise<Buffer> {
   const { OpenAI } = await import('openai')
   const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
-  // Using new Images API -> returns URL or b64; we fetch into Buffer for processing
   const resp = await client.images.generate({
     model: 'gpt-image-1',
     prompt,
@@ -66,20 +59,7 @@ async function generateImageWithOpenAI(prompt: string): Promise<Buffer> {
   return Buffer.from(await res.arrayBuffer())
 }
 
-async function generateImageWithStability(prompt: string): Promise<Buffer> {
-  const { Client } = await import('@stabilityai/sdk')
-  const client = new Client({ apiKey: process.env.STABILITY_API_KEY! })
-  const result = await client.images.generate({
-    model: 'sd3',
-    prompt,
-    size: { width: 1024, height: 1024 },
-    output: 'bytes',
-  })
-  return Buffer.from(result.images[0].buffer)
-}
-
 async function generateBuffer(prompt: string) {
-  if (PROVIDER === 'stability') return generateImageWithStability(prompt)
   return generateImageWithOpenAI(prompt)
 }
 
@@ -94,7 +74,7 @@ export async function createArtworkWithVariants(opts: {
 }) {
   const buf = await generateBuffer(opts.prompt)
 
-  // Upload original
+  // Upload original to Vercel Blob
   const original = await put(`art/${Date.now()}-orig.png`, buf, {
     access: 'public', contentType: 'image/png', addRandomSuffix: true,
     token: process.env.BLOB_READ_WRITE_TOKEN
@@ -105,7 +85,7 @@ export async function createArtworkWithVariants(opts: {
     data: {
       title: opts.title,
       artist: opts.displayArtist,
-      price: 0, // variants define price
+      price: 0,
       category: 'PORTRAIT',
       status: 'PUBLISHED',
       featured: false,
@@ -147,7 +127,7 @@ export async function createArtworkWithVariants(opts: {
     }
   }
 
-  const created = await prisma.variant.createMany({ data: variantsToCreate })
+  await prisma.variant.createMany({ data: variantsToCreate })
   // Set thumbnail to medium JPG
   const thumb = variantsToCreate.find(v => v.width === VARIANT_SIZES[0] && v.format === 'JPG')!.url
   await prisma.artwork.update({ where: { id: artwork.id }, data: { thumbnail: thumb } })
@@ -155,7 +135,6 @@ export async function createArtworkWithVariants(opts: {
   return artwork.id
 }
 
-// Build prompts: “best-known work A by Master X rendered in the style of Master Y”
 export function crossStylePrompts() {
   const pairs: Array<{title: string, style: StyleKey, prompt: string}> = []
   for (const src of STYLES) {
@@ -171,7 +150,6 @@ export function crossStylePrompts() {
   return pairs
 }
 
-// Random prompts per style to reach target count
 export function randomStylePrompts(targetPerStyle = 50) {
   const out: Array<{title: string, style: StyleKey, prompt: string}> = []
   for (const style of STYLES) {
