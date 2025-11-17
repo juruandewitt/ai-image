@@ -30,7 +30,7 @@ export async function POST(req: Request) {
       contentType: file.type || 'image/jpeg',
       addRandomSuffix: true,
       token: process.env.BLOB_READ_WRITE_TOKEN, // IMPORTANT
-    })
+    }).catch((err:any)=>{console.error('BLOB PUT FAILED', err); throw err;})
 
     const tags = tagsRaw ? tagsRaw.split(',').map(t=>t.trim().toLowerCase()).filter(Boolean) : []
 
