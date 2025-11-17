@@ -1,3 +1,4 @@
+export const revalidate = 0
 export const dynamic = 'force-dynamic'
 import { prisma } from '@/lib/prisma'
 import { STYLE_ORDER, STYLE_LABELS, styleKeyToSlug } from '@/lib/styles'
