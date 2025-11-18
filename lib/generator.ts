@@ -77,6 +77,8 @@ async function generateBuffer(prompt: string) {
 
 // Upload original + build variants (sizes x formats), save DB records
 export async function createArtworkWithVariants(opts: {
+  const token = process.env.BLOB_READ_WRITE_TOKEN;
+  if (!token) { throw new Error('BLOB_READ_WRITE_TOKEN missing in runtime env'); }
   title: string
   displayArtist: string
   style: StyleKey
@@ -89,7 +91,7 @@ export async function createArtworkWithVariants(opts: {
   // Upload original to Vercel Blob
   const original = await put(`art/${Date.now()}-orig.png`, buf, {
     access: 'public', contentType: 'image/png', addRandomSuffix: true,
-    token: process.env.BLOB_READ_WRITE_TOKEN
+    token
   })
 
   // Create base artwork row (thumbnail will be updated to first variant)
@@ -126,7 +128,7 @@ export async function createArtworkWithVariants(opts: {
         : await sharp(resized).webp({ quality: 92 }).toBuffer()
       const blob = await put(`art/${artwork.id}-${size}.${fmt.toLowerCase()}`, out, {
         access: 'public', contentType: `image/${fmt.toLowerCase()}`, addRandomSuffix: false,
-        token: process.env.BLOB_READ_WRITE_TOKEN
+        token
       })
       variantsToCreate.push({
         assetId: asset.id,
