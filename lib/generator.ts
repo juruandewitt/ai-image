@@ -77,8 +77,7 @@ async function generateBuffer(prompt: string) {
 
 // Upload original + build variants (sizes x formats), save DB records
 export async function createArtworkWithVariants(opts: {
-  const token = process.env.BLOB_READ_WRITE_TOKEN;
-  if (!token) { throw new Error('BLOB_READ_WRITE_TOKEN missing in runtime env'); }
+
   title: string
   displayArtist: string
   style: StyleKey
@@ -86,6 +85,8 @@ export async function createArtworkWithVariants(opts: {
   prompt: string
   provider: ProviderName
 }) {
+  const token = process.env.BLOB_READ_WRITE_TOKEN;
+  if (!token) { throw new Error('BLOB_READ_WRITE_TOKEN missing in runtime env'); }
   const buf = await generateBuffer(opts.prompt)
 
   // Upload original to Vercel Blob
