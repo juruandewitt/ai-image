@@ -1,13 +1,19 @@
 // app/api/generate/master/route.ts
 import { NextResponse } from 'next/server'
-import { buildStylePrompt } from '@/lib/generator'
+import { buildStylePrompt } from '@/lib/styles'      // <-- import from styles
 import { prisma } from '@/lib/prisma'
 import { put } from '@vercel/blob'
 import sharp from 'sharp'
 import { STYLE_LABELS, styleSlugToKey } from '@/lib/styles'
 import { OpenAI } from 'openai'
 
+// Make sure this runs on Node for sharp/Blob SDK
 export const runtime = 'nodejs'
+
+// Support GET for easy testing in the browser, and POST for programmatic calls
+export async function GET(req: Request) {
+  return POST(req)
+}
 
 export async function POST(req: Request) {
   try {
