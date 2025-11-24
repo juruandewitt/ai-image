@@ -8,7 +8,7 @@ import { OpenAI } from 'openai'
 
 export const runtime = 'nodejs'
 
-// Support GET for easy browser testing
+// Allow GET for easy testing from the browser
 export async function GET(req: Request) {
   return POST(req)
 }
@@ -22,7 +22,7 @@ export async function POST(req: Request) {
     const styleKey = styleSlugToKey(styleSlug)
     const prompt = buildStylePrompt(styleKey as any, title)
 
-    // ---- Generate image with OpenAI ----
+    // --- Generate with OpenAI ---
     const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
     const gen = await client.images.generate({
       model: 'gpt-image-1',
@@ -32,11 +32,11 @@ export async function POST(req: Request) {
     const url = gen.data?.[0]?.url
     if (!url) throw new Error('No image URL returned from OpenAI')
 
-    // Fetch original image into a Buffer
+    // Fetch original
     const res = await fetch(url)
     const orig = Buffer.from(await res.arrayBuffer())
 
-    // ---- Upload original and a couple of variants to Vercel Blob ----
+    // --- Upload to Vercel Blob: original + variants ---
     const stamp = Date.now()
     const baseKey = `art/${stamp}`
 
@@ -57,24 +57,29 @@ export async function POST(req: Request) {
       contentType: 'image/webp',
     })
 
-    // ---- Persist DB rows (no displayArtist field) ----
-   // ---- Persist DB rows (now including required fields) ----
-const artwork = await prisma.artwork.create({
-  data: {
-    title,
-    artist: 'AI Image – ' + styleSlug,             // human-friendly “artist” for list/detail
-    style: styleKey as any,
-    status: 'PUBLISHED',
-    price: 1900,                                    // simple default; you can change later
-    thumbnail: up1024.url,                          // use the 1024px variant as thumbnail
-    tags: [],
-    assets: {
-      create: [
-        { provider: 'blob', prompt, originalUrl: upOrig.url },
-        { provider: 'blob', prompt, originalUrl: up1024.url },
-        { provider: 'blob', prompt, originalUrl: up2048.url },
-      ],
-    },
-  },
-  select: { id: true },
-})
+    // --- DB rows (include required fields: price, thumbnail, artist) ---
+    const artwork = await prisma.artwork.create({
+      data: {
+        title,
+        artist: `AI Image – ${styleSlug}`,
+        style: styleKey as any,
+        status: 'PUBLISHED',
+        price: 1900,
+        thumbnail: up1024.url,
+        tags: [],
+        assets: {
+          create: [
+            { provider: 'blob', prompt, originalUrl: upOrig.url },
+            { provider: 'blob', prompt, originalUrl: up1024.url },
+            { provider: 'blob', prompt, originalUrl: up2048.url },
+          ],
+        },
+      },
+      select: { id: true },
+    })
+
+    return NextResponse.json({ ok: true, id: artwork.id })
+  } catch (e: any) {
+    return NextResponse.json({ ok: false, error: String(e) }, { status: 500 })
+  }
+}
