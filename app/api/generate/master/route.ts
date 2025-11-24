@@ -22,19 +22,19 @@ export async function POST(req: Request) {
     const styleKey = styleSlugToKey(styleSlug)
     const prompt = buildStylePrompt(styleKey as any, title)
 
-    // --- Generate with OpenAI ---
+    // --- Generate with OpenAI (b64 output, more robust than URL) ---
     const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
     const gen = await client.images.generate({
       model: 'gpt-image-1',
       prompt,
       size: '1024x1024',
+      response_format: 'b64_json',
     })
-    const url = gen.data?.[0]?.url
-    if (!url) throw new Error('No image URL returned from OpenAI')
+    const b64 = gen.data?.[0]?.b64_json
+    if (!b64) throw new Error('OpenAI returned no image data (b64_json). Check API key/billing or prompt.')
 
-    // Fetch original
-    const res = await fetch(url)
-    const orig = Buffer.from(await res.arrayBuffer())
+    // Build original Buffer directly from base64
+    const orig = Buffer.from(b64, 'base64')
 
     // --- Upload to Vercel Blob: original + variants ---
     const stamp = Date.now()
@@ -57,15 +57,15 @@ export async function POST(req: Request) {
       contentType: 'image/webp',
     })
 
-    // --- DB rows (include required fields: price, thumbnail, artist) ---
+    // --- Persist DB rows (include required fields) ---
     const artwork = await prisma.artwork.create({
       data: {
         title,
-        artist: `AI Image – ${styleSlug}`,
+        artist: `AI Image – ${styleSlug}`, // shown on cards/detail
         style: styleKey as any,
         status: 'PUBLISHED',
-        price: 1900,
-        thumbnail: up1024.url,
+        price: 1900,            // default price; adjust later as needed
+        thumbnail: up1024.url,  // use 1024px variant as thumbnail
         tags: [],
         assets: {
           create: [
