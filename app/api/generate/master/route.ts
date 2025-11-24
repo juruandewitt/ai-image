@@ -58,25 +58,23 @@ export async function POST(req: Request) {
     })
 
     // ---- Persist DB rows (no displayArtist field) ----
-    const artwork = await prisma.artwork.create({
-      data: {
-        title,
-        style: styleKey as any,
-        status: 'PUBLISHED',
-        tags: [],
-        assets: {
-          create: [
-            { provider: 'blob', prompt, originalUrl: upOrig.url },
-            { provider: 'blob', prompt, originalUrl: up1024.url },
-            { provider: 'blob', prompt, originalUrl: up2048.url },
-          ],
-        },
-      },
-      select: { id: true },
-    })
-
-    return NextResponse.json({ ok: true, id: artwork.id })
-  } catch (e: any) {
-    return NextResponse.json({ ok: false, error: String(e) }, { status: 500 })
-  }
-}
+   // ---- Persist DB rows (now including required fields) ----
+const artwork = await prisma.artwork.create({
+  data: {
+    title,
+    artist: 'AI Image – ' + styleSlug,             // human-friendly “artist” for list/detail
+    style: styleKey as any,
+    status: 'PUBLISHED',
+    price: 1900,                                    // simple default; you can change later
+    thumbnail: up1024.url,                          // use the 1024px variant as thumbnail
+    tags: [],
+    assets: {
+      create: [
+        { provider: 'blob', prompt, originalUrl: upOrig.url },
+        { provider: 'blob', prompt, originalUrl: up1024.url },
+        { provider: 'blob', prompt, originalUrl: up2048.url },
+      ],
+    },
+  },
+  select: { id: true },
+})
