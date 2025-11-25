@@ -2,9 +2,13 @@
 const nextConfig = {
   images: {
     remotePatterns: [
-      { protocol: 'https', hostname: 'public.blob.vercel-storage.com' },
-      { protocol: 'https', hostname: 'picsum.photos' }, // keep if you still use placeholders
+      {
+        protocol: 'https',
+        hostname: 'qdqgkmgfjhffc4cy.public.blob.vercel-storage.com', // <-- paste yours
+        pathname: '/**',
+      },
     ],
   },
 }
+
 module.exports = nextConfig
