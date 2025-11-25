@@ -22,19 +22,30 @@ export async function POST(req: Request) {
     const styleKey = styleSlugToKey(styleSlug)
     const prompt = buildStylePrompt(styleKey as any, title)
 
-    // --- Generate with OpenAI (b64 output, more robust than URL) ---
+    // --- Generate with OpenAI (accept b64_json or url) ---
     const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
     const gen = await client.images.generate({
       model: 'gpt-image-1',
       prompt,
       size: '1024x1024',
-      response_format: 'b64_json',
+      // no response_format here — some deployments reject it
     })
-    const b64 = gen.data?.[0]?.b64_json
-    if (!b64) throw new Error('OpenAI returned no image data (b64_json). Check API key/billing or prompt.')
 
-    // Build original Buffer directly from base64
-    const orig = Buffer.from(b64, 'base64')
+    const first = gen.data?.[0]
+    if (!first) throw new Error('OpenAI returned no image in response data')
+
+    let orig: Buffer
+    if (first.b64_json) {
+      // Preferred: decode base64 directly
+      orig = Buffer.from(first.b64_json, 'base64')
+    } else if (first.url) {
+      // Fallback: fetch the URL
+      const res = await fetch(first.url)
+      if (!res.ok) throw new Error(`Failed to fetch image URL (${res.status})`)
+      orig = Buffer.from(await res.arrayBuffer())
+    } else {
+      throw new Error('OpenAI image had neither b64_json nor url')
+    }
 
     // --- Upload to Vercel Blob: original + variants ---
     const stamp = Date.now()
@@ -57,15 +68,15 @@ export async function POST(req: Request) {
       contentType: 'image/webp',
     })
 
-    // --- Persist DB rows (include required fields) ---
+    // --- Persist DB rows (include required fields for your schema) ---
     const artwork = await prisma.artwork.create({
       data: {
         title,
-        artist: `AI Image – ${styleSlug}`, // shown on cards/detail
+        artist: `AI Image – ${styleSlug}`, // what shows in UI
         style: styleKey as any,
         status: 'PUBLISHED',
-        price: 1900,            // default price; adjust later as needed
-        thumbnail: up1024.url,  // use 1024px variant as thumbnail
+        price: 1900,
+        thumbnail: up1024.url,
         tags: [],
         assets: {
           create: [
@@ -80,6 +91,10 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ ok: true, id: artwork.id })
   } catch (e: any) {
-    return NextResponse.json({ ok: false, error: String(e) }, { status: 500 })
+    // Surface a clearer reason to help debugging
+    return NextResponse.json(
+      { ok: false, error: String(e?.message || e) },
+      { status: 500 }
+    )
   }
 }
