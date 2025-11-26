@@ -13,16 +13,17 @@ export default function ArtworkCard({ art }: { art: MinimalArtwork }) {
     >
       <div className="relative aspect-[4/3] overflow-hidden">
         <Image
-          src={src}
-          alt={art.title}
-          fill
-          sizes="(max-width: 768px) 100vw, 33vw"
-          className="object-cover object-center group-hover:scale-[1.02] transition-transform duration-300"
-          onError={(e) => {
-            const img = e.currentTarget as HTMLImageElement
-            img.src = '/placeholder.svg'
-          }}
-        />
+  src={src}
+  alt={art.title}
+  fill
+  unoptimized
+  sizes="(max-width: 768px) 100vw, 33vw"
+  className="object-cover object-center group-hover:scale-[1.02] transition-transform duration-300"
+  onError={(e) => {
+    const img = e.currentTarget as HTMLImageElement
+    img.src = '/placeholder.svg'
+  }}
+/>
       </div>
 
       <div className="p-3">
