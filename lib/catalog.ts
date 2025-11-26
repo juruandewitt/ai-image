@@ -1,3 +1,4 @@
+// lib/catalog.ts
 import { Prisma } from '@prisma/client'
 import { prisma } from './prisma'
 
@@ -18,7 +19,7 @@ export type ExploreRow = {
   tags: string[]
   createdAt: Date
   thumbnail: string | null
-  assets: { originalUrl: string | null; width: number | null; height: number | null }[]
+  assets: { originalUrl: string | null }[]
 }
 
 export async function getNewDrops(limit = 12): Promise<ExploreRow[]> {
@@ -32,16 +33,14 @@ export async function getNewDrops(limit = 12): Promise<ExploreRow[]> {
       assets: {
         take: 1,
         orderBy: { createdAt: 'asc' },
-        select: { originalUrl: true, width: true, height: true }
+        select: { originalUrl: true }
       }
     }
   })
   return rows as any
 }
 
-export async function getExplore(params: ExploreParams): Promise<{
-  items: ExploreRow[]
-}> {
+export async function getExplore(params: ExploreParams): Promise<{ items: ExploreRow[] }> {
   const where: Prisma.ArtworkWhereInput = { status: 'PUBLISHED', AND: [] }
 
   if (params.q?.trim()) {
@@ -74,7 +73,7 @@ export async function getExplore(params: ExploreParams): Promise<{
       assets: {
         take: 1,
         orderBy: { createdAt: 'asc' },
-        select: { originalUrl: true, width: true, height: true }
+        select: { originalUrl: true }
       }
     }
   })
