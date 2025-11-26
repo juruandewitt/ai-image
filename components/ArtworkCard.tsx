@@ -1,34 +1,34 @@
-// components/ArtworkCard.tsx
-import Image from 'next/image'
 import Link from 'next/link'
-import { getThumbUrl, MinimalArtwork } from '@/lib/catalog'
+import SafeImage from './SafeImage'
 
-export default function ArtworkCard({ art }: { art: MinimalArtwork }) {
-  const src = getThumbUrl(art)
+type ArtworkRow = {
+  id: string
+  title: string
+  style: string | null
+  displayArtist?: string | null
+  assets?: { originalUrl: string | null }[]
+}
+
+export default function ArtworkCard({ a }: { a: ArtworkRow }) {
+  const url = a.assets?.[0]?.originalUrl || null
 
   return (
     <Link
-      href={`/artwork/${art.id}`}
-      className="group block rounded-xl overflow-hidden bg-slate-900/40 ring-1 ring-slate-800 hover:ring-amber-400/40 transition"
+      href={`/artwork/${a.id}`}
+      className="group relative block rounded-xl overflow-hidden bg-slate-900/40 ring-1 ring-slate-800 hover:ring-amber-400/50 transition"
     >
-      <div className="relative aspect-[4/3] overflow-hidden">
-        <Image
-  src={src}
-  alt={art.title}
-  fill
-  unoptimized
-  sizes="(max-width: 768px) 100vw, 33vw"
-  className="object-cover object-center group-hover:scale-[1.02] transition-transform duration-300"
-  onError={(e) => {
-    const img = e.currentTarget as HTMLImageElement
-    img.src = '/placeholder.svg'
-  }}
-/>
+      <div className="relative aspect-[4/3]">
+        <SafeImage
+          src={url}
+          alt={a.title || 'Artwork'}
+          fallbackSrc="/logo.png"
+        />
       </div>
-
       <div className="p-3">
-        <div className="text-sm text-slate-300 line-clamp-1">{art.title}</div>
-        <div className="text-xs text-slate-400 mt-1">{art.style.replace(/_/g, ' ')}</div>
+        <div className="text-slate-100 font-medium truncate">{a.title}</div>
+        <div className="text-slate-400 text-sm truncate">
+          {a.displayArtist || a.style || 'AI Studio'}
+        </div>
       </div>
     </Link>
   )
