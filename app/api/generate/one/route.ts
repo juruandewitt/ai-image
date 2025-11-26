@@ -1,12 +1,10 @@
-// app/api/generate/one/route.ts — fast, URL-only version
+// app/api/generate/one/route.ts — fast, URL-only version (valid sizes)
 import { NextResponse } from 'next/server'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
-// Bump a bit to avoid 504s; plan limits still apply
 export const maxDuration = 30
 
-// very small style->prompt helpers (tuned for masters)
 const STYLE_PREFIX: Record<string, string> = {
   'van-gogh':
     "in the expressive, impasto brushwork and vibrant complementary colors of Vincent van Gogh; starry skies, swirling motion, thick paint texture, bold outlines; late 1880s Dutch Post-Impressionism.",
@@ -37,23 +35,35 @@ function buildPrompt(title: string, styleSlug: string) {
   return `${title}, ${style}. ${base}`
 }
 
+// pick a valid OpenAI size; default square
+function pickSize(aspect?: string): '1024x1024' | '1024x1536' | '1536x1024' | 'auto' {
+  if (!aspect) return '1024x1024'
+  const a = aspect.toLowerCase()
+  if (a === 'portrait' || a === '3:4' || a === '2:3') return '1024x1536'
+  if (a === 'landscape' || a === '4:3' || a === '3:2') return '1536x1024'
+  if (a === 'auto') return 'auto'
+  return '1024x1024'
+}
+
 export async function GET(req: Request) {
   try {
     const url = new URL(req.url)
     const style = (url.searchParams.get('style') || '').toLowerCase().trim()
     const title = (url.searchParams.get('title') || '').trim()
+    const aspect = (url.searchParams.get('aspect') || '').trim() // optional: portrait|landscape|square|auto
     if (!title) {
       return NextResponse.json({ ok: false, error: 'Missing ?title' }, { status: 400 })
     }
     const prompt = buildPrompt(title, style)
+    const size = pickSize(aspect)
 
     const { OpenAI } = await import('openai')
     const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
-    // Use a smaller size for speed; you can raise to 1024 later
+
     const resp = await client.images.generate({
       model: 'gpt-image-1',
       prompt,
-      size: '512x512'
+      size // valid: '1024x1024'|'1024x1536'|'1536x1024'|'auto'
     })
 
     const first = resp.data?.[0]
@@ -61,25 +71,18 @@ export async function GET(req: Request) {
       return NextResponse.json({ ok: false, error: 'No image URL returned' }, { status: 502 })
     }
 
-    // Fast path: return the OpenAI URL directly (no Blob upload)
-    return NextResponse.json({
-      ok: true,
-      url: first.url,
-      title,
-      style
-    })
+    return NextResponse.json({ ok: true, url: first.url, title, style, size })
   } catch (e: any) {
     console.error('[generate/one] error', e)
     return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 500 })
   }
 }
 
-// Optional POST that forwards to GET for dashboard compatibility
 export async function POST(req: Request) {
   const body = await req.json().catch(() => ({}))
   const style = encodeURIComponent((body?.style || '').toString())
   const title = encodeURIComponent((body?.title || '').toString())
-  const next = new URL(`/api/generate/one?style=${style}&title=${title}`, 'http://localhost')
-  // call GET handler
+  const aspect = encodeURIComponent((body?.aspect || '').toString())
+  const next = new URL(`/api/generate/one?style=${style}&title=${title}&aspect=${aspect}`, 'http://localhost')
   return GET(new Request(next.toString()))
 }
