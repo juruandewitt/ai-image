@@ -48,10 +48,12 @@ Nocturne over Windmill Village`
       }
 
       if (json?.ok) {
-        setLog(prev => [...prev, `✔ Added: ${t} (id: ${json.id})`])
-      } else {
-        throw new Error(json?.error || `Unknown error (${res.status})`)
-      }
+  const label = json.id ? `id: ${json.id}` : (json.url ? `url: ${json.url}` : 'ok')
+  setLog(prev => [...prev, `✔ Added: ${t} (${label})`])
+} else {
+  throw new Error(json?.error || `Unknown error (${res.status})`)
+}
+
     } catch (e: any) {
       setLog(prev => [...prev, `✖ Error: ${String(e?.message || e)}`])
     }
