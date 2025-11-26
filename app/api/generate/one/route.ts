@@ -1,13 +1,18 @@
-// app/api/generate/one/route.ts — Edge, longer budget, region hint, quick timeout
+// app/api/generate/one/route.ts — Node runtime, longer timeout, robust timeouts/retries
 import { NextResponse } from 'next/server'
 
-export const runtime = 'edge'
-// Ask Vercel for the longest Edge budget (Hobby/Pro allow up to ~30s)
-export const maxDuration = 30
-// Hint the closest region to reduce round trips (your builds show iad1)
-export const preferredRegion = ['iad1']
-
+export const runtime = 'nodejs'
+// Allow more time than Edge (Edge ~30s). Node Serverless commonly allows up to 60s.
+export const maxDuration = 60
 export const dynamic = 'force-dynamic'
+
+// Optional: pin region close to your build logs (iad1), but Node runtime may ignore this.
+// export const preferredRegion = ['iad1']
+
+type OpenAIImageResp = {
+  data?: { url?: string }[]
+  error?: { message?: string }
+}
 
 const STYLE_PREFIX: Record<string, string> = {
   'van-gogh':
@@ -29,7 +34,7 @@ const STYLE_PREFIX: Record<string, string> = {
   'da-vinci':
     "in Leonardo da Vinci’s sfumato, subtle gradations and proportional harmony; High Renaissance realism.",
   'pollock':
-    "in Jackson Pollock’s gestural drip painting; all-over composition and dynamic splatters."
+    "in Jackson Pollock’s gestural drip painting; all-over composition and dynamic splatters.",
 }
 
 function buildPrompt(title: string, styleSlug: string) {
@@ -37,11 +42,6 @@ function buildPrompt(title: string, styleSlug: string) {
     "High-quality fine-art image, museum-grade rendering for large prints. Avoid text overlays and watermarks."
   const style = STYLE_PREFIX[styleSlug] ?? "master painterly style"
   return `${title}, ${style}. ${base}`
-}
-
-type OpenAIImageResp = {
-  data?: { url?: string }[]
-  error?: { message?: string }
 }
 
 function pickSize(aspect?: string): '1024x1024' | '1024x1536' | '1536x1024' | 'auto' {
@@ -53,12 +53,33 @@ function pickSize(aspect?: string): '1024x1024' | '1024x1536' | '1536x1024' | 'a
   return '1024x1024'
 }
 
-// Promise.race timeout helper (Edge-safe)
-async function withTimeout<T>(p: Promise<T>, ms: number): Promise<T> {
-  const to = new Promise<T>((_, rej) =>
-    setTimeout(() => rej(new Error(`client-timeout-after-${ms}ms`)), ms)
-  ) as Promise<T>
-  return Promise.race([p, to])
+// Abortable fetch with timeout
+async function fetchJSONWithTimeout(url: string, init: RequestInit, ms: number) {
+  const ctrl = new AbortController()
+  const t = setTimeout(() => ctrl.abort(), ms)
+  try {
+    const res = await fetch(url, { ...init, signal: ctrl.signal })
+    const text = await res.text()
+    try {
+      return JSON.parse(text)
+    } catch {
+      throw new Error(`Non-JSON from upstream: ${text.slice(0, 200)}`)
+    }
+  } finally {
+    clearTimeout(t)
+  }
+}
+
+// Tiny retry helper for transient upstream slowness
+async function retry<T>(fn: () => Promise<T>, attempts = 2, delayMs = 800): Promise<T> {
+  let lastErr: any
+  for (let i = 0; i < attempts; i++) {
+    try { return await fn() } catch (e) {
+      lastErr = e
+      if (i < attempts - 1) await new Promise(r => setTimeout(r, delayMs))
+    }
+  }
+  throw lastErr
 }
 
 export async function GET(req: Request) {
@@ -72,28 +93,34 @@ export async function GET(req: Request) {
     const style = (url.searchParams.get('style') || '').toLowerCase().trim()
     const title = (url.searchParams.get('title') || '').trim()
     const aspect = (url.searchParams.get('aspect') || '').trim()
+    const size = pickSize(aspect)
+
     if (!title) return NextResponse.json({ ok: false, error: 'Missing ?title' }, { status: 400 })
 
     const prompt = buildPrompt(title, style)
-    const size = pickSize(aspect)
 
-    const openaiCall = fetch('https://api.openai.com/v1/images/generations', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'gpt-image-1',
-        prompt,
-        size, // '1024x1024' | '1024x1536' | '1536x1024' | 'auto'
-      }),
-      // A short keepalive reduces tail risk on slow networks
-      keepalive: true
-    }).then(r => r.json() as Promise<OpenAIImageResp>)
-
-    // Cap total time spent waiting on OpenAI to ~25s (under Edge budget)
-    const data = await withTimeout(openaiCall, 25_000)
+    const data = await retry<OpenAIImageResp>(() =>
+      fetchJSONWithTimeout(
+        'https://api.openai.com/v1/images/generations',
+        {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${apiKey}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            model: 'gpt-image-1',
+            prompt,
+            size,              // '1024x1024' | '1024x1536' | '1536x1024' | 'auto'
+            // quality: 'standard', // default
+          }),
+          // keepalive helps on some networks
+          keepalive: true,
+        },
+        // Give upstream up to ~55s; route has maxDuration=60s
+        55_000
+      ),
+    )
 
     if (data?.error?.message) {
       return NextResponse.json({ ok: false, error: data.error.message }, { status: 502 })
@@ -105,7 +132,10 @@ export async function GET(req: Request) {
 
     return NextResponse.json({ ok: true, url: first, title, style, size })
   } catch (e: any) {
-    return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 500 })
+    const msg = e?.name === 'AbortError'
+      ? 'Timed out calling OpenAI (AbortError)'
+      : (e?.message || String(e))
+    return NextResponse.json({ ok: false, error: msg }, { status: 504 })
   }
 }
 
