@@ -1,115 +1,67 @@
 // lib/catalog.ts
-import { prisma } from '@/lib/prisma'
-import type { Prisma, Style } from '@prisma/client'
+import { Prisma } from '@prisma/client'
+import { prisma } from './prisma'
 
-/** Convert an uppercase string (e.g. "VAN_GOGH") into the Prisma enum value. */
-function toStyleEnum(key: string | undefined): Style | undefined {
-  if (!key) return undefined
-  // @ts-expect-error: index signature on enum at runtime
-  const v = (Object( (Style as any) ))[key]
-  return v as Style | undefined
-}
-
-/** Card shape the UI needs */
-export type CardArtwork = {
+// Small shape the UI needs (keep types simple & defensive)
+export type MinimalAsset = { originalUrl: string | null }
+export type MinimalArtwork = {
   id: string
   title: string
-  style: string | null
-  thumbnail: string | null
-  assets: { originalUrl: string | null }[]
+  style: string
+  tags: string[]
   createdAt: Date
+  assets: MinimalAsset[]
 }
 
-/** Home → New Drops (excludes "smoketest") */
-export async function getNewDrops(limit = 24): Promise<CardArtwork[]> {
+// Helper to safely read the first asset url
+export function getThumbUrl(a: { assets?: { originalUrl: string | null }[] } | null | undefined) {
+  return a?.assets?.[0]?.originalUrl ?? '/placeholder.svg'
+}
+
+/**
+ * Home page "New Drops"
+ * - pulls recent, published artworks
+ * - excludes any smoketest-tagged rows
+ */
+export async function getHomeNewDrops(limit = 24): Promise<MinimalArtwork[]> {
   const rows = await prisma.artwork.findMany({
+    where: {
+      status: 'PUBLISHED',
+      NOT: { tags: { has: 'smoketest' } },
+    },
     orderBy: { createdAt: 'desc' },
     take: limit,
-    where: { NOT: { tags: { has: 'smoketest' } } },
     select: {
-      id: true,
-      title: true,
-      style: true,
-      thumbnail: true,
-      createdAt: true,
+      id: true, title: true, style: true, tags: true, createdAt: true,
       assets: {
         take: 1,
         orderBy: { createdAt: 'asc' },
-        select: { originalUrl: true },
-      },
-    },
+        select: { originalUrl: true }
+      }
+    }
   })
-  return rows as CardArtwork[]
+  return rows as unknown as MinimalArtwork[]
 }
 
-/** Explore grid (optional style slug like "van-gogh") */
-export async function getExplore(params: { style?: string; take?: number } = {}): Promise<CardArtwork[]> {
-  const take = params.take ?? 60
-
-  const where: Prisma.ArtworkWhereInput = {
-    NOT: { tags: { has: 'smoketest' } },
-  }
-
-  if (params.style && params.style.trim()) {
-    const key = params.style.toUpperCase().replace(/-/g, '_')
-    const styleEnum = toStyleEnum(key)
-    if (styleEnum) {
-      where.style = styleEnum
-    }
-  }
-
+/**
+ * Explore directory (lightweight)
+ */
+export async function getExploreDirectory(perStyleTake = 12): Promise<MinimalArtwork[]> {
   const rows = await prisma.artwork.findMany({
+    where: {
+      status: 'PUBLISHED',
+      NOT: { tags: { has: 'smoketest' } },
+    },
     orderBy: { createdAt: 'desc' },
-    take,
-    where,
+    take: perStyleTake,
     select: {
-      id: true,
-      title: true,
-      style: true,
-      thumbnail: true,
-      createdAt: true,
+      id: true, title: true, style: true, tags: true, createdAt: true,
       assets: {
         take: 1,
         orderBy: { createdAt: 'asc' },
-        select: { originalUrl: true },
-      },
-    },
-  })
-
-  return rows as CardArtwork[]
-}
-
-/** Featured: one (or more) representative items per style key you pass */
-export async function getFeaturedByStyles(styleKeys: string[], perStyleTake = 1): Promise<Record<string, CardArtwork[]>> {
-  const result: Record<string, CardArtwork[]> = {}
-
-  for (const key of styleKeys) {
-    const styleEnum = toStyleEnum(key) // key already expected UPPER_SNAKE
-    const where: Prisma.ArtworkWhereInput = {
-      NOT: { tags: { has: 'smoketest' } },
-      ...(styleEnum ? { style: styleEnum } : {}),
+        select: { originalUrl: true }
+      }
     }
-
-    const rows = await prisma.artwork.findMany({
-      orderBy: { createdAt: 'desc' },
-      take: perStyleTake,
-      where,
-      select: {
-        id: true,
-        title: true,
-        style: true,
-        thumbnail: true,
-        createdAt: true,
-        assets: {
-          take: 1,
-          orderBy: { createdAt: 'asc' },
-          select: { originalUrl: true },
-        },
-      },
-    })
-
-    result[key] = rows as CardArtwork[]
-  }
-
-  return result
+  })
+  return rows as unknown as MinimalArtwork[]
 }
