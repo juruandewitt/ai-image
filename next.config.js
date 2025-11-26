@@ -7,6 +7,10 @@ const nextConfig = {
       { protocol: 'https', hostname: 'picsum.photos' },
     ],
   },
+  // Prevent old ESLint options from breaking your build on Vercel
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
 }
 
 module.exports = nextConfig
