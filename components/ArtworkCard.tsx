@@ -1,21 +1,47 @@
+// components/ArtworkCard.tsx
 import Image from 'next/image'
 import Link from 'next/link'
+import { getPrimaryImage } from '@/lib/img'   // ← add this line
 
-function money(cents: number) { return `$${(cents/100).toFixed(2)}` }
+type ArtworkCardProps = {
+  artwork: {
+    id: string
+    title: string
+    displayArtist?: string | null
+    style?: string | null
+    thumbnail?: string | null
+    assets?: Array<{ originalUrl?: string | null }>
+  }
+}
 
-export default function ArtworkCard({ a }: { a: any }) {
+export default function ArtworkCard({ artwork }: ArtworkCardProps) {
+  const src = getPrimaryImage(artwork) // ← use the helper
+
   return (
-    <Link href={`/artwork/${a.id}`} className="group block rounded-2xl overflow-hidden border border-white/10 hover:border-white/20 transition">
+    <Link
+      href={`/artwork/${artwork.id}`}
+      className="group block rounded-2xl overflow-hidden bg-slate-900/60 ring-1 ring-slate-800 hover:ring-amber-400/40 transition"
+    >
       <div className="relative aspect-[4/3]">
-        <Image src={a.thumbnail} alt={a.title} fill className="object-cover group-hover:scale-[1.02] transition-transform" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-70 group-hover:opacity-90 transition-opacity" />
-        <div className="absolute bottom-3 left-3 right-3 flex items-end justify-between gap-3">
-          <div className="text-white">
-            <div className="text-base font-semibold drop-shadow">{a.title}</div>
-            <div className="text-xs text-indigo-200">by {a.artist}</div>
+        {src ? (
+          <Image
+            src={src}
+            alt={artwork.title}
+            fill
+            sizes="(max-width: 768px) 100vw, 33vw"
+            className="object-cover"
+          />
+        ) : (
+          <div className="absolute inset-0 grid place-items-center text-slate-500 text-sm">
+            No preview
           </div>
-          <div className="text-sm font-semibold text-amber-300 drop-shadow">{money(a.price)}</div>
+        )}
+      </div>
+      <div className="p-3">
+        <div className="text-sm text-slate-300">
+          {artwork.displayArtist ?? artwork.style ?? '—'}
         </div>
+        <div className="font-medium text-slate-100">{artwork.title}</div>
       </div>
     </Link>
   )
