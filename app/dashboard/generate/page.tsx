@@ -20,39 +20,49 @@ Nocturne over Windmill Village`
   const [running, setRunning] = useState(false)
 
   async function runSequential() {
-    if (running) return
-    setRunning(true)
-    setLog([])
+  if (running) return
+  setRunning(true)
+  setLog([])
 
-    const list = titles
-      .split('\n')
-      .map(s => s.trim())
-      .filter(Boolean)
+  const list = titles
+    .split('\n')
+    .map(s => s.trim())
+    .filter(Boolean)
 
-    for (const t of list) {
-      setLog(prev => [...prev, `→ Generating: "${t}"...`])
+  for (const t of list) {
+    setLog(prev => [...prev, `→ Generating: "${t}"...`])
+    try {
+      const res = await fetch('/api/generate/one', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ style, title: t }),
+      })
+
+      const text = await res.text()
+      let json: any
       try {
-        const res = await fetch('/api/generate/one', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ style, title: t })
-        })
-        const json = await res.json()
-        if (json.ok) {
-          setLog(prev => [...prev, `✔ Added: ${t} (id: ${json.id})`])
-        } else {
-          setLog(prev => [...prev, `✖ Failed: ${t} — ${json.error}`])
-        }
-      } catch (e: any) {
-        setLog(prev => [...prev, `✖ Error: ${String(e?.message || e)}`])
+        json = JSON.parse(text)
+      } catch {
+        // Not JSON (likely HTML error page)
+        throw new Error(`Non-JSON (${res.status}): ${text.slice(0,200)}…`)
       }
-      // tiny pause to play nice with limits
-      await new Promise(r => setTimeout(r, 400))
-    }
 
-    setLog(prev => [...prev, 'Done. Refresh Home to see New Drops.'])
-    setRunning(false)
+      if (json?.ok) {
+        setLog(prev => [...prev, `✔ Added: ${t} (id: ${json.id})`])
+      } else {
+        throw new Error(json?.error || `Unknown error (${res.status})`)
+      }
+    } catch (e: any) {
+      setLog(prev => [...prev, `✖ Error: ${String(e?.message || e)}`])
+    }
+    // short pause between requests
+    await new Promise(r => setTimeout(r, 400))
   }
+
+  setLog(prev => [...prev, 'Done. Refresh Home to see New Drops.'])
+  setRunning(false)
+}
+
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">
