@@ -1,42 +1,83 @@
+import { Prisma } from '@prisma/client'
+import { prisma } from './prisma'
 
-import { prisma } from '@/lib/prisma'
-
-export async function getNewDrops(limit = 24) {
-  return prisma.artwork.findMany({
-    where: {
-      status: 'PUBLISHED',
-      AND: [
-        { NOT: { tags: { has: 'placeholder' } } },
-        { NOT: { tags: { has: 'smoketest' } } },
-      ],
-      // only show artworks that have at least one saved asset
-      assets: { some: {} },
-    },
-    orderBy: { createdAt: 'desc' },
-    take: limit,
-    // Use include so we don't have to name per-field types
-    include: {
-      assets: { take: 1, orderBy: { createdAt: 'asc' } }
-    }
-  })
+export type ExploreParams = {
+  q?: string
+  style?: string
+  tag?: string
+  page?: number
+  perPage?: number
 }
 
-export type ExploreParams = { style?: string }
+export type ExploreRow = {
+  id: string
+  title: string
+  artist: string
+  price: number
+  style: string
+  tags: string[]
+  createdAt: Date
+  thumbnail: string | null
+  assets: { originalUrl: string | null; width: number | null; height: number | null }[]
+}
 
-export async function getExplore({ style }: ExploreParams) {
-  return prisma.artwork.findMany({
-    where: {
-      status: 'PUBLISHED',
-      assets: { some: {} },
-      AND: [
-        { NOT: { tags: { has: 'placeholder' } } },
-        { NOT: { tags: { has: 'smoketest' } } },
-      ],
-      ...(style ? { style: style.toUpperCase().replace(/-/g,'_') as any } : {})
-    },
+export async function getNewDrops(limit = 12): Promise<ExploreRow[]> {
+  const rows = await prisma.artwork.findMany({
+    where: { status: 'PUBLISHED' },
     orderBy: { createdAt: 'desc' },
-    include: {
-      assets: { take: 1, orderBy: { createdAt: 'asc' } }
+    take: limit,
+    select: {
+      id: true, title: true, artist: true, price: true, style: true, tags: true,
+      createdAt: true, thumbnail: true,
+      assets: {
+        take: 1,
+        orderBy: { createdAt: 'asc' },
+        select: { originalUrl: true, width: true, height: true }
+      }
     }
   })
+  return rows as any
+}
+
+export async function getExplore(params: ExploreParams): Promise<{
+  items: ExploreRow[]
+}> {
+  const where: Prisma.ArtworkWhereInput = { status: 'PUBLISHED', AND: [] }
+
+  if (params.q?.trim()) {
+    (where.AND as Prisma.ArtworkWhereInput[]).push({
+      OR: [
+        { title: { contains: params.q, mode: 'insensitive' } },
+        { artist: { contains: params.q, mode: 'insensitive' } },
+        { tags: { has: params.q } },
+      ],
+    })
+  }
+
+  if (params.style?.trim()) {
+    const key = params.style.toUpperCase().replace(/-/g, '_')
+    ;(where.AND as Prisma.ArtworkWhereInput[]).push({ style: key as any })
+  }
+
+  const page = Math.max(1, Number(params.page ?? 1))
+  const perPage = Math.min(60, Math.max(12, Number(params.perPage ?? 24)))
+  const skip = (page - 1) * perPage
+
+  const items = await prisma.artwork.findMany({
+    where,
+    orderBy: { createdAt: 'desc' },
+    skip,
+    take: perPage,
+    select: {
+      id: true, title: true, artist: true, price: true, style: true, tags: true,
+      createdAt: true, thumbnail: true,
+      assets: {
+        take: 1,
+        orderBy: { createdAt: 'asc' },
+        select: { originalUrl: true, width: true, height: true }
+      }
+    }
+  })
+
+  return { items: items as any }
 }
