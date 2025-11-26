@@ -1,41 +1,45 @@
-// app/api/generate/one/route.ts — fast, URL-only version (valid sizes)
+// app/api/generate/one/route.ts — Edge version (faster, avoids 504s)
 import { NextResponse } from 'next/server'
 
-export const runtime = 'nodejs'
+export const runtime = 'edge'
 export const dynamic = 'force-dynamic'
-export const maxDuration = 30
 
 const STYLE_PREFIX: Record<string, string> = {
   'van-gogh':
-    "in the expressive, impasto brushwork and vibrant complementary colors of Vincent van Gogh; starry skies, swirling motion, thick paint texture, bold outlines; late 1880s Dutch Post-Impressionism.",
+    "in the expressive, impasto brushwork and vibrant complementary colors of Vincent van Gogh; swirling starfields, thick paint texture, bold outlines; late 1880s Post-Impressionism.",
   'rembrandt':
-    "in the dramatic chiaroscuro and warm amber light of Rembrandt; baroque realism, deep shadows, intimate portraits, textured oil paint, 17th-century Dutch Golden Age.",
+    "in the dramatic chiaroscuro and warm amber light of Rembrandt; baroque realism, intimate portraits, deep shadows.",
   'picasso':
-    "in the Cubist abstraction of Pablo Picasso; fractured planes, multiple viewpoints, geometric simplification, early 20th-century avant-garde.",
+    "in early Cubist abstraction of Pablo Picasso; fractured planes, multiple viewpoints, geometric simplification.",
   'vermeer':
-    "in the serene interior light and meticulous realism of Johannes Vermeer; soft daylight, camera-obscura clarity, Delft interiors.",
+    "in the serene, window-lit interiors of Johannes Vermeer; soft daylight, camera-obscura clarity, Delft realism.",
   'monet':
-    "in the luminous, broken color and plein-air brushwork of Claude Monet; Impressionist atmosphere, shimmering water reflections.",
+    "in Claude Monet’s luminous, broken color and plein-air atmosphere; shimmering water reflections.",
   'michelangelo':
-    "in the heroic Renaissance anatomy and sculptural forms of Michelangelo; fresco/oil feel, muscular figures, High Renaissance tonality.",
+    "in the heroic Renaissance anatomy and sculptural forms of Michelangelo; fresco/oil feel, High Renaissance tonality.",
   'dali':
-    "in the surreal dreamscapes of Salvador Dalí; long shadows, hyper-real textures, melting forms, meticulous detail.",
+    "in Salvador Dalí’s surreal dreamscapes; long shadows, hyper-real textures, melting forms, meticulous detail.",
   'caravaggio':
-    "in the tenebrism and visceral realism of Caravaggio; strong spotlighting, deep blacks, Baroque drama.",
+    "in Caravaggio’s tenebrism and visceral realism; strong spotlighting, deep blacks, baroque drama.",
   'da-vinci':
-    "in the sfumato, subtle gradations and proportional harmony of Leonardo da Vinci; High Renaissance realism.",
+    "in Leonardo da Vinci’s sfumato, subtle gradations and proportional harmony; High Renaissance realism.",
   'pollock':
-    "in the gestural drip painting of Jackson Pollock; all-over composition, splatters, 1940s Abstract Expressionism."
+    "in Jackson Pollock’s gestural drip painting; all-over composition and dynamic splatters."
 }
 
 function buildPrompt(title: string, styleSlug: string) {
   const base =
-    "High-quality fine-art image, museum-grade digital rendering suitable for large prints. Avoid text overlays and watermarks."
+    "High-quality fine-art image, museum-grade rendering for large prints. Avoid text overlays and watermarks."
   const style = STYLE_PREFIX[styleSlug] ?? "master painterly style"
   return `${title}, ${style}. ${base}`
 }
 
-// pick a valid OpenAI size; default square
+type OpenAIImageResp = {
+  data?: { url?: string }[]
+  error?: { message?: string }
+}
+
+// Map aspect → allowed size for gpt-image-1
 function pickSize(aspect?: string): '1024x1024' | '1024x1536' | '1536x1024' | 'auto' {
   if (!aspect) return '1024x1024'
   const a = aspect.toLowerCase()
@@ -46,34 +50,49 @@ function pickSize(aspect?: string): '1024x1024' | '1024x1536' | '1536x1024' | 'a
 }
 
 export async function GET(req: Request) {
+  const apiKey = process.env.OPENAI_API_KEY
+  if (!apiKey) {
+    return NextResponse.json({ ok: false, error: 'OPENAI_API_KEY is missing' }, { status: 500 })
+  }
+
   try {
     const url = new URL(req.url)
     const style = (url.searchParams.get('style') || '').toLowerCase().trim()
     const title = (url.searchParams.get('title') || '').trim()
-    const aspect = (url.searchParams.get('aspect') || '').trim() // optional: portrait|landscape|square|auto
-    if (!title) {
-      return NextResponse.json({ ok: false, error: 'Missing ?title' }, { status: 400 })
-    }
+    const aspect = (url.searchParams.get('aspect') || '').trim()
+    if (!title) return NextResponse.json({ ok: false, error: 'Missing ?title' }, { status: 400 })
+
     const prompt = buildPrompt(title, style)
     const size = pickSize(aspect)
 
-    const { OpenAI } = await import('openai')
-    const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
-
-    const resp = await client.images.generate({
-      model: 'gpt-image-1',
-      prompt,
-      size // valid: '1024x1024'|'1024x1536'|'1536x1024'|'auto'
+    // Plain fetch to OpenAI (Edge-friendly)
+    const resp = await fetch('https://api.openai.com/v1/images/generations', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        model: 'gpt-image-1',
+        prompt,
+        size // 1024x1024 | 1024x1536 | 1536x1024 | auto
+      })
     })
 
-    const first = resp.data?.[0]
-    if (!first?.url) {
+    const data = (await resp.json()) as OpenAIImageResp
+
+    if (!resp.ok) {
+      const msg = data?.error?.message || `OpenAI error (${resp.status})`
+      return NextResponse.json({ ok: false, error: msg }, { status: resp.status })
+    }
+
+    const first = data?.data?.[0]?.url
+    if (!first) {
       return NextResponse.json({ ok: false, error: 'No image URL returned' }, { status: 502 })
     }
 
-    return NextResponse.json({ ok: true, url: first.url, title, style, size })
+    return NextResponse.json({ ok: true, url: first, title, style, size })
   } catch (e: any) {
-    console.error('[generate/one] error', e)
     return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 500 })
   }
 }
