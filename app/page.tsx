@@ -1,31 +1,39 @@
-// app/page.tsx — robust “New Drops” page
+// app/page.tsx — Home (“New Drops”) without displayArtist in Prisma select
 export const dynamic = 'force-dynamic'
 
 import { prisma } from '@/lib/prisma'
 import ArtworkCard from '@/components/ArtworkCard'
 
+// Turn enum like VAN_GOGH into "Van Gogh"
+function labelFromStyle(s: string | null | undefined) {
+  if (!s) return 'Unknown'
+  return s
+    .toString()
+    .toLowerCase()
+    .replace(/_/g, ' ')
+    .replace(/\b\w/g, (m) => m.toUpperCase())
+}
+
 async function getLatest() {
-  const rows = await prisma.artwork.findMany({
+  return prisma.artwork.findMany({
     where: { status: 'PUBLISHED' },
     orderBy: { createdAt: 'desc' },
     take: 24,
     select: {
       id: true,
       title: true,
-      style: true,
-      displayArtist: true,
+      style: true, // enum (e.g. VAN_GOGH)
       assets: {
         take: 1,
         orderBy: { createdAt: 'asc' },
-        select: { originalUrl: true },
+        select: { originalUrl: true }, // no width/height/url fields required
       },
     },
   })
-  return rows
 }
 
 export default async function HomePage() {
-  let drops: Awaited<ReturnType<typeof getLatest>> = []
+  let drops = [] as Awaited<ReturnType<typeof getLatest>>
   try {
     drops = await getLatest()
   } catch {
@@ -36,9 +44,7 @@ export default async function HomePage() {
     <div className="space-y-10">
       {/* Hero */}
       <section className="rounded-2xl p-8 md:p-12 bg-gradient-to-r from-slate-900/70 to-slate-800/50 ring-1 ring-slate-800">
-        <h1 className="text-3xl md:text-5xl font-bold text-slate-100">
-          Discover & collect AI artwork
-        </h1>
+        <h1 className="text-3xl md:text-5xl font-bold text-slate-100">Discover & collect AI artwork</h1>
         <p className="text-slate-300 mt-3 max-w-2xl">
           Curated styles inspired by the masters. Fresh drops daily.
         </p>
@@ -57,10 +63,11 @@ export default async function HomePage() {
           </div>
         ) : (
           <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-            {drops.map((a) => (
-              // ✅ Pass the prop name the component expects: a
-              <ArtworkCard key={a.id} a={a} />
-            ))}
+            {drops.map((a) => {
+              const displayArtist = labelFromStyle(a.style as unknown as string)
+              // ArtworkCard expects prop "a"; we inject a computed displayArtist for the subtitle
+              return <ArtworkCard key={a.id} a={{ ...a, displayArtist } as any} />
+            })}
           </div>
         )}
       </section>
