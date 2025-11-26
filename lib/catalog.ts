@@ -1,82 +1,110 @@
 // lib/catalog.ts
-import { Prisma } from '@prisma/client'
-import { prisma } from './prisma'
+import { prisma } from '@/lib/prisma'
 
-export type ExploreParams = {
-  q?: string
-  style?: string
-  tag?: string
-  page?: number
-  perPage?: number
-}
-
-export type ExploreRow = {
+/**
+ * Minimal shape the UI needs for cards.
+ * We return either the first asset's originalUrl or a thumbnail.
+ * (Your components can still use getPrimaryImage() to pick one.)
+ */
+export type CardArtwork = {
   id: string
   title: string
-  artist: string
-  price: number
-  style: string
-  tags: string[]
-  createdAt: Date
+  style: string | null
   thumbnail: string | null
   assets: { originalUrl: string | null }[]
+  createdAt: Date
 }
 
-export async function getNewDrops(limit = 12): Promise<ExploreRow[]> {
+/**
+ * "New Drops" — newest artworks first.
+ * Excludes items tagged "smoketest" so your home stays clean.
+ */
+export async function getNewDrops(limit = 24): Promise<CardArtwork[]> {
   const rows = await prisma.artwork.findMany({
-    where: { status: 'PUBLISHED' },
     orderBy: { createdAt: 'desc' },
     take: limit,
+    where: { NOT: { tags: { has: 'smoketest' } } },
     select: {
-      id: true, title: true, artist: true, price: true, style: true, tags: true,
-      createdAt: true, thumbnail: true,
+      id: true,
+      title: true,
+      style: true,
+      thumbnail: true,
+      createdAt: true,
       assets: {
         take: 1,
         orderBy: { createdAt: 'asc' },
-        select: { originalUrl: true }
-      }
-    }
+        // IMPORTANT: your schema stores originalUrl (not url/width/height)
+        select: { originalUrl: true },
+      },
+    },
   })
-  return rows as any
+
+  return rows as CardArtwork[]
 }
 
-export async function getExplore(params: ExploreParams): Promise<{ items: ExploreRow[] }> {
-  const where: Prisma.ArtworkWhereInput = { status: 'PUBLISHED', AND: [] }
+/**
+ * Explore grid — filterable by style via slug (e.g. "van-gogh").
+ * If no style is provided, returns a balanced slice of the latest artworks.
+ */
+export async function getExplore(params: { style?: string; take?: number } = {}): Promise<CardArtwork[]> {
+  const take = params.take ?? 60
 
-  if (params.q?.trim()) {
-    (where.AND as Prisma.ArtworkWhereInput[]).push({
-      OR: [
-        { title: { contains: params.q, mode: 'insensitive' } },
-        { artist: { contains: params.q, mode: 'insensitive' } },
-        { tags: { has: params.q } },
-      ],
-    })
-  }
-
-  if (params.style?.trim()) {
+  // Optional style filter (slug like "van-gogh" → enum key "VAN_GOGH")
+  let where: any = { NOT: { tags: { has: 'smoketest' } } }
+  if (params.style && params.style.trim()) {
     const key = params.style.toUpperCase().replace(/-/g, '_')
-    ;(where.AND as Prisma.ArtworkWhereInput[]).push({ style: key as any })
+    where = { ...where, style: key }
   }
 
-  const page = Math.max(1, Number(params.page ?? 1))
-  const perPage = Math.min(60, Math.max(12, Number(params.perPage ?? 24)))
-  const skip = (page - 1) * perPage
-
-  const items = await prisma.artwork.findMany({
-    where,
+  const rows = await prisma.artwork.findMany({
     orderBy: { createdAt: 'desc' },
-    skip,
-    take: perPage,
+    take,
+    where,
     select: {
-      id: true, title: true, artist: true, price: true, style: true, tags: true,
-      createdAt: true, thumbnail: true,
+      id: true,
+      title: true,
+      style: true,
+      thumbnail: true,
+      createdAt: true,
       assets: {
         take: 1,
         orderBy: { createdAt: 'asc' },
-        select: { originalUrl: true }
-      }
-    }
+        select: { originalUrl: true },
+      },
+    },
   })
 
-  return { items: items as any }
+  return rows as CardArtwork[]
+}
+
+/**
+ * Featured sample by styles — grab one representative item per style key you pass.
+ * Falls back gracefully if a style has no items yet.
+ */
+export async function getFeaturedByStyles(styleKeys: string[], perStyleTake = 1): Promise<Record<string, CardArtwork[]>> {
+  const result: Record<string, CardArtwork[]> = {}
+  for (const key of styleKeys) {
+    const rows = await prisma.artwork.findMany({
+      orderBy: { createdAt: 'desc' },
+      take: perStyleTake,
+      where: {
+        style: key,
+        NOT: { tags: { has: 'smoketest' } },
+      },
+      select: {
+        id: true,
+        title: true,
+        style: true,
+        thumbnail: true,
+        createdAt: true,
+        assets: {
+          take: 1,
+          orderBy: { createdAt: 'asc' },
+          select: { originalUrl: true },
+        },
+      },
+    })
+    result[key] = rows as CardArtwork[]
+  }
+  return result
 }
