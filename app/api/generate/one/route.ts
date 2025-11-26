@@ -1,7 +1,12 @@
-// app/api/generate/one/route.ts — Edge version (faster, avoids 504s)
+// app/api/generate/one/route.ts — Edge, longer budget, region hint, quick timeout
 import { NextResponse } from 'next/server'
 
 export const runtime = 'edge'
+// Ask Vercel for the longest Edge budget (Hobby/Pro allow up to ~30s)
+export const maxDuration = 30
+// Hint the closest region to reduce round trips (your builds show iad1)
+export const preferredRegion = ['iad1']
+
 export const dynamic = 'force-dynamic'
 
 const STYLE_PREFIX: Record<string, string> = {
@@ -39,7 +44,6 @@ type OpenAIImageResp = {
   error?: { message?: string }
 }
 
-// Map aspect → allowed size for gpt-image-1
 function pickSize(aspect?: string): '1024x1024' | '1024x1536' | '1536x1024' | 'auto' {
   if (!aspect) return '1024x1024'
   const a = aspect.toLowerCase()
@@ -47,6 +51,14 @@ function pickSize(aspect?: string): '1024x1024' | '1024x1536' | '1536x1024' | 'a
   if (a === 'landscape' || a === '4:3' || a === '3:2') return '1536x1024'
   if (a === 'auto') return 'auto'
   return '1024x1024'
+}
+
+// Promise.race timeout helper (Edge-safe)
+async function withTimeout<T>(p: Promise<T>, ms: number): Promise<T> {
+  const to = new Promise<T>((_, rej) =>
+    setTimeout(() => rej(new Error(`client-timeout-after-${ms}ms`)), ms)
+  ) as Promise<T>
+  return Promise.race([p, to])
 }
 
 export async function GET(req: Request) {
@@ -65,27 +77,27 @@ export async function GET(req: Request) {
     const prompt = buildPrompt(title, style)
     const size = pickSize(aspect)
 
-    // Plain fetch to OpenAI (Edge-friendly)
-    const resp = await fetch('https://api.openai.com/v1/images/generations', {
+    const openaiCall = fetch('https://api.openai.com/v1/images/generations', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'Content-Type': 'application/json'
+        Authorization: `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         model: 'gpt-image-1',
         prompt,
-        size // 1024x1024 | 1024x1536 | 1536x1024 | auto
-      })
-    })
+        size, // '1024x1024' | '1024x1536' | '1536x1024' | 'auto'
+      }),
+      // A short keepalive reduces tail risk on slow networks
+      keepalive: true
+    }).then(r => r.json() as Promise<OpenAIImageResp>)
 
-    const data = (await resp.json()) as OpenAIImageResp
+    // Cap total time spent waiting on OpenAI to ~25s (under Edge budget)
+    const data = await withTimeout(openaiCall, 25_000)
 
-    if (!resp.ok) {
-      const msg = data?.error?.message || `OpenAI error (${resp.status})`
-      return NextResponse.json({ ok: false, error: msg }, { status: resp.status })
+    if (data?.error?.message) {
+      return NextResponse.json({ ok: false, error: data.error.message }, { status: 502 })
     }
-
     const first = data?.data?.[0]?.url
     if (!first) {
       return NextResponse.json({ ok: false, error: 'No image URL returned' }, { status: 502 })
