@@ -5,8 +5,10 @@ import { put } from '@vercel/blob'
 import { prisma } from '@/lib/prisma'
 import { styleSlugToKey, buildStylePrompt } from '@/lib/styles'
 
-export const runtime = 'nodejs' // Serverless
-export const maxDuration = 10   // keep under hobby timeout
+export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
+export const maxDuration = 10
+
 
 // Generate ONE artwork quickly (no heavy resizes, store a single 1024 PNG)
 async function generateAndSave(styleSlug: string, title: string) {
