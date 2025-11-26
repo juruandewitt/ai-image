@@ -1,4 +1,4 @@
-// app/page.tsx — Home (“New Drops”) without displayArtist in Prisma select
+// app/page.tsx — show only artworks that have an image; hide smoketests
 export const dynamic = 'force-dynamic'
 
 import { prisma } from '@/lib/prisma'
@@ -16,17 +16,23 @@ function labelFromStyle(s: string | null | undefined) {
 
 async function getLatest() {
   return prisma.artwork.findMany({
-    where: { status: 'PUBLISHED' },
+    where: {
+      status: 'PUBLISHED',
+      // skip smoketest rows
+      NOT: { tags: { has: 'smoketest' } },
+      // require at least one asset so we don't render blanks
+      assets: { some: {} },
+    },
     orderBy: { createdAt: 'desc' },
     take: 24,
     select: {
       id: true,
       title: true,
-      style: true, // enum (e.g. VAN_GOGH)
+      style: true,
       assets: {
         take: 1,
         orderBy: { createdAt: 'asc' },
-        select: { originalUrl: true }, // no width/height/url fields required
+        select: { originalUrl: true },
       },
     },
   })
@@ -59,13 +65,12 @@ export default async function HomePage() {
 
         {drops.length === 0 ? (
           <div className="text-slate-400">
-            No artworks yet. As soon as assets are created, they’ll show up here.
+            No image-backed artworks yet. As soon as generation uploads assets, they’ll appear here.
           </div>
         ) : (
           <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
             {drops.map((a) => {
               const displayArtist = labelFromStyle(a.style as unknown as string)
-              // ArtworkCard expects prop "a"; we inject a computed displayArtist for the subtitle
               return <ArtworkCard key={a.id} a={{ ...a, displayArtist } as any} />
             })}
           </div>
