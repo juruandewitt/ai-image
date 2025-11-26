@@ -1,7 +1,6 @@
 // app/api/generate/one/route.ts
 import { NextResponse } from 'next/server'
 import { put } from '@vercel/blob'
-import sharp from 'sharp'
 
 export const runtime = 'nodejs'
 export const maxDuration = 60
@@ -12,32 +11,30 @@ type OpenAIImageResp = { data?: OpenAIImageItem[]; error?: { message?: string } 
 
 const STYLE_PREFIX: Record<string, string> = {
   'van-gogh':
-    "in the expressive, impasto brushwork and vibrant complementary colors of Vincent van Gogh; swirling starfields, thick paint texture, bold outlines; late 1880s Post-Impressionism.",
+    "in the impasto brushwork and swirling night skies of Vincent van Gogh; bold, saturated complementary colors; late 1880s Post-Impressionism; no text.",
   rembrandt:
-    "in the dramatic chiaroscuro and warm amber light of Rembrandt; baroque realism, deep shadows.",
+    "dramatic chiaroscuro and warm amber light of Rembrandt; baroque realism; deep shadows; no text.",
   picasso:
-    "in early Cubist abstraction of Pablo Picasso; fractured planes, multiple viewpoints, geometric simplification.",
+    "early cubist abstraction of Picasso; fractured planes, multiple viewpoints; geometric simplification; no text.",
   vermeer:
-    "in the serene, window-lit interiors of Johannes Vermeer; soft daylight, Delft realism.",
+    "serene window-lit interiors of Vermeer; soft daylight; Delft realism; no text.",
   monet:
-    "in Claude Monet’s luminous, broken color and plein-air atmosphere; shimmering water reflections.",
+    "luminous, broken color and plein-air atmosphere of Monet; shimmering water; no text.",
   michelangelo:
-    "in heroic Renaissance anatomy and sculptural forms of Michelangelo; fresco/oil feel.",
+    "heroic Renaissance anatomy and sculptural forms of Michelangelo; fresco/oil look; no text.",
   dali:
-    "in Salvador Dalí’s surreal dreamscapes; long shadows, hyper-real textures, melting forms.",
+    "surreal dreamscapes of Salvador Dalí; long shadows, hyper-real textures; no text.",
   caravaggio:
-    "in Caravaggio’s tenebrism and visceral realism; strong spotlighting, deep blacks.",
+    "tenebrism and visceral realism of Caravaggio; hard spotlight, deep blacks; no text.",
   'da-vinci':
-    "in Leonardo da Vinci’s sfumato and proportional harmony; subtle gradations, High Renaissance realism.",
+    "sfumato and proportional harmony of Leonardo da Vinci; subtle gradations; no text.",
   pollock:
-    "in Jackson Pollock’s gestural drip painting; all-over composition and dynamic splatters.",
+    "gestural drip painting of Jackson Pollock; dynamic all-over composition; no text.",
 }
 
 function buildPrompt(title: string, styleSlug: string) {
-  const base =
-    "High-quality fine-art image for large prints. Avoid text overlays and watermarks."
-  const style = STYLE_PREFIX[styleSlug] ?? "master painterly style"
-  return `${title}, ${style}. ${base}`
+  const style = STYLE_PREFIX[styleSlug] ?? "museum-grade master painterly style; no text."
+  return `${title}, ${style} High-quality fine-art image for large prints.`
 }
 
 function pickSize(aspect?: string): '1024x1024' | '1024x1536' | '1536x1024' | 'auto' {
@@ -51,18 +48,39 @@ function pickSize(aspect?: string): '1024x1024' | '1024x1536' | '1536x1024' | 'a
 
 async function fetchJSONWithTimeout(url: string, init: RequestInit, ms: number) {
   const ctrl = new AbortController()
-  const t = setTimeout(() => ctrl.abort(), ms)
+  const timer = setTimeout(() => ctrl.abort(), ms)
   try {
     const res = await fetch(url, { ...init, signal: ctrl.signal })
     const text = await res.text()
     try {
       return JSON.parse(text)
     } catch {
-      throw new Error(`Non-JSON from upstream: ${text.slice(0, 200)}`)
+      throw new Error(`Non-JSON from upstream: ${text.slice(0, 180)}`)
     }
   } finally {
-    clearTimeout(t)
+    clearTimeout(timer)
   }
+}
+
+async function callOpenAI(prompt: string, size: string, apiKey: string, perTryMs = 54000) {
+  return (await fetchJSONWithTimeout(
+    'https://api.openai.com/v1/images/generations',
+    {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'gpt-image-1',
+        prompt,
+        size,            // '1024x1024' | '1024x1536' | '1536x1024' | 'auto'
+        // Let API choose format; we handle url OR b64_json below
+      }),
+      keepalive: true,
+    },
+    perTryMs
+  )) as OpenAIImageResp
 }
 
 export async function GET(req: Request) {
@@ -77,28 +95,23 @@ export async function GET(req: Request) {
     const title = (u.searchParams.get('title') || '').trim()
     const aspect = (u.searchParams.get('aspect') || '').trim()
     const size = pickSize(aspect)
+
     if (!title) return NextResponse.json({ ok: false, error: 'Missing ?title' }, { status: 400 })
 
     const prompt = buildPrompt(title, style)
 
-    // Call OpenAI Images REST endpoint (returns items that may contain url or b64_json)
-    const data = (await fetchJSONWithTimeout(
-      'https://api.openai.com/v1/images/generations',
-      {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          model: 'gpt-image-1',
-          prompt,
-          size, // '1024x1024' | '1024x1536' | '1536x1024' | 'auto'
-        }),
-        keepalive: true,
-      },
-      55_000
-    )) as OpenAIImageResp
+    // Try once, then one fast retry if we hit an abort/slow path.
+    let data: OpenAIImageResp
+    try {
+      data = await callOpenAI(prompt, size, apiKey, 54000)
+    } catch (e: any) {
+      if (e?.name === 'AbortError') {
+        // quick retry with a slightly smaller time budget
+        data = await callOpenAI(prompt, size, apiKey, 50000)
+      } else {
+        throw e
+      }
+    }
 
     if (data?.error?.message) {
       return NextResponse.json({ ok: false, error: data.error.message }, { status: 502 })
@@ -109,17 +122,16 @@ export async function GET(req: Request) {
       return NextResponse.json({ ok: false, error: 'No image returned' }, { status: 502 })
     }
 
-    // Case 1: we got a URL directly
+    // Case 1: direct URL from OpenAI
     if (item.url) {
       return NextResponse.json({ ok: true, url: item.url, title, style, size })
     }
 
-    // Case 2: we got b64_json -> convert to PNG buffer, upload to Blob, return Blob URL
+    // Case 2: b64 -> upload to Blob (no sharp involved to save time)
     if (item.b64_json) {
-      const raw = Buffer.from(item.b64_json, 'base64')
-      const png = await sharp(raw).png().toBuffer()
+      const pngBuffer = Buffer.from(item.b64_json, 'base64')
       const filename = `art/${Date.now()}-${encodeURIComponent(title).slice(0, 60)}.png`
-      const res = await put(filename, png, {
+      const res = await put(filename, pngBuffer, {
         access: 'public',
         contentType: 'image/png',
       })
@@ -140,6 +152,6 @@ export async function POST(req: Request) {
   const style = encodeURIComponent((body?.style || '').toString())
   const title = encodeURIComponent((body?.title || '').toString())
   const aspect = encodeURIComponent((body?.aspect || '').toString())
-  const next = new URL(`/api/generate/one?style=${style}&title=${title}&aspect=${aspect}`, 'http://localhost')
-  return GET(new Request(next.toString()))
+  const url = new URL(`/api/generate/one?style=${style}&title=${title}&aspect=${aspect}`, 'http://localhost')
+  return GET(new Request(url.toString()))
 }
