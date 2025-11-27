@@ -1,16 +1,16 @@
-// next.config.mjs
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  reactStrictMode: true,
   images: {
+    // Allow Vercel Blob public domain
     remotePatterns: [
-      { protocol: 'https', hostname: '*.public.blob.vercel-storage.com' },
-      { protocol: 'https', hostname: 'qdqgkmgfjhffc4cy.public.blob.vercel-storage.com' },
-      { protocol: 'https', hostname: 'images.unsplash.com' }
-    ]
+      {
+        protocol: 'https',
+        hostname: '**.public.blob.vercel-storage.com',
+      },
+    ],
+    formats: ['image/avif', 'image/webp'],
   },
-  // avoid blocking deploys while we iterate
-  eslint: { ignoreDuringBuilds: true },
-  typescript: { ignoreBuildErrors: true }
 }
 
 export default nextConfig
