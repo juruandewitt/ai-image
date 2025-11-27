@@ -9,7 +9,6 @@ export const dynamic = 'force-dynamic'
 function normalizeStyle(input?: string) {
   if (!input) return 'VAN_GOGH'
   const k = input.toUpperCase().replace(/-/g, '_')
-  // Keep this list aligned with your Prisma enum Style
   const allowed = [
     'VAN_GOGH','REMBRANDT','PICASSO','VERMEER','MONET',
     'MICHELANGELO','DALI','CARAVAGGIO','DA_VINCI','POLLOCK'
@@ -24,21 +23,20 @@ export async function GET(req: Request) {
     const styleParam = searchParams.get('style') || 'van-gogh'
     const styleKey = normalizeStyle(styleParam)
 
-    // 1) Build a strong prompt
+    // Strong prompt to encourage master-style outputs (not replicas)
     const prompt = [
-      `High-quality, photorealistic-but-stylized AI artwork in the style of ${styleKey.replace(/_/g,' ')}`,
+      `High-quality AI artwork evocative of ${styleKey.replace(/_/g,' ')}`,
       `Subject: ${title}`,
-      `Use the master’s palette, brushwork, composition and lighting (do not copy an existing painting).`,
-      `Single subject focus, gallery-ready, no text, no watermark.`,
+      `Respect palette, brushwork, lighting, composition of that master without copying a known painting.`,
+      `Gallery-ready, no text, no watermark.`,
     ].join('\n')
 
-    // 2) Generate with OpenAI
+    // 1) Call OpenAI Images
     const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY! })
     const img = await client.images.generate({
       model: 'gpt-image-1',
       prompt,
-      size: '1024x1024', // Supported: 1024x1024, 1024x1536, 1536x1024, auto
-      // NO response_format here (caused errors before)
+      size: '1024x1024', // supported: '1024x1024', '1024x1536', '1536x1024', 'auto'
     })
 
     const url = img.data?.[0]?.url
@@ -46,36 +44,44 @@ export async function GET(req: Request) {
       return NextResponse.json({ ok: false, error: 'No image URL returned' }, { status: 502 })
     }
 
-    // 3) Fetch the image data
-    const res = await fetch(url)
-    if (!res.ok) {
-      return NextResponse.json({ ok: false, error: `Failed to fetch generated image (${res.status})` }, { status: 502 })
+    // 2) Fetch and buffer the image
+    const fetchRes = await fetch(url)
+    if (!fetchRes.ok) {
+      return NextResponse.json({ ok: false, error: `Failed to fetch generated image (${fetchRes.status})` }, { status: 502 })
     }
-    const arrayBuffer = await res.arrayBuffer()
+    const arrayBuffer = await fetchRes.arrayBuffer()
     const buf = Buffer.from(arrayBuffer)
 
-    // 4) Upload to Vercel Blob
+    // 3) Upload to Vercel Blob
     const filenameSafe = encodeURIComponent(title)
     const blobKey = `art/${Date.now()}-${filenameSafe}.png`
-    const putRes = await put(blobKey, buf, {
+    const uploaded = await put(blobKey, buf, {
       access: 'public',
       contentType: 'image/png',
-      token: process.env.BLOB_READ_WRITE_TOKEN, // required on server
+      token: process.env.BLOB_READ_WRITE_TOKEN,
     })
 
-    // 5) Persist both Artwork + Asset
+    // 4) Persist Artwork + Asset
+    // NOTE: 'artist', 'price', and 'thumbnail' are required by your schema.
+    // - 'price' is set to 0 for now; adjust later if you want.
+    // - 'thumbnail' uses the same uploaded image (you can swap to a resized version later).
     const artwork = await prisma.artwork.create({
       data: {
         title,
         style: styleKey as any,
         status: 'PUBLISHED',
         tags: [],
+        artist: 'AI Studio',
+        price: 0 as any,
+        thumbnail: uploaded.url,
         assets: {
-          create: [{
-            provider: 'openai',
-            prompt,
-            originalUrl: putRes.url, // IMPORTANT: we save the blob URL here
-          }],
+          create: [
+            {
+              provider: 'openai',
+              prompt,
+              originalUrl: uploaded.url,
+            } as any,
+          ],
         },
       },
       select: { id: true },
@@ -84,13 +90,12 @@ export async function GET(req: Request) {
     return NextResponse.json({
       ok: true,
       id: artwork.id,
-      url: putRes.url,
+      url: uploaded.url,
       title,
       style: styleParam,
       size: '1024x1024',
     })
   } catch (e: any) {
-    // Handle timeouts and provider JSON errors nicely
     const msg = typeof e?.message === 'string' ? e.message : String(e)
     const status = msg.includes('timed out') || msg.includes('AbortError') ? 504 : 500
     return NextResponse.json({ ok: false, error: msg }, { status })
