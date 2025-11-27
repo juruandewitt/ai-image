@@ -23,48 +23,57 @@ export async function GET(req: Request) {
     const styleParam = searchParams.get('style') || 'van-gogh'
     const styleKey = normalizeStyle(styleParam)
 
-    // Strong prompt to encourage master-style outputs (not replicas)
     const prompt = [
       `High-quality AI artwork evocative of ${styleKey.replace(/_/g,' ')}`,
       `Subject: ${title}`,
-      `Respect palette, brushwork, lighting, composition of that master without copying a known painting.`,
+      `Respect palette, brushwork, lighting, and composition of that master without copying an existing painting.`,
       `Gallery-ready, no text, no watermark.`,
     ].join('\n')
 
-    // 1) Call OpenAI Images
     const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY! })
+
+    // Request an image. Some accounts/models return b64_json (most reliable),
+    // some return url. We'll handle both.
     const img = await client.images.generate({
       model: 'gpt-image-1',
       prompt,
-      size: '1024x1024', // supported: '1024x1024', '1024x1536', '1536x1024', 'auto'
+      size: '1024x1024',
+      // Do NOT set response_format — some SDK versions reject it.
     })
 
-    const url = img.data?.[0]?.url
-    if (!url) {
-      return NextResponse.json({ ok: false, error: 'No image URL returned' }, { status: 502 })
+    const first = img.data?.[0]
+    if (!first) {
+      return NextResponse.json({ ok: false, error: 'No image returned (empty data array)' }, { status: 502 })
     }
 
-    // 2) Fetch and buffer the image
-    const fetchRes = await fetch(url)
-    if (!fetchRes.ok) {
-      return NextResponse.json({ ok: false, error: `Failed to fetch generated image (${fetchRes.status})` }, { status: 502 })
-    }
-    const arrayBuffer = await fetchRes.arrayBuffer()
-    const buf = Buffer.from(arrayBuffer)
+    // Prefer b64_json if present; fallback to url
+    let pngBuffer: Buffer | null = null
 
-    // 3) Upload to Vercel Blob
+    if (first.b64_json) {
+      pngBuffer = Buffer.from(first.b64_json, 'base64')
+    } else if (first.url) {
+      const r = await fetch(first.url)
+      if (!r.ok) {
+        return NextResponse.json({ ok: false, error: `Fetch of image url failed (${r.status})` }, { status: 502 })
+      }
+      const ab = await r.arrayBuffer()
+      pngBuffer = Buffer.from(ab)
+    }
+
+    if (!pngBuffer) {
+      return NextResponse.json({ ok: false, error: 'No image URL or b64_json returned' }, { status: 502 })
+    }
+
+    // Upload to Blob
     const filenameSafe = encodeURIComponent(title)
     const blobKey = `art/${Date.now()}-${filenameSafe}.png`
-    const uploaded = await put(blobKey, buf, {
+    const uploaded = await put(blobKey, pngBuffer, {
       access: 'public',
       contentType: 'image/png',
       token: process.env.BLOB_READ_WRITE_TOKEN,
     })
 
-    // 4) Persist Artwork + Asset
-    // NOTE: 'artist', 'price', and 'thumbnail' are required by your schema.
-    // - 'price' is set to 0 for now; adjust later if you want.
-    // - 'thumbnail' uses the same uploaded image (you can swap to a resized version later).
+    // Persist Artwork + Asset (match your required fields)
     const artwork = await prisma.artwork.create({
       data: {
         title,
@@ -72,8 +81,8 @@ export async function GET(req: Request) {
         status: 'PUBLISHED',
         tags: [],
         artist: 'AI Studio',
-        price: 0 as any,
-        thumbnail: uploaded.url,
+        price: 0 as any,           // adjust later if Decimal, use "0.00"
+        thumbnail: uploaded.url,   // same as original for now
         assets: {
           create: [
             {
@@ -97,7 +106,7 @@ export async function GET(req: Request) {
     })
   } catch (e: any) {
     const msg = typeof e?.message === 'string' ? e.message : String(e)
-    const status = msg.includes('timed out') || msg.includes('AbortError') ? 504 : 500
+    const status = /timed out|AbortError/i.test(msg) ? 504 : 500
     return NextResponse.json({ ok: false, error: msg }, { status })
   }
 }
