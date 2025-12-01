@@ -1,47 +1,38 @@
 // components/ArtworkCard.tsx
-import Image from 'next/image'
-import Link from 'next/link'
-import { getPrimaryImage } from '@/lib/img'   // ← add this line
+'use client'
 
-type ArtworkCardProps = {
-  artwork: {
-    id: string
-    title: string
-    displayArtist?: string | null
-    style?: string | null
-    thumbnail?: string | null
-    assets?: Array<{ originalUrl?: string | null }>
-  }
+import Link from 'next/link'
+import { useState } from 'react'
+
+export type MinimalArtwork = {
+  id: string
+  title: string
+  style: string
+  assets: { originalUrl: string | null }[]
 }
 
-export default function ArtworkCard({ artwork }: ArtworkCardProps) {
-  const src = getPrimaryImage(artwork) // ← use the helper
+export default function ArtworkCard({ a }: { a: MinimalArtwork }) {
+  const first = a.assets?.[0]?.originalUrl || ''
+  const [src, setSrc] = useState(first || '/placeholder.svg')
 
   return (
     <Link
-      href={`/artwork/${artwork.id}`}
-      className="group block rounded-2xl overflow-hidden bg-slate-900/60 ring-1 ring-slate-800 hover:ring-amber-400/40 transition"
+      href={`/artwork/${a.id}`}
+      className="group block overflow-hidden rounded-xl border border-slate-800 bg-slate-900/60 hover:bg-slate-900 transition-colors"
     >
-      <div className="relative aspect-[4/3]">
-        {src ? (
-          <Image
-            src={src}
-            alt={artwork.title}
-            fill
-            sizes="(max-width: 768px) 100vw, 33vw"
-            className="object-cover"
-          />
-        ) : (
-          <div className="absolute inset-0 grid place-items-center text-slate-500 text-sm">
-            No preview
-          </div>
-        )}
+      <div className="aspect-square w-full overflow-hidden bg-slate-800">
+        {/* Use plain <img> so we’re not limited by Next/Image domain allowlist */}
+        <img
+          src={src}
+          alt={a.title}
+          className="h-full w-full object-cover"
+          onError={() => setSrc('/placeholder.svg')}
+          loading="lazy"
+        />
       </div>
       <div className="p-3">
-        <div className="text-sm text-slate-300">
-          {artwork.displayArtist ?? artwork.style ?? '—'}
-        </div>
-        <div className="font-medium text-slate-100">{artwork.title}</div>
+        <div className="text-sm text-amber-400">{a.style?.replace(/_/g, ' ')}</div>
+        <div className="font-medium">{a.title}</div>
       </div>
     </Link>
   )
