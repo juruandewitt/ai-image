@@ -1,224 +1,160 @@
 // app/api/generate/batch/route.ts
 import { NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
 import { put } from '@vercel/blob'
 import sharp from 'sharp'
-import { styleSlugToKey, buildStylePrompt } from '@/lib/styles'
+import { styleSlugToKey, styleKeyToLabel } from '@/lib/styles'
 import { OpenAI } from 'openai'
+import { prisma } from '@/lib/prisma'
 
 export const runtime = 'nodejs'
-export const maxDuration = 60 // give the function more time on Vercel
+export const dynamic = 'force-dynamic'
 
-// A small, safe starter set per style (expand later as you wish)
-const DEFAULT_TITLES: Record<string, string[]> = {
-  'van-gogh': [
-    'Starry Harbor Over Canal',
-    'Sunflowers in Night Café',
-    'Wheatfield with Neon Crows',
-    'Nocturne over Windmill Village',
-    'Cafe Terrace After Rain',
-    'Irises by the Riverside',
-  ],
-  'da-vinci': [
-    'Portrait with Subtle Sfumato',
-    'Architect’s Study in Light',
-    'Mechanical Bird Sketch',
-    'Drapery Study in Motion',
-    'Canal City at Twilight',
-    'Chiaroscuro Inventor',
-  ],
-  'picasso': [
-    'Cubist Violin and Glass',
-    'Blue Harlequin in Alley',
-    'Woman with Mandolin',
-    'Bull and the City',
-    'Guernica Fragment Study',
-    'Seated Figure in Cubes',
-  ],
-  'monet': [
-    'Water Garden at Dusk',
-    'Rouen Façade in Mist',
-    'Poppy Field at Breeze',
-    'Harbor Morning Light',
-    'Snow at Sunrise',
-    'Willows by the Pond',
-  ],
-  'vermeer': [
-    'Girl by the Window Reading',
-    'Pearl and Map Room',
-    'Letter in Quiet Chamber',
-    'Light Across Delft Street',
-    'Milkmaid’s Pause',
-    'Astronomer at Night',
-  ],
-  'rembrandt': [
-    'Self-Portrait in Warm Glow',
-    'Anatomy Study Redux',
-    'Captain’s Night Watch',
-    'Pilgrims by Candle',
-    'Old Man in Thought',
-    'Portrait with Golden Rim',
-  ],
-  'dali': [
-    'Melting Clock over Bay',
-    'Long Shadows and Giraffe',
-    'Desert Drawer Dreams',
-    'Elephants on Spindles',
-    'Soft Watch Vineyard',
-    'Surreal Tower Mirage',
-  ],
-  'michelangelo': [
-    'Marble Study of Hero',
-    'Creation Fresco Fragment',
-    'Dynamic Figure Sketch',
-    'Pieta Reimagined',
-    'Architectural Dome Study',
-    'Torsion of the Titan',
-  ],
-  'caravaggio': [
-    'Basket of Fruit in Shadow',
-    'Calling by Candlelight',
-    'Dramatic Supper Scene',
-    'Musician in Tenebrism',
-    'Saint in the Alley',
-    'Vase and Dagger',
-  ],
-  'pollock': [
-    'Drip No. 7',
-    'Gesture Field in Black',
-    'Rhythm of Lines',
-    'Autumn Convergence',
-    'Silver Pour Study',
-    'Fractured Motion',
-  ],
+// ---- Local style-aware prompt builder (do NOT import from lib/styles)
+function buildStylePrompt(styleKey: string, title: string) {
+  const label = styleKeyToLabel(styleKey as any)
+  const rules =
+    styleKey === 'VAN_GOGH'
+      ? `Post-Impressionist oil painting with thick impasto brushstrokes, vivid complementary colors, swirling energetic sky, and expressive texture reminiscent of ${label}.`
+      : styleKey === 'DALI'
+      ? `Surrealist composition with dreamlike juxtapositions, smooth gradients, elongated forms, crisp shadows, and meticulous classical rendering reminiscent of ${label}.`
+      : styleKey === 'POLLOCK'
+      ? `Abstract Expressionist drip painting with layered splatters, dynamic motion, dense overlapping strokes, and high-contrast rhythm reminiscent of ${label}.`
+      : styleKey === 'VERMEER'
+      ? `Dutch Golden Age interior scene with soft daylight, precise perspective, calm tonality, and delicate highlights reminiscent of ${label}.`
+      : styleKey === 'MONET'
+      ? `Impressionist plein-air palette, soft edges, optical color mixing, shimmering light on water and foliage reminiscent of ${label}.`
+      : styleKey === 'PICASSO'
+      ? `Cubist fragmentation of form, geometric planes, multiple viewpoints, muted earth palette with strong linework reminiscent of ${label}.`
+      : styleKey === 'REMBRANDT'
+      ? `Baroque chiaroscuro portrait/scene, dramatic contrast, warm earth palette, painterly realism, rich textures reminiscent of ${label}.`
+      : styleKey === 'CARAVAGGIO'
+      ? `Baroque realism with intense chiaroscuro, theatrical lighting, naturalistic figures, and dramatic staging reminiscent of ${label}.`
+      : styleKey === 'DA_VINCI'
+      ? `High Renaissance composition with sfumato, balanced proportions, anatomical fidelity, and subtle atmospheric depth reminiscent of ${label}.`
+      : styleKey === 'MICHELANGELO'
+      ? `High Renaissance / Mannerist monumentality, powerful anatomy, sculptural forms, and dynamic poses reminiscent of ${label}.`
+
+  return `${title}. Create an original artwork in the style characteristics described: ${rules} Avoid copying any specific copyrighted work; generate a new composition inspired by those stylistic traits.`
 }
 
-// Reusable single-image generator (OpenAI → Blob → Prisma)
-async function generateOne(styleSlug: string, title: string) {
-  const styleKey = styleSlugToKey(styleSlug)
-  const prompt = buildStylePrompt(styleKey as any, title)
-
+async function generateOne({
+  styleKey,
+  title,
+}: {
+  styleKey: string
+  title: string
+}) {
   const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
-  const gen = await client.images.generate({
+  const prompt = buildStylePrompt(styleKey, title)
+
+  // 1) Generate with OpenAI Images (no response_format param)
+  const ai = await client.images.generate({
     model: 'gpt-image-1',
     prompt,
-    size: '1024x1024',
-    // some deployments don’t accept response_format; omit it
+    size: '1024x1024', // supported sizes: 1024x1024, 1024x1536, 1536x1024, or 'auto'
   })
 
-  const first = gen.data?.[0]
-  if (!first) throw new Error('OpenAI returned no image in response data')
+  const url = ai?.data?.[0]?.url
+  if (!url) throw new Error('No image URL returned')
 
-  let orig: Buffer
-  if ((first as any).b64_json) {
-    orig = Buffer.from((first as any).b64_json, 'base64')
-  } else if (first.url) {
-    const res = await fetch(first.url)
-    if (!res.ok) throw new Error(`Failed to fetch image URL (${res.status})`)
-    orig = Buffer.from(await res.arrayBuffer())
-  } else {
-    throw new Error('OpenAI image had neither b64_json nor url')
-  }
+  // 2) Fetch image and make a thumbnail
+  const imgRes = await fetch(url)
+  if (!imgRes.ok) throw new Error(`Failed to fetch image: ${imgRes.status}`)
+  const buffer = Buffer.from(await imgRes.arrayBuffer())
 
-  // Upload original + two variants
-  const stamp = Date.now()
-  const baseKey = `art/${stamp}-${Math.random().toString(36).slice(2, 8)}`
+  const thumb = await sharp(buffer).resize(600).png({ quality: 90 }).toBuffer()
 
-  const upOrig = await put(`${baseKey}-orig.png`, orig, {
-    access: 'public',
-    contentType: 'image/png',
-  })
+  // 3) Upload both to Blob (public)
+  const base = Date.now()
+  const safeTitle = encodeURIComponent(title)
+  const origPath = `art/${base}-${safeTitle}.png`
+  const thumbPath = `art/${base}-${safeTitle}-thumb.png`
 
-  const s1024 = await sharp(orig).resize(1024).png().toBuffer()
-  const up1024 = await put(`${baseKey}-1024.png`, s1024, {
-    access: 'public',
-    contentType: 'image/png',
-  })
+  const origPut = await put(origPath, buffer, { access: 'public', contentType: 'image/png' })
+  const thumbPut = await put(thumbPath, thumb, { access: 'public', contentType: 'image/png' })
 
-  const s2048 = await sharp(orig).resize(2048).webp({ quality: 88 }).toBuffer()
-  const up2048 = await put(`${baseKey}-2048.webp`, s2048, {
-    access: 'public',
-    contentType: 'image/webp',
-  })
-
-  // Persist DB rows — match your schema’s required fields
-  const created = await prisma.artwork.create({
+  // 4) Persist DB rows (include fields that some schemas require)
+  // Adjust these defaults only if your schema demands different types.
+  const artwork = await prisma.artwork.create({
     data: {
       title,
-      artist: `AI Image – ${styleSlug}`,
       style: styleKey as any,
       status: 'PUBLISHED',
-      price: 1900,
-      thumbnail: up1024.url,
       tags: [],
+      // common “required” fields in several earlier schemas you had
+      artist: 'AI Studio',
+      price: 0,
+      thumbnail: thumbPut.url,
       assets: {
         create: [
-          { provider: 'blob', prompt, originalUrl: upOrig.url },
-          { provider: 'blob', prompt, originalUrl: up1024.url },
-          { provider: 'blob', prompt, originalUrl: up2048.url },
+          {
+            provider: 'openai',
+            prompt,
+            originalUrl: origPut.url,
+          },
         ],
       },
     },
     select: { id: true },
   })
 
-  return created.id
+  return { id: artwork.id, title, styleKey, originalUrl: origPut.url, thumbnail: thumbPut.url }
 }
 
-// GET for easy use from the browser:
-// /api/generate/batch?style=van-gogh&n=4
-// optional: &titles=Title1,Title2,Title3
-export async function GET(req: Request) {
+export async function POST(req: Request) {
   try {
-    const { searchParams } = new URL(req.url)
-    const style = (searchParams.get('style') || 'van-gogh').toLowerCase()
-    const n = Math.max(1, Math.min(6, Number(searchParams.get('n') || '4'))) // cap to keep within time limits
+    const body = await req.json().catch(() => ({}))
+    const style = (body?.style || '').toString()
+    const titles: string[] = Array.isArray(body?.titles) ? body.titles : []
 
-    let titles: string[] = []
-    const titlesParam = searchParams.get('titles')
-    if (titlesParam) {
-      titles = titlesParam.split(',').map(t => t.trim()).filter(Boolean).slice(0, n)
-    } else {
-      const bank = DEFAULT_TITLES[style] || DEFAULT_TITLES['van-gogh']
-      titles = bank.slice(0, n)
+    if (!style) {
+      return NextResponse.json({ ok: false, error: 'Missing body.style' }, { status: 400 })
     }
 
-    const results: { title: string; ok: boolean; id?: string; error?: string }[] = []
-    // Run sequentially to avoid timeouts and rate-limit bursts
+    const styleKey = styleSlugToKey(style)
+
+    if (!titles.length) {
+      return NextResponse.json({ ok: false, error: 'Provide body.titles: string[]' }, { status: 400 })
+    }
+
+    const results = []
     for (const title of titles) {
       try {
-        const id = await generateOne(style, title)
-        results.push({ title, ok: true, id })
+        const r = await generateOne({ styleKey, title })
+        results.push({ ok: true, ...r })
       } catch (e: any) {
-        results.push({ title, ok: false, error: String(e?.message || e) })
+        results.push({ ok: false, title, error: String(e?.message || e) })
       }
     }
 
-    return NextResponse.json({ ok: true, style, count: results.length, results })
+    return NextResponse.json({ ok: true, styleKey, count: results.length, results })
   } catch (e: any) {
     return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 500 })
   }
 }
 
-// Also allow POST with JSON body: { style, titles: [...] }
-export async function POST(req: Request) {
+export async function GET(req: Request) {
+  // convenience GET: ?style=dali&count=5 generates generic titled works
   try {
-    const body = await req.json().catch(() => ({}))
-    const style = (body.style || 'van-gogh').toLowerCase()
-    const titlesInput: string[] = Array.isArray(body.titles) ? body.titles : []
-    const titles = titlesInput.slice(0, 6)
+    const { searchParams } = new URL(req.url)
+    const style = (searchParams.get('style') || '').toString()
+    const count = Math.max(1, Math.min(50, parseInt(searchParams.get('count') || '5', 10)))
+    if (!style) return NextResponse.json({ ok: false, error: 'Missing style' }, { status: 400 })
+    const styleKey = styleSlugToKey(style)
+    const label = styleKeyToLabel(styleKey as any)
 
-    const results: { title: string; ok: boolean; id?: string; error?: string }[] = []
-    for (const title of titles) {
+    const titles = Array.from({ length: count }, (_, i) => `${label} Study ${i + 1}`)
+    const results = []
+    for (const t of titles) {
       try {
-        const id = await generateOne(style, title)
-        results.push({ title, ok: true, id })
+        const r = await generateOne({ styleKey, title: t })
+        results.push({ ok: true, ...r })
       } catch (e: any) {
-        results.push({ title, ok: false, error: String(e?.message || e) })
+        results.push({ ok: false, title: t, error: String(e?.message || e) })
       }
     }
 
-    return NextResponse.json({ ok: true, style, count: results.length, results })
+    return NextResponse.json({ ok: true, styleKey, count: results.length, results })
   } catch (e: any) {
     return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 500 })
   }
