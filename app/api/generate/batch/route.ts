@@ -1,3 +1,4 @@
+// app/api/generate/master/route.ts
 import { NextResponse } from 'next/server'
 import { put } from '@vercel/blob'
 import sharp from 'sharp'
@@ -8,13 +9,13 @@ import { styleSlugToKey, styleKeyToLabel } from '@/lib/styles'
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
-// Local builder — do NOT import buildStylePrompt from lib/styles
+// ---- DO NOT import buildStylePrompt from lib. Keep it local here.
 function buildStylePrompt(styleKey: string, title: string) {
   const label = styleKeyToLabel ? styleKeyToLabel(styleKey as any) : styleKey
 
   const rules =
     styleKey === 'VAN_GOGH'
-      ? `Post-Impressionist oil painting with thick impasto brushstrokes, vivid complementary colors, swirling energetic sky, expressive texture reminiscent of ${label}.`
+      ? `Post-Impressionist oil painting with thick impasto brushstrokes, vivid complementary colors, swirling energetic skies, expressive texture reminiscent of ${label}.`
       : styleKey === 'DALI'
       ? `Surrealist composition with dreamlike juxtapositions, smooth gradients, elongated forms, crisp shadows, meticulous classical rendering reminiscent of ${label}.`
       : styleKey === 'POLLOCK'
@@ -22,9 +23,9 @@ function buildStylePrompt(styleKey: string, title: string) {
       : styleKey === 'VERMEER'
       ? `Dutch Golden Age interior with soft daylight, precise perspective, calm tonality, delicate highlights reminiscent of ${label}.`
       : styleKey === 'MONET'
-      ? `Impressionist plein-air palette, soft edges, optical color mixing, shimmering light on water/foliage reminiscent of ${label}.`
+      ? `Impressionist plein-air palette, soft edges, optical color mixing, shimmering light on water and foliage reminiscent of ${label}.`
       : styleKey === 'PICASSO'
-      ? `Cubist fragmentation, geometric planes, multiple viewpoints, muted earth palette, strong linework reminiscent of ${label}.`
+      ? `Cubist fragmentation with geometric planes, multiple viewpoints, muted earth palette, assertive linework reminiscent of ${label}.`
       : styleKey === 'REMBRANDT'
       ? `Baroque chiaroscuro, dramatic contrast, warm earth palette, painterly realism, rich textures reminiscent of ${label}.`
       : styleKey === 'CARAVAGGIO'
@@ -32,8 +33,8 @@ function buildStylePrompt(styleKey: string, title: string) {
       : styleKey === 'DA_VINCI'
       ? `High Renaissance balance with sfumato, anatomical fidelity, atmospheric depth reminiscent of ${label}.`
       : styleKey === 'MICHELANGELO'
-      ? `High Renaissance/Mannerist monumentality, powerful anatomy, sculptural forms, dynamic poses reminiscent of ${label}.`
-      : `Coherent fine-art work reflecting core stylistic traits of ${label} (no copying any single copyrighted work).`
+      ? `High Renaissance / Mannerist monumentality, powerful anatomy, sculptural forms, dynamic poses reminiscent of ${label}.`
+      : `Coherent fine-art work reflecting core stylistic traits of ${label} (do not copy any single copyrighted work).`
 
   return `${title}. Create an original artwork using these style characteristics: ${rules} Avoid copying any specific copyrighted work; generate a new composition inspired by the traits.`
 }
@@ -46,7 +47,7 @@ async function generateAndPersist(styleKey: string, title: string) {
   const gen = await client.images.generate({
     model: 'gpt-image-1',
     prompt,
-    size: '1024x1024',
+    size: '1024x1024', // supported sizes: 1024x1024 | 1024x1536 | 1536x1024 | auto
   })
   const url = gen?.data?.[0]?.url
   if (!url) throw new Error('No image URL returned from OpenAI')
@@ -70,7 +71,7 @@ async function generateAndPersist(styleKey: string, title: string) {
     put(thumbKey, thumb, { access: 'public', contentType: 'image/png' }),
   ])
 
-  // 5) Save DB (schema-aligned)
+  // 5) Persist DB rows (schema-aligned)
   const created = await prisma.artwork.create({
     data: {
       title,
@@ -81,7 +82,9 @@ async function generateAndPersist(styleKey: string, title: string) {
       price: 0,
       thumbnail: thumbPut.url,
       assets: {
-        create: [{ provider: 'openai', prompt, originalUrl: origPut.url }],
+        create: [
+          { provider: 'openai', prompt, originalUrl: origPut.url },
+        ],
       },
     },
     select: { id: true },
@@ -101,7 +104,6 @@ export async function GET(req: Request) {
 
     const styleKey = styleSlugToKey(style)
     const result = await generateAndPersist(styleKey, title)
-
     return NextResponse.json({ ok: true, style: styleKey, title, ...result })
   } catch (e: any) {
     return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 500 })
