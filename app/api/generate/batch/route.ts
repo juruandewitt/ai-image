@@ -1,4 +1,3 @@
-// app/api/generate/master/route.ts
 import { NextResponse } from 'next/server'
 import { put } from '@vercel/blob'
 import sharp from 'sharp'
@@ -9,7 +8,7 @@ import { styleSlugToKey, styleKeyToLabel } from '@/lib/styles'
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
-// ---- Local style-aware prompt builder (do NOT import this from lib/styles)
+// Local style-aware prompt builder (do NOT import from lib/styles)
 function buildStylePrompt(styleKey: string, title: string) {
   const label = styleKeyToLabel ? styleKeyToLabel(styleKey as any) : styleKey
 
@@ -39,7 +38,6 @@ function buildStylePrompt(styleKey: string, title: string) {
   return `${title}. Create an original artwork in the style characteristics described: ${rules} Avoid copying any specific copyrighted work; generate a new composition inspired by those stylistic traits.`
 }
 
-// generate one image, upload to Blob, and persist DB rows
 async function generateAndPersist(styleKey: string, title: string) {
   const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
   const prompt = buildStylePrompt(styleKey, title)
@@ -48,9 +46,8 @@ async function generateAndPersist(styleKey: string, title: string) {
   const img = await client.images.generate({
     model: 'gpt-image-1',
     prompt,
-    size: '1024x1024', // supported: '1024x1024' | '1024x1536' | '1536x1024' | 'auto'
+    size: '1024x1024',
   })
-
   const url = img?.data?.[0]?.url
   if (!url) throw new Error('No image URL returned from OpenAI')
 
@@ -85,11 +82,7 @@ async function generateAndPersist(styleKey: string, title: string) {
       thumbnail: thumbPut.url,
       assets: {
         create: [
-          {
-            provider: 'openai',
-            prompt,
-            originalUrl: origPut.url,
-          },
+          { provider: 'openai', prompt, originalUrl: origPut.url },
         ],
       },
     },
