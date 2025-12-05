@@ -8,58 +8,58 @@ import { styleSlugToKey, styleKeyToLabel } from '@/lib/styles'
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
-// Local style-aware prompt builder (do NOT import from lib/styles)
+// Local builder — do NOT import buildStylePrompt from lib/styles
 function buildStylePrompt(styleKey: string, title: string) {
   const label = styleKeyToLabel ? styleKeyToLabel(styleKey as any) : styleKey
 
   const rules =
     styleKey === 'VAN_GOGH'
-      ? `Post-Impressionist oil painting with thick impasto brushstrokes, vivid complementary colors, swirling energetic sky, and expressive texture reminiscent of ${label}.`
+      ? `Post-Impressionist oil painting with thick impasto brushstrokes, vivid complementary colors, swirling energetic sky, expressive texture reminiscent of ${label}.`
       : styleKey === 'DALI'
-      ? `Surrealist composition with dreamlike juxtapositions, smooth gradients, elongated forms, crisp shadows, and meticulous classical rendering reminiscent of ${label}.`
+      ? `Surrealist composition with dreamlike juxtapositions, smooth gradients, elongated forms, crisp shadows, meticulous classical rendering reminiscent of ${label}.`
       : styleKey === 'POLLOCK'
-      ? `Abstract Expressionist drip painting with layered splatters, dynamic motion, dense overlapping strokes, and high-contrast rhythm reminiscent of ${label}.`
+      ? `Abstract Expressionist drip painting with layered splatters, dynamic motion, dense overlapping strokes, high-contrast rhythm reminiscent of ${label}.`
       : styleKey === 'VERMEER'
-      ? `Dutch Golden Age interior scene with soft daylight, precise perspective, calm tonality, and delicate highlights reminiscent of ${label}.`
+      ? `Dutch Golden Age interior with soft daylight, precise perspective, calm tonality, delicate highlights reminiscent of ${label}.`
       : styleKey === 'MONET'
-      ? `Impressionist plein-air palette, soft edges, optical color mixing, shimmering light on water and foliage reminiscent of ${label}.`
+      ? `Impressionist plein-air palette, soft edges, optical color mixing, shimmering light on water/foliage reminiscent of ${label}.`
       : styleKey === 'PICASSO'
-      ? `Cubist fragmentation of form, geometric planes, multiple viewpoints, muted earth palette with strong linework reminiscent of ${label}.`
+      ? `Cubist fragmentation, geometric planes, multiple viewpoints, muted earth palette, strong linework reminiscent of ${label}.`
       : styleKey === 'REMBRANDT'
-      ? `Baroque chiaroscuro portrait/scene, dramatic contrast, warm earth palette, painterly realism, rich textures reminiscent of ${label}.`
+      ? `Baroque chiaroscuro, dramatic contrast, warm earth palette, painterly realism, rich textures reminiscent of ${label}.`
       : styleKey === 'CARAVAGGIO'
-      ? `Baroque realism with intense chiaroscuro, theatrical lighting, naturalistic figures, and dramatic staging reminiscent of ${label}.`
+      ? `Baroque realism with intense chiaroscuro, theatrical lighting, naturalistic figures, dramatic staging reminiscent of ${label}.`
       : styleKey === 'DA_VINCI'
-      ? `High Renaissance composition with sfumato, balanced proportions, anatomical fidelity, and subtle atmospheric depth reminiscent of ${label}.`
+      ? `High Renaissance balance with sfumato, anatomical fidelity, atmospheric depth reminiscent of ${label}.`
       : styleKey === 'MICHELANGELO'
-      ? `High Renaissance / Mannerist monumentality, powerful anatomy, sculptural forms, and dynamic poses reminiscent of ${label}.`
-      : `Coherent, gallery-worthy fine-art piece that reflects core stylistic traits of ${label} without copying any specific work.`
+      ? `High Renaissance/Mannerist monumentality, powerful anatomy, sculptural forms, dynamic poses reminiscent of ${label}.`
+      : `Coherent fine-art work reflecting core stylistic traits of ${label} (no copying any single copyrighted work).`
 
-  return `${title}. Create an original artwork in the style characteristics described: ${rules} Avoid copying any specific copyrighted work; generate a new composition inspired by those stylistic traits.`
+  return `${title}. Create an original artwork using these style characteristics: ${rules} Avoid copying any specific copyrighted work; generate a new composition inspired by the traits.`
 }
 
 async function generateAndPersist(styleKey: string, title: string) {
   const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
   const prompt = buildStylePrompt(styleKey, title)
 
-  // 1) Generate with OpenAI Images
-  const img = await client.images.generate({
+  // 1) Generate image
+  const gen = await client.images.generate({
     model: 'gpt-image-1',
     prompt,
     size: '1024x1024',
   })
-  const url = img?.data?.[0]?.url
+  const url = gen?.data?.[0]?.url
   if (!url) throw new Error('No image URL returned from OpenAI')
 
-  // 2) Download original
+  // 2) Fetch original
   const res = await fetch(url)
   if (!res.ok) throw new Error(`Failed to fetch generated image: ${res.status}`)
   const original = Buffer.from(await res.arrayBuffer())
 
-  // 3) Make thumbnail
+  // 3) Thumbnail
   const thumb = await sharp(original).resize(600).png({ quality: 90 }).toBuffer()
 
-  // 4) Upload both to Blob
+  // 4) Upload to Blob
   const ts = Date.now()
   const safe = encodeURIComponent(title)
   const origKey = `art/${ts}-${safe}.png`
@@ -70,7 +70,7 @@ async function generateAndPersist(styleKey: string, title: string) {
     put(thumbKey, thumb, { access: 'public', contentType: 'image/png' }),
   ])
 
-  // 5) Persist DB (schema-safe: includes artist, price, thumbnail)
+  // 5) Save DB (schema-aligned)
   const created = await prisma.artwork.create({
     data: {
       title,
@@ -81,9 +81,7 @@ async function generateAndPersist(styleKey: string, title: string) {
       price: 0,
       thumbnail: thumbPut.url,
       assets: {
-        create: [
-          { provider: 'openai', prompt, originalUrl: origPut.url },
-        ],
+        create: [{ provider: 'openai', prompt, originalUrl: origPut.url }],
       },
     },
     select: { id: true },
