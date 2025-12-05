@@ -9,9 +9,10 @@ import { prisma } from '@/lib/prisma'
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
-// ---- Local style-aware prompt builder (do NOT import from lib/styles)
+// Local style-aware prompt builder
 function buildStylePrompt(styleKey: string, title: string) {
   const label = styleKeyToLabel(styleKey as any)
+
   const rules =
     styleKey === 'VAN_GOGH'
       ? `Post-Impressionist oil painting with thick impasto brushstrokes, vivid complementary colors, swirling energetic sky, and expressive texture reminiscent of ${label}.`
@@ -33,55 +34,54 @@ function buildStylePrompt(styleKey: string, title: string) {
       ? `High Renaissance composition with sfumato, balanced proportions, anatomical fidelity, and subtle atmospheric depth reminiscent of ${label}.`
       : styleKey === 'MICHELANGELO'
       ? `High Renaissance / Mannerist monumentality, powerful anatomy, sculptural forms, and dynamic poses reminiscent of ${label}.`
+      : `Coherent, gallery-worthy fine-art piece that reflects core stylistic traits of ${label} without copying any specific work.` // ✅ fallback
 
   return `${title}. Create an original artwork in the style characteristics described: ${rules} Avoid copying any specific copyrighted work; generate a new composition inspired by those stylistic traits.`
 }
 
-async function generateOne({
-  styleKey,
-  title,
-}: {
-  styleKey: string
-  title: string
-}) {
+async function generateOne(opts: { styleKey: string; title: string }) {
+  const { styleKey, title } = opts
   const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
   const prompt = buildStylePrompt(styleKey, title)
 
-  // 1) Generate with OpenAI Images (no response_format param)
+  // 1) Generate with OpenAI Images
   const ai = await client.images.generate({
     model: 'gpt-image-1',
     prompt,
-    size: '1024x1024', // supported sizes: 1024x1024, 1024x1536, 1536x1024, or 'auto'
+    size: '1024x1024', // supported: '1024x1024' | '1024x1536' | '1536x1024' | 'auto'
   })
 
   const url = ai?.data?.[0]?.url
   if (!url) throw new Error('No image URL returned')
 
-  // 2) Fetch image and make a thumbnail
-  const imgRes = await fetch(url)
-  if (!imgRes.ok) throw new Error(`Failed to fetch image: ${imgRes.status}`)
-  const buffer = Buffer.from(await imgRes.arrayBuffer())
+  // 2) Fetch original and build a thumbnail
+  const res = await fetch(url)
+  if (!res.ok) throw new Error(`Failed to fetch image: ${res.status}`)
+  const originalBuffer = Buffer.from(await res.arrayBuffer())
 
-  const thumb = await sharp(buffer).resize(600).png({ quality: 90 }).toBuffer()
+  const thumbBuffer = await sharp(originalBuffer)
+    .resize(600)
+    .png({ quality: 90 })
+    .toBuffer()
 
-  // 3) Upload both to Blob (public)
-  const base = Date.now()
+  // 3) Upload both to Blob
+  const ts = Date.now()
   const safeTitle = encodeURIComponent(title)
-  const origPath = `art/${base}-${safeTitle}.png`
-  const thumbPath = `art/${base}-${safeTitle}-thumb.png`
+  const origKey = `art/${ts}-${safeTitle}.png`
+  const thumbKey = `art/${ts}-${safeTitle}-thumb.png`
 
-  const origPut = await put(origPath, buffer, { access: 'public', contentType: 'image/png' })
-  const thumbPut = await put(thumbPath, thumb, { access: 'public', contentType: 'image/png' })
+  const [origPut, thumbPut] = await Promise.all([
+    put(origKey, originalBuffer, { access: 'public', contentType: 'image/png' }),
+    put(thumbKey, thumbBuffer, { access: 'public', contentType: 'image/png' }),
+  ])
 
-  // 4) Persist DB rows (include fields that some schemas require)
-  // Adjust these defaults only if your schema demands different types.
-  const artwork = await prisma.artwork.create({
+  // 4) Persist DB rows (schema-safe: includes artist, price, thumbnail)
+  const created = await prisma.artwork.create({
     data: {
       title,
       style: styleKey as any,
       status: 'PUBLISHED',
       tags: [],
-      // common “required” fields in several earlier schemas you had
       artist: 'AI Studio',
       price: 0,
       thumbnail: thumbPut.url,
@@ -98,7 +98,13 @@ async function generateOne({
     select: { id: true },
   })
 
-  return { id: artwork.id, title, styleKey, originalUrl: origPut.url, thumbnail: thumbPut.url }
+  return {
+    id: created.id,
+    title,
+    styleKey,
+    originalUrl: origPut.url,
+    thumbnail: thumbPut.url,
+  }
 }
 
 export async function POST(req: Request) {
@@ -110,14 +116,13 @@ export async function POST(req: Request) {
     if (!style) {
       return NextResponse.json({ ok: false, error: 'Missing body.style' }, { status: 400 })
     }
-
-    const styleKey = styleSlugToKey(style)
-
     if (!titles.length) {
       return NextResponse.json({ ok: false, error: 'Provide body.titles: string[]' }, { status: 400 })
     }
 
-    const results = []
+    const styleKey = styleSlugToKey(style)
+    const results: any[] = []
+
     for (const title of titles) {
       try {
         const r = await generateOne({ styleKey, title })
@@ -134,17 +139,20 @@ export async function POST(req: Request) {
 }
 
 export async function GET(req: Request) {
-  // convenience GET: ?style=dali&count=5 generates generic titled works
   try {
     const { searchParams } = new URL(req.url)
     const style = (searchParams.get('style') || '').toString()
     const count = Math.max(1, Math.min(50, parseInt(searchParams.get('count') || '5', 10)))
-    if (!style) return NextResponse.json({ ok: false, error: 'Missing style' }, { status: 400 })
+
+    if (!style) {
+      return NextResponse.json({ ok: false, error: 'Missing style' }, { status: 400 })
+    }
+
     const styleKey = styleSlugToKey(style)
     const label = styleKeyToLabel(styleKey as any)
-
     const titles = Array.from({ length: count }, (_, i) => `${label} Study ${i + 1}`)
-    const results = []
+
+    const results: any[] = []
     for (const t of titles) {
       try {
         const r = await generateOne({ styleKey, title: t })
