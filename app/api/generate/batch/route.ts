@@ -1,17 +1,17 @@
-// app/api/generate/batch/route.ts
+// app/api/generate/master/route.ts
 import { NextResponse } from 'next/server'
 import { put } from '@vercel/blob'
 import sharp from 'sharp'
-import { styleSlugToKey, styleKeyToLabel } from '@/lib/styles'
 import { OpenAI } from 'openai'
 import { prisma } from '@/lib/prisma'
+import { styleSlugToKey, styleKeyToLabel } from '@/lib/styles'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
-// Local style-aware prompt builder
+// ---- Local style-aware prompt builder (do NOT import this from lib/styles)
 function buildStylePrompt(styleKey: string, title: string) {
-  const label = styleKeyToLabel(styleKey as any)
+  const label = styleKeyToLabel ? styleKeyToLabel(styleKey as any) : styleKey
 
   const rules =
     styleKey === 'VAN_GOGH'
@@ -34,48 +34,46 @@ function buildStylePrompt(styleKey: string, title: string) {
       ? `High Renaissance composition with sfumato, balanced proportions, anatomical fidelity, and subtle atmospheric depth reminiscent of ${label}.`
       : styleKey === 'MICHELANGELO'
       ? `High Renaissance / Mannerist monumentality, powerful anatomy, sculptural forms, and dynamic poses reminiscent of ${label}.`
-      : `Coherent, gallery-worthy fine-art piece that reflects core stylistic traits of ${label} without copying any specific work.` // ✅ fallback
+      : `Coherent, gallery-worthy fine-art piece that reflects core stylistic traits of ${label} without copying any specific work.`
 
   return `${title}. Create an original artwork in the style characteristics described: ${rules} Avoid copying any specific copyrighted work; generate a new composition inspired by those stylistic traits.`
 }
 
-async function generateOne(opts: { styleKey: string; title: string }) {
-  const { styleKey, title } = opts
+// generate one image, upload to Blob, and persist DB rows
+async function generateAndPersist(styleKey: string, title: string) {
   const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
   const prompt = buildStylePrompt(styleKey, title)
 
   // 1) Generate with OpenAI Images
-  const ai = await client.images.generate({
+  const img = await client.images.generate({
     model: 'gpt-image-1',
     prompt,
     size: '1024x1024', // supported: '1024x1024' | '1024x1536' | '1536x1024' | 'auto'
   })
 
-  const url = ai?.data?.[0]?.url
-  if (!url) throw new Error('No image URL returned')
+  const url = img?.data?.[0]?.url
+  if (!url) throw new Error('No image URL returned from OpenAI')
 
-  // 2) Fetch original and build a thumbnail
+  // 2) Download original
   const res = await fetch(url)
-  if (!res.ok) throw new Error(`Failed to fetch image: ${res.status}`)
-  const originalBuffer = Buffer.from(await res.arrayBuffer())
+  if (!res.ok) throw new Error(`Failed to fetch generated image: ${res.status}`)
+  const original = Buffer.from(await res.arrayBuffer())
 
-  const thumbBuffer = await sharp(originalBuffer)
-    .resize(600)
-    .png({ quality: 90 })
-    .toBuffer()
+  // 3) Make thumbnail
+  const thumb = await sharp(original).resize(600).png({ quality: 90 }).toBuffer()
 
-  // 3) Upload both to Blob
+  // 4) Upload both to Blob
   const ts = Date.now()
-  const safeTitle = encodeURIComponent(title)
-  const origKey = `art/${ts}-${safeTitle}.png`
-  const thumbKey = `art/${ts}-${safeTitle}-thumb.png`
+  const safe = encodeURIComponent(title)
+  const origKey = `art/${ts}-${safe}.png`
+  const thumbKey = `art/${ts}-${safe}-thumb.png`
 
   const [origPut, thumbPut] = await Promise.all([
-    put(origKey, originalBuffer, { access: 'public', contentType: 'image/png' }),
-    put(thumbKey, thumbBuffer, { access: 'public', contentType: 'image/png' }),
+    put(origKey, original, { access: 'public', contentType: 'image/png' }),
+    put(thumbKey, thumb, { access: 'public', contentType: 'image/png' }),
   ])
 
-  // 4) Persist DB rows (schema-safe: includes artist, price, thumbnail)
+  // 5) Persist DB (schema-safe: includes artist, price, thumbnail)
   const created = await prisma.artwork.create({
     data: {
       title,
@@ -98,71 +96,22 @@ async function generateOne(opts: { styleKey: string; title: string }) {
     select: { id: true },
   })
 
-  return {
-    id: created.id,
-    title,
-    styleKey,
-    originalUrl: origPut.url,
-    thumbnail: thumbPut.url,
-  }
-}
-
-export async function POST(req: Request) {
-  try {
-    const body = await req.json().catch(() => ({}))
-    const style = (body?.style || '').toString()
-    const titles: string[] = Array.isArray(body?.titles) ? body.titles : []
-
-    if (!style) {
-      return NextResponse.json({ ok: false, error: 'Missing body.style' }, { status: 400 })
-    }
-    if (!titles.length) {
-      return NextResponse.json({ ok: false, error: 'Provide body.titles: string[]' }, { status: 400 })
-    }
-
-    const styleKey = styleSlugToKey(style)
-    const results: any[] = []
-
-    for (const title of titles) {
-      try {
-        const r = await generateOne({ styleKey, title })
-        results.push({ ok: true, ...r })
-      } catch (e: any) {
-        results.push({ ok: false, title, error: String(e?.message || e) })
-      }
-    }
-
-    return NextResponse.json({ ok: true, styleKey, count: results.length, results })
-  } catch (e: any) {
-    return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 500 })
-  }
+  return { id: created.id, originalUrl: origPut.url, thumbnail: thumbPut.url }
 }
 
 export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url)
     const style = (searchParams.get('style') || '').toString()
-    const count = Math.max(1, Math.min(50, parseInt(searchParams.get('count') || '5', 10)))
+    const title = (searchParams.get('title') || '').toString()
 
-    if (!style) {
-      return NextResponse.json({ ok: false, error: 'Missing style' }, { status: 400 })
-    }
+    if (!style) return NextResponse.json({ ok: false, error: 'Missing ?style' }, { status: 400 })
+    if (!title) return NextResponse.json({ ok: false, error: 'Missing ?title' }, { status: 400 })
 
     const styleKey = styleSlugToKey(style)
-    const label = styleKeyToLabel(styleKey as any)
-    const titles = Array.from({ length: count }, (_, i) => `${label} Study ${i + 1}`)
+    const result = await generateAndPersist(styleKey, title)
 
-    const results: any[] = []
-    for (const t of titles) {
-      try {
-        const r = await generateOne({ styleKey, title: t })
-        results.push({ ok: true, ...r })
-      } catch (e: any) {
-        results.push({ ok: false, title: t, error: String(e?.message || e) })
-      }
-    }
-
-    return NextResponse.json({ ok: true, styleKey, count: results.length, results })
+    return NextResponse.json({ ok: true, style: styleKey, title, ...result })
   } catch (e: any) {
     return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 500 })
   }
