@@ -1,9 +1,11 @@
 // app/explore/styles/[style]/page.tsx
 export const dynamic = 'force-dynamic'
+
 import Link from 'next/link'
+import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 
-// Local labels so we don't depend on other exports
+// Keep this list in sync with your Prisma `enum Style`
 const STYLE_LABELS: Record<string, string> = {
   VAN_GOGH: 'Van Gogh',
   DALI: 'Dalí',
@@ -17,22 +19,17 @@ const STYLE_LABELS: Record<string, string> = {
   MICHELANGELO: 'Michelangelo',
 }
 
-// Slug ("van-gogh", "dali") -> enum key ("VAN_GOGH", "DALI")
-function slugToKey(slug: string): string {
-  const norm = slug.trim().toLowerCase()
-  const map: Record<string, string> = {
-    'van-gogh': 'VAN_GOGH',
-    'dali': 'DALI',
-    'pollock': 'POLLOCK',
-    'vermeer': 'VERMEER',
-    'monet': 'MONET',
-    'picasso': 'PICASSO',
-    'rembrandt': 'REMBRANDT',
-    'caravaggio': 'CARAVAGGIO',
-    'da-vinci': 'DA_VINCI',
-    'michelangelo': 'MICHELANGELO',
-  }
-  return map[norm] ?? norm.toUpperCase()
+const SLUG_TO_KEY: Record<string, keyof typeof STYLE_LABELS> = {
+  'van-gogh': 'VAN_GOGH',
+  'dali': 'DALI',
+  'pollock': 'POLLOCK',
+  'vermeer': 'VERMEER',
+  'monet': 'MONET',
+  'picasso': 'PICASSO',
+  'rembrandt': 'REMBRANDT',
+  'caravaggio': 'CARAVAGGIO',
+  'da-vinci': 'DA_VINCI',
+  'michelangelo': 'MICHELANGELO',
 }
 
 const FALLBACK_DATA_URL =
@@ -53,29 +50,47 @@ export default async function StyleAllPage({
 }: {
   params: { style: string }
 }) {
-  const styleKey = slugToKey(params.style)
-  const label = STYLE_LABELS[styleKey] || styleKey
+  // 1) Validate slug → enum key; 404 if unknown to avoid Prisma enum crashes
+  const styleKey = SLUG_TO_KEY[params.style.toLowerCase()]
+  if (!styleKey) return notFound()
+  const label = STYLE_LABELS[styleKey]
 
-  const rows = await prisma.artwork.findMany({
-    where: {
-      style: styleKey as any,
-      status: 'PUBLISHED',
-      NOT: { tags: { has: 'smoketest' } },
-    },
-    orderBy: { createdAt: 'desc' },
-    take: 120,
-    select: {
-      id: true,
-      title: true,
-      style: true,
-      thumbnail: true,
-      assets: {
-        take: 1,
-        orderBy: { createdAt: 'asc' },
-        select: { originalUrl: true },
+  // 2) Query (safe fields only) + guard against server errors
+  let rows:
+    | {
+        id: string
+        title: string
+        style: string
+        thumbnail: string | null
+        assets: { originalUrl: string }[]
+      }[]
+    | null = null
+  let errorMsg: string | null = null
+
+  try {
+    rows = await prisma.artwork.findMany({
+      where: {
+        style: styleKey as any,
+        status: 'PUBLISHED',
+        NOT: { tags: { has: 'smoketest' } },
       },
-    },
-  })
+      orderBy: { createdAt: 'desc' },
+      take: 120,
+      select: {
+        id: true,
+        title: true,
+        style: true,
+        thumbnail: true,
+        assets: {
+          take: 1,
+          orderBy: { createdAt: 'asc' },
+          select: { originalUrl: true },
+        },
+      },
+    })
+  } catch (e: any) {
+    errorMsg = e?.message || 'Unknown server error.'
+  }
 
   return (
     <div className="space-y-6">
@@ -86,7 +101,12 @@ export default async function StyleAllPage({
         </Link>
       </div>
 
-      {rows.length === 0 ? (
+      {errorMsg ? (
+        <div className="rounded-lg border border-red-800 bg-red-950/40 p-4 text-red-200">
+          <div className="font-semibold mb-1">Couldn’t load artworks</div>
+          <div className="text-sm opacity-80">{errorMsg}</div>
+        </div>
+      ) : !rows || rows.length === 0 ? (
         <p className="text-slate-400 text-sm">No artworks yet.</p>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
