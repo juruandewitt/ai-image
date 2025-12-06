@@ -9,7 +9,7 @@ import { styleSlugToKey, styleKeyToLabel } from '@/lib/styles'
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
-// ---- DO NOT import buildStylePrompt from lib. Keep it local here.
+// Keep this local — do NOT import from '@/lib/styles'
 function buildStylePrompt(styleKey: string, title: string) {
   const label = styleKeyToLabel ? styleKeyToLabel(styleKey as any) : styleKey
 
@@ -47,7 +47,7 @@ async function generateAndPersist(styleKey: string, title: string) {
   const gen = await client.images.generate({
     model: 'gpt-image-1',
     prompt,
-    size: '1024x1024', // supported sizes: 1024x1024 | 1024x1536 | 1536x1024 | auto
+    size: '1024x1024',
   })
   const url = gen?.data?.[0]?.url
   if (!url) throw new Error('No image URL returned from OpenAI')
@@ -71,7 +71,7 @@ async function generateAndPersist(styleKey: string, title: string) {
     put(thumbKey, thumb, { access: 'public', contentType: 'image/png' }),
   ])
 
-  // 5) Persist DB rows (schema-aligned)
+  // 5) Persist DB rows (align with your schema)
   const created = await prisma.artwork.create({
     data: {
       title,
@@ -82,9 +82,7 @@ async function generateAndPersist(styleKey: string, title: string) {
       price: 0,
       thumbnail: thumbPut.url,
       assets: {
-        create: [
-          { provider: 'openai', prompt, originalUrl: origPut.url },
-        ],
+        create: [{ provider: 'openai', prompt, originalUrl: origPut.url }],
       },
     },
     select: { id: true },
