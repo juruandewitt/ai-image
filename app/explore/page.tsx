@@ -1,64 +1,130 @@
-import { prisma } from '@/lib/prisma'
-import { STYLE_ORDER, STYLE_LABELS, styleKeyToSlug } from '@/lib/styles'
-import Image from 'next/image'
+// app/explore/page.tsx
+export const dynamic = 'force-dynamic'
 import Link from 'next/link'
+import { prisma } from '@/lib/prisma'
 
-function shuffle<T>(arr: T[]) {
-  const a = arr.slice()
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1))
-    ;[a[i], a[j]] = [a[j], a[i]]
-  }
-  return a
+/**
+ * Styles we support. Keys must match your Prisma enum values for Artwork.style
+ */
+const STYLE_LABELS: Record<string, string> = {
+  VAN_GOGH: 'Van Gogh',
+  DALI: 'Dalí',
+  POLLOCK: 'Jackson Pollock',
+  VERMEER: 'Johannes Vermeer',
+  MONET: 'Claude Monet',
+  PICASSO: 'Pablo Picasso',
+  REMBRANDT: 'Rembrandt',
+  CARAVAGGIO: 'Caravaggio',
+  DA_VINCI: 'Leonardo da Vinci',
+  MICHELANGELO: 'Michelangelo',
 }
 
+// Use a stable order
+const STYLE_ORDER = Object.keys(STYLE_LABELS)
 
-export default async function ExploreDirectory() {
-  // For each style: fetch up to 60 recent and show 6 random
-  const sections = await Promise.all(
-    STYLE_ORDER.map(async (style) => {
-      const pool = await prisma.artwork.findMany({
-        where: { style, status: 'PUBLISHED' },
-        orderBy: { createdAt: 'desc' },
-        take: 60,
-      })
-      const six = shuffle(pool).slice(0, 6)
-      return { style, label: STYLE_LABELS[style], items: six }
-    })
+const FALLBACK_DATA_URL =
+  'data:image/svg+xml;utf8,' +
+  encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600"><rect width="100%" height="100%" fill="#0b1220"/><text x="50%" y="50%" fill="#94a3b8" font-family="sans-serif" font-size="20" text-anchor="middle" dominant-baseline="middle">No image</text></svg>`
   )
 
+function pickImgSrc(a: {
+  thumbnail?: string | null
+  assets?: { originalUrl: string }[]
+}) {
+  return a.thumbnail || a.assets?.[0]?.originalUrl || FALLBACK_DATA_URL
+}
+
+export default async function ExploreDirectory() {
+  // For each style, load up to 12 recent (excluding smoketest)
+  const perStyleTake = 12
+
+  const byStyle: Record<
+    string,
+    {
+      id: string
+      title: string
+      style: string
+      thumbnail: string | null
+      assets: { originalUrl: string }[]
+    }[]
+  > = {}
+
+  for (const key of STYLE_ORDER) {
+    const rows = await prisma.artwork.findMany({
+      where: {
+        style: key as any,
+        NOT: { tags: { has: 'smoketest' } },
+        status: 'PUBLISHED',
+      },
+      orderBy: { createdAt: 'desc' },
+      take: perStyleTake,
+      select: {
+        id: true,
+        title: true,
+        style: true,
+        thumbnail: true,
+        assets: {
+          take: 1,
+          orderBy: { createdAt: 'asc' },
+          select: { originalUrl: true },
+        },
+      },
+    })
+    byStyle[key] = rows
+  }
+
   return (
-    <section className="space-y-14">
-      <h1 className="text-3xl font-semibold text-white">Explore by Master</h1>
+    <div className="space-y-10">
+      <h1 className="text-3xl font-semibold">Explore Masters</h1>
 
-      {sections.map(sec => (
-        <div key={sec.style} className="space-y-3">
-          <div className="flex items-center justify-between">
-            <h2 className="text-xl md:text-2xl font-semibold text-white">{sec.label}</h2>
-            <Link href={`/explore/styles/${styleKeyToSlug(sec.style)}`} className="text-sm font-medium text-indigo-300 hover:underline">
-              See all
-            </Link>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            {sec.items.map(a => (
+      {STYLE_ORDER.map((key) => {
+        const label = STYLE_LABELS[key]
+        const rows = byStyle[key] || []
+        return (
+          <section key={key} className="space-y-4">
+            <div className="flex items-baseline justify-between">
+              <h2 className="text-xl font-semibold">{label}</h2>
               <Link
-                key={a.id}
-                href={`/artwork/${a.id}`}
-                className="group relative rounded-2xl overflow-hidden border border-white/10 hover:border-white/20 transition"
+                href={`/explore/styles/${encodeURIComponent(
+                  label.toLowerCase().replace(/\s+/g, '-')
+                )}`}
+                className="text-amber-400 hover:underline text-sm"
               >
-                <div className="relative aspect-[4/3]">
-                  <Image src={a.thumbnail} alt={a.title} fill className="object-cover group-hover:scale-[1.02] transition-transform" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-80 group-hover:opacity-90 transition-opacity" />
-                  <div className="absolute bottom-3 left-3 right-3 text-white">
-                    <div className="text-sm font-semibold drop-shadow">{a.title}</div>
-                  </div>
-                </div>
+                See all →
               </Link>
-            ))}
-          </div>
-        </div>
-      ))}
-    </section>
+            </div>
+
+            {rows.length === 0 ? (
+              <p className="text-slate-400 text-sm">No artworks yet.</p>
+            ) : (
+              <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+                {rows.slice(0, 8).map((a) => (
+                  <Link
+                    key={a.id}
+                    href={`/artwork/${a.id}`}
+                    className="group block rounded-xl overflow-hidden bg-slate-900/60 border border-slate-800 hover:border-amber-400/60 transition-colors"
+                  >
+                    {/* Plain <img> to avoid next/image domain issues */}
+                    <img
+                      src={pickImgSrc(a)}
+                      alt={a.title}
+                      loading="lazy"
+                      className="w-full aspect-square object-cover"
+                    />
+                    <div className="p-3">
+                      <div className="text-sm text-slate-300 line-clamp-1">
+                        {a.title}
+                      </div>
+                      <div className="text-xs text-slate-400">{label}</div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            )}
+          </section>
+        )
+      })}
+    </div>
   )
 }
