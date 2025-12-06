@@ -1,100 +1,109 @@
 // app/api/generate/master/route.ts
 import { NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
 import { put } from '@vercel/blob'
 import sharp from 'sharp'
-import { styleSlugToKey, buildStylePrompt } from '@/lib/styles'
 import { OpenAI } from 'openai'
+import { prisma } from '@/lib/prisma'
+import { styleSlugToKey, styleKeyToLabel } from '@/lib/styles'
 
 export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
 
-// Allow GET for easy testing from the browser
-export async function GET(req: Request) {
-  return POST(req)
+// Local helper (do NOT import from '@/lib/styles')
+function buildStylePrompt(styleKey: string, title: string) {
+  const label = styleKeyToLabel ? styleKeyToLabel(styleKey as any) : styleKey
+
+  const rules =
+    styleKey === 'VAN_GOGH'
+      ? `Post-Impressionist oil painting with thick impasto brushstrokes, vivid complementary colors, swirling energetic skies, expressive texture reminiscent of ${label}.`
+      : styleKey === 'DALI'
+      ? `Surrealist composition with dreamlike juxtapositions, smooth gradients, elongated forms, crisp shadows, meticulous classical rendering reminiscent of ${label}.`
+      : styleKey === 'POLLOCK'
+      ? `Abstract Expressionist drip painting with layered splatters, dynamic motion, dense overlapping strokes, high-contrast rhythm reminiscent of ${label}.`
+      : styleKey === 'VERMEER'
+      ? `Dutch Golden Age interior with soft daylight, precise perspective, calm tonality, delicate highlights reminiscent of ${label}.`
+      : styleKey === 'MONET'
+      ? `Impressionist plein-air palette, soft edges, optical color mixing, shimmering light on water and foliage reminiscent of ${label}.`
+      : styleKey === 'PICASSO'
+      ? `Cubist fragmentation with geometric planes, multiple viewpoints, muted earth palette, assertive linework reminiscent of ${label}.`
+      : styleKey === 'REMBRANDT'
+      ? `Baroque chiaroscuro, dramatic contrast, warm earth palette, painterly realism, rich textures reminiscent of ${label}.`
+      : styleKey === 'CARAVAGGIO'
+      ? `Baroque realism with intense chiaroscuro, theatrical lighting, naturalistic figures, dramatic staging reminiscent of ${label}.`
+      : styleKey === 'DA_VINCI'
+      ? `High Renaissance balance with sfumato, anatomical fidelity, atmospheric depth reminiscent of ${label}.`
+      : styleKey === 'MICHELANGELO'
+      ? `High Renaissance / Mannerist monumentality, powerful anatomy, sculptural forms, dynamic poses reminiscent of ${label}.`
+      : `Coherent fine-art work reflecting core stylistic traits of ${label} (do not copy any single copyrighted work).`
+
+  return `${title}. Create an original artwork using these style characteristics: ${rules} Avoid copying any specific copyrighted work; generate a new composition inspired by the traits.`
 }
 
-export async function POST(req: Request) {
+async function generateAndPersist(styleKey: string, title: string) {
+  const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
+  const prompt = buildStylePrompt(styleKey, title)
+
+  // 1) Generate
+  const gen = await client.images.generate({
+    model: 'gpt-image-1',
+    prompt,
+    size: '1024x1024',
+  })
+  const url = gen?.data?.[0]?.url
+  if (!url) throw new Error('No image URL returned from OpenAI')
+
+  // 2) Fetch original
+  const res = await fetch(url)
+  if (!res.ok) throw new Error(`Failed to fetch generated image: ${res.status}`)
+  const original = Buffer.from(await res.arrayBuffer())
+
+  // 3) Thumb
+  const thumb = await sharp(original).resize(600).png({ quality: 90 }).toBuffer()
+
+  // 4) Upload
+  const ts = Date.now()
+  const safe = encodeURIComponent(title)
+  const origKey = `art/${ts}-${safe}.png`
+  const thumbKey = `art/${ts}-${safe}-thumb.png`
+
+  const [origPut, thumbPut] = await Promise.all([
+    put(origKey, original, { access: 'public', contentType: 'image/png' }),
+    put(thumbKey, thumb, { access: 'public', contentType: 'image/png' }),
+  ])
+
+  // 5) DB rows (aligns with your schema fields)
+  const created = await prisma.artwork.create({
+    data: {
+      title,
+      style: styleKey as any,
+      status: 'PUBLISHED',
+      tags: [],
+      artist: 'AI Studio',
+      price: 0,
+      thumbnail: thumbPut.url,
+      assets: {
+        create: [{ provider: 'openai', prompt, originalUrl: origPut.url }],
+      },
+    },
+    select: { id: true },
+  })
+
+  return { id: created.id, originalUrl: origPut.url, thumbnail: thumbPut.url }
+}
+
+export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url)
-    const styleSlug = (searchParams.get('style') || 'van-gogh').toLowerCase()
-    const title = (searchParams.get('title') || 'Untitled').slice(0, 120)
+    const style = (searchParams.get('style') || '').toString()
+    const title = (searchParams.get('title') || '').toString()
 
-    const styleKey = styleSlugToKey(styleSlug)
-    const prompt = buildStylePrompt(styleKey as any, title)
+    if (!style) return NextResponse.json({ ok: false, error: 'Missing ?style' }, { status: 400 })
+    if (!title) return NextResponse.json({ ok: false, error: 'Missing ?title' }, { status: 400 })
 
-    // --- Generate with OpenAI (accept b64_json or url) ---
-    const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
-    const gen = await client.images.generate({
-      model: 'gpt-image-1',
-      prompt,
-      size: '1024x1024',
-      // no response_format here — some deployments reject it
-    })
-
-    const first = gen.data?.[0]
-    if (!first) throw new Error('OpenAI returned no image in response data')
-
-    let orig: Buffer
-    if (first.b64_json) {
-      // Preferred: decode base64 directly
-      orig = Buffer.from(first.b64_json, 'base64')
-    } else if (first.url) {
-      // Fallback: fetch the URL
-      const res = await fetch(first.url)
-      if (!res.ok) throw new Error(`Failed to fetch image URL (${res.status})`)
-      orig = Buffer.from(await res.arrayBuffer())
-    } else {
-      throw new Error('OpenAI image had neither b64_json nor url')
-    }
-
-    // --- Upload to Vercel Blob: original + variants ---
-    const stamp = Date.now()
-    const baseKey = `art/${stamp}`
-
-    const upOrig = await put(`${baseKey}-orig.png`, orig, {
-      access: 'public',
-      contentType: 'image/png',
-    })
-
-    const s1024 = await sharp(orig).resize(1024).png().toBuffer()
-    const up1024 = await put(`${baseKey}-1024.png`, s1024, {
-      access: 'public',
-      contentType: 'image/png',
-    })
-
-    const s2048 = await sharp(orig).resize(2048).webp({ quality: 88 }).toBuffer()
-    const up2048 = await put(`${baseKey}-2048.webp`, s2048, {
-      access: 'public',
-      contentType: 'image/webp',
-    })
-
-    // --- Persist DB rows (include required fields for your schema) ---
-    const artwork = await prisma.artwork.create({
-      data: {
-        title,
-        artist: `AI Image – ${styleSlug}`, // what shows in UI
-        style: styleKey as any,
-        status: 'PUBLISHED',
-        price: 1900,
-        thumbnail: up1024.url,
-        tags: [],
-        assets: {
-          create: [
-            { provider: 'blob', prompt, originalUrl: upOrig.url },
-            { provider: 'blob', prompt, originalUrl: up1024.url },
-            { provider: 'blob', prompt, originalUrl: up2048.url },
-          ],
-        },
-      },
-      select: { id: true },
-    })
-
-    return NextResponse.json({ ok: true, id: artwork.id })
+    const styleKey = styleSlugToKey(style)
+    const result = await generateAndPersist(styleKey, title)
+    return NextResponse.json({ ok: true, style: styleKey, title, ...result })
   } catch (e: any) {
-    // Surface a clearer reason to help debugging
-    return NextResponse.json(
-      { ok: false, error: String(e?.message || e) },
-      { status: 500 }
-    )
+    return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 500 })
   }
 }
