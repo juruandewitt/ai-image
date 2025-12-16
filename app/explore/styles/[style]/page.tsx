@@ -1,89 +1,104 @@
 // app/explore/styles/[style]/page.tsx
-export const dynamic = 'force-dynamic'
 
-import { prisma } from '@/lib/prisma'
-import { styleSlugToKey, styleKeyToLabel } from '@/lib/styles'
-import { notFound } from 'next/navigation'
-import Link from 'next/link'
+import { notFound } from "next/navigation";
+import { db } from "@/lib/db";
+import { styleSlugToKey, styleKeyToLabel } from "@/lib/styles";
 
-// NOTE: Using <img> avoids domain config issues that sometimes break <Image>
-function Card({ a }: { a: {
-  id: string
-  title: string
-  assets: { originalUrl: string | null }[]
-} }) {
-  const url = a.assets?.[0]?.originalUrl ?? ''
-  return (
-    <Link
-      href={`/artwork/${a.id}`}
-      className="group block overflow-hidden rounded-xl border border-slate-800 bg-slate-900/40 hover:bg-slate-900 transition"
-    >
-      <div className="aspect-[4/5] w-full bg-slate-950">
-        {url ? (
-          <img
-            src={url}
-            alt={a.title}
-            className="h-full w-full object-cover"
-            loading="lazy"
-          />
-        ) : (
-          <div className="h-full w-full grid place-items-center text-slate-500 text-sm">
-            (no image yet)
-          </div>
-        )}
-      </div>
-      <div className="p-3">
-        <div className="text-slate-100 text-sm font-medium line-clamp-1">{a.title}</div>
-      </div>
-    </Link>
-  )
-}
+type PageProps = {
+  params: { style: string };
+};
 
-export default async function StylePage({
-  params,
-}: { params: { style: string } }) {
-  const key = styleSlugToKey(params.style)
-  if (!key) return notFound()
+export default async function StyleExplorePage({ params }: PageProps) {
+  // URL param will be something like "dali", "monet", "da-vinci", etc.
+  const rawSlug = decodeURIComponent(params.style);
 
-  // Pull recent published artworks for this style,
-  // and exclude smoketests (the ones without real assets).
-  const rows = await prisma.artwork.findMany({
+  // Map slug -> internal style key (e.g. "dali")
+  const styleKey = styleSlugToKey(rawSlug);
+
+  // If the slug is unknown, show a proper 404 rather than crashing.
+  if (!styleKey) {
+    return notFound();
+  }
+
+  const label = styleKeyToLabel(styleKey) ?? styleKey;
+
+  // Fetch artworks for this style.
+  // Adjust these fields if your Prisma schema differs.
+  const artworks = await db.artwork.findMany({
     where: {
-      style: key as any,
-      status: 'PUBLISHED',
-      NOT: { tags: { has: 'smoketest' } },
+      styleKey,
+      // Uncomment if you have a published flag:
+      // published: true,
     },
-    orderBy: { createdAt: 'desc' },
-    take: 120,
-    select: {
-      id: true,
-      title: true,
-      assets: {
-        take: 1,
-        orderBy: { createdAt: 'asc' },
-        select: { originalUrl: true },
-      },
+    orderBy: { createdAt: "desc" },
+    include: {
+      artist: true,
+      assets: true, // we’ll pick a thumbnail from here
     },
-  })
-
-  const label = styleKeyToLabel(key)
+  });
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold text-slate-100">{label}</h1>
-        <p className="text-slate-400 text-sm mt-1">
-          Recently generated works inspired by {label}.
+    <main className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-4 py-10">
+      <header className="space-y-2">
+        <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
+          {label}
+        </h1>
+        <p className="max-w-2xl text-sm text-muted-foreground">
+          Masterworks and AI-generated pieces inspired by {label}.
         </p>
-      </div>
+      </header>
 
-      {rows.length === 0 ? (
-        <div className="text-slate-400">No artworks yet for this style.</div>
+      {artworks.length === 0 ? (
+        <p className="text-sm text-muted-foreground">
+          No artworks have been created in this style yet.
+        </p>
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          {rows.map((a) => <Card key={a.id} a={a} />)}
-        </div>
+        <section>
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {artworks.map((artwork) => {
+              const thumbnail =
+                artwork.assets?.find((a: any) => a.kind === "THUMBNAIL") ??
+                artwork.assets?.[0];
+
+              const imageUrl =
+                thumbnail?.url ?? "/images/placeholder-artwork.png";
+
+              return (
+                <article
+                  key={artwork.id}
+                  className="group flex flex-col overflow-hidden rounded-2xl border bg-card shadow-sm transition hover:shadow-md"
+                >
+                  <div className="relative aspect-[4/5] w-full overflow-hidden bg-muted">
+                    {/* Plain <img> with fallback so it never shows a broken icon */}
+                    <img
+                      src={imageUrl}
+                      alt={artwork.title}
+                      className="h-full w-full object-cover transition group-hover:scale-[1.02]"
+                      onError={(event) => {
+                        const target = event.currentTarget;
+                        target.src = "/images/placeholder-artwork.png";
+                      }}
+                    />
+                  </div>
+                  <div className="flex flex-1 flex-col gap-1 px-4 py-3">
+                    <h2 className="truncate text-sm font-medium">
+                      {artwork.title}
+                    </h2>
+                    {artwork.artist ? (
+                      <p className="text-xs text-muted-foreground">
+                        by{" "}
+                        {artwork.artist.displayName ??
+                          artwork.artist.name ??
+                          "Unknown artist"}
+                      </p>
+                    ) : null}
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        </section>
       )}
-    </div>
-  )
+    </main>
+  );
 }
