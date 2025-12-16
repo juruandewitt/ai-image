@@ -19,7 +19,15 @@ export interface StyleDefinition {
  * - `label` is what you show in the UI and can have accents/spaces
  */
 export const ALL_STYLES: StyleDefinition[] = [
-  // --- Classic masters (the ones you mentioned) ---
+  // --- Classic masters (all the ones on /explore) ---
+
+  {
+    key: "van-gogh",
+    slug: "van-gogh",
+    label: "Van Gogh",
+    description: "Vivid brushwork and expressive color.",
+    category: "classic",
+  },
   {
     key: "dali",
     slug: "dali",
@@ -56,13 +64,6 @@ export const ALL_STYLES: StyleDefinition[] = [
     category: "classic",
   },
   {
-    key: "da-vinci",
-    slug: "da-vinci",
-    label: "Leonardo da Vinci",
-    description: "Renaissance mastery and sfumato portraits.",
-    category: "classic",
-  },
-  {
     key: "rembrandt",
     slug: "rembrandt",
     label: "Rembrandt",
@@ -77,6 +78,13 @@ export const ALL_STYLES: StyleDefinition[] = [
     category: "classic",
   },
   {
+    key: "da-vinci",
+    slug: "da-vinci",
+    label: "Leonardo da Vinci",
+    description: "Renaissance mastery and sfumato portraits.",
+    category: "classic",
+  },
+  {
     key: "michelangelo",
     slug: "michelangelo",
     label: "Michelangelo",
@@ -84,7 +92,8 @@ export const ALL_STYLES: StyleDefinition[] = [
     category: "classic",
   },
 
-  // --- Optional contemporary / experimental styles (adjust as you like) ---
+  // --- Optional contemporary / experimental styles (adjust or remove as you like) ---
+
   {
     key: "neo-noir",
     slug: "neo-noir",
@@ -126,16 +135,35 @@ for (const style of ALL_STYLES) {
 
 /**
  * Normalize weird or legacy slugs before lookup.
- * This is where we fix /explore/styles/dalí → "dali", etc.
+ *
+ * This is where we fix the slugs that /explore currently links to:
+ * - /explore/styles/dalí (encoded as dal%C3%AD)
+ * - /explore/styles/jackson-pollock
+ * - /explore/styles/johannes-vermeer
+ * - /explore/styles/claude-monet
+ * - /explore/styles/pablo-picasso
+ * - /explore/styles/leonardo-da-vinci
  */
 function normalizeSlug(rawSlug: string): string {
   const slug = rawSlug.trim().toLowerCase();
 
-  // Special handling for the old Dalí link with an accent.
-  if (slug === "dalí" || slug === "dal%C3%AD") {
+  // Dalí legacy accents
+  if (slug === "dalí" || slug === "dal%c3%ad") {
     return "dali";
   }
 
+  // Full names from /explore → internal keys
+  if (slug === "jackson-pollock") return "pollock";
+  if (slug === "johannes-vermeer") return "vermeer";
+  if (slug === "claude-monet") return "monet";
+  if (slug === "pablo-picasso") return "picasso";
+  if (slug === "leonardo-da-vinci") return "da-vinci";
+
+  // These already match our slugs directly:
+  // - van-gogh
+  // - rembrandt
+  // - caravaggio
+  // - michelangelo
   return slug;
 }
 
