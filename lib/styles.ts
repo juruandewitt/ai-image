@@ -1,14 +1,12 @@
 // lib/styles.ts
 
-import type { Style } from "@prisma/client";
-
-export type StyleKey = Style;
+export type StyleKey = string;
 export type StyleCategory = "classic" | "contemporary" | "experimental";
 
 export interface StyleDefinition {
-  key: StyleKey;      // Prisma enum value, e.g. "DALI"
-  slug: string;       // URL-safe slug, e.g. "dali"
-  label: string;      // Human label, e.g. "Dalí"
+  key: StyleKey;       // internal key, e.g. "dali"
+  slug: string;        // URL slug, e.g. "dali"
+  label: string;       // display label, e.g. "Dalí"
   description?: string;
   category: StyleCategory;
 }
@@ -16,86 +14,98 @@ export interface StyleDefinition {
 /**
  * Central style registry.
  *
- * - `key` MUST match your Prisma enum `Style` values.
- * - `slug` is URL-safe (no spaces, no accents).
- * - `label` is what you show in the UI and can have accents/spaces.
+ * - `key` is the internal name we pass around in the app
+ * - `slug` is URL-safe (no spaces, no accents)
+ * - `label` is what you show in the UI and can have accents/spaces
  */
 export const ALL_STYLES: StyleDefinition[] = [
-  // --- Classic masters (directly mapped to your Prisma enum) ---
+  // --- Classic masters (the ones you mentioned) ---
   {
-    key: "VAN_GOGH",
-    slug: "van-gogh",
-    label: "Van Gogh",
-    description: "Vivid brushwork and expressive color.",
-    category: "classic",
-  },
-  {
-    key: "DALI",
+    key: "dali",
     slug: "dali",
     label: "Dalí",
     description: "Surreal dreamscapes and melting realities.",
     category: "classic",
   },
   {
-    key: "POLLOCK",
+    key: "pollock",
     slug: "pollock",
     label: "Jackson Pollock",
     description: "Energetic, gestural abstraction and drips.",
     category: "classic",
   },
   {
-    key: "VERMEER",
+    key: "vermeer",
     slug: "vermeer",
     label: "Johannes Vermeer",
     description: "Luminous interiors and quiet realism.",
     category: "classic",
   },
   {
-    key: "MONET",
+    key: "monet",
     slug: "monet",
     label: "Claude Monet",
     description: "Soft impressionist light and color.",
     category: "classic",
   },
   {
-    key: "PICASSO",
+    key: "picasso",
     slug: "picasso",
     label: "Pablo Picasso",
     description: "Cubist forms and bold abstraction.",
     category: "classic",
   },
   {
-    key: "REMbrandT",
-    slug: "rembrandt",
-    label: "Rembrandt",
-    description: "Dramatic chiaroscuro and portraiture.",
-    category: "classic",
-  } as StyleDefinition, // force correct type to avoid case typos
-  {
-    key: "CARAVAGGIO",
-    slug: "caravaggio",
-    label: "Caravaggio",
-    description: "High-contrast realism and baroque drama.",
-    category: "classic",
-  },
-  {
-    key: "DA_VINCI",
+    key: "da-vinci",
     slug: "da-vinci",
     label: "Leonardo da Vinci",
     description: "Renaissance mastery and sfumato portraits.",
     category: "classic",
   },
   {
-    key: "MICHELANGELO",
+    key: "rembrandt",
+    slug: "rembrandt",
+    label: "Rembrandt",
+    description: "Dramatic chiaroscuro and portraiture.",
+    category: "classic",
+  },
+  {
+    key: "caravaggio",
+    slug: "caravaggio",
+    label: "Caravaggio",
+    description: "High-contrast realism and baroque drama.",
+    category: "classic",
+  },
+  {
+    key: "michelangelo",
     slug: "michelangelo",
     label: "Michelangelo",
     description: "Monumental forms and renaissance sculpture.",
     category: "classic",
   },
 
-  // --- Optional: contemporary / experimental styles (if you want them) ---
-  // These are not in the Prisma enum but you can add them to it later if needed.
-  // For now, keep this section commented or aligned with schema if you extend it.
+  // --- Optional contemporary / experimental styles (adjust as you like) ---
+  {
+    key: "neo-noir",
+    slug: "neo-noir",
+    label: "Neo-Noir",
+    description: "High contrast, cinematic shadows and neon.",
+    category: "contemporary",
+  },
+  {
+    key: "dreamscape",
+    slug: "dreamscape",
+    label: "Dreamscape",
+    description: "Soft, hazy worlds with surreal logic.",
+    category: "contemporary",
+  },
+  {
+    key: "cyberpunk",
+    slug: "cyberpunk",
+    label: "Cyberpunk",
+    description: "Futuristic cityscapes and glowing holograms.",
+    category: "contemporary",
+  },
 ];
 
 /**
@@ -107,10 +117,7 @@ export const CLASSIC_MASTER_STYLES: StyleDefinition[] = ALL_STYLES.filter(
 
 // Internal lookup tables
 const stylesBySlug: Record<string, StyleDefinition> = {};
-const stylesByKey: Record<StyleKey, StyleDefinition> = {} as Record<
-  StyleKey,
-  StyleDefinition
->;
+const stylesByKey: Record<string, StyleDefinition> = {};
 
 for (const style of ALL_STYLES) {
   stylesBySlug[style.slug.toLowerCase()] = style;
@@ -133,7 +140,7 @@ function normalizeSlug(rawSlug: string): string {
 }
 
 /**
- * Map a URL slug like "dali" to a StyleKey like "DALI".
+ * Map a URL slug like "dali" to an internal style key like "dali".
  * Returns null if unknown, so callers can safely 404.
  */
 export function styleSlugToKey(slug: string): StyleKey | null {
@@ -143,7 +150,7 @@ export function styleSlugToKey(slug: string): StyleKey | null {
 }
 
 /**
- * Map a StyleKey to a URL slug, e.g. "DALI" → "dali".
+ * Map a style key to a URL slug, e.g. "dali" → "dali".
  */
 export function styleKeyToSlug(key: StyleKey): string | null {
   const def = stylesByKey[key];
@@ -151,7 +158,7 @@ export function styleKeyToSlug(key: StyleKey): string | null {
 }
 
 /**
- * Map a StyleKey to a human-readable label, e.g. "DALI" → "Dalí".
+ * Map a style key to a human-readable label, e.g. "dali" → "Dalí".
  */
 export function styleKeyToLabel(key: StyleKey): string | null {
   const def = stylesByKey[key];
