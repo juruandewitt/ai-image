@@ -20,7 +20,7 @@ const SLUG_TO_STYLE_KEY: Record<string, string> = {
   'michelangelo': 'MICHELANGELO',
 }
 
-// For headings
+// Headings
 const STYLE_LABELS: Record<string, string> = {
   VAN_GOGH: 'Van Gogh',
   DALI: 'Dalí',
@@ -79,16 +79,13 @@ export default async function ExploreStylePage({
 }) {
   const slug = normalizeSlug(params.style)
 
-  // Handle legacy Dalí forms (just in case)
-  const canonicalSlug = slug === 'dali' ? 'dali' : slug
-
-  const styleKey = SLUG_TO_STYLE_KEY[canonicalSlug]
+  const styleKey = SLUG_TO_STYLE_KEY[slug]
   if (!styleKey) return notFound()
 
   const label = STYLE_LABELS[styleKey] ?? styleKey
 
-  // ✅ This query matches your Explore page logic exactly
-  // Wrapped in try/catch so it NEVER becomes an "Application error" page.
+  // Query matches Explore page logic.
+  // IMPORTANT: no DOM event handlers in server components.
   let rows: {
     id: string
     title: string
@@ -119,7 +116,6 @@ export default async function ExploreStylePage({
       },
     })
   } catch (e) {
-    // Don’t crash the whole page — render a visible error instead.
     console.error('Explore style page query failed:', e)
     rows = []
   }
@@ -144,9 +140,7 @@ export default async function ExploreStylePage({
 
       {rows.length === 0 ? (
         <div className="rounded-xl border border-slate-800 bg-slate-900/40 p-4">
-          <p className="text-slate-300 text-sm">
-            No artworks found for this style yet (or the query failed).
-          </p>
+          <p className="text-slate-300 text-sm">No artworks yet.</p>
         </div>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
@@ -161,9 +155,6 @@ export default async function ExploreStylePage({
                 alt={a.title}
                 loading="lazy"
                 className="w-full aspect-square object-cover"
-                onError={(ev) => {
-                  ev.currentTarget.src = FALLBACK_DATA_URL
-                }}
               />
               <div className="p-3">
                 <div className="text-sm text-slate-300 line-clamp-1">
