@@ -1,152 +1,180 @@
 // app/explore/styles/[style]/page.tsx
 
-import { notFound } from "next/navigation";
-import Link from "next/link";
-import { prisma } from "@/lib/prisma";
-import { styleSlugToKey, styleKeyToLabel } from "@/lib/styles";
+import Link from 'next/link'
+import { notFound } from 'next/navigation'
+import { prisma } from '@/lib/prisma'
 
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic'
 
-type PageProps = {
-  params: { style: string };
-};
-
-// Simple SVG fallback so you never see the broken-image icon
-const FALLBACK_DATA_URL =
-  "data:image/svg+xml;utf8," +
-  encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="600" height="800">
-  <rect width="100%" height="100%" fill="#111827" />
-  <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
-    fill="#9CA3AF" font-size="16" font-family="system-ui, -apple-system, BlinkMacSystemFont, sans-serif">
-    No image
-  </text>
-</svg>`);
-
-// RIGHT NOW your lib/styles.ts uses keys like "dali", "pollock", etc.
-// Your Prisma enum uses "DALI", "POLLOCK", etc.
-// This map connects the two.
-const STYLE_KEY_TO_PRISMA: Record<string, string> = {
-  "dali": "DALI",
-  "pollock": "POLLOCK",
-  "vermeer": "VERMEER",
-  "monet": "MONET",
-  "picasso": "PICASSO",
-  "da-vinci": "DA_VINCI",
-  "rembrandt": "REMBRANDT",
-  "caravaggio": "CARAVAGGIO",
-  "michelangelo": "MICHELANGELO",
-  // You also have "neo-noir", "dreamscape", "cyberpunk" in lib/styles.ts,
-  // but those are not part of the Prisma enum yet, so we intentionally
-  // do NOT map them here. They will 404 if used.
-};
-
-type ArtworkRow = {
-  id: string;
-  title: string;
-  thumbnail: string | null;
-  artist: string;
-  assets: { originalUrl: string }[];
-};
-
-function pickImgSrc(a: ArtworkRow): string {
-  return a.thumbnail || a.assets?.[0]?.originalUrl || FALLBACK_DATA_URL;
+// Canonical slug -> Prisma enum key mapping (matches Explore)
+const SLUG_TO_STYLE_KEY: Record<string, string> = {
+  'van-gogh': 'VAN_GOGH',
+  'dali': 'DALI',
+  'jackson-pollock': 'POLLOCK',
+  'johannes-vermeer': 'VERMEER',
+  'claude-monet': 'MONET',
+  'pablo-picasso': 'PICASSO',
+  'rembrandt': 'REMBRANDT',
+  'caravaggio': 'CARAVAGGIO',
+  'leonardo-da-vinci': 'DA_VINCI',
+  'michelangelo': 'MICHELANGELO',
 }
 
-export default async function StyleExplorePage({ params }: PageProps) {
-  // URL param will be something like "dali", "monet", "da-vinci", etc.
-  const rawSlug = decodeURIComponent(params.style);
+// For headings
+const STYLE_LABELS: Record<string, string> = {
+  VAN_GOGH: 'Van Gogh',
+  DALI: 'Dalí',
+  POLLOCK: 'Jackson Pollock',
+  VERMEER: 'Johannes Vermeer',
+  MONET: 'Claude Monet',
+  PICASSO: 'Pablo Picasso',
+  REMBRANDT: 'Rembrandt',
+  CARAVAGGIO: 'Caravaggio',
+  DA_VINCI: 'Leonardo da Vinci',
+  MICHELANGELO: 'Michelangelo',
+}
 
-  // Map slug -> style key from lib/styles.ts (e.g. "dali")
-  const styleKey = styleSlugToKey(rawSlug);
+const FALLBACK_DATA_URL =
+  'data:image/svg+xml;utf8,' +
+  encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="800">
+      <rect width="100%" height="100%" fill="#0b1220"/>
+      <text x="50%" y="50%" fill="#94a3b8" font-family="sans-serif" font-size="18"
+        text-anchor="middle" dominant-baseline="middle">No image</text>
+    </svg>`
+  )
 
-  if (!styleKey) {
-    // Unknown slug: clean 404
-    return notFound();
+function normalizeSlug(input: string): string {
+  let s = input
+  try {
+    s = decodeURIComponent(s)
+  } catch {
+    // ignore
   }
 
-  const prismaStyle = STYLE_KEY_TO_PRISMA[styleKey];
+  // remove diacritics: dalí -> dali
+  s = s.normalize('NFKD').replace(/[\u0300-\u036f]/g, '')
 
-  if (!prismaStyle) {
-    // Known in lib/styles.ts but not in Prisma enum -> also 404
-    return notFound();
-  }
+  return s
+    .trim()
+    .toLowerCase()
+    .replace(/['"]/g, '')
+    .replace(/[_\s]+/g, '-')
+    .replace(/[^a-z0-9-]/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '')
+}
 
-  const label = styleKeyToLabel(styleKey) ?? styleKey;
+function pickImgSrc(a: {
+  thumbnail?: string | null
+  assets?: { originalUrl: string }[]
+}) {
+  return a.thumbnail || a.assets?.[0]?.originalUrl || FALLBACK_DATA_URL
+}
 
-  // Fetch artworks for this style.
-  // Matches your schema.prisma: Artwork.style is enum Style. :contentReference[oaicite:3]{index=3}
-  const artworks = (await prisma.artwork.findMany({
-    where: {
-      style: prismaStyle as any,
-      NOT: { tags: { has: "smoketest" } },
-      status: "PUBLISHED",
-    },
-    orderBy: { createdAt: "desc" },
-    select: {
-      id: true,
-      title: true,
-      thumbnail: true,
-      artist: true,
-      assets: {
-        take: 1,
-        orderBy: { createdAt: "asc" },
-        select: { originalUrl: true },
+export default async function ExploreStylePage({
+  params,
+}: {
+  params: { style: string }
+}) {
+  const slug = normalizeSlug(params.style)
+
+  // Handle legacy Dalí forms (just in case)
+  const canonicalSlug = slug === 'dali' ? 'dali' : slug
+
+  const styleKey = SLUG_TO_STYLE_KEY[canonicalSlug]
+  if (!styleKey) return notFound()
+
+  const label = STYLE_LABELS[styleKey] ?? styleKey
+
+  // ✅ This query matches your Explore page logic exactly
+  // Wrapped in try/catch so it NEVER becomes an "Application error" page.
+  let rows: {
+    id: string
+    title: string
+    style: string
+    thumbnail: string | null
+    assets: { originalUrl: string }[]
+  }[] = []
+
+  try {
+    rows = await prisma.artwork.findMany({
+      where: {
+        style: styleKey as any,
+        NOT: { tags: { has: 'smoketest' } },
+        status: 'PUBLISHED',
       },
-    },
-  })) as ArtworkRow[];
+      orderBy: { createdAt: 'desc' },
+      take: 120,
+      select: {
+        id: true,
+        title: true,
+        style: true,
+        thumbnail: true,
+        assets: {
+          take: 1,
+          orderBy: { createdAt: 'asc' },
+          select: { originalUrl: true },
+        },
+      },
+    })
+  } catch (e) {
+    // Don’t crash the whole page — render a visible error instead.
+    console.error('Explore style page query failed:', e)
+    rows = []
+  }
 
   return (
-    <main className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-4 py-10">
-      <header className="space-y-2">
-        <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-          {label}
-        </h1>
-        <p className="max-w-2xl text-sm text-muted-foreground">
-          Masterworks and AI-generated pieces inspired by {label}.
-        </p>
-        <p className="text-xs text-muted-foreground">
-          <Link href="/explore" className="underline underline-offset-4">
-            ← Back to all masters
-          </Link>
-        </p>
-      </header>
+    <div className="space-y-8">
+      <div className="flex items-baseline justify-between">
+        <div className="space-y-1">
+          <h1 className="text-3xl font-semibold">{label}</h1>
+          <p className="text-slate-400 text-sm">
+            Browse all published artworks in this master style.
+          </p>
+        </div>
 
-      {artworks.length === 0 ? (
-        <p className="text-sm text-muted-foreground">
-          No artworks have been created in this style yet.
-        </p>
+        <Link
+          href="/explore"
+          className="text-amber-400 hover:underline text-sm"
+        >
+          ← Back
+        </Link>
+      </div>
+
+      {rows.length === 0 ? (
+        <div className="rounded-xl border border-slate-800 bg-slate-900/40 p-4">
+          <p className="text-slate-300 text-sm">
+            No artworks found for this style yet (or the query failed).
+          </p>
+        </div>
       ) : (
-        <section>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {artworks.map((artwork) => (
-              <article
-                key={artwork.id}
-                className="group flex flex-col overflow-hidden rounded-2xl border bg-card shadow-sm transition hover:shadow-md"
-              >
-                <div className="relative aspect-[4/5] w-full overflow-hidden bg-muted">
-                  <img
-                    src={pickImgSrc(artwork)}
-                    alt={artwork.title}
-                    className="h-full w-full object-cover transition group-hover:scale-[1.02]"
-                    onError={(event) => {
-                      const target = event.currentTarget;
-                      target.src = FALLBACK_DATA_URL;
-                    }}
-                  />
+        <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          {rows.map((a) => (
+            <Link
+              key={a.id}
+              href={`/artwork/${a.id}`}
+              className="group block rounded-xl overflow-hidden bg-slate-900/60 border border-slate-800 hover:border-amber-400/60 transition-colors"
+            >
+              <img
+                src={pickImgSrc(a)}
+                alt={a.title}
+                loading="lazy"
+                className="w-full aspect-square object-cover"
+                onError={(ev) => {
+                  ev.currentTarget.src = FALLBACK_DATA_URL
+                }}
+              />
+              <div className="p-3">
+                <div className="text-sm text-slate-300 line-clamp-1">
+                  {a.title}
                 </div>
-                <div className="flex flex-1 flex-col gap-1 px-4 py-3">
-                  <h2 className="truncate text-sm font-medium">
-                    {artwork.title}
-                  </h2>
-                  <p className="text-xs text-muted-foreground">
-                    {artwork.artist || "Unknown artist"}
-                  </p>
-                </div>
-              </article>
-            ))}
-          </div>
-        </section>
+                <div className="text-xs text-slate-400">{label}</div>
+              </div>
+            </Link>
+          ))}
+        </div>
       )}
-    </main>
-  );
+    </div>
+  )
 }
