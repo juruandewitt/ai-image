@@ -19,6 +19,20 @@ const STYLE_LABELS: Record<string, string> = {
   MICHELANGELO: 'Michelangelo',
 }
 
+// ✅ Canonical slugs for /explore/styles/[style]
+const STYLE_SLUGS: Record<string, string> = {
+  VAN_GOGH: 'van-gogh',
+  DALI: 'dali',
+  POLLOCK: 'jackson-pollock',
+  VERMEER: 'johannes-vermeer',
+  MONET: 'claude-monet',
+  PICASSO: 'pablo-picasso',
+  REMBRANDT: 'rembrandt',
+  CARAVAGGIO: 'caravaggio',
+  DA_VINCI: 'leonardo-da-vinci',
+  MICHELANGELO: 'michelangelo',
+}
+
 // Use a stable order
 const STYLE_ORDER = Object.keys(STYLE_LABELS)
 
@@ -80,15 +94,14 @@ export default async function ExploreDirectory() {
 
       {STYLE_ORDER.map((key) => {
         const label = STYLE_LABELS[key]
+        const slug = STYLE_SLUGS[key] // ✅ fixed
         const rows = byStyle[key] || []
         return (
           <section key={key} className="space-y-4">
             <div className="flex items-baseline justify-between">
               <h2 className="text-xl font-semibold">{label}</h2>
               <Link
-                href={`/explore/styles/${encodeURIComponent(
-                  label.toLowerCase().replace(/\s+/g, '-')
-                )}`}
+                href={`/explore/styles/${slug}`}
                 className="text-amber-400 hover:underline text-sm"
               >
                 See all →
