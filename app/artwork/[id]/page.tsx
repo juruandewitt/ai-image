@@ -1,52 +1,115 @@
-import { prisma } from '@/lib/prisma'
-import Image from 'next/image'
+// app/artwork/[id]/page.tsx
+export const dynamic = 'force-dynamic'
+
+import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import { prisma } from '@/lib/prisma'
+import SafeImg from '@/components/safe-img'
 
-function money(cents: number) { return `$${(cents/100).toFixed(2)}` }
+const FALLBACK_DATA_URL =
+  'data:image/svg+xml;utf8,' +
+  encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="800" height="800">
+      <rect width="100%" height="100%" fill="#0b1220"/>
+      <text x="50%" y="50%" fill="#94a3b8" font-family="sans-serif" font-size="18"
+        text-anchor="middle" dominant-baseline="middle">No image</text>
+    </svg>`
+  )
 
-export default async function ArtworkDetail({ params }: { params: { id: string } }) {
-  const a = await prisma.artwork.findUnique({
+function pickImgSrc(a: {
+  thumbnail?: string | null
+  assets?: { originalUrl: string }[]
+}) {
+  return a.thumbnail || a.assets?.[0]?.originalUrl || FALLBACK_DATA_URL
+}
+
+export default async function ArtworkPage({
+  params,
+}: {
+  params: { id: string }
+}) {
+  const artwork = await prisma.artwork.findUnique({
     where: { id: params.id },
-    include: { assets: { include: { variants: true } } }
+    select: {
+      id: true,
+      title: true,
+      style: true,
+      artist: true,
+      thumbnail: true,
+      assets: {
+        orderBy: { createdAt: 'asc' },
+        select: {
+          id: true,
+          originalUrl: true,
+        },
+      },
+    },
   })
-  if (!a) return notFound()
 
-  const variants = a.assets.flatMap(x => x.variants).sort((x,y) => x.width - y.width || x.format.localeCompare(y.format))
-  const first = variants[0]
+  if (!artwork) return notFound()
+
+  const mainSrc = pickImgSrc(artwork)
+
+  // Build a small gallery list (unique, truthy)
+  const gallery = Array.from(
+    new Set(
+      [
+        artwork.thumbnail ?? '',
+        ...(artwork.assets?.map((a) => a.originalUrl ?? '') ?? []),
+      ].filter((x) => typeof x === 'string' && x.length > 0)
+    )
+  )
 
   return (
-    <div className="space-y-10">
-      <div className="grid md:grid-cols-2 gap-8">
-        <div className="aspect-[4/3] relative rounded-lg overflow-hidden border border-white/10">
-          <Image src={a.thumbnail} alt={a.title} fill className="object-cover" />
+    <div className="space-y-6">
+      <div className="flex items-baseline justify-between">
+        <div>
+          <h1 className="text-2xl font-semibold text-slate-100">
+            {artwork.title}
+          </h1>
+          <p className="text-sm text-slate-400">
+            {artwork.artist} • {String(artwork.style)}
+          </p>
         </div>
-        <div className="space-y-6">
-          <div>
-            <h1 className="text-3xl font-bold text-white">{a.title}</h1>
-            <p className="text-neutral-300">by {a.artist}</p>
-          </div>
 
-          {/* Variant selector */}
-          <form action="/api/checkout" method="POST" className="space-y-3">
-            <input type="hidden" name="artworkId" value={a.id} />
-            <label className="block text-sm opacity-80">Choose format</label>
-            <select name="format" className="rounded-md border border-white/10 bg-black/30 px-3 py-2">
-              {[...new Set(variants.map(v=>v.format))].map(fmt => <option key={fmt} value={fmt}>{fmt}</option>)}
-            </select>
-            <label className="block text-sm opacity-80">Choose resolution</label>
-            <select name="resolution" className="rounded-md border border-white/10 bg-black/30 px-3 py-2">
-              {[...new Set(variants.map(v=>v.width))].map(w => <option key={w} value={w}>{w} × {w}</option>)}
-            </select>
-
-            {/* For now we compute on server side in /api/checkout using selected format/resolution */}
-            <button className="inline-flex items-center px-4 py-2 rounded-md bg-indigo-600 text-white">
-              Buy now
-            </button>
-          </form>
-
-          {first && <p className="text-sm text-neutral-400">From {money(first.priceCents)} · Higher resolutions cost more</p>}
-        </div>
+        <Link href="/explore" className="text-amber-400 hover:underline text-sm">
+          ← Back to Explore
+        </Link>
       </div>
+
+      {/* Main image */}
+      <div className="rounded-2xl overflow-hidden border border-slate-800 bg-slate-900/40">
+        <SafeImg
+          src={mainSrc}
+          fallbackSrc={FALLBACK_DATA_URL}
+          alt={artwork.title}
+          className="w-full max-h-[78vh] object-contain bg-black/30"
+          loading="eager"
+        />
+      </div>
+
+      {/* Optional thumbnail strip */}
+      {gallery.length > 1 ? (
+        <div className="space-y-2">
+          <div className="text-sm text-slate-400">More</div>
+          <div className="grid gap-3 grid-cols-3 sm:grid-cols-4 md:grid-cols-6">
+            {gallery.slice(0, 12).map((src) => (
+              <div
+                key={src}
+                className="rounded-xl overflow-hidden border border-slate-800 bg-slate-900/40"
+              >
+                <SafeImg
+                  src={src}
+                  fallbackSrc={FALLBACK_DATA_URL}
+                  alt={artwork.title}
+                  className="w-full aspect-square object-cover"
+                  loading="lazy"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : null}
     </div>
   )
 }
