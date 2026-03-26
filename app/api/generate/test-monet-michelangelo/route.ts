@@ -46,29 +46,56 @@ const ITEMS = [
   { title: "Last Supper in Michelangelo Style", style: "MICHELANGELO", prompt: "Last Supper Michelangelo style" },
 ]
 
-export async function GET() {
-  const results = []
+export async function GET(request: Request) {
+  const origin = new URL(request.url).origin
+  const endpoint = `${origin}/api/generate/master`
+
+  const results: { title: string; success: boolean; status?: number; error?: string }[] = []
 
   for (const item of ITEMS) {
     try {
-      const res = await fetch(`/api/generate/master`, {
+      const res = await fetch(endpoint, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify(item),
+        cache: 'no-store',
       })
 
       if (!res.ok) {
-        results.push({ title: item.title, success: false })
+        let errorText = ''
+        try {
+          errorText = await res.text()
+        } catch {
+          errorText = 'Request failed'
+        }
+
+        results.push({
+          title: item.title,
+          success: false,
+          status: res.status,
+          error: errorText.slice(0, 300),
+        })
       } else {
-        results.push({ title: item.title, success: true })
+        results.push({
+          title: item.title,
+          success: true,
+          status: res.status,
+        })
       }
     } catch (err) {
-      results.push({ title: item.title, success: false })
+      results.push({
+        title: item.title,
+        success: false,
+        error: err instanceof Error ? err.message : 'Unknown error',
+      })
     }
   }
 
   return NextResponse.json({
     message: 'Test batch complete',
+    endpoint,
     results,
   })
 }
