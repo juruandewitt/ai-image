@@ -48,18 +48,17 @@ const ITEMS = [
 
 export async function GET(request: Request) {
   const origin = new URL(request.url).origin
-  const endpoint = `${origin}/api/generate/master`
-
   const results: { title: string; success: boolean; status?: number; error?: string }[] = []
 
   for (const item of ITEMS) {
     try {
-      const res = await fetch(endpoint, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(item),
+      const url = new URL('/api/generate/master', origin)
+      url.searchParams.set('title', item.title)
+      url.searchParams.set('style', item.style)
+      url.searchParams.set('prompt', item.prompt)
+
+      const res = await fetch(url.toString(), {
+        method: 'GET',
         cache: 'no-store',
       })
 
@@ -95,7 +94,6 @@ export async function GET(request: Request) {
 
   return NextResponse.json({
     message: 'Test batch complete',
-    endpoint,
     results,
   })
 }
