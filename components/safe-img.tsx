@@ -16,7 +16,12 @@ const FALLBACK_DATA_URL =
     </svg>`
   )
 
-export default function SafeImg({ src, fallbackSrc, ...props }: Props) {
+export default function SafeImg({
+  src,
+  fallbackSrc,
+  onError,
+  ...props
+}: Props) {
   const initial =
     (typeof src === 'string' && src.length > 0 ? src : undefined) ??
     fallbackSrc ??
@@ -24,7 +29,6 @@ export default function SafeImg({ src, fallbackSrc, ...props }: Props) {
 
   const [currentSrc, setCurrentSrc] = React.useState<string>(initial)
 
-  // If parent changes src, update (important when navigating between artworks)
   React.useEffect(() => {
     const next =
       (typeof src === 'string' && src.length > 0 ? src : undefined) ??
@@ -37,9 +41,12 @@ export default function SafeImg({ src, fallbackSrc, ...props }: Props) {
     <img
       {...props}
       src={currentSrc}
-      onError={() => {
+      onError={(event) => {
         const fb = fallbackSrc ?? FALLBACK_DATA_URL
-        if (currentSrc !== fb) setCurrentSrc(fb)
+        if (currentSrc !== fb) {
+          setCurrentSrc(fb)
+        }
+        onError?.(event)
       }}
     />
   )
