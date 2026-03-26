@@ -99,7 +99,7 @@ async function handleGenerate(input: Input) {
     )
   }
 
-  // Avoid accidental duplicates
+  // Prevent duplicates
   const existing = await prisma.artwork.findFirst({
     where: {
       title,
@@ -130,6 +130,7 @@ async function handleGenerate(input: Input) {
       thumbnail: imageUrl,
       status: 'PUBLISHED' as any,
       tags: [],
+      price: 9.99,
     },
     select: {
       id: true,
@@ -137,6 +138,7 @@ async function handleGenerate(input: Input) {
       style: true,
       artist: true,
       thumbnail: true,
+      price: true,
     },
   })
 
