@@ -3,10 +3,14 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
+import SafeImg from '@/components/safe-img'
 
 export const dynamic = 'force-dynamic'
 
-// Canonical slug -> Prisma enum key mapping (matches Explore)
+const TARGET_TOTAL = 100
+const TARGET_REAL = 50
+
+// Canonical slug -> Prisma enum key mapping
 const SLUG_TO_STYLE_KEY: Record<string, string> = {
   'van-gogh': 'VAN_GOGH',
   'dali': 'DALI',
@@ -34,6 +38,18 @@ const STYLE_LABELS: Record<string, string> = {
   MICHELANGELO: 'Michelangelo',
 }
 
+const FALLBACK_DATA_URL =
+  'data:image/svg+xml;utf8,' +
+  encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="800" height="800">
+      <rect width="100%" height="100%" fill="#0b1220"/>
+      <text x="50%" y="46%" fill="#cbd5e1" font-family="sans-serif" font-size="24"
+        text-anchor="middle" dominant-baseline="middle">Coming Soon</text>
+      <text x="50%" y="54%" fill="#94a3b8" font-family="sans-serif" font-size="15"
+        text-anchor="middle" dominant-baseline="middle">Artwork placeholder</text>
+    </svg>`
+  )
+
 function normalizeSlug(input: string): string {
   let s = input
   try {
@@ -56,27 +72,57 @@ function normalizeSlug(input: string): string {
 
 function pickImgSrc(a: {
   thumbnail?: string | null
-  assets?: { originalUrl: string }[]
+  assets?: { originalUrl: string | null }[]
 }) {
   return a.thumbnail || a.assets?.[0]?.originalUrl || null
 }
 
-function hasRealImage(a: {
+function hasUsableImage(a: {
   thumbnail?: string | null
-  assets?: { originalUrl: string }[]
+  assets?: { originalUrl: string | null }[]
 }) {
   const src = pickImgSrc(a)
   if (!src) return false
 
   const lower = src.toLowerCase()
 
-  // Hide obvious placeholders / broken defaults
+  // Hide obvious placeholders / empty defaults
   if (lower.includes('placeholder')) return false
   if (lower.includes('no-image')) return false
   if (lower.includes('no%20image')) return false
   if (lower.startsWith('data:image/svg+xml')) return false
 
   return true
+}
+
+type RealRow = {
+  kind: 'real'
+  id: string
+  title: string
+  style: string
+  thumbnail: string | null
+  assets: { originalUrl: string | null }[]
+}
+
+type PlaceholderRow = {
+  kind: 'placeholder'
+  id: string
+  title: string
+  description: string
+}
+
+type CardRow = RealRow | PlaceholderRow
+
+function buildPlaceholders(label: string, count: number, startIndex: number): PlaceholderRow[] {
+  return Array.from({ length: count }, (_, i) => {
+    const num = startIndex + i + 1
+    return {
+      kind: 'placeholder' as const,
+      id: `placeholder-${label}-${num}`,
+      title: `${label} Mock-up ${num}`,
+      description: `Reimagined ${label} work coming soon`,
+    }
+  })
 }
 
 export default async function ExploreStylePage({
@@ -91,23 +137,17 @@ export default async function ExploreStylePage({
 
   const label = STYLE_LABELS[styleKey] ?? styleKey
 
-  let rows: {
-    id: string
-    title: string
-    style: string
-    thumbnail: string | null
-    assets: { originalUrl: string }[]
-  }[] = []
+  let rows: RealRow[] = []
 
   try {
-    rows = await prisma.artwork.findMany({
+    const dbRows = await prisma.artwork.findMany({
       where: {
         style: styleKey as any,
         NOT: { tags: { has: 'smoketest' } },
         status: 'PUBLISHED',
       },
       orderBy: { createdAt: 'desc' },
-      take: 150,
+      take: 200,
       select: {
         id: true,
         title: true,
@@ -120,13 +160,28 @@ export default async function ExploreStylePage({
         },
       },
     })
+
+    rows = dbRows.map((row) => ({
+      kind: 'real' as const,
+      id: row.id,
+      title: row.title,
+      style: row.style as string,
+      thumbnail: row.thumbnail,
+      assets: row.assets,
+    }))
   } catch (e) {
     console.error('Explore style page query failed:', e)
     rows = []
   }
 
-  // ✅ Only show artworks with real images
-  const visibleRows = rows.filter(hasRealImage)
+  // Keep only rows with a usable image, then cap at 50 real artworks
+  const realRows = rows.filter(hasUsableImage).slice(0, TARGET_REAL)
+
+  // Fill the remaining slots with placeholders until we reach 100 total
+  const placeholderCount = Math.max(0, TARGET_TOTAL - realRows.length)
+  const placeholderRows = buildPlaceholders(label, placeholderCount, realRows.length)
+
+  const visibleRows: CardRow[] = [...realRows, ...placeholderRows]
 
   return (
     <div className="space-y-8">
@@ -137,7 +192,7 @@ export default async function ExploreStylePage({
             Browse all published artworks in this master style.
           </p>
           <p className="text-slate-500 text-xs">
-            Showing {visibleRows.length} available works
+            Showing {realRows.length} real works and {placeholderRows.length} placeholders
           </p>
         </div>
 
@@ -152,32 +207,59 @@ export default async function ExploreStylePage({
       {visibleRows.length === 0 ? (
         <div className="rounded-xl border border-slate-800 bg-slate-900/40 p-4">
           <p className="text-slate-300 text-sm">
-            No published artworks with valid images found for this style yet.
+            No artworks found for this style yet.
           </p>
         </div>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          {visibleRows.map((a) => {
-            const src = pickImgSrc(a)
+          {visibleRows.map((row) => {
+            if (row.kind === 'real') {
+              const src = pickImgSrc(row) ?? FALLBACK_DATA_URL
+
+              return (
+                <Link
+                  key={row.id}
+                  href={`/artwork/${row.id}`}
+                  className="group block rounded-xl overflow-hidden bg-slate-900/60 border border-slate-800 hover:border-amber-400/60 transition-colors"
+                >
+                  <SafeImg
+                    src={src}
+                    fallbackSrc={FALLBACK_DATA_URL}
+                    alt={row.title}
+                    className="w-full aspect-square object-cover"
+                    loading="lazy"
+                  />
+                  <div className="p-3">
+                    <div className="text-sm text-slate-300 line-clamp-1">
+                      {row.title}
+                    </div>
+                    <div className="text-xs text-slate-400">{label}</div>
+                  </div>
+                </Link>
+              )
+            }
+
             return (
-              <Link
-                key={a.id}
-                href={`/artwork/${a.id}`}
-                className="group block rounded-xl overflow-hidden bg-slate-900/60 border border-slate-800 hover:border-amber-400/60 transition-colors"
+              <div
+                key={row.id}
+                className="rounded-xl overflow-hidden bg-slate-900/40 border border-dashed border-slate-700"
               >
-                <img
-                  src={src ?? ''}
-                  alt={a.title}
-                  loading="lazy"
+                <SafeImg
+                  src={FALLBACK_DATA_URL}
+                  fallbackSrc={FALLBACK_DATA_URL}
+                  alt={row.title}
                   className="w-full aspect-square object-cover"
+                  loading="lazy"
                 />
                 <div className="p-3">
                   <div className="text-sm text-slate-300 line-clamp-1">
-                    {a.title}
+                    {row.title}
                   </div>
-                  <div className="text-xs text-slate-400">{label}</div>
+                  <div className="text-xs text-slate-400">
+                    {row.description}
+                  </div>
                 </div>
-              </Link>
+              </div>
             )
           })}
         </div>
