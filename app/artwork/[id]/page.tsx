@@ -1,10 +1,9 @@
 // app/artwork/[id]/page.tsx
 export const dynamic = 'force-dynamic'
 
-import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
-import SafeImg from '@/components/safe-img'
+import ArtworkDetailClient from '@/components/artwork-detail-client'
 
 const FALLBACK_DATA_URL =
   'data:image/svg+xml;utf8,' +
@@ -50,7 +49,6 @@ export default async function ArtworkPage({
 
   const mainSrc = pickImgSrc(artwork)
 
-  // Build a small gallery list (unique, truthy)
   const gallery = Array.from(
     new Set(
       [
@@ -61,55 +59,12 @@ export default async function ArtworkPage({
   )
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-baseline justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold text-slate-100">
-            {artwork.title}
-          </h1>
-          <p className="text-sm text-slate-400">
-            {artwork.artist} • {String(artwork.style)}
-          </p>
-        </div>
-
-        <Link href="/explore" className="text-amber-400 hover:underline text-sm">
-          ← Back to Explore
-        </Link>
-      </div>
-
-      {/* Main image */}
-      <div className="rounded-2xl overflow-hidden border border-slate-800 bg-slate-900/40">
-        <SafeImg
-          src={mainSrc}
-          fallbackSrc={FALLBACK_DATA_URL}
-          alt={artwork.title}
-          className="w-full max-h-[78vh] object-contain bg-black/30"
-          loading="eager"
-        />
-      </div>
-
-      {/* Optional thumbnail strip */}
-      {gallery.length > 1 ? (
-        <div className="space-y-2">
-          <div className="text-sm text-slate-400">More</div>
-          <div className="grid gap-3 grid-cols-3 sm:grid-cols-4 md:grid-cols-6">
-            {gallery.slice(0, 12).map((src) => (
-              <div
-                key={src}
-                className="rounded-xl overflow-hidden border border-slate-800 bg-slate-900/40"
-              >
-                <SafeImg
-                  src={src}
-                  fallbackSrc={FALLBACK_DATA_URL}
-                  alt={artwork.title}
-                  className="w-full aspect-square object-cover"
-                  loading="lazy"
-                />
-              </div>
-            ))}
-          </div>
-        </div>
-      ) : null}
-    </div>
+    <ArtworkDetailClient
+      title={artwork.title}
+      artist={artwork.artist}
+      style={String(artwork.style)}
+      mainSrc={mainSrc}
+      gallery={gallery}
+    />
   )
 }
