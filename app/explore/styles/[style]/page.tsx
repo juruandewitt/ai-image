@@ -20,7 +20,7 @@ const SLUG_TO_STYLE_KEY: Record<string, string> = {
   'michelangelo': 'MICHELANGELO',
 }
 
-// Headings
+// Page headings
 const STYLE_LABELS: Record<string, string> = {
   VAN_GOGH: 'Van Gogh',
   DALI: 'Dalí',
@@ -34,16 +34,6 @@ const STYLE_LABELS: Record<string, string> = {
   MICHELANGELO: 'Michelangelo',
 }
 
-const FALLBACK_DATA_URL =
-  'data:image/svg+xml;utf8,' +
-  encodeURIComponent(
-    `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="800">
-      <rect width="100%" height="100%" fill="#0b1220"/>
-      <text x="50%" y="50%" fill="#94a3b8" font-family="sans-serif" font-size="18"
-        text-anchor="middle" dominant-baseline="middle">No image</text>
-    </svg>`
-  )
-
 function normalizeSlug(input: string): string {
   let s = input
   try {
@@ -52,7 +42,6 @@ function normalizeSlug(input: string): string {
     // ignore
   }
 
-  // remove diacritics: dalí -> dali
   s = s.normalize('NFKD').replace(/[\u0300-\u036f]/g, '')
 
   return s
@@ -69,7 +58,25 @@ function pickImgSrc(a: {
   thumbnail?: string | null
   assets?: { originalUrl: string }[]
 }) {
-  return a.thumbnail || a.assets?.[0]?.originalUrl || FALLBACK_DATA_URL
+  return a.thumbnail || a.assets?.[0]?.originalUrl || null
+}
+
+function hasRealImage(a: {
+  thumbnail?: string | null
+  assets?: { originalUrl: string }[]
+}) {
+  const src = pickImgSrc(a)
+  if (!src) return false
+
+  const lower = src.toLowerCase()
+
+  // Hide obvious placeholders / broken defaults
+  if (lower.includes('placeholder')) return false
+  if (lower.includes('no-image')) return false
+  if (lower.includes('no%20image')) return false
+  if (lower.startsWith('data:image/svg+xml')) return false
+
+  return true
 }
 
 export default async function ExploreStylePage({
@@ -78,14 +85,12 @@ export default async function ExploreStylePage({
   params: { style: string }
 }) {
   const slug = normalizeSlug(params.style)
-
   const styleKey = SLUG_TO_STYLE_KEY[slug]
+
   if (!styleKey) return notFound()
 
   const label = STYLE_LABELS[styleKey] ?? styleKey
 
-  // Query matches Explore page logic.
-  // IMPORTANT: no DOM event handlers in server components.
   let rows: {
     id: string
     title: string
@@ -102,7 +107,7 @@ export default async function ExploreStylePage({
         status: 'PUBLISHED',
       },
       orderBy: { createdAt: 'desc' },
-      take: 120,
+      take: 150,
       select: {
         id: true,
         title: true,
@@ -120,6 +125,9 @@ export default async function ExploreStylePage({
     rows = []
   }
 
+  // ✅ Only show artworks with real images
+  const visibleRows = rows.filter(hasRealImage)
+
   return (
     <div className="space-y-8">
       <div className="flex items-baseline justify-between">
@@ -127,6 +135,9 @@ export default async function ExploreStylePage({
           <h1 className="text-3xl font-semibold">{label}</h1>
           <p className="text-slate-400 text-sm">
             Browse all published artworks in this master style.
+          </p>
+          <p className="text-slate-500 text-xs">
+            Showing {visibleRows.length} available works
           </p>
         </div>
 
@@ -138,32 +149,37 @@ export default async function ExploreStylePage({
         </Link>
       </div>
 
-      {rows.length === 0 ? (
+      {visibleRows.length === 0 ? (
         <div className="rounded-xl border border-slate-800 bg-slate-900/40 p-4">
-          <p className="text-slate-300 text-sm">No artworks yet.</p>
+          <p className="text-slate-300 text-sm">
+            No published artworks with valid images found for this style yet.
+          </p>
         </div>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          {rows.map((a) => (
-            <Link
-              key={a.id}
-              href={`/artwork/${a.id}`}
-              className="group block rounded-xl overflow-hidden bg-slate-900/60 border border-slate-800 hover:border-amber-400/60 transition-colors"
-            >
-              <img
-                src={pickImgSrc(a)}
-                alt={a.title}
-                loading="lazy"
-                className="w-full aspect-square object-cover"
-              />
-              <div className="p-3">
-                <div className="text-sm text-slate-300 line-clamp-1">
-                  {a.title}
+          {visibleRows.map((a) => {
+            const src = pickImgSrc(a)
+            return (
+              <Link
+                key={a.id}
+                href={`/artwork/${a.id}`}
+                className="group block rounded-xl overflow-hidden bg-slate-900/60 border border-slate-800 hover:border-amber-400/60 transition-colors"
+              >
+                <img
+                  src={src ?? ''}
+                  alt={a.title}
+                  loading="lazy"
+                  className="w-full aspect-square object-cover"
+                />
+                <div className="p-3">
+                  <div className="text-sm text-slate-300 line-clamp-1">
+                    {a.title}
+                  </div>
+                  <div className="text-xs text-slate-400">{label}</div>
                 </div>
-                <div className="text-xs text-slate-400">{label}</div>
-              </div>
-            </Link>
-          ))}
+              </Link>
+            )
+          })}
         </div>
       )}
     </div>
