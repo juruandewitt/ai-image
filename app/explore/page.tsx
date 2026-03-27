@@ -1,11 +1,10 @@
 // app/explore/page.tsx
 export const dynamic = 'force-dynamic'
+
 import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
+import SafeImg from '@/components/safe-img'
 
-/**
- * Styles we support. Keys must match your Prisma enum values for Artwork.style
- */
 const STYLE_LABELS: Record<string, string> = {
   VAN_GOGH: 'Van Gogh',
   DALI: 'Dalí',
@@ -19,7 +18,6 @@ const STYLE_LABELS: Record<string, string> = {
   MICHELANGELO: 'Michelangelo',
 }
 
-// ✅ Canonical slugs for /explore/styles/[style]
 const STYLE_SLUGS: Record<string, string> = {
   VAN_GOGH: 'van-gogh',
   DALI: 'dali',
@@ -33,24 +31,28 @@ const STYLE_SLUGS: Record<string, string> = {
   MICHELANGELO: 'michelangelo',
 }
 
-// Use a stable order
 const STYLE_ORDER = Object.keys(STYLE_LABELS)
 
 const FALLBACK_DATA_URL =
   'data:image/svg+xml;utf8,' +
   encodeURIComponent(
-    `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600"><rect width="100%" height="100%" fill="#0b1220"/><text x="50%" y="50%" fill="#94a3b8" font-family="sans-serif" font-size="20" text-anchor="middle" dominant-baseline="middle">No image</text></svg>`
+    `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600">
+      <rect width="100%" height="100%" fill="#0b1220"/>
+      <text x="50%" y="46%" fill="#cbd5e1" font-family="sans-serif" font-size="22"
+        text-anchor="middle" dominant-baseline="middle">Coming Soon</text>
+      <text x="50%" y="54%" fill="#94a3b8" font-family="sans-serif" font-size="14"
+        text-anchor="middle" dominant-baseline="middle">Artwork placeholder</text>
+    </svg>`
   )
 
 function pickImgSrc(a: {
   thumbnail?: string | null
-  assets?: { originalUrl: string }[]
+  assets?: { originalUrl: string | null }[]
 }) {
   return a.thumbnail || a.assets?.[0]?.originalUrl || FALLBACK_DATA_URL
 }
 
 export default async function ExploreDirectory() {
-  // For each style, load up to 12 recent (excluding smoketest)
   const perStyleTake = 12
 
   const byStyle: Record<
@@ -60,7 +62,7 @@ export default async function ExploreDirectory() {
       title: string
       style: string
       thumbnail: string | null
-      assets: { originalUrl: string }[]
+      assets: { originalUrl: string | null }[]
     }[]
   > = {}
 
@@ -85,6 +87,7 @@ export default async function ExploreDirectory() {
         },
       },
     })
+
     byStyle[key] = rows
   }
 
@@ -94,8 +97,9 @@ export default async function ExploreDirectory() {
 
       {STYLE_ORDER.map((key) => {
         const label = STYLE_LABELS[key]
-        const slug = STYLE_SLUGS[key] // ✅ fixed
+        const slug = STYLE_SLUGS[key]
         const rows = byStyle[key] || []
+
         return (
           <section key={key} className="space-y-4">
             <div className="flex items-baseline justify-between">
@@ -118,9 +122,9 @@ export default async function ExploreDirectory() {
                     href={`/artwork/${a.id}`}
                     className="group block rounded-xl overflow-hidden bg-slate-900/60 border border-slate-800 hover:border-amber-400/60 transition-colors"
                   >
-                    {/* Plain <img> to avoid next/image domain issues */}
-                    <img
+                    <SafeImg
                       src={pickImgSrc(a)}
+                      fallbackSrc={FALLBACK_DATA_URL}
                       alt={a.title}
                       loading="lazy"
                       className="w-full aspect-square object-cover"
