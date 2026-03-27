@@ -10,7 +10,6 @@ export const dynamic = 'force-dynamic'
 const TARGET_TOTAL = 100
 const TARGET_REAL = 50
 
-// Canonical slug -> Prisma enum key mapping
 const SLUG_TO_STYLE_KEY: Record<string, string> = {
   'van-gogh': 'VAN_GOGH',
   'dali': 'DALI',
@@ -24,7 +23,6 @@ const SLUG_TO_STYLE_KEY: Record<string, string> = {
   'michelangelo': 'MICHELANGELO',
 }
 
-// Page headings
 const STYLE_LABELS: Record<string, string> = {
   VAN_GOGH: 'Van Gogh',
   DALI: 'Dalí',
@@ -50,13 +48,11 @@ const FALLBACK_DATA_URL =
     </svg>`
   )
 
-function normalizeSlug(input: string): string {
+function normalizeSlug(input: string) {
   let s = input
   try {
     s = decodeURIComponent(s)
-  } catch {
-    // ignore
-  }
+  } catch {}
 
   s = s.normalize('NFKD').replace(/[\u0300-\u036f]/g, '')
 
@@ -85,8 +81,6 @@ function hasUsableImage(a: {
   if (!src) return false
 
   const lower = src.toLowerCase()
-
-  // Hide obvious placeholders / empty defaults
   if (lower.includes('placeholder')) return false
   if (lower.includes('no-image')) return false
   if (lower.includes('no%20image')) return false
@@ -174,10 +168,7 @@ export default async function ExploreStylePage({
     rows = []
   }
 
-  // Keep only rows with a usable image, then cap at 50 real artworks
   const realRows = rows.filter(hasUsableImage).slice(0, TARGET_REAL)
-
-  // Fill the remaining slots with placeholders until we reach 100 total
   const placeholderCount = Math.max(0, TARGET_TOTAL - realRows.length)
   const placeholderRows = buildPlaceholders(label, placeholderCount, realRows.length)
 
@@ -196,10 +187,7 @@ export default async function ExploreStylePage({
           </p>
         </div>
 
-        <Link
-          href="/explore"
-          className="text-amber-400 hover:underline text-sm"
-        >
+        <Link href="/explore" className="text-amber-400 hover:underline text-sm">
           ← Back
         </Link>
       </div>
