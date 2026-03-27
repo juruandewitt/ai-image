@@ -16,6 +16,8 @@ const STYLE_LABELS: Record<string, string> = {
   MICHELANGELO: 'Michelangelo',
 }
 
+const DEFAULT_ASSET_PROVIDER = 'openai'
+
 type Input = {
   title: string
   style: string
@@ -82,7 +84,11 @@ async function generateImageUrl(prompt: string) {
   return imageUrl
 }
 
-async function ensureArtworkHasImageData(artworkId: string, imageUrl: string) {
+async function ensureArtworkHasImageData(
+  artworkId: string,
+  imageUrl: string,
+  prompt: string
+) {
   const existingArtwork = await prisma.artwork.findUnique({
     where: { id: artworkId },
     select: {
@@ -118,6 +124,8 @@ async function ensureArtworkHasImageData(artworkId: string, imageUrl: string) {
       data: {
         artworkId,
         originalUrl: imageUrl,
+        provider: DEFAULT_ASSET_PROVIDER,
+        prompt,
       },
     })
   }
@@ -183,7 +191,7 @@ async function handleGenerate(input: Input) {
       null
 
     if (usableExistingSrc) {
-      await ensureArtworkHasImageData(existing.id, usableExistingSrc)
+      await ensureArtworkHasImageData(existing.id, usableExistingSrc, prompt)
     }
 
     const refreshed = await prisma.artwork.findUnique({
@@ -238,6 +246,8 @@ async function handleGenerate(input: Input) {
     data: {
       artworkId: artwork.id,
       originalUrl: imageUrl,
+      provider: DEFAULT_ASSET_PROVIDER,
+      prompt,
     },
   })
 
