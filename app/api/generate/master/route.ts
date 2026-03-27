@@ -30,6 +30,20 @@ function normalizeInput(input: Partial<Input>): Input {
   }
 }
 
+function isUsableSrc(value?: string | null) {
+  if (!value) return false
+  const src = value.trim()
+  if (!src) return false
+
+  const lower = src.toLowerCase()
+  if (lower.includes('placeholder')) return false
+  if (lower.includes('no-image')) return false
+  if (lower.includes('no%20image')) return false
+  if (lower.startsWith('data:image/svg+xml')) return false
+
+  return true
+}
+
 async function generateImageUrl(prompt: string) {
   const apiKey = process.env.OPENAI_API_KEY
   if (!apiKey) {
@@ -68,6 +82,50 @@ async function generateImageUrl(prompt: string) {
   return imageUrl
 }
 
+async function ensureArtworkHasImageData(artworkId: string, imageUrl: string) {
+  const existingAssets = await prisma.asset.findMany({
+    where: { artworkId },
+    select: {
+      id: true,
+      originalUrl: true,
+    },
+    orderBy: { createdAt: 'asc' },
+  })
+
+  const hasUsableAsset = existingAssets.some((a) => isUsableSrc(a.originalUrl))
+
+  const artwork = await prisma.artwork.findUnique({
+    where: { id: artworkId },
+    select: {
+      id: true,
+      thumbnail: true,
+    },
+  })
+
+  const needsThumbnail = !isUsableSrc(artwork?.thumbnail)
+  const needsAsset = !hasUsableAsset
+
+  if (!needsThumbnail && !needsAsset) {
+    return
+  }
+
+  await prisma.artwork.update({
+    where: { id: artworkId },
+    data: {
+      ...(needsThumbnail ? { thumbnail: imageUrl } : {}),
+      ...(needsAsset
+        ? {
+            assets: {
+              create: {
+                originalUrl: imageUrl,
+              },
+            },
+          }
+        : {}),
+    },
+  })
+}
+
 async function handleGenerate(input: Input) {
   const { title, style, prompt } = input
 
@@ -99,7 +157,7 @@ async function handleGenerate(input: Input) {
     )
   }
 
-  // Prevent duplicates
+  // Check for existing artwork first
   const existing = await prisma.artwork.findFirst({
     where: {
       title,
@@ -108,15 +166,54 @@ async function handleGenerate(input: Input) {
     select: {
       id: true,
       title: true,
+      style: true,
+      artist: true,
       thumbnail: true,
+      price: true,
+      assets: {
+        orderBy: { createdAt: 'asc' },
+        select: {
+          id: true,
+          originalUrl: true,
+        },
+      },
     },
   })
 
   if (existing) {
+    const usableExistingSrc =
+      (isUsableSrc(existing.thumbnail) && existing.thumbnail) ||
+      existing.assets.find((a) => isUsableSrc(a.originalUrl))?.originalUrl ||
+      null
+
+    // Repair older records if they exist but do not have proper image linkage
+    if (usableExistingSrc) {
+      await ensureArtworkHasImageData(existing.id, usableExistingSrc)
+    }
+
+    const refreshed = await prisma.artwork.findUnique({
+      where: { id: existing.id },
+      select: {
+        id: true,
+        title: true,
+        style: true,
+        artist: true,
+        thumbnail: true,
+        price: true,
+        assets: {
+          orderBy: { createdAt: 'asc' },
+          select: {
+            id: true,
+            originalUrl: true,
+          },
+        },
+      },
+    })
+
     return NextResponse.json({
       ok: true,
       reused: true,
-      artwork: existing,
+      artwork: refreshed,
     })
   }
 
@@ -131,6 +228,11 @@ async function handleGenerate(input: Input) {
       status: 'PUBLISHED' as any,
       tags: [],
       price: 9.99,
+      assets: {
+        create: {
+          originalUrl: imageUrl,
+        },
+      },
     },
     select: {
       id: true,
@@ -139,6 +241,13 @@ async function handleGenerate(input: Input) {
       artist: true,
       thumbnail: true,
       price: true,
+      assets: {
+        orderBy: { createdAt: 'asc' },
+        select: {
+          id: true,
+          originalUrl: true,
+        },
+      },
     },
   })
 
