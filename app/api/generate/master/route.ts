@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { put } from '@vercel/blob'
 import { prisma } from '@/lib/prisma'
 
 export const dynamic = 'force-dynamic'
@@ -16,7 +17,7 @@ const STYLE_LABELS: Record<string, string> = {
   MICHELANGELO: 'Michelangelo',
 }
 
-const DEFAULT_ASSET_PROVIDER = 'openai'
+const DEFAULT_ASSET_PROVIDER = 'vercel-blob'
 
 type Input = {
   title: string
@@ -46,7 +47,17 @@ function isUsableSrc(value?: string | null) {
   return true
 }
 
-async function generateImageUrl(prompt: string) {
+function safeFilePart(value: string) {
+  return value
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 80)
+}
+
+async function generateOpenAiImageUrl(prompt: string) {
   const apiKey = process.env.OPENAI_API_KEY
   if (!apiKey) {
     throw new Error('Missing OPENAI_API_KEY')
@@ -84,9 +95,35 @@ async function generateImageUrl(prompt: string) {
   return imageUrl
 }
 
+async function uploadImageToBlob(openAiUrl: string, style: string, title: string) {
+  const imageRes = await fetch(openAiUrl, { cache: 'no-store' })
+
+  if (!imageRes.ok) {
+    const text = await imageRes.text().catch(() => '')
+    throw new Error(`Failed to download generated image (${imageRes.status}): ${text}`)
+  }
+
+  const contentType = imageRes.headers.get('content-type') || 'image/png'
+  const arrayBuffer = await imageRes.arrayBuffer()
+
+  const path = `artworks/${safeFilePart(style)}/${safeFilePart(title)}.png`
+
+  const blob = await put(path, arrayBuffer, {
+    access: 'public',
+    addRandomSuffix: true,
+    contentType,
+  })
+
+  if (!blob?.url) {
+    throw new Error('Failed to upload generated image to Vercel Blob')
+  }
+
+  return blob.url
+}
+
 async function ensureArtworkHasImageData(
   artworkId: string,
-  imageUrl: string,
+  stableImageUrl: string,
   prompt: string
 ) {
   const existingArtwork = await prisma.artwork.findUnique({
@@ -114,7 +151,7 @@ async function ensureArtworkHasImageData(
     await prisma.artwork.update({
       where: { id: artworkId },
       data: {
-        thumbnail: imageUrl,
+        thumbnail: stableImageUrl,
       },
     })
   }
@@ -123,7 +160,7 @@ async function ensureArtworkHasImageData(
     await prisma.asset.create({
       data: {
         artworkId,
-        originalUrl: imageUrl,
+        originalUrl: stableImageUrl,
         provider: DEFAULT_ASSET_PROVIDER,
         prompt,
       },
@@ -135,24 +172,15 @@ async function handleGenerate(input: Input) {
   const { title, style, prompt } = input
 
   if (!title) {
-    return NextResponse.json(
-      { ok: false, error: 'Missing title' },
-      { status: 400 }
-    )
+    return NextResponse.json({ ok: false, error: 'Missing title' }, { status: 400 })
   }
 
   if (!style) {
-    return NextResponse.json(
-      { ok: false, error: 'Missing style' },
-      { status: 400 }
-    )
+    return NextResponse.json({ ok: false, error: 'Missing style' }, { status: 400 })
   }
 
   if (!prompt) {
-    return NextResponse.json(
-      { ok: false, error: 'Missing prompt' },
-      { status: 400 }
-    )
+    return NextResponse.json({ ok: false, error: 'Missing prompt' }, { status: 400 })
   }
 
   if (!STYLE_LABELS[style]) {
@@ -220,14 +248,19 @@ async function handleGenerate(input: Input) {
     })
   }
 
-  const imageUrl = await generateImageUrl(prompt)
+  // 1) Generate temporary OpenAI URL
+  const openAiUrl = await generateOpenAiImageUrl(prompt)
 
+  // 2) Copy image into stable Vercel Blob storage
+  const stableImageUrl = await uploadImageToBlob(openAiUrl, style, title)
+
+  // 3) Create artwork using stable URL
   const artwork = await prisma.artwork.create({
     data: {
       title,
       style: style as any,
       artist: STYLE_LABELS[style],
-      thumbnail: imageUrl,
+      thumbnail: stableImageUrl,
       status: 'PUBLISHED' as any,
       tags: [],
       price: 9.99,
@@ -242,10 +275,11 @@ async function handleGenerate(input: Input) {
     },
   })
 
+  // 4) Create linked asset record using stable URL
   await prisma.asset.create({
     data: {
       artworkId: artwork.id,
-      originalUrl: imageUrl,
+      originalUrl: stableImageUrl,
       provider: DEFAULT_ASSET_PROVIDER,
       prompt,
     },
