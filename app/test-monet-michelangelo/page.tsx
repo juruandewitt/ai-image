@@ -9,49 +9,53 @@ type Item = {
 }
 
 const ITEMS: Item[] = [
-  { title: "Morning Light on the River", style: "MONET", prompt: "Claude Monet style, impressionist river sunrise, soft brush strokes, pastel tones" },
-  { title: "Garden in Bloom", style: "MONET", prompt: "Monet style garden, colorful flowers, sunlight, impressionism" },
-  { title: "Water Lilies at Dawn", style: "MONET", prompt: "Monet water lilies, calm pond, pastel reflections" },
-  { title: "Sunset Over Fields", style: "MONET", prompt: "Monet countryside sunset, warm glowing tones" },
-  { title: "Bridge Over Quiet Water", style: "MONET", prompt: "Monet bridge over pond, reflections, soft colors" },
-  { title: "Misty Morning Garden", style: "MONET", prompt: "Monet foggy garden, muted tones, soft light" },
-  { title: "Spring Blossom Path", style: "MONET", prompt: "Monet spring blossoms, light airy brushwork" },
-  { title: "Reflections of Sky", style: "MONET", prompt: "Monet water reflection, pastel sky tones" },
-  { title: "Summer Meadow Light", style: "MONET", prompt: "Monet meadow, sunlight, impressionist" },
-  { title: "Quiet Pond Afternoon", style: "MONET", prompt: "Monet pond, calm atmosphere, reflections" },
+  // MONET — original works
+  { title: "Morning Light on the River", style: "MONET", prompt: "Claude Monet inspired impressionist river sunrise, soft brush strokes, pastel tones, light reflections on water, peaceful landscape" },
+  { title: "Garden in Bloom", style: "MONET", prompt: "Monet inspired impressionist flower garden, colorful blossoms, sunlight through trees, soft natural brushwork" },
+  { title: "Water Lilies at Dawn", style: "MONET", prompt: "Monet inspired pond with water lilies at dawn, pastel reflections, calm water, impressionist atmosphere" },
+  { title: "Sunset Over Fields", style: "MONET", prompt: "Monet inspired countryside at sunset, warm glowing tones, soft horizon, impressionist landscape" },
+  { title: "Bridge Over Quiet Water", style: "MONET", prompt: "Monet inspired bridge over a peaceful pond, reflections, soft colors, impressionist garden scene" },
+  { title: "Misty Morning Garden", style: "MONET", prompt: "Monet inspired misty garden, muted tones, soft morning light, dreamy impressionist scene" },
+  { title: "Spring Blossom Path", style: "MONET", prompt: "Monet inspired spring blossom path, airy light, delicate petals, impressionist brushwork" },
+  { title: "Reflections of Sky", style: "MONET", prompt: "Monet inspired water reflections of a pastel sky, calm surface, impressionist atmosphere" },
+  { title: "Summer Meadow Light", style: "MONET", prompt: "Monet inspired summer meadow in sunlight, warm tones, soft impressionist texture" },
+  { title: "Quiet Pond Afternoon", style: "MONET", prompt: "Monet inspired quiet afternoon by a pond, reflections, peaceful natural light, impressionist style" },
 
-  { title: "Mona Lisa in Monet Style", style: "MONET", prompt: "Mona Lisa in Monet impressionist style, soft tones" },
-  { title: "The Last Supper in Monet Style", style: "MONET", prompt: "Last Supper Monet style, soft blended colors" },
-  { title: "Girl with a Pearl Earring in Monet Style", style: "MONET", prompt: "Girl with Pearl Earring Monet style" },
-  { title: "Starry Night in Monet Style", style: "MONET", prompt: "Starry Night Monet style, soft sky" },
-  { title: "Birth of Venus in Monet Style", style: "MONET", prompt: "Birth of Venus Monet style, pastel tones" },
-  { title: "Persistence of Memory in Monet Style", style: "MONET", prompt: "Persistence of Memory Monet style" },
-  { title: "American Gothic in Monet Style", style: "MONET", prompt: "American Gothic Monet style" },
-  { title: "The Scream in Monet Style", style: "MONET", prompt: "The Scream Monet style" },
-  { title: "Creation of Adam in Monet Style", style: "MONET", prompt: "Creation of Adam Monet style" },
-  { title: "Guernica in Monet Style", style: "MONET", prompt: "Guernica Monet style" },
+  // MONET — safer reinterpretations
+  { title: "Soft Smile in Monet Style", style: "MONET", prompt: "Impressionist portrait of a softly smiling woman, inspired by a classic museum portrait, pastel tones, gentle brush strokes" },
+  { title: "Shared Meal in Monet Style", style: "MONET", prompt: "Impressionist reinterpretation of a historic shared meal scene, warm light, soft colors, balanced group composition" },
+  { title: "Pearl Portrait in Monet Style", style: "MONET", prompt: "Impressionist portrait of a young woman wearing a pearl earring, soft tones, subtle light, elegant brushwork" },
+  { title: "Dreamlike Night Sky in Monet Style", style: "MONET", prompt: "Impressionist night sky with glowing stars and soft swirling clouds, gentle blue tones, dreamlike atmosphere" },
+  { title: "Mythic Shore in Monet Style", style: "MONET", prompt: "Impressionist mythological figure emerging near the sea, pastel palette, soft flowing forms, classical beauty" },
+  { title: "Melting Time in Monet Style", style: "MONET", prompt: "Impressionist surreal landscape with softened clocks and dreamlike forms, pastel light, atmospheric scene" },
+  { title: "Rural Portrait in Monet Style", style: "MONET", prompt: "Impressionist portrait of two rural figures before a farmhouse, warm light, soft brushwork, gentle countryside mood" },
+  { title: "Echo of Emotion in Monet Style", style: "MONET", prompt: "Impressionist emotional figure on a bridge under dramatic sky, expressive colors, softened forms" },
+  { title: "Heavenly Touch in Monet Style", style: "MONET", prompt: "Impressionist interpretation of two hands nearly touching in a divine sky scene, soft light, airy clouds" },
+  { title: "Abstract Conflict in Monet Style", style: "MONET", prompt: "Impressionist abstract scene inspired by themes of conflict and sorrow, flowing colors, softened broken forms" },
 
-  { title: "Study of the Human Form", style: "MICHELANGELO", prompt: "Michelangelo style anatomy, marble sculpture, dramatic light" },
-  { title: "Divine Figure in Light", style: "MICHELANGELO", prompt: "Michelangelo renaissance figure, dramatic lighting" },
-  { title: "The Awakening Form", style: "MICHELANGELO", prompt: "Michelangelo sculpture emerging from shadow" },
-  { title: "Ceiling Fresco Study", style: "MICHELANGELO", prompt: "Michelangelo fresco, renaissance painting" },
-  { title: "Heroic Pose", style: "MICHELANGELO", prompt: "Michelangelo heroic anatomy, strong pose" },
-  { title: "Sacred Composition", style: "MICHELANGELO", prompt: "Michelangelo religious scene, renaissance" },
-  { title: "Marble Grace", style: "MICHELANGELO", prompt: "Michelangelo marble sculpture, soft light" },
-  { title: "The Thinking Figure", style: "MICHELANGELO", prompt: "Michelangelo contemplative pose" },
-  { title: "Light and Form", style: "MICHELANGELO", prompt: "Michelangelo anatomy with dramatic lighting" },
-  { title: "Classical Balance", style: "MICHELANGELO", prompt: "Michelangelo balanced figure, renaissance" },
+  // MICHELANGELO — original works
+  { title: "Study of the Human Form", style: "MICHELANGELO", prompt: "Michelangelo inspired renaissance anatomy study, marble sculpture appearance, dramatic lighting, idealized human form" },
+  { title: "Divine Figure in Light", style: "MICHELANGELO", prompt: "Michelangelo inspired renaissance figure illuminated by divine light, strong anatomy, dramatic shadows" },
+  { title: "The Awakening Form", style: "MICHELANGELO", prompt: "Michelangelo inspired marble figure emerging from shadow, powerful anatomy, sculptural realism" },
+  { title: "Ceiling Fresco Study", style: "MICHELANGELO", prompt: "Michelangelo inspired ceiling fresco scene, renaissance painting, dynamic figures, noble composition" },
+  { title: "Heroic Pose", style: "MICHELANGELO", prompt: "Michelangelo inspired heroic figure with strong anatomy, dramatic pose, marble sculpture feeling" },
+  { title: "Sacred Composition", style: "MICHELANGELO", prompt: "Michelangelo inspired sacred renaissance composition, powerful human forms, dramatic light" },
+  { title: "Marble Grace", style: "MICHELANGELO", prompt: "Michelangelo inspired marble sculpture of an elegant figure, soft light, classical balance" },
+  { title: "The Thinking Figure", style: "MICHELANGELO", prompt: "Michelangelo inspired contemplative figure, renaissance anatomy, marble texture, dramatic mood" },
+  { title: "Light and Form", style: "MICHELANGELO", prompt: "Michelangelo inspired study of anatomy under dramatic light, sculptural realism, renaissance style" },
+  { title: "Classical Balance", style: "MICHELANGELO", prompt: "Michelangelo inspired balanced renaissance figure, marble finish, ideal proportions" },
 
-  { title: "Mona Lisa in Michelangelo Style", style: "MICHELANGELO", prompt: "Mona Lisa Michelangelo style sculpture" },
-  { title: "Starry Night in Michelangelo Style", style: "MICHELANGELO", prompt: "Starry Night Michelangelo fresco" },
-  { title: "The Scream in Michelangelo Style", style: "MICHELANGELO", prompt: "The Scream Michelangelo sculpture" },
-  { title: "Water Lilies in Michelangelo Style", style: "MICHELANGELO", prompt: "Water lilies Michelangelo style" },
-  { title: "Birth of Venus in Michelangelo Style", style: "MICHELANGELO", prompt: "Birth of Venus Michelangelo style" },
-  { title: "Guernica in Michelangelo Style", style: "MICHELANGELO", prompt: "Guernica Michelangelo style" },
-  { title: "Girl with Pearl Earring in Michelangelo Style", style: "MICHELANGELO", prompt: "Girl with Pearl Earring Michelangelo style" },
-  { title: "Persistence of Memory in Michelangelo Style", style: "MICHELANGELO", prompt: "Persistence of Memory Michelangelo style" },
-  { title: "American Gothic in Michelangelo Style", style: "MICHELANGELO", prompt: "American Gothic Michelangelo style" },
-  { title: "Last Supper in Michelangelo Style", style: "MICHELANGELO", prompt: "Last Supper Michelangelo style" },
+  // MICHELANGELO — safer reinterpretations
+  { title: "Soft Smile in Michelangelo Style", style: "MICHELANGELO", prompt: "Renaissance sculptural portrait of a softly smiling woman, inspired by a classic museum portrait, marble texture, noble lighting" },
+  { title: "Dreamlike Night Sky in Michelangelo Style", style: "MICHELANGELO", prompt: "Renaissance fresco inspired by a dramatic star-filled night sky, celestial motion, rich painted ceiling style" },
+  { title: "Echo of Emotion in Michelangelo Style", style: "MICHELANGELO", prompt: "Renaissance dramatic figure expressing intense emotion, sculptural anatomy, stormy sky, marble realism" },
+  { title: "Water Garden in Michelangelo Style", style: "MICHELANGELO", prompt: "Renaissance interpretation of a tranquil water garden with lilies, classical composition, sculptural forms" },
+  { title: "Mythic Shore in Michelangelo Style", style: "MICHELANGELO", prompt: "Renaissance mythological figure rising near the sea, ideal anatomy, noble composition, marble-inspired beauty" },
+  { title: "Abstract Conflict in Michelangelo Style", style: "MICHELANGELO", prompt: "Renaissance-inspired dramatic composition expressing conflict and sorrow through powerful human figures" },
+  { title: "Pearl Portrait in Michelangelo Style", style: "MICHELANGELO", prompt: "Renaissance sculptural portrait of a young woman with a pearl earring, marble realism, subtle light" },
+  { title: "Melting Time in Michelangelo Style", style: "MICHELANGELO", prompt: "Renaissance surreal scene exploring the passage of time through sculptural forms and dramatic composition" },
+  { title: "Rural Portrait in Michelangelo Style", style: "MICHELANGELO", prompt: "Renaissance portrait of two rural figures before a farmhouse, ideal anatomy, classical composition" },
+  { title: "Shared Meal in Michelangelo Style", style: "MICHELANGELO", prompt: "Renaissance fresco of a historic shared meal scene, dramatic composition, noble figures, sacred atmosphere" },
 ]
 
 type RowStatus = 'idle' | 'running' | 'success' | 'error'
@@ -132,7 +136,7 @@ export default function TestMonetMichelangeloPage() {
       <div className="space-y-2">
         <h1 className="text-3xl font-semibold">Generate Monet + Michelangelo Test Set</h1>
         <p className="text-slate-400 text-sm">
-          This page generates the 40 test artworks one-by-one, which avoids the Vercel timeout.
+          Safer prompt set for launch testing.
         </p>
         <div className="text-sm text-slate-300">
           Success: {counts.success} • Running: {counts.running} • Errors: {counts.error} • Idle: {counts.idle}
