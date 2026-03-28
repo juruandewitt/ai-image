@@ -49,11 +49,7 @@ function pickImgSrc(a: {
   thumbnail?: string | null
   assets?: { originalUrl: string | null }[]
 }) {
-  return (
-    a.assets?.[0]?.originalUrl ||
-    a.thumbnail ||
-    FALLBACK_DATA_URL
-  )
+  return a.assets?.[0]?.originalUrl || a.thumbnail || FALLBACK_DATA_URL
 }
 
 export default async function ExploreDirectory() {
@@ -74,8 +70,14 @@ export default async function ExploreDirectory() {
     const rows = await prisma.artwork.findMany({
       where: {
         style: key as any,
-        NOT: { tags: { has: 'smoketest' } },
         status: 'PUBLISHED',
+        NOT: [
+          { tags: { has: 'smoketest' } },
+          { title: { contains: 'smoketest', mode: 'insensitive' } },
+          { title: { contains: 'diagnostic', mode: 'insensitive' } },
+          { title: { contains: 'test artwork', mode: 'insensitive' } },
+          { title: { contains: 'db smoketest', mode: 'insensitive' } },
+        ],
       },
       orderBy: { createdAt: 'desc' },
       take: perStyleTake,
