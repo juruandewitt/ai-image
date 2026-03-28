@@ -70,7 +70,7 @@ function pickImgSrc(a: {
   thumbnail?: string | null
   assets?: { originalUrl: string | null }[]
 }) {
-  return a.thumbnail || a.assets?.[0]?.originalUrl || null
+  return a.assets?.[0]?.originalUrl || a.thumbnail || null
 }
 
 function hasUsableImage(a: {
