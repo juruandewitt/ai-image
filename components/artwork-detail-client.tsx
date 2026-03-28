@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react'
 import SafeImg from '@/components/safe-img'
 
 type Props = {
+  artworkId: string
   title: string
   artist: string
   style: string
@@ -51,6 +52,7 @@ function formatStyleLabel(style: string) {
 }
 
 export default function ArtworkDetailClient({
+  artworkId,
   title,
   artist,
   style,
@@ -63,8 +65,33 @@ export default function ArtworkDetailClient({
   }, [mainSrc, gallery])
 
   const [selected, setSelected] = useState(images[0] || FALLBACK_DATA_URL)
-
+  const [loadingQuality, setLoadingQuality] = useState<string | null>(null)
   const styleLabel = formatStyleLabel(style)
+
+  async function startCheckout(quality: 'high' | 'very_high' | 'ultra') {
+    try {
+      setLoadingQuality(quality)
+
+      const res = await fetch('/api/checkout/create-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ artworkId, quality }),
+      })
+
+      const data = await res.json()
+
+      if (!res.ok || !data?.url) {
+        alert(data?.error || 'Could not start checkout')
+        setLoadingQuality(null)
+        return
+      }
+
+      window.location.href = data.url
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Unknown checkout error')
+      setLoadingQuality(null)
+    }
+  }
 
   return (
     <main className="mx-auto max-w-7xl px-4 py-10 space-y-8">
@@ -114,52 +141,62 @@ export default function ArtworkDetailClient({
           <div className="rounded-2xl border border-slate-800 bg-slate-900/50 p-4 space-y-4">
             <h2 className="text-lg font-medium text-slate-100">Choose quality</h2>
 
-            <div className="space-y-3">
-              <button
-                type="button"
-                className="w-full rounded-xl border border-slate-700 bg-slate-950 p-4 text-left hover:border-amber-400 transition-colors"
-              >
-                <div className="flex items-center justify-between gap-4">
-                  <div>
-                    <div className="font-medium text-slate-100">High Resolution</div>
-                    <div className="text-sm text-slate-400">
-                      Great for personal prints and digital use
-                    </div>
+            <button
+              type="button"
+              onClick={() => startCheckout('high')}
+              disabled={loadingQuality !== null}
+              className="w-full rounded-xl border border-slate-700 bg-slate-950 p-4 text-left hover:border-amber-400 transition-colors disabled:opacity-60"
+            >
+              <div className="flex items-center justify-between gap-4">
+                <div>
+                  <div className="font-medium text-slate-100">High Resolution</div>
+                  <div className="text-sm text-slate-400">
+                    Great for personal prints and digital use
                   </div>
-                  <div className="text-amber-400 font-semibold">$9.99</div>
                 </div>
-              </button>
+                <div className="text-amber-400 font-semibold">
+                  {loadingQuality === 'high' ? 'Loading...' : '$9.99'}
+                </div>
+              </div>
+            </button>
 
-              <button
-                type="button"
-                className="w-full rounded-xl border border-slate-700 bg-slate-950 p-4 text-left hover:border-amber-400 transition-colors"
-              >
-                <div className="flex items-center justify-between gap-4">
-                  <div>
-                    <div className="font-medium text-slate-100">Very High Resolution</div>
-                    <div className="text-sm text-slate-400">
-                      Ideal for larger prints and premium display
-                    </div>
+            <button
+              type="button"
+              onClick={() => startCheckout('very_high')}
+              disabled={loadingQuality !== null}
+              className="w-full rounded-xl border border-slate-700 bg-slate-950 p-4 text-left hover:border-amber-400 transition-colors disabled:opacity-60"
+            >
+              <div className="flex items-center justify-between gap-4">
+                <div>
+                  <div className="font-medium text-slate-100">Very High Resolution</div>
+                  <div className="text-sm text-slate-400">
+                    Ideal for larger prints and premium display
                   </div>
-                  <div className="text-amber-400 font-semibold">$19.99</div>
                 </div>
-              </button>
+                <div className="text-amber-400 font-semibold">
+                  {loadingQuality === 'very_high' ? 'Loading...' : '$19.99'}
+                </div>
+              </div>
+            </button>
 
-              <button
-                type="button"
-                className="w-full rounded-xl border border-slate-700 bg-slate-950 p-4 text-left hover:border-amber-400 transition-colors"
-              >
-                <div className="flex items-center justify-between gap-4">
-                  <div>
-                    <div className="font-medium text-slate-100">Ultra High Resolution</div>
-                    <div className="text-sm text-slate-400">
-                      Best for premium commercial-grade output
-                    </div>
+            <button
+              type="button"
+              onClick={() => startCheckout('ultra')}
+              disabled={loadingQuality !== null}
+              className="w-full rounded-xl border border-slate-700 bg-slate-950 p-4 text-left hover:border-amber-400 transition-colors disabled:opacity-60"
+            >
+              <div className="flex items-center justify-between gap-4">
+                <div>
+                  <div className="font-medium text-slate-100">Ultra High Resolution</div>
+                  <div className="text-sm text-slate-400">
+                    Best for premium commercial-grade output
                   </div>
-                  <div className="text-amber-400 font-semibold">$29.99</div>
                 </div>
-              </button>
-            </div>
+                <div className="text-amber-400 font-semibold">
+                  {loadingQuality === 'ultra' ? 'Loading...' : '$29.99'}
+                </div>
+              </div>
+            </button>
           </div>
         </aside>
       </div>
