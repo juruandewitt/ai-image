@@ -66,27 +66,28 @@ function normalizeSlug(input: string) {
     .replace(/^-|-$/g, '')
 }
 
+function isStableBlobSrc(value?: string | null) {
+  if (!value) return false
+  return value.toLowerCase().includes('.public.blob.vercel-storage.com/')
+}
+
 function pickImgSrc(a: {
   thumbnail?: string | null
-  assets?: { originalUrl: string | null }[]
+  assets?: { originalUrl: string | null; provider?: string | null }[]
 }) {
-  return a.assets?.[0]?.originalUrl || a.thumbnail || null
+  const stableAsset =
+    a.assets?.find((x) => isStableBlobSrc(x.originalUrl))?.originalUrl || null
+
+  const stableThumbnail = isStableBlobSrc(a.thumbnail) ? a.thumbnail : null
+
+  return stableAsset || stableThumbnail || null
 }
 
 function hasUsableImage(a: {
   thumbnail?: string | null
-  assets?: { originalUrl: string | null }[]
+  assets?: { originalUrl: string | null; provider?: string | null }[]
 }) {
-  const src = pickImgSrc(a)
-  if (!src) return false
-
-  const lower = src.toLowerCase()
-  if (lower.includes('placeholder')) return false
-  if (lower.includes('no-image')) return false
-  if (lower.includes('no%20image')) return false
-  if (lower.startsWith('data:image/svg+xml')) return false
-
-  return true
+  return !!pickImgSrc(a)
 }
 
 type RealRow = {
@@ -95,7 +96,7 @@ type RealRow = {
   title: string
   style: string
   thumbnail: string | null
-  assets: { originalUrl: string | null }[]
+  assets: { originalUrl: string | null; provider: string | null }[]
 }
 
 type PlaceholderRow = {
@@ -154,9 +155,9 @@ export default async function ExploreStylePage({
         style: true,
         thumbnail: true,
         assets: {
-          take: 1,
-          orderBy: { createdAt: 'asc' },
-          select: { originalUrl: true },
+          orderBy: { createdAt: 'desc' },
+          take: 10,
+          select: { originalUrl: true, provider: true },
         },
       },
     })
