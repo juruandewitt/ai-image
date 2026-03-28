@@ -45,11 +45,21 @@ const FALLBACK_DATA_URL =
     </svg>`
   )
 
+function isStableBlobSrc(value?: string | null) {
+  if (!value) return false
+  return value.toLowerCase().includes('.public.blob.vercel-storage.com/')
+}
+
 function pickImgSrc(a: {
   thumbnail?: string | null
-  assets?: { originalUrl: string | null }[]
+  assets?: { originalUrl: string | null; provider?: string | null }[]
 }) {
-  return a.assets?.[0]?.originalUrl || a.thumbnail || FALLBACK_DATA_URL
+  const stableAsset =
+    a.assets?.find((x) => isStableBlobSrc(x.originalUrl))?.originalUrl || null
+
+  const stableThumbnail = isStableBlobSrc(a.thumbnail) ? a.thumbnail : null
+
+  return stableAsset || stableThumbnail || FALLBACK_DATA_URL
 }
 
 export default async function ExploreDirectory() {
@@ -62,7 +72,7 @@ export default async function ExploreDirectory() {
       title: string
       style: string
       thumbnail: string | null
-      assets: { originalUrl: string | null }[]
+      assets: { originalUrl: string | null; provider: string | null }[]
     }[]
   > = {}
 
@@ -87,9 +97,9 @@ export default async function ExploreDirectory() {
         style: true,
         thumbnail: true,
         assets: {
-          take: 1,
-          orderBy: { createdAt: 'asc' },
-          select: { originalUrl: true },
+          orderBy: { createdAt: 'desc' },
+          take: 10,
+          select: { originalUrl: true, provider: true },
         },
       },
     })
