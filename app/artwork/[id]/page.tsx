@@ -8,39 +8,18 @@ import ArtworkDetailClient from '@/components/artwork-detail-client'
 const FALLBACK_DATA_URL =
   'data:image/svg+xml;utf8,' +
   encodeURIComponent(
-    `<svg xmlns="http://www.w3.org/2000/svg" width="800" height="800">
+    `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1200">
       <rect width="100%" height="100%" fill="#0b1220"/>
-      <text x="50%" y="46%" fill="#cbd5e1" font-family="sans-serif" font-size="24"
+      <text x="50%" y="46%" fill="#cbd5e1" font-family="sans-serif" font-size="30"
         text-anchor="middle" dominant-baseline="middle">Coming Soon</text>
-      <text x="50%" y="54%" fill="#94a3b8" font-family="sans-serif" font-size="15"
+      <text x="50%" y="54%" fill="#94a3b8" font-family="sans-serif" font-size="18"
         text-anchor="middle" dominant-baseline="middle">Artwork placeholder</text>
     </svg>`
   )
 
-function isUsableSrc(value?: string | null) {
+function isStableBlobSrc(value?: string | null) {
   if (!value) return false
-  const src = value.trim()
-  if (!src) return false
-
-  const lower = src.toLowerCase()
-  if (lower.includes('placeholder')) return false
-  if (lower.includes('no-image')) return false
-  if (lower.includes('no%20image')) return false
-
-  return true
-}
-
-function pickImgSrc(a: {
-  thumbnail?: string | null
-  assets?: { originalUrl: string | null }[]
-}) {
-  const candidates = [
-  ...(a.assets?.map((x) => x.originalUrl) ?? []),
-  a.thumbnail,
-]
-
-  const usable = candidates.find((x) => isUsableSrc(x))
-  return usable || FALLBACK_DATA_URL
+  return value.toLowerCase().includes('.public.blob.vercel-storage.com/')
 }
 
 export default async function ArtworkPage({
@@ -57,10 +36,11 @@ export default async function ArtworkPage({
       artist: true,
       thumbnail: true,
       assets: {
-        orderBy: { createdAt: 'asc' },
+        orderBy: { createdAt: 'desc' },
         select: {
           id: true,
           originalUrl: true,
+          provider: true,
         },
       },
     },
@@ -68,21 +48,24 @@ export default async function ArtworkPage({
 
   if (!artwork) return notFound()
 
-  const mainSrc = pickImgSrc(artwork)
+  const stableAssets = artwork.assets
+    .map((a) => a.originalUrl)
+    .filter((x): x is string => !!x && isStableBlobSrc(x))
+
+  const stableThumbnail = isStableBlobSrc(artwork.thumbnail)
+    ? artwork.thumbnail
+    : null
 
   const gallery = Array.from(
-    new Set(
-      [
-        artwork.thumbnail ?? '',
-        ...(artwork.assets?.map((a) => a.originalUrl ?? '') ?? []),
-      ].filter((x) => isUsableSrc(x))
-    )
+    new Set([...stableAssets, ...(stableThumbnail ? [stableThumbnail] : [])])
   )
+
+  const mainSrc = gallery[0] || FALLBACK_DATA_URL
 
   return (
     <ArtworkDetailClient
       title={artwork.title}
-      artist={artwork.artist}
+      artist={artwork.artist || 'Unknown Artist'}
       style={String(artwork.style)}
       mainSrc={mainSrc}
       gallery={gallery.length > 0 ? gallery : [FALLBACK_DATA_URL]}
