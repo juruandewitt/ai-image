@@ -34,7 +34,7 @@ function isStableBlobSrc(value?: string | null) {
   return value.toLowerCase().includes('.public.blob.vercel-storage.com/')
 }
 
-function pickImgSrc(a: {
+function pickStableImgSrc(a: {
   thumbnail?: string | null
   assets?: { originalUrl: string | null; provider?: string | null }[]
 }) {
@@ -43,23 +43,26 @@ function pickImgSrc(a: {
 
   const stableThumbnail = isStableBlobSrc(a.thumbnail) ? a.thumbnail : null
 
-  return stableAsset || stableThumbnail || FALLBACK_DATA_URL
+  return stableAsset || stableThumbnail || null
+}
+
+function isPublicTitle(title: string) {
+  const lower = title.toLowerCase()
+  if (lower.includes('smoketest')) return false
+  if (lower.includes('diagnostic')) return false
+  if (lower.includes('test artwork')) return false
+  if (lower.includes('db smoketest')) return false
+  return true
 }
 
 export default async function HomePage() {
-  const newDrops = await prisma.artwork.findMany({
+  const recentCandidates = await prisma.artwork.findMany({
     where: {
       status: 'PUBLISHED',
-      NOT: [
-        { tags: { has: 'smoketest' } },
-        { title: { contains: 'smoketest', mode: 'insensitive' } },
-        { title: { contains: 'diagnostic', mode: 'insensitive' } },
-        { title: { contains: 'test artwork', mode: 'insensitive' } },
-        { title: { contains: 'db smoketest', mode: 'insensitive' } },
-      ],
+      NOT: [{ tags: { has: 'smoketest' } }],
     },
     orderBy: { createdAt: 'desc' },
-    take: 10,
+    take: 300,
     select: {
       id: true,
       title: true,
@@ -74,21 +77,21 @@ export default async function HomePage() {
     },
   })
 
+  const newDrops = recentCandidates
+    .filter((art) => isPublicTitle(art.title))
+    .filter((art) => !!pickStableImgSrc(art))
+    .slice(0, 10)
+
   const masters = await Promise.all(
     MASTER_ROWS.map(async (master) => {
-      const artwork = await prisma.artwork.findFirst({
+      const candidates = await prisma.artwork.findMany({
         where: {
           style: master.key as any,
           status: 'PUBLISHED',
-          NOT: [
-            { tags: { has: 'smoketest' } },
-            { title: { contains: 'smoketest', mode: 'insensitive' } },
-            { title: { contains: 'diagnostic', mode: 'insensitive' } },
-            { title: { contains: 'test artwork', mode: 'insensitive' } },
-            { title: { contains: 'db smoketest', mode: 'insensitive' } },
-          ],
+          NOT: [{ tags: { has: 'smoketest' } }],
         },
         orderBy: { createdAt: 'desc' },
+        take: 200,
         select: {
           id: true,
           title: true,
@@ -100,6 +103,11 @@ export default async function HomePage() {
           },
         },
       })
+
+      const artwork =
+        candidates
+          .filter((art) => isPublicTitle(art.title))
+          .find((art) => !!pickStableImgSrc(art)) || null
 
       return {
         ...master,
@@ -119,26 +127,30 @@ export default async function HomePage() {
         </div>
 
         <div className="flex gap-4 overflow-x-auto pb-2">
-          {newDrops.map((art) => (
-            <Link
-              key={art.id}
-              href={`/artwork/${art.id}`}
-              className="min-w-[240px] max-w-[240px] rounded-2xl overflow-hidden border border-slate-800 bg-slate-900/50 hover:border-amber-400/60 transition-colors"
-            >
-              <SafeImg
-                src={pickImgSrc(art)}
-                fallbackSrc={FALLBACK_DATA_URL}
-                alt={art.title}
-                className="aspect-square w-full object-cover"
-              />
-              <div className="p-3">
-                <div className="text-sm text-slate-100 line-clamp-1">{art.title}</div>
-                <div className="text-xs text-slate-400 line-clamp-1">
-                  {art.artist || art.style}
+          {newDrops.length > 0 ? (
+            newDrops.map((art) => (
+              <Link
+                key={art.id}
+                href={`/artwork/${art.id}`}
+                className="min-w-[240px] max-w-[240px] rounded-2xl overflow-hidden border border-slate-800 bg-slate-900/50 hover:border-amber-400/60 transition-colors"
+              >
+                <SafeImg
+                  src={pickStableImgSrc(art) || FALLBACK_DATA_URL}
+                  fallbackSrc={FALLBACK_DATA_URL}
+                  alt={art.title}
+                  className="aspect-square w-full object-cover"
+                />
+                <div className="p-3">
+                  <div className="text-sm text-slate-100 line-clamp-1">{art.title}</div>
+                  <div className="text-xs text-slate-400 line-clamp-1">
+                    {art.artist || art.style}
+                  </div>
                 </div>
-              </div>
-            </Link>
-          ))}
+              </Link>
+            ))
+          ) : (
+            <div className="text-sm text-slate-400">No new drops available yet.</div>
+          )}
         </div>
       </section>
 
@@ -158,7 +170,7 @@ export default async function HomePage() {
               className="min-w-[240px] max-w-[240px] rounded-2xl overflow-hidden border border-slate-800 bg-slate-900/50 hover:border-amber-400/60 transition-colors"
             >
               <SafeImg
-                src={pickImgSrc(master.artwork || {})}
+                src={pickStableImgSrc(master.artwork || {}) || FALLBACK_DATA_URL}
                 fallbackSrc={FALLBACK_DATA_URL}
                 alt={master.label}
                 className="aspect-square w-full object-cover"
