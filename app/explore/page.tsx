@@ -49,7 +49,11 @@ function pickImgSrc(a: {
   thumbnail?: string | null
   assets?: { originalUrl: string | null }[]
 }) {
-  return a.thumbnail || a.assets?.[0]?.originalUrl || FALLBACK_DATA_URL
+  return (
+    a.assets?.[0]?.originalUrl ||
+    a.thumbnail ||
+    FALLBACK_DATA_URL
+  )
 }
 
 export default async function ExploreDirectory() {
