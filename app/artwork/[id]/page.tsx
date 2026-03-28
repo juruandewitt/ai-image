@@ -64,6 +64,7 @@ export default async function ArtworkPage({
 
   return (
     <ArtworkDetailClient
+      artworkId={artwork.id}
       title={artwork.title}
       artist={artwork.artist || 'Unknown Artist'}
       style={String(artwork.style)}
