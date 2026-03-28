@@ -29,6 +29,19 @@ const MASTER_ROWS = [
   { key: 'MICHELANGELO', label: 'Michelangelo', slug: 'michelangelo' },
 ]
 
+const STYLE_LABELS: Record<string, string> = {
+  VAN_GOGH: 'Van Gogh',
+  DALI: 'Dalí',
+  POLLOCK: 'Jackson Pollock',
+  VERMEER: 'Johannes Vermeer',
+  MONET: 'Claude Monet',
+  PICASSO: 'Pablo Picasso',
+  REMBRANDT: 'Rembrandt',
+  CARAVAGGIO: 'Caravaggio',
+  DA_VINCI: 'Leonardo da Vinci',
+  MICHELANGELO: 'Michelangelo',
+}
+
 function isStableBlobSrc(value?: string | null) {
   if (!value) return false
   return value.toLowerCase().includes('.public.blob.vercel-storage.com/')
@@ -44,6 +57,26 @@ function pickStableImgSrc(a: {
   const stableThumbnail = isStableBlobSrc(a.thumbnail) ? a.thumbnail : null
 
   return stableAsset || stableThumbnail || null
+}
+
+function displayArtist(artist: string | null, style: string | null) {
+  const cleanedArtist = (artist || '').trim()
+  const styleLabel = style ? STYLE_LABELS[style] || style : 'AI Image'
+
+  if (!cleanedArtist) return styleLabel
+
+  const lower = cleanedArtist.toLowerCase()
+
+  if (
+    lower === 'ai image' ||
+    lower === 'ai-image' ||
+    lower === 'aiimage' ||
+    lower === 'unknown artist'
+  ) {
+    return styleLabel
+  }
+
+  return cleanedArtist
 }
 
 export default async function HomePage() {
@@ -171,7 +204,7 @@ export default async function HomePage() {
                 <div className="p-3">
                   <div className="text-sm text-slate-100 line-clamp-1">{art.title}</div>
                   <div className="text-xs text-slate-400 line-clamp-1">
-                    {art.artist || art.style}
+                    {displayArtist(art.artist, String(art.style))}
                   </div>
                 </div>
               </Link>
