@@ -16,19 +16,6 @@ const STYLE_LABELS: Record<string, string> = {
   MICHELANGELO: 'Michelangelo',
 }
 
-function shouldReplaceArtist(artist?: string | null) {
-  if (!artist) return true
-
-  const lower = artist.trim().toLowerCase()
-
-  return (
-    lower === 'ai image' ||
-    lower === 'ai-image' ||
-    lower === 'aiimage' ||
-    lower === 'unknown artist'
-  )
-}
-
 export async function GET() {
   try {
     const artworks = await prisma.artwork.findMany({
@@ -58,7 +45,7 @@ export async function GET() {
         continue
       }
 
-      if (!shouldReplaceArtist(artwork.artist)) {
+      if ((artwork.artist || '').trim() === properArtist) {
         skipped++
         continue
       }
