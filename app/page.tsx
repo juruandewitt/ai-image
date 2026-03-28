@@ -46,23 +46,38 @@ function pickStableImgSrc(a: {
   return stableAsset || stableThumbnail || null
 }
 
-function isPublicTitle(title: string) {
-  const lower = title.toLowerCase()
-  if (lower.includes('smoketest')) return false
-  if (lower.includes('diagnostic')) return false
-  if (lower.includes('test artwork')) return false
-  if (lower.includes('db smoketest')) return false
-  return true
-}
-
 export default async function HomePage() {
-  const recentCandidates = await prisma.artwork.findMany({
+  const newDrops = await prisma.artwork.findMany({
     where: {
       status: 'PUBLISHED',
-      NOT: [{ tags: { has: 'smoketest' } }],
+      NOT: [
+        { tags: { has: 'smoketest' } },
+        { title: { contains: 'smoketest', mode: 'insensitive' } },
+        { title: { contains: 'diagnostic', mode: 'insensitive' } },
+        { title: { contains: 'test artwork', mode: 'insensitive' } },
+        { title: { contains: 'db smoketest', mode: 'insensitive' } },
+      ],
+      OR: [
+        {
+          thumbnail: {
+            contains: '.public.blob.vercel-storage.com',
+            mode: 'insensitive',
+          },
+        },
+        {
+          assets: {
+            some: {
+              originalUrl: {
+                contains: '.public.blob.vercel-storage.com',
+                mode: 'insensitive',
+              },
+            },
+          },
+        },
+      ],
     },
     orderBy: { createdAt: 'desc' },
-    take: 300,
+    take: 10,
     select: {
       id: true,
       title: true,
@@ -77,21 +92,39 @@ export default async function HomePage() {
     },
   })
 
-  const newDrops = recentCandidates
-    .filter((art) => isPublicTitle(art.title))
-    .filter((art) => !!pickStableImgSrc(art))
-    .slice(0, 10)
-
   const masters = await Promise.all(
     MASTER_ROWS.map(async (master) => {
-      const candidates = await prisma.artwork.findMany({
+      const artwork = await prisma.artwork.findFirst({
         where: {
           style: master.key as any,
           status: 'PUBLISHED',
-          NOT: [{ tags: { has: 'smoketest' } }],
+          NOT: [
+            { tags: { has: 'smoketest' } },
+            { title: { contains: 'smoketest', mode: 'insensitive' } },
+            { title: { contains: 'diagnostic', mode: 'insensitive' } },
+            { title: { contains: 'test artwork', mode: 'insensitive' } },
+            { title: { contains: 'db smoketest', mode: 'insensitive' } },
+          ],
+          OR: [
+            {
+              thumbnail: {
+                contains: '.public.blob.vercel-storage.com',
+                mode: 'insensitive',
+              },
+            },
+            {
+              assets: {
+                some: {
+                  originalUrl: {
+                    contains: '.public.blob.vercel-storage.com',
+                    mode: 'insensitive',
+                  },
+                },
+              },
+            },
+          ],
         },
         orderBy: { createdAt: 'desc' },
-        take: 200,
         select: {
           id: true,
           title: true,
@@ -103,11 +136,6 @@ export default async function HomePage() {
           },
         },
       })
-
-      const artwork =
-        candidates
-          .filter((art) => isPublicTitle(art.title))
-          .find((art) => !!pickStableImgSrc(art)) || null
 
       return {
         ...master,
