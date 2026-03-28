@@ -137,8 +137,14 @@ export default async function ExploreStylePage({
     const dbRows = await prisma.artwork.findMany({
       where: {
         style: styleKey as any,
-        NOT: { tags: { has: 'smoketest' } },
         status: 'PUBLISHED',
+        NOT: [
+          { tags: { has: 'smoketest' } },
+          { title: { contains: 'smoketest', mode: 'insensitive' } },
+          { title: { contains: 'diagnostic', mode: 'insensitive' } },
+          { title: { contains: 'test artwork', mode: 'insensitive' } },
+          { title: { contains: 'db smoketest', mode: 'insensitive' } },
+        ],
       },
       orderBy: { createdAt: 'desc' },
       take: 200,
