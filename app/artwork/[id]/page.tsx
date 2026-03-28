@@ -35,9 +35,9 @@ function pickImgSrc(a: {
   assets?: { originalUrl: string | null }[]
 }) {
   const candidates = [
-    a.thumbnail,
-    ...(a.assets?.map((x) => x.originalUrl) ?? []),
-  ]
+  ...(a.assets?.map((x) => x.originalUrl) ?? []),
+  a.thumbnail,
+]
 
   const usable = candidates.find((x) => isUsableSrc(x))
   return usable || FALLBACK_DATA_URL
