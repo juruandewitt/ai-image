@@ -47,6 +47,12 @@ function isUsableSrc(value?: string | null) {
   return true
 }
 
+function isStableBlobSrc(value?: string | null) {
+  if (!isUsableSrc(value)) return false
+  const lower = String(value).toLowerCase()
+  return lower.includes('.public.blob.vercel-storage.com/')
+}
+
 function safeFilePart(value: string) {
   return value
     .normalize('NFKD')
@@ -121,51 +127,25 @@ async function uploadImageToBlob(openAiUrl: string, style: string, title: string
   return blob.url
 }
 
-async function ensureArtworkHasImageData(
-  artworkId: string,
-  stableImageUrl: string,
-  prompt: string
-) {
-  const existingArtwork = await prisma.artwork.findUnique({
-    where: { id: artworkId },
-    select: {
-      id: true,
-      thumbnail: true,
-      assets: {
-        orderBy: { createdAt: 'asc' },
-        select: {
-          id: true,
-          originalUrl: true,
-        },
-      },
+async function createAssetIfMissing(artworkId: string, stableImageUrl: string, prompt: string) {
+  const existingStableAsset = await prisma.asset.findFirst({
+    where: {
+      artworkId,
+      originalUrl: stableImageUrl,
     },
+    select: { id: true },
   })
 
-  if (!existingArtwork) return
+  if (existingStableAsset) return
 
-  const needsThumbnail = !isUsableSrc(existingArtwork.thumbnail)
-  const hasUsableAsset = existingArtwork.assets.some((a) => isUsableSrc(a.originalUrl))
-  const needsAsset = !hasUsableAsset
-
-  if (needsThumbnail) {
-    await prisma.artwork.update({
-      where: { id: artworkId },
-      data: {
-        thumbnail: stableImageUrl,
-      },
-    })
-  }
-
-  if (needsAsset) {
-    await prisma.asset.create({
-      data: {
-        artworkId,
-        originalUrl: stableImageUrl,
-        provider: DEFAULT_ASSET_PROVIDER,
-        prompt,
-      },
-    })
-  }
+  await prisma.asset.create({
+    data: {
+      artworkId,
+      originalUrl: stableImageUrl,
+      provider: DEFAULT_ASSET_PROVIDER,
+      prompt,
+    },
+  })
 }
 
 async function handleGenerate(input: Input) {
@@ -207,20 +187,71 @@ async function handleGenerate(input: Input) {
         select: {
           id: true,
           originalUrl: true,
+          provider: true,
         },
       },
     },
   })
 
   if (existing) {
-    const usableExistingSrc =
-      (isUsableSrc(existing.thumbnail) && existing.thumbnail) ||
-      existing.assets.find((a) => isUsableSrc(a.originalUrl))?.originalUrl ||
-      null
+    const stableAsset =
+      existing.assets.find((a) => isStableBlobSrc(a.originalUrl))?.originalUrl || null
 
-    if (usableExistingSrc) {
-      await ensureArtworkHasImageData(existing.id, usableExistingSrc, prompt)
+    const stableThumbnail = isStableBlobSrc(existing.thumbnail) ? existing.thumbnail : null
+    const stableExistingSrc = stableAsset || stableThumbnail || null
+
+    if (stableExistingSrc) {
+      if (!stableThumbnail) {
+        await prisma.artwork.update({
+          where: { id: existing.id },
+          data: {
+            thumbnail: stableExistingSrc,
+          },
+        })
+      }
+
+      await createAssetIfMissing(existing.id, stableExistingSrc, prompt)
+
+      const refreshed = await prisma.artwork.findUnique({
+        where: { id: existing.id },
+        select: {
+          id: true,
+          title: true,
+          style: true,
+          artist: true,
+          thumbnail: true,
+          price: true,
+          assets: {
+            orderBy: { createdAt: 'asc' },
+            select: {
+              id: true,
+              originalUrl: true,
+              provider: true,
+            },
+          },
+        },
+      })
+
+      return NextResponse.json({
+        ok: true,
+        reused: true,
+        artwork: refreshed,
+      })
     }
+
+    // Existing record exists, but only has expired/non-stable URLs.
+    // Regenerate and overwrite it with a fresh stable Blob-backed image.
+    const openAiUrl = await generateOpenAiImageUrl(prompt)
+    const stableImageUrl = await uploadImageToBlob(openAiUrl, style, title)
+
+    await prisma.artwork.update({
+      where: { id: existing.id },
+      data: {
+        thumbnail: stableImageUrl,
+      },
+    })
+
+    await createAssetIfMissing(existing.id, stableImageUrl, prompt)
 
     const refreshed = await prisma.artwork.findUnique({
       where: { id: existing.id },
@@ -236,6 +267,7 @@ async function handleGenerate(input: Input) {
           select: {
             id: true,
             originalUrl: true,
+            provider: true,
           },
         },
       },
@@ -243,18 +275,14 @@ async function handleGenerate(input: Input) {
 
     return NextResponse.json({
       ok: true,
-      reused: true,
+      regenerated: true,
       artwork: refreshed,
     })
   }
 
-  // 1) Generate temporary OpenAI URL
   const openAiUrl = await generateOpenAiImageUrl(prompt)
-
-  // 2) Copy image into stable Vercel Blob storage
   const stableImageUrl = await uploadImageToBlob(openAiUrl, style, title)
 
-  // 3) Create artwork using stable URL
   const artwork = await prisma.artwork.create({
     data: {
       title,
@@ -275,7 +303,6 @@ async function handleGenerate(input: Input) {
     },
   })
 
-  // 4) Create linked asset record using stable URL
   await prisma.asset.create({
     data: {
       artworkId: artwork.id,
@@ -299,6 +326,7 @@ async function handleGenerate(input: Input) {
         select: {
           id: true,
           originalUrl: true,
+          provider: true,
         },
       },
     },
