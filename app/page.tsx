@@ -42,23 +42,6 @@ const STYLE_LABELS: Record<string, string> = {
   MICHELANGELO: 'Michelangelo',
 }
 
-function isStableBlobSrc(value?: string | null) {
-  if (!value) return false
-  return value.toLowerCase().includes('.public.blob.vercel-storage.com/')
-}
-
-function pickStableImgSrc(a: {
-  thumbnail?: string | null
-  assets?: { originalUrl: string | null; provider?: string | null }[]
-}) {
-  const stableAsset =
-    a.assets?.find((x) => isStableBlobSrc(x.originalUrl))?.originalUrl || null
-
-  const stableThumbnail = isStableBlobSrc(a.thumbnail) ? a.thumbnail : null
-
-  return stableAsset || stableThumbnail || null
-}
-
 function styleLabel(style: string | null) {
   if (!style) return 'AI Image'
   return STYLE_LABELS[String(style)] || String(style)
@@ -75,38 +58,13 @@ export default async function HomePage() {
         { title: { contains: 'test artwork', mode: 'insensitive' } },
         { title: { contains: 'db smoketest', mode: 'insensitive' } },
       ],
-      OR: [
-        {
-          thumbnail: {
-            contains: '.public.blob.vercel-storage.com',
-            mode: 'insensitive',
-          },
-        },
-        {
-          assets: {
-            some: {
-              originalUrl: {
-                contains: '.public.blob.vercel-storage.com',
-                mode: 'insensitive',
-              },
-            },
-          },
-        },
-      ],
     },
     orderBy: { createdAt: 'desc' },
     take: 10,
     select: {
       id: true,
       title: true,
-      artist: true,
       style: true,
-      thumbnail: true,
-      assets: {
-        orderBy: { createdAt: 'desc' },
-        take: 10,
-        select: { originalUrl: true, provider: true },
-      },
     },
   })
 
@@ -123,35 +81,11 @@ export default async function HomePage() {
             { title: { contains: 'test artwork', mode: 'insensitive' } },
             { title: { contains: 'db smoketest', mode: 'insensitive' } },
           ],
-          OR: [
-            {
-              thumbnail: {
-                contains: '.public.blob.vercel-storage.com',
-                mode: 'insensitive',
-              },
-            },
-            {
-              assets: {
-                some: {
-                  originalUrl: {
-                    contains: '.public.blob.vercel-storage.com',
-                    mode: 'insensitive',
-                  },
-                },
-              },
-            },
-          ],
         },
         orderBy: { createdAt: 'desc' },
         select: {
           id: true,
           title: true,
-          thumbnail: true,
-          assets: {
-            orderBy: { createdAt: 'desc' },
-            take: 10,
-            select: { originalUrl: true, provider: true },
-          },
         },
       })
 
@@ -181,7 +115,7 @@ export default async function HomePage() {
                 className="min-w-[240px] max-w-[240px] rounded-2xl overflow-hidden border border-slate-800 bg-slate-900/50 hover:border-amber-400/60 transition-colors"
               >
                 <SafeImg
-                  src={pickStableImgSrc(art) || FALLBACK_DATA_URL}
+                  src={`/api/artwork/preview/${art.id}?w=520`}
                   fallbackSrc={FALLBACK_DATA_URL}
                   alt={art.title}
                   className="aspect-square w-full object-cover"
@@ -216,7 +150,11 @@ export default async function HomePage() {
               className="min-w-[240px] max-w-[240px] rounded-2xl overflow-hidden border border-slate-800 bg-slate-900/50 hover:border-amber-400/60 transition-colors"
             >
               <SafeImg
-                src={pickStableImgSrc(master.artwork || {}) || FALLBACK_DATA_URL}
+                src={
+                  master.artwork
+                    ? `/api/artwork/preview/${master.artwork.id}?w=520`
+                    : FALLBACK_DATA_URL
+                }
                 fallbackSrc={FALLBACK_DATA_URL}
                 alt={master.label}
                 className="aspect-square w-full object-cover"
