@@ -45,23 +45,6 @@ const FALLBACK_DATA_URL =
     </svg>`
   )
 
-function isStableBlobSrc(value?: string | null) {
-  if (!value) return false
-  return value.toLowerCase().includes('.public.blob.vercel-storage.com/')
-}
-
-function pickImgSrc(a: {
-  thumbnail?: string | null
-  assets?: { originalUrl: string | null; provider?: string | null }[]
-}) {
-  const stableAsset =
-    a.assets?.find((x) => isStableBlobSrc(x.originalUrl))?.originalUrl || null
-
-  const stableThumbnail = isStableBlobSrc(a.thumbnail) ? a.thumbnail : null
-
-  return stableAsset || stableThumbnail || FALLBACK_DATA_URL
-}
-
 export default async function ExploreDirectory() {
   const perStyleTake = 12
 
@@ -71,8 +54,6 @@ export default async function ExploreDirectory() {
       id: string
       title: string
       style: string
-      thumbnail: string | null
-      assets: { originalUrl: string | null; provider: string | null }[]
     }[]
   > = {}
 
@@ -95,12 +76,6 @@ export default async function ExploreDirectory() {
         id: true,
         title: true,
         style: true,
-        thumbnail: true,
-        assets: {
-          orderBy: { createdAt: 'desc' },
-          take: 10,
-          select: { originalUrl: true, provider: true },
-        },
       },
     })
 
@@ -139,7 +114,7 @@ export default async function ExploreDirectory() {
                     className="group block rounded-xl overflow-hidden bg-slate-900/60 border border-slate-800 hover:border-amber-400/60 transition-colors"
                   >
                     <SafeImg
-                      src={pickImgSrc(a)}
+                      src={`/api/artwork/preview/${a.id}?w=520`}
                       fallbackSrc={FALLBACK_DATA_URL}
                       alt={a.title}
                       loading="lazy"
