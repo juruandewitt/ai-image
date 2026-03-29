@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import SafeImg from '@/components/safe-img'
 
 type Props = {
@@ -8,8 +8,6 @@ type Props = {
   title: string
   artist: string
   style: string
-  mainSrc: string
-  gallery: string[]
 }
 
 const FALLBACK_DATA_URL =
@@ -56,15 +54,7 @@ export default function ArtworkDetailClient({
   title,
   artist,
   style,
-  mainSrc,
-  gallery,
 }: Props) {
-  const images = useMemo(() => {
-    const unique = Array.from(new Set([mainSrc, ...gallery].filter(Boolean)))
-    return unique.length > 0 ? unique : [FALLBACK_DATA_URL]
-  }, [mainSrc, gallery])
-
-  const [selected, setSelected] = useState(images[0] || FALLBACK_DATA_URL)
   const [loadingQuality, setLoadingQuality] = useState<string | null>(null)
   const styleLabel = formatStyleLabel(style)
 
@@ -97,38 +87,22 @@ export default function ArtworkDetailClient({
     <main className="mx-auto max-w-7xl px-4 py-10 space-y-8">
       <div className="grid gap-8 lg:grid-cols-[minmax(0,1.15fr)_420px]">
         <section className="space-y-4">
-          <div className="overflow-hidden rounded-2xl border border-slate-800 bg-slate-950">
+          <div
+            className="overflow-hidden rounded-2xl border border-slate-800 bg-slate-950"
+            onContextMenu={(e) => e.preventDefault()}
+          >
             <SafeImg
-              src={selected}
+              src={`/api/artwork/preview/${artworkId}?w=1200`}
               fallbackSrc={FALLBACK_DATA_URL}
               alt={title}
-              className="w-full h-auto max-h-[78vh] object-contain bg-slate-950"
+              className="w-full h-auto max-h-[78vh] object-contain bg-slate-950 pointer-events-none select-none"
+              draggable={false}
             />
           </div>
 
-          {images.length > 1 ? (
-            <div className="grid grid-cols-4 gap-3 sm:grid-cols-5 md:grid-cols-6">
-              {images.map((img, index) => (
-                <button
-                  key={`${img}-${index}`}
-                  type="button"
-                  onClick={() => setSelected(img)}
-                  className={`overflow-hidden rounded-xl border ${
-                    selected === img
-                      ? 'border-amber-400'
-                      : 'border-slate-800 hover:border-slate-600'
-                  } bg-slate-950 transition-colors`}
-                >
-                  <SafeImg
-                    src={img}
-                    fallbackSrc={FALLBACK_DATA_URL}
-                    alt={`${title} preview ${index + 1}`}
-                    className="aspect-square w-full object-cover"
-                  />
-                </button>
-              ))}
-            </div>
-          ) : null}
+          <p className="text-xs text-slate-500">
+            Preview shown is watermarked and reduced-resolution. Purchased downloads provide the full stored file.
+          </p>
         </section>
 
         <aside className="space-y-6">
