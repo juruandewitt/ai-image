@@ -66,37 +66,11 @@ function normalizeSlug(input: string) {
     .replace(/^-|-$/g, '')
 }
 
-function isStableBlobSrc(value?: string | null) {
-  if (!value) return false
-  return value.toLowerCase().includes('.public.blob.vercel-storage.com/')
-}
-
-function pickImgSrc(a: {
-  thumbnail?: string | null
-  assets?: { originalUrl: string | null; provider?: string | null }[]
-}) {
-  const stableAsset =
-    a.assets?.find((x) => isStableBlobSrc(x.originalUrl))?.originalUrl || null
-
-  const stableThumbnail = isStableBlobSrc(a.thumbnail) ? a.thumbnail : null
-
-  return stableAsset || stableThumbnail || null
-}
-
-function hasUsableImage(a: {
-  thumbnail?: string | null
-  assets?: { originalUrl: string | null; provider?: string | null }[]
-}) {
-  return !!pickImgSrc(a)
-}
-
 type RealRow = {
   kind: 'real'
   id: string
   title: string
   style: string
-  thumbnail: string | null
-  assets: { originalUrl: string | null; provider: string | null }[]
 }
 
 type PlaceholderRow = {
@@ -153,12 +127,6 @@ export default async function ExploreStylePage({
         id: true,
         title: true,
         style: true,
-        thumbnail: true,
-        assets: {
-          orderBy: { createdAt: 'desc' },
-          take: 10,
-          select: { originalUrl: true, provider: true },
-        },
       },
     })
 
@@ -167,15 +135,13 @@ export default async function ExploreStylePage({
       id: row.id,
       title: row.title,
       style: row.style as string,
-      thumbnail: row.thumbnail,
-      assets: row.assets,
     }))
   } catch (e) {
     console.error('Explore style page query failed:', e)
     rows = []
   }
 
-  const realRows = rows.filter(hasUsableImage).slice(0, TARGET_REAL)
+  const realRows = rows.slice(0, TARGET_REAL)
   const placeholderCount = Math.max(0, TARGET_TOTAL - realRows.length)
   const placeholderRows = buildPlaceholders(label, placeholderCount, realRows.length)
 
@@ -209,8 +175,6 @@ export default async function ExploreStylePage({
         <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {visibleRows.map((row) => {
             if (row.kind === 'real') {
-              const src = pickImgSrc(row) ?? FALLBACK_DATA_URL
-
               return (
                 <Link
                   key={row.id}
@@ -218,7 +182,7 @@ export default async function ExploreStylePage({
                   className="group block rounded-xl overflow-hidden bg-slate-900/60 border border-slate-800 hover:border-amber-400/60 transition-colors"
                 >
                   <SafeImg
-                    src={src}
+                    src={`/api/artwork/preview/${row.id}?w=520`}
                     fallbackSrc={FALLBACK_DATA_URL}
                     alt={row.title}
                     className="w-full aspect-square object-cover"
