@@ -4,6 +4,8 @@ import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
 import SafeImg from '@/components/safe-img'
 
+const PREVIEW_VERSION = 'v2'
+
 const FALLBACK_DATA_URL =
   'data:image/svg+xml;utf8,' +
   encodeURIComponent(
@@ -58,6 +60,24 @@ export default async function HomePage() {
         { title: { contains: 'test artwork', mode: 'insensitive' } },
         { title: { contains: 'db smoketest', mode: 'insensitive' } },
       ],
+      OR: [
+        {
+          thumbnail: {
+            contains: '.public.blob.vercel-storage.com',
+            mode: 'insensitive',
+          },
+        },
+        {
+          assets: {
+            some: {
+              originalUrl: {
+                contains: '.public.blob.vercel-storage.com',
+                mode: 'insensitive',
+              },
+            },
+          },
+        },
+      ],
     },
     orderBy: { createdAt: 'desc' },
     take: 10,
@@ -80,6 +100,24 @@ export default async function HomePage() {
             { title: { contains: 'diagnostic', mode: 'insensitive' } },
             { title: { contains: 'test artwork', mode: 'insensitive' } },
             { title: { contains: 'db smoketest', mode: 'insensitive' } },
+          ],
+          OR: [
+            {
+              thumbnail: {
+                contains: '.public.blob.vercel-storage.com',
+                mode: 'insensitive',
+              },
+            },
+            {
+              assets: {
+                some: {
+                  originalUrl: {
+                    contains: '.public.blob.vercel-storage.com',
+                    mode: 'insensitive',
+                  },
+                },
+              },
+            },
           ],
         },
         orderBy: { createdAt: 'desc' },
@@ -115,7 +153,7 @@ export default async function HomePage() {
                 className="min-w-[240px] max-w-[240px] rounded-2xl overflow-hidden border border-slate-800 bg-slate-900/50 hover:border-amber-400/60 transition-colors"
               >
                 <SafeImg
-                  src={`/api/artwork/preview/${art.id}?w=520`}
+                  src={`/api/artwork/preview/${art.id}?w=520&v=${PREVIEW_VERSION}`}
                   fallbackSrc={FALLBACK_DATA_URL}
                   alt={art.title}
                   className="aspect-square w-full object-cover"
@@ -152,7 +190,7 @@ export default async function HomePage() {
               <SafeImg
                 src={
                   master.artwork
-                    ? `/api/artwork/preview/${master.artwork.id}?w=520`
+                    ? `/api/artwork/preview/${master.artwork.id}?w=520&v=${PREVIEW_VERSION}`
                     : FALLBACK_DATA_URL
                 }
                 fallbackSrc={FALLBACK_DATA_URL}
