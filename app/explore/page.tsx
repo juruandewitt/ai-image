@@ -5,6 +5,8 @@ import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
 import SafeImg from '@/components/safe-img'
 
+const PREVIEW_VERSION = 'v2'
+
 const STYLE_LABELS: Record<string, string> = {
   VAN_GOGH: 'Van Gogh',
   DALI: 'Dalí',
@@ -69,6 +71,24 @@ export default async function ExploreDirectory() {
           { title: { contains: 'test artwork', mode: 'insensitive' } },
           { title: { contains: 'db smoketest', mode: 'insensitive' } },
         ],
+        OR: [
+          {
+            thumbnail: {
+              contains: '.public.blob.vercel-storage.com',
+              mode: 'insensitive',
+            },
+          },
+          {
+            assets: {
+              some: {
+                originalUrl: {
+                  contains: '.public.blob.vercel-storage.com',
+                  mode: 'insensitive',
+                },
+              },
+            },
+          },
+        ],
       },
       orderBy: { createdAt: 'desc' },
       take: perStyleTake,
@@ -114,7 +134,7 @@ export default async function ExploreDirectory() {
                     className="group block rounded-xl overflow-hidden bg-slate-900/60 border border-slate-800 hover:border-amber-400/60 transition-colors"
                   >
                     <SafeImg
-                      src={`/api/artwork/preview/${a.id}?w=520`}
+                      src={`/api/artwork/preview/${a.id}?w=520&v=${PREVIEW_VERSION}`}
                       fallbackSrc={FALLBACK_DATA_URL}
                       alt={a.title}
                       loading="lazy"
