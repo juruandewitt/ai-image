@@ -10,7 +10,7 @@ type Props = {
   style: string
 }
 
-const PREVIEW_VERSION = 'v3'
+const PREVIEW_VERSION = 'v4'
 
 const FALLBACK_DATA_URL =
   'data:image/svg+xml;utf8,' +
