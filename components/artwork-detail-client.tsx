@@ -10,6 +10,8 @@ type Props = {
   style: string
 }
 
+const PREVIEW_VERSION = 'v3'
+
 const FALLBACK_DATA_URL =
   'data:image/svg+xml;utf8,' +
   encodeURIComponent(
@@ -92,7 +94,7 @@ export default function ArtworkDetailClient({
             onContextMenu={(e) => e.preventDefault()}
           >
             <SafeImg
-              src={`/api/artwork/preview/${artworkId}?w=1200`}
+              src={`/api/artwork/preview/${artworkId}?w=1200&v=${PREVIEW_VERSION}`}
               fallbackSrc={FALLBACK_DATA_URL}
               alt={title}
               className="w-full h-auto max-h-[78vh] object-contain bg-slate-950 pointer-events-none select-none"
