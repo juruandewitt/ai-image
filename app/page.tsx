@@ -4,8 +4,7 @@ import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
 import SafeImg from '@/components/safe-img'
 
-const PREVIEW_VERSION = 'v3'
-
+const PREVIEW_VERSION = 'v4'
 const FALLBACK_DATA_URL =
   'data:image/svg+xml;utf8,' +
   encodeURIComponent(
