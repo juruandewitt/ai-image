@@ -40,9 +40,9 @@ function makeWatermarkSvg(
   title: string,
   artist: string
 ) {
-  const bigFont = Math.max(44, Math.round(width * 0.07))
-  const midFont = Math.max(18, Math.round(width * 0.024))
+  const bigFont = Math.max(54, Math.round(width * 0.085))
   const smallFont = Math.max(12, Math.round(width * 0.015))
+  const footerTitleFont = Math.max(18, Math.round(width * 0.024))
 
   const safeTitle = escapeXml(title)
   const safeArtist = escapeXml(artist)
@@ -50,86 +50,56 @@ function makeWatermarkSvg(
   return `
   <svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
     <defs>
-      <pattern id="diagText" patternUnits="userSpaceOnUse" width="420" height="260" patternTransform="rotate(-28)">
-        <text
-          x="0"
-          y="120"
-          font-family="Arial, Helvetica, sans-serif"
-          font-size="${bigFont}"
-          font-weight="700"
-          fill="rgba(255,255,255,0.16)"
-          letter-spacing="4"
-        >
-          AI IMAGE PREVIEW
-        </text>
-      </pattern>
-
       <filter id="shadow">
-        <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="black" flood-opacity="0.45"/>
+        <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="black" flood-opacity="0.35"/>
       </filter>
-
       <linearGradient id="footerFade" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="rgba(0,0,0,0.00)" />
-        <stop offset="100%" stop-color="rgba(0,0,0,0.55)" />
+        <stop offset="0%" stop-color="rgba(0,0,0,0)" />
+        <stop offset="100%" stop-color="rgba(0,0,0,0.52)" />
       </linearGradient>
     </defs>
 
-    <!-- repeated diagonal watermark -->
-    <rect x="0" y="0" width="${width}" height="${height}" fill="url(#diagText)" />
-
-    <!-- strong centered diagonal watermark -->
+    <!-- single large diagonal watermark -->
     <g transform="rotate(-28 ${width / 2} ${height / 2})" filter="url(#shadow)">
       <text
         x="50%"
-        y="48%"
+        y="50%"
         text-anchor="middle"
         font-family="Arial, Helvetica, sans-serif"
         font-size="${bigFont}"
-        fill="rgba(255,255,255,0.28)"
+        fill="rgba(255,255,255,0.22)"
         font-weight="800"
-        letter-spacing="6"
+        letter-spacing="8"
       >
         AI IMAGE PREVIEW
       </text>
-      <text
-        x="50%"
-        y="56%"
-        text-anchor="middle"
-        font-family="Arial, Helvetica, sans-serif"
-        font-size="${midFont}"
-        fill="rgba(255,255,255,0.22)"
-        font-weight="700"
-        letter-spacing="3"
-      >
-        PURCHASE FOR FULL-QUALITY DOWNLOAD
-      </text>
     </g>
 
-    <!-- bottom information bar -->
-    <rect x="0" y="${height - 120}" width="${width}" height="120" fill="url(#footerFade)" />
-    <rect x="0" y="${height - 82}" width="${width}" height="82" fill="rgba(0,0,0,0.34)" />
+    <!-- footer -->
+    <rect x="0" y="${height - 110}" width="${width}" height="110" fill="url(#footerFade)" />
+    <rect x="0" y="${height - 72}" width="${width}" height="72" fill="rgba(0,0,0,0.26)" />
 
     <text
-      x="20"
-      y="${height - 48}"
+      x="18"
+      y="${height - 42}"
       font-family="Arial, Helvetica, sans-serif"
-      font-size="${midFont}"
-      fill="rgba(255,255,255,0.90)"
+      font-size="${footerTitleFont}"
+      fill="rgba(255,255,255,0.88)"
       font-weight="700"
     >
       ${safeTitle}
     </text>
 
     <text
-      x="20"
-      y="${height - 20}"
+      x="18"
+      y="${height - 16}"
       font-family="Arial, Helvetica, sans-serif"
       font-size="${smallFont}"
-      fill="rgba(255,255,255,0.72)"
+      fill="rgba(255,255,255,0.74)"
       font-weight="600"
       letter-spacing="1"
     >
-      ${safeArtist} • Preview only • Watermarked • Low-resolution
+      ${safeArtist} • Watermarked preview • Purchase for full-quality download
     </text>
   </svg>
   `
