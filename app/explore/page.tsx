@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
 import SafeImg from '@/components/safe-img'
 
-const PREVIEW_VERSION = 'v3'
+const PREVIEW_VERSION = 'v4'
 
 const STYLE_LABELS: Record<string, string> = {
   VAN_GOGH: 'Van Gogh',
