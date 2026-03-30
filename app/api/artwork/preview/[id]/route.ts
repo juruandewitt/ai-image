@@ -26,44 +26,110 @@ function clampWidth(value: number) {
   return Math.max(300, Math.min(1400, value))
 }
 
-function makeWatermarkSvg(width: number, height: number) {
-  const fontSize = Math.max(26, Math.round(width * 0.045))
-  const subFontSize = Math.max(12, Math.round(width * 0.018))
+function escapeXml(value: string) {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+}
+
+function makeWatermarkSvg(
+  width: number,
+  height: number,
+  title: string,
+  artist: string
+) {
+  const bigFont = Math.max(44, Math.round(width * 0.07))
+  const midFont = Math.max(18, Math.round(width * 0.024))
+  const smallFont = Math.max(12, Math.round(width * 0.015))
+
+  const safeTitle = escapeXml(title)
+  const safeArtist = escapeXml(artist)
 
   return `
   <svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
     <defs>
+      <pattern id="diagText" patternUnits="userSpaceOnUse" width="420" height="260" patternTransform="rotate(-28)">
+        <text
+          x="0"
+          y="120"
+          font-family="Arial, Helvetica, sans-serif"
+          font-size="${bigFont}"
+          font-weight="700"
+          fill="rgba(255,255,255,0.16)"
+          letter-spacing="4"
+        >
+          AI IMAGE PREVIEW
+        </text>
+      </pattern>
+
       <filter id="shadow">
-        <feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="black" flood-opacity="0.45"/>
+        <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="black" flood-opacity="0.45"/>
       </filter>
+
+      <linearGradient id="footerFade" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="rgba(0,0,0,0.00)" />
+        <stop offset="100%" stop-color="rgba(0,0,0,0.55)" />
+      </linearGradient>
     </defs>
 
+    <!-- repeated diagonal watermark -->
+    <rect x="0" y="0" width="${width}" height="${height}" fill="url(#diagText)" />
+
+    <!-- strong centered diagonal watermark -->
     <g transform="rotate(-28 ${width / 2} ${height / 2})" filter="url(#shadow)">
       <text
         x="50%"
-        y="50%"
+        y="48%"
         text-anchor="middle"
         font-family="Arial, Helvetica, sans-serif"
-        font-size="${fontSize}"
-        fill="rgba(255,255,255,0.22)"
-        font-weight="700"
-        letter-spacing="4"
+        font-size="${bigFont}"
+        fill="rgba(255,255,255,0.28)"
+        font-weight="800"
+        letter-spacing="6"
       >
         AI IMAGE PREVIEW
       </text>
+      <text
+        x="50%"
+        y="56%"
+        text-anchor="middle"
+        font-family="Arial, Helvetica, sans-serif"
+        font-size="${midFont}"
+        fill="rgba(255,255,255,0.22)"
+        font-weight="700"
+        letter-spacing="3"
+      >
+        PURCHASE FOR FULL-QUALITY DOWNLOAD
+      </text>
     </g>
 
-    <rect x="0" y="${height - 42}" width="${width}" height="42" fill="rgba(0,0,0,0.38)"/>
+    <!-- bottom information bar -->
+    <rect x="0" y="${height - 120}" width="${width}" height="120" fill="url(#footerFade)" />
+    <rect x="0" y="${height - 82}" width="${width}" height="82" fill="rgba(0,0,0,0.34)" />
+
     <text
-      x="16"
-      y="${height - 16}"
+      x="20"
+      y="${height - 48}"
       font-family="Arial, Helvetica, sans-serif"
-      font-size="${subFontSize}"
-      fill="rgba(255,255,255,0.78)"
+      font-size="${midFont}"
+      fill="rgba(255,255,255,0.90)"
+      font-weight="700"
+    >
+      ${safeTitle}
+    </text>
+
+    <text
+      x="20"
+      y="${height - 20}"
+      font-family="Arial, Helvetica, sans-serif"
+      font-size="${smallFont}"
+      fill="rgba(255,255,255,0.72)"
       font-weight="600"
       letter-spacing="1"
     >
-      Preview only • Watermarked • Purchase for full-quality download
+      ${safeArtist} • Preview only • Watermarked • Low-resolution
     </text>
   </svg>
   `
@@ -78,6 +144,9 @@ export async function GET(
       where: { id: params.id },
       select: {
         id: true,
+        title: true,
+        artist: true,
+        style: true,
         thumbnail: true,
         assets: {
           orderBy: { createdAt: 'desc' },
@@ -124,7 +193,14 @@ export async function GET(
     const width = resizedMeta.width || targetWidth
     const height = resizedMeta.height || targetWidth
 
-    const watermarkSvg = Buffer.from(makeWatermarkSvg(width, height))
+    const watermarkSvg = Buffer.from(
+      makeWatermarkSvg(
+        width,
+        height,
+        artwork.title,
+        artwork.artist || String(artwork.style)
+      )
+    )
 
     const output = await sharp(resizedBuffer)
       .composite([
