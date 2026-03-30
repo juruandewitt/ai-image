@@ -7,7 +7,7 @@ import SafeImg from '@/components/safe-img'
 
 export const dynamic = 'force-dynamic'
 
-const PREVIEW_VERSION = 'v4'
+const PREVIEW_VERSION = 'v6'
 const TARGET_TOTAL = 100
 const TARGET_REAL = 50
 
@@ -200,13 +200,20 @@ export default async function ExploreStylePage({
                   href={`/artwork/${row.id}`}
                   className="group block rounded-xl overflow-hidden bg-slate-900/60 border border-slate-800 hover:border-amber-400/60 transition-colors"
                 >
-                  <SafeImg
-                    src={`/api/artwork/preview/${row.id}?w=520&v=${PREVIEW_VERSION}`}
-                    fallbackSrc={FALLBACK_DATA_URL}
-                    alt={row.title}
-                    className="w-full aspect-square object-cover"
-                    loading="lazy"
-                  />
+                  <div className="relative">
+                    <SafeImg
+                      src={`/api/artwork/preview/${row.id}?w=520&v=${PREVIEW_VERSION}`}
+                      fallbackSrc={FALLBACK_DATA_URL}
+                      alt={row.title}
+                      className="w-full aspect-square object-cover"
+                      loading="lazy"
+                    />
+                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                      <div className="rotate-[-28deg] text-white/20 text-[clamp(18px,2.3vw,34px)] font-bold tracking-[0.18em]">
+                        AI IMAGE PREVIEW
+                      </div>
+                    </div>
+                  </div>
                   <div className="p-3">
                     <div className="text-sm text-slate-300 line-clamp-1">
                       {row.title}
