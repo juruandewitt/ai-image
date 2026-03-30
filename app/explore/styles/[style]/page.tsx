@@ -7,6 +7,7 @@ import SafeImg from '@/components/safe-img'
 
 export const dynamic = 'force-dynamic'
 
+const PREVIEW_VERSION = 'v2'
 const TARGET_TOTAL = 100
 const TARGET_REAL = 50
 
@@ -120,6 +121,24 @@ export default async function ExploreStylePage({
           { title: { contains: 'test artwork', mode: 'insensitive' } },
           { title: { contains: 'db smoketest', mode: 'insensitive' } },
         ],
+        OR: [
+          {
+            thumbnail: {
+              contains: '.public.blob.vercel-storage.com',
+              mode: 'insensitive',
+            },
+          },
+          {
+            assets: {
+              some: {
+                originalUrl: {
+                  contains: '.public.blob.vercel-storage.com',
+                  mode: 'insensitive',
+                },
+              },
+            },
+          },
+        ],
       },
       orderBy: { createdAt: 'desc' },
       take: 200,
@@ -182,7 +201,7 @@ export default async function ExploreStylePage({
                   className="group block rounded-xl overflow-hidden bg-slate-900/60 border border-slate-800 hover:border-amber-400/60 transition-colors"
                 >
                   <SafeImg
-                    src={`/api/artwork/preview/${row.id}?w=520`}
+                    src={`/api/artwork/preview/${row.id}?w=520&v=${PREVIEW_VERSION}`}
                     fallbackSrc={FALLBACK_DATA_URL}
                     alt={row.title}
                     className="w-full aspect-square object-cover"
