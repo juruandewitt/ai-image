@@ -7,7 +7,7 @@ import SafeImg from '@/components/safe-img'
 
 export const dynamic = 'force-dynamic'
 
-const PREVIEW_VERSION = 'v2'
+const PREVIEW_VERSION = 'v3'
 const TARGET_TOTAL = 100
 const TARGET_REAL = 50
 
