@@ -23,61 +23,121 @@ const MASTER_ROWS = [
     key: 'VAN_GOGH',
     label: 'Van Gogh',
     slug: 'van-gogh',
-    featuredTitle: 'Starry Night in Van Gogh Style',
+    featuredQueries: [
+      'Starry Night',
+      'Sunflowers',
+      'Wheat Field',
+      'Cafe Night',
+      'Bedroom',
+    ],
   },
   {
     key: 'DALI',
     label: 'Dalí',
     slug: 'dali',
-    featuredTitle: 'Persistence of Memory in Dali Style',
+    featuredQueries: [
+      'Persistence of Memory',
+      'Melting Time',
+      'Dream',
+      'Surreal',
+      'Soft Watches',
+    ],
   },
   {
     key: 'POLLOCK',
     label: 'Jackson Pollock',
     slug: 'jackson-pollock',
-    featuredTitle: 'The Thinker in Pollock Style',
+    featuredQueries: [
+      'Blue Horse',
+      'Great Wave',
+      'The Thinker',
+      'Abstract Conflict',
+      'Black and White',
+    ],
   },
   {
     key: 'VERMEER',
     label: 'Johannes Vermeer',
     slug: 'johannes-vermeer',
-    featuredTitle: 'Girl with a Pearl Earring in Vermeer Style',
+    featuredQueries: [
+      'Girl with a Pearl Earring',
+      'Girl Reading a Letter',
+      'Milkmaid',
+      'Woman with Pearl',
+      'Pearl Portrait',
+    ],
   },
   {
     key: 'MONET',
     label: 'Claude Monet',
     slug: 'claude-monet',
-    featuredTitle: 'Water Lilies at Dawn',
+    featuredQueries: [
+      'Water Lilies',
+      'Garden in Bloom',
+      'Bridge Over Quiet Water',
+      'Morning Light on the River',
+      'Misty Morning Garden',
+    ],
   },
   {
     key: 'PICASSO',
     label: 'Pablo Picasso',
     slug: 'pablo-picasso',
-    featuredTitle: 'Guernica in Picasso Style',
+    featuredQueries: [
+      'Guernica',
+      'Woman',
+      'Weeping',
+      'Bull',
+      'Portrait',
+    ],
   },
   {
     key: 'REMBRANDT',
     label: 'Rembrandt',
     slug: 'rembrandt',
-    featuredTitle: 'The Night Watch in Rembrandt Style',
+    featuredQueries: [
+      'Night Watch',
+      'Self Portrait',
+      'Portrait',
+      'Scholar',
+      'Old Man',
+    ],
   },
   {
     key: 'CARAVAGGIO',
     label: 'Caravaggio',
     slug: 'caravaggio',
-    featuredTitle: 'The Calling of Saint Matthew in Caravaggio Style',
+    featuredQueries: [
+      'Calling of Saint Matthew',
+      'Boy in Candlelight',
+      'Woman with Bowl of Grapes',
+      'Man with Feathered Hat',
+      'The Red Cloak Figure',
+    ],
   },
   {
     key: 'DA_VINCI',
     label: 'Leonardo da Vinci',
     slug: 'leonardo-da-vinci',
-    featuredTitle: 'Mona Lisa in Da Vinci Style',
+    featuredQueries: [
+      'Mona Lisa',
+      'Soft Smile',
+      'Lady with Folded Hands',
+      'Portrait in Soft Sfumato',
+      'Study of a Noble Woman',
+    ],
   },
   {
     key: 'MICHELANGELO',
     label: 'Michelangelo',
     slug: 'michelangelo',
-    featuredTitle: 'Creation of Adam in Michelangelo Style',
+    featuredQueries: [
+      'Creation of Adam',
+      'David',
+      'Heroic Pose',
+      'Ceiling Fresco',
+      'Sacred Composition',
+    ],
   },
 ]
 
@@ -99,9 +159,9 @@ function styleLabel(style: string | null) {
   return STYLE_LABELS[String(style)] || String(style)
 }
 
-async function findFeaturedArtwork(styleKey: string, featuredTitle: string) {
-  const commonWhere = {
-    style: styleKey as any,
+function publicStableWhere(styleKey?: string) {
+  return {
+    ...(styleKey ? { style: styleKey as any } : {}),
     status: 'PUBLISHED' as any,
     NOT: [
       { tags: { has: 'smoketest' } },
@@ -129,42 +189,33 @@ async function findFeaturedArtwork(styleKey: string, featuredTitle: string) {
       },
     ],
   }
+}
 
-  // 1. Exact title
-  const exact = await prisma.artwork.findFirst({
-    where: {
-      ...commonWhere,
-      title: featuredTitle,
-    },
-    select: {
-      id: true,
-      title: true,
-    },
-  })
-
-  if (exact) return exact
-
-  // 2. Case-insensitive contains fallback, for slight title mismatches
-  const partial = await prisma.artwork.findFirst({
-    where: {
-      ...commonWhere,
-      title: {
-        contains: featuredTitle.replace(/\s+in\s.+$/i, ''),
-        mode: 'insensitive',
+async function findFeaturedArtwork(
+  styleKey: string,
+  featuredQueries: string[]
+) {
+  for (const q of featuredQueries) {
+    const found = await prisma.artwork.findFirst({
+      where: {
+        ...publicStableWhere(styleKey),
+        title: {
+          contains: q,
+          mode: 'insensitive',
+        },
       },
-    },
-    orderBy: { createdAt: 'desc' },
-    select: {
-      id: true,
-      title: true,
-    },
-  })
+      orderBy: { createdAt: 'desc' },
+      select: {
+        id: true,
+        title: true,
+      },
+    })
 
-  if (partial) return partial
+    if (found) return found
+  }
 
-  // 3. Newest stable fallback
   return prisma.artwork.findFirst({
-    where: commonWhere,
+    where: publicStableWhere(styleKey),
     orderBy: { createdAt: 'desc' },
     select: {
       id: true,
@@ -175,34 +226,7 @@ async function findFeaturedArtwork(styleKey: string, featuredTitle: string) {
 
 export default async function HomePage() {
   const newDrops = await prisma.artwork.findMany({
-    where: {
-      status: 'PUBLISHED',
-      NOT: [
-        { tags: { has: 'smoketest' } },
-        { title: { contains: 'smoketest', mode: 'insensitive' } },
-        { title: { contains: 'diagnostic', mode: 'insensitive' } },
-        { title: { contains: 'test artwork', mode: 'insensitive' } },
-        { title: { contains: 'db smoketest', mode: 'insensitive' } },
-      ],
-      OR: [
-        {
-          thumbnail: {
-            contains: '.public.blob.vercel-storage.com',
-            mode: 'insensitive',
-          },
-        },
-        {
-          assets: {
-            some: {
-              originalUrl: {
-                contains: '.public.blob.vercel-storage.com',
-                mode: 'insensitive',
-              },
-            },
-          },
-        },
-      ],
-    },
+    where: publicStableWhere(),
     orderBy: { createdAt: 'desc' },
     take: 10,
     select: {
@@ -214,7 +238,10 @@ export default async function HomePage() {
 
   const masters = await Promise.all(
     MASTER_ROWS.map(async (master) => {
-      const artwork = await findFeaturedArtwork(master.key, master.featuredTitle)
+      const artwork = await findFeaturedArtwork(
+        master.key,
+        master.featuredQueries
+      )
 
       return {
         ...master,
