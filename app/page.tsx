@@ -4,7 +4,8 @@ import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
 import SafeImg from '@/components/safe-img'
 
-const PREVIEW_VERSION = 'v4'
+const PREVIEW_VERSION = 'v6'
+
 const FALLBACK_DATA_URL =
   'data:image/svg+xml;utf8,' +
   encodeURIComponent(
@@ -18,16 +19,66 @@ const FALLBACK_DATA_URL =
   )
 
 const MASTER_ROWS = [
-  { key: 'VAN_GOGH', label: 'Van Gogh', slug: 'van-gogh' },
-  { key: 'DALI', label: 'Dalí', slug: 'dali' },
-  { key: 'POLLOCK', label: 'Jackson Pollock', slug: 'jackson-pollock' },
-  { key: 'VERMEER', label: 'Johannes Vermeer', slug: 'johannes-vermeer' },
-  { key: 'MONET', label: 'Claude Monet', slug: 'claude-monet' },
-  { key: 'PICASSO', label: 'Pablo Picasso', slug: 'pablo-picasso' },
-  { key: 'REMBRANDT', label: 'Rembrandt', slug: 'rembrandt' },
-  { key: 'CARAVAGGIO', label: 'Caravaggio', slug: 'caravaggio' },
-  { key: 'DA_VINCI', label: 'Leonardo da Vinci', slug: 'leonardo-da-vinci' },
-  { key: 'MICHELANGELO', label: 'Michelangelo', slug: 'michelangelo' },
+  {
+    key: 'VAN_GOGH',
+    label: 'Van Gogh',
+    slug: 'van-gogh',
+    featuredTitle: 'Starry Night in Van Gogh Style',
+  },
+  {
+    key: 'DALI',
+    label: 'Dalí',
+    slug: 'dali',
+    featuredTitle: 'Persistence of Memory in Dali Style',
+  },
+  {
+    key: 'POLLOCK',
+    label: 'Jackson Pollock',
+    slug: 'jackson-pollock',
+    featuredTitle: 'The Thinker in Pollock Style',
+  },
+  {
+    key: 'VERMEER',
+    label: 'Johannes Vermeer',
+    slug: 'johannes-vermeer',
+    featuredTitle: 'Girl with a Pearl Earring in Vermeer Style',
+  },
+  {
+    key: 'MONET',
+    label: 'Claude Monet',
+    slug: 'claude-monet',
+    featuredTitle: 'Water Lilies at Dawn',
+  },
+  {
+    key: 'PICASSO',
+    label: 'Pablo Picasso',
+    slug: 'pablo-picasso',
+    featuredTitle: 'Guernica in Picasso Style',
+  },
+  {
+    key: 'REMBRANDT',
+    label: 'Rembrandt',
+    slug: 'rembrandt',
+    featuredTitle: 'The Night Watch in Rembrandt Style',
+  },
+  {
+    key: 'CARAVAGGIO',
+    label: 'Caravaggio',
+    slug: 'caravaggio',
+    featuredTitle: 'The Calling of Saint Matthew in Caravaggio Style',
+  },
+  {
+    key: 'DA_VINCI',
+    label: 'Leonardo da Vinci',
+    slug: 'leonardo-da-vinci',
+    featuredTitle: 'Mona Lisa in Da Vinci Style',
+  },
+  {
+    key: 'MICHELANGELO',
+    label: 'Michelangelo',
+    slug: 'michelangelo',
+    featuredTitle: 'Creation of Adam in Michelangelo Style',
+  },
 ]
 
 const STYLE_LABELS: Record<string, string> = {
@@ -46,6 +97,80 @@ const STYLE_LABELS: Record<string, string> = {
 function styleLabel(style: string | null) {
   if (!style) return 'AI Image'
   return STYLE_LABELS[String(style)] || String(style)
+}
+
+async function findFeaturedArtwork(styleKey: string, featuredTitle: string) {
+  const commonWhere = {
+    style: styleKey as any,
+    status: 'PUBLISHED' as any,
+    NOT: [
+      { tags: { has: 'smoketest' } },
+      { title: { contains: 'smoketest', mode: 'insensitive' as const } },
+      { title: { contains: 'diagnostic', mode: 'insensitive' as const } },
+      { title: { contains: 'test artwork', mode: 'insensitive' as const } },
+      { title: { contains: 'db smoketest', mode: 'insensitive' as const } },
+    ],
+    OR: [
+      {
+        thumbnail: {
+          contains: '.public.blob.vercel-storage.com',
+          mode: 'insensitive' as const,
+        },
+      },
+      {
+        assets: {
+          some: {
+            originalUrl: {
+              contains: '.public.blob.vercel-storage.com',
+              mode: 'insensitive' as const,
+            },
+          },
+        },
+      },
+    ],
+  }
+
+  // 1. Exact title
+  const exact = await prisma.artwork.findFirst({
+    where: {
+      ...commonWhere,
+      title: featuredTitle,
+    },
+    select: {
+      id: true,
+      title: true,
+    },
+  })
+
+  if (exact) return exact
+
+  // 2. Case-insensitive contains fallback, for slight title mismatches
+  const partial = await prisma.artwork.findFirst({
+    where: {
+      ...commonWhere,
+      title: {
+        contains: featuredTitle.replace(/\s+in\s.+$/i, ''),
+        mode: 'insensitive',
+      },
+    },
+    orderBy: { createdAt: 'desc' },
+    select: {
+      id: true,
+      title: true,
+    },
+  })
+
+  if (partial) return partial
+
+  // 3. Newest stable fallback
+  return prisma.artwork.findFirst({
+    where: commonWhere,
+    orderBy: { createdAt: 'desc' },
+    select: {
+      id: true,
+      title: true,
+    },
+  })
 }
 
 export default async function HomePage() {
@@ -89,42 +214,7 @@ export default async function HomePage() {
 
   const masters = await Promise.all(
     MASTER_ROWS.map(async (master) => {
-      const artwork = await prisma.artwork.findFirst({
-        where: {
-          style: master.key as any,
-          status: 'PUBLISHED',
-          NOT: [
-            { tags: { has: 'smoketest' } },
-            { title: { contains: 'smoketest', mode: 'insensitive' } },
-            { title: { contains: 'diagnostic', mode: 'insensitive' } },
-            { title: { contains: 'test artwork', mode: 'insensitive' } },
-            { title: { contains: 'db smoketest', mode: 'insensitive' } },
-          ],
-          OR: [
-            {
-              thumbnail: {
-                contains: '.public.blob.vercel-storage.com',
-                mode: 'insensitive',
-              },
-            },
-            {
-              assets: {
-                some: {
-                  originalUrl: {
-                    contains: '.public.blob.vercel-storage.com',
-                    mode: 'insensitive',
-                  },
-                },
-              },
-            },
-          ],
-        },
-        orderBy: { createdAt: 'desc' },
-        select: {
-          id: true,
-          title: true,
-        },
-      })
+      const artwork = await findFeaturedArtwork(master.key, master.featuredTitle)
 
       return {
         ...master,
@@ -198,7 +288,9 @@ export default async function HomePage() {
               />
               <div className="p-3">
                 <div className="text-sm text-slate-100">{master.label}</div>
-                <div className="text-xs text-slate-400">Explore this master</div>
+                <div className="text-xs text-slate-400">
+                  {master.artwork?.title || 'Explore this master'}
+                </div>
               </div>
             </Link>
           ))}
