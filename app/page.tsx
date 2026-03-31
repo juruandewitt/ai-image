@@ -18,129 +18,6 @@ const FALLBACK_DATA_URL =
     </svg>`
   )
 
-const MASTER_ROWS = [
-  {
-    key: 'VAN_GOGH',
-    label: 'Van Gogh',
-    slug: 'van-gogh',
-    featuredQueries: [
-      'Starry Night',
-      'Sunflowers',
-      'Wheat Field',
-      'Cafe Night',
-      'Bedroom',
-    ],
-  },
-  {
-    key: 'DALI',
-    label: 'Dalí',
-    slug: 'dali',
-    featuredQueries: [
-      'Persistence of Memory',
-      'Melting Time',
-      'Dream',
-      'Surreal',
-      'Soft Watches',
-    ],
-  },
-  {
-    key: 'POLLOCK',
-    label: 'Jackson Pollock',
-    slug: 'jackson-pollock',
-    featuredQueries: [
-      'Blue Horse',
-      'Great Wave',
-      'The Thinker',
-      'Abstract Conflict',
-      'Black and White',
-    ],
-  },
-  {
-    key: 'VERMEER',
-    label: 'Johannes Vermeer',
-    slug: 'johannes-vermeer',
-    featuredQueries: [
-      'Girl with a Pearl Earring',
-      'Girl Reading a Letter',
-      'Milkmaid',
-      'Woman with Pearl',
-      'Pearl Portrait',
-    ],
-  },
-  {
-    key: 'MONET',
-    label: 'Claude Monet',
-    slug: 'claude-monet',
-    featuredQueries: [
-      'Water Lilies',
-      'Garden in Bloom',
-      'Bridge Over Quiet Water',
-      'Morning Light on the River',
-      'Misty Morning Garden',
-    ],
-  },
-  {
-    key: 'PICASSO',
-    label: 'Pablo Picasso',
-    slug: 'pablo-picasso',
-    featuredQueries: [
-      'Guernica',
-      'Woman',
-      'Weeping',
-      'Bull',
-      'Portrait',
-    ],
-  },
-  {
-    key: 'REMBRANDT',
-    label: 'Rembrandt',
-    slug: 'rembrandt',
-    featuredQueries: [
-      'Night Watch',
-      'Self Portrait',
-      'Portrait',
-      'Scholar',
-      'Old Man',
-    ],
-  },
-  {
-    key: 'CARAVAGGIO',
-    label: 'Caravaggio',
-    slug: 'caravaggio',
-    featuredQueries: [
-      'Calling of Saint Matthew',
-      'Boy in Candlelight',
-      'Woman with Bowl of Grapes',
-      'Man with Feathered Hat',
-      'The Red Cloak Figure',
-    ],
-  },
-  {
-    key: 'DA_VINCI',
-    label: 'Leonardo da Vinci',
-    slug: 'leonardo-da-vinci',
-    featuredQueries: [
-      'Mona Lisa',
-      'Soft Smile',
-      'Lady with Folded Hands',
-      'Portrait in Soft Sfumato',
-      'Study of a Noble Woman',
-    ],
-  },
-  {
-    key: 'MICHELANGELO',
-    label: 'Michelangelo',
-    slug: 'michelangelo',
-    featuredQueries: [
-      'Creation of Adam',
-      'David',
-      'Heroic Pose',
-      'Ceiling Fresco',
-      'Sacred Composition',
-    ],
-  },
-]
-
 const STYLE_LABELS: Record<string, string> = {
   VAN_GOGH: 'Van Gogh',
   DALI: 'Dalí',
@@ -154,79 +31,54 @@ const STYLE_LABELS: Record<string, string> = {
   MICHELANGELO: 'Michelangelo',
 }
 
+const FEATURED_MASTERS = [
+  { key: 'VAN_GOGH', label: 'Van Gogh', slug: 'van-gogh', artworkId: '' },
+  { key: 'DALI', label: 'Dalí', slug: 'dali', artworkId: '' },
+  { key: 'POLLOCK', label: 'Jackson Pollock', slug: 'jackson-pollock', artworkId: '' },
+  { key: 'VERMEER', label: 'Johannes Vermeer', slug: 'johannes-vermeer', artworkId: '' },
+  { key: 'MONET', label: 'Claude Monet', slug: 'claude-monet', artworkId: '' },
+  { key: 'PICASSO', label: 'Pablo Picasso', slug: 'pablo-picasso', artworkId: '' },
+  { key: 'REMBRANDT', label: 'Rembrandt', slug: 'rembrandt', artworkId: '' },
+  { key: 'CARAVAGGIO', label: 'Caravaggio', slug: 'caravaggio', artworkId: '' },
+  { key: 'DA_VINCI', label: 'Leonardo da Vinci', slug: 'leonardo-da-vinci', artworkId: '' },
+  { key: 'MICHELANGELO', label: 'Michelangelo', slug: 'michelangelo', artworkId: '' },
+]
+
 function styleLabel(style: string | null) {
   if (!style) return 'AI Image'
   return STYLE_LABELS[String(style)] || String(style)
 }
 
-function publicStableWhere(styleKey?: string) {
-  return {
-    ...(styleKey ? { style: styleKey as any } : {}),
-    status: 'PUBLISHED' as any,
-    NOT: [
-      { tags: { has: 'smoketest' } },
-      { title: { contains: 'smoketest', mode: 'insensitive' as const } },
-      { title: { contains: 'diagnostic', mode: 'insensitive' as const } },
-      { title: { contains: 'test artwork', mode: 'insensitive' as const } },
-      { title: { contains: 'db smoketest', mode: 'insensitive' as const } },
-    ],
-    OR: [
-      {
-        thumbnail: {
-          contains: '.public.blob.vercel-storage.com',
-          mode: 'insensitive' as const,
+export default async function HomePage() {
+  const newDrops = await prisma.artwork.findMany({
+    where: {
+      status: 'PUBLISHED',
+      NOT: [
+        { tags: { has: 'smoketest' } },
+        { title: { contains: 'smoketest', mode: 'insensitive' } },
+        { title: { contains: 'diagnostic', mode: 'insensitive' } },
+        { title: { contains: 'test artwork', mode: 'insensitive' } },
+        { title: { contains: 'db smoketest', mode: 'insensitive' } },
+      ],
+      OR: [
+        {
+          thumbnail: {
+            contains: '.public.blob.vercel-storage.com',
+            mode: 'insensitive',
+          },
         },
-      },
-      {
-        assets: {
-          some: {
-            originalUrl: {
-              contains: '.public.blob.vercel-storage.com',
-              mode: 'insensitive' as const,
+        {
+          assets: {
+            some: {
+              originalUrl: {
+                contains: '.public.blob.vercel-storage.com',
+                mode: 'insensitive',
+              },
             },
           },
         },
-      },
-    ],
-  }
-}
-
-async function findFeaturedArtwork(
-  styleKey: string,
-  featuredQueries: string[]
-) {
-  for (const q of featuredQueries) {
-    const found = await prisma.artwork.findFirst({
-      where: {
-        ...publicStableWhere(styleKey),
-        title: {
-          contains: q,
-          mode: 'insensitive',
-        },
-      },
-      orderBy: { createdAt: 'desc' },
-      select: {
-        id: true,
-        title: true,
-      },
-    })
-
-    if (found) return found
-  }
-
-  return prisma.artwork.findFirst({
-    where: publicStableWhere(styleKey),
-    orderBy: { createdAt: 'desc' },
-    select: {
-      id: true,
-      title: true,
+      ],
     },
-  })
-}
-
-export default async function HomePage() {
-  const newDrops = await prisma.artwork.findMany({
-    where: publicStableWhere(),
     orderBy: { createdAt: 'desc' },
     take: 10,
     select: {
@@ -237,11 +89,18 @@ export default async function HomePage() {
   })
 
   const masters = await Promise.all(
-    MASTER_ROWS.map(async (master) => {
-      const artwork = await findFeaturedArtwork(
-        master.key,
-        master.featuredQueries
-      )
+    FEATURED_MASTERS.map(async (master) => {
+      if (!master.artworkId) {
+        return { ...master, artwork: null as null | { id: string; title: string } }
+      }
+
+      const artwork = await prisma.artwork.findUnique({
+        where: { id: master.artworkId },
+        select: {
+          id: true,
+          title: true,
+        },
+      })
 
       return {
         ...master,
@@ -316,7 +175,7 @@ export default async function HomePage() {
               <div className="p-3">
                 <div className="text-sm text-slate-100">{master.label}</div>
                 <div className="text-xs text-slate-400">
-                  {master.artwork?.title || 'Explore this master'}
+                  {master.artwork?.title || 'Select featured artwork'}
                 </div>
               </div>
             </Link>
