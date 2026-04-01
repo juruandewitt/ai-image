@@ -9,26 +9,26 @@ const ARTIST = 'Johannes Vermeer'
 const DEFAULT_ASSET_PROVIDER = 'vercel-blob'
 
 const TITLES = [
-  'Officer and Laughing Girl in Vermeer Style',
-  'Girl Interrupted at Her Music in Vermeer Style',
-  'The Lacemaker in Vermeer Style',
-  'Mistress and Maid in Vermeer Style',
-  'A Lady Writing in Vermeer Style',
-  'A Lady Standing at a Virginal in Vermeer Style',
-  'A Lady Seated at a Virginal in Vermeer Style',
-  'The Little Street in Vermeer Style',
-  'The Glass of Wine in Vermeer Style',
-  'The Love Letter in Vermeer Style',
-  'Woman with a Pearl Necklace in Vermeer Style',
-  'Girl with a Red Hat in Vermeer Style',
-  'Young Woman Seated at a Virginal in Vermeer Style',
-  'Woman Writing a Letter with Her Maid in Vermeer Style',
-  'Interior with Woman and Window in Vermeer Style',
-  'Morning Light in Delft Interior in Vermeer Style',
-  'Quiet Window Study in Vermeer Style',
-  'Reading by Soft Light in Vermeer Style',
-  'Stillness in Blue Room in Vermeer Style',
-  'Domestic Silence Scene in Vermeer Style',
+  'Birth of Venus in Vermeer Style',
+  'Liberty Leading the People in Vermeer Style',
+  'Whistler Mother in Vermeer Style',
+  'The Thinker in Vermeer Style',
+  'The Great Wave off Kanagawa in Vermeer Style',
+  'Nighthawks in Vermeer Style',
+  'The School of Athens in Vermeer Style',
+  'Balcony Scene at Sunset in Vermeer Style',
+  'Portrait of a Noble Lady in Vermeer Style',
+  'Woman with Candlelight Portrait in Vermeer Style',
+  'Still Life with Fruit in Vermeer Style',
+  'Quiet Kitchen Scene in Vermeer Style',
+  'Interior with Piano Player in Vermeer Style',
+  'Reading Woman by Candlelight in Vermeer Style',
+  'Window Light Portrait Study in Vermeer Style',
+  'Evening Interior Reflection in Vermeer Style',
+  'Soft Light Portrait of a Young Woman in Vermeer Style',
+  'Domestic Scene with Letters in Vermeer Style',
+  'Golden Hour Interior Study in Vermeer Style',
+  'Woman Seated by a Window in Vermeer Style',
 ]
 
 function safeFilePart(value: string) {
@@ -252,7 +252,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Vermeer batch 2 complete',
+    message: 'Vermeer batch 3 complete',
     style: STYLE,
     count: TITLES.length,
     results,
