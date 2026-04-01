@@ -4,17 +4,32 @@ import { prisma } from '@/lib/prisma'
 
 export const dynamic = 'force-dynamic'
 
-const STYLE = 'DA_VINCI'
-const ARTIST = 'Leonardo da Vinci'
+const STYLE = 'VERMEER'
+const ARTIST = 'Johannes Vermeer'
 const DEFAULT_ASSET_PROVIDER = 'vercel-blob'
 
 const TITLES = [
-  'Renaissance Ceiling Fresco in Da Vinci Style',
-  'Cubist War Scene Reimagined in Da Vinci Style',
-  'Classical Goddess Portrait in Da Vinci Style',
-  'Sacred Hands Reaching in Da Vinci Style',
-  'Fragmented Monumental Composition in Da Vinci Style',
-  'Ideal Beauty from the Sea in Da Vinci Style'
+  'Woman Writing by Window in Vermeer Style',
+  'Letter Reading at Sunset in Vermeer Style',
+  'Quiet Delft Courtyard in Vermeer Style',
+  'Interior with Map and Window in Vermeer Style',
+  'Young Woman with Book in Vermeer Style',
+  'Seated Woman in Golden Light in Vermeer Style',
+  'Still Room with Open Window in Vermeer Style',
+  'Woman with Jug in Morning Light in Vermeer Style',
+  'Interior with Chair and Table in Vermeer Style',
+  'Girl Resting by Window in Vermeer Style',
+
+  'The Kiss in Vermeer Style',
+  'Cafe Terrace at Night in Vermeer Style',
+  'Impression Sunrise in Vermeer Style',
+  'The Thinker Sculpture in Vermeer Style',
+  'The Great Bathers in Vermeer Style',
+  'The Hay Wain in Vermeer Style',
+  'The Sleeping Gypsy in Vermeer Style',
+  'Olympia Reimagined in Vermeer Style',
+  'The Red Vineyard in Vermeer Style',
+  'Bridge in a Garden in Vermeer Style'
 ]
 
 function safeFilePart(value: string) {
@@ -205,7 +220,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Da Vinci safe retry batch complete',
+    message: 'Vermeer final batch complete',
     style: STYLE,
     count: TITLES.length,
     results,
