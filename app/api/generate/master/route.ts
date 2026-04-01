@@ -9,26 +9,12 @@ const ARTIST = 'Leonardo da Vinci'
 const DEFAULT_ASSET_PROVIDER = 'vercel-blob'
 
 const TITLES = [
-  'Madonna of the Carnation in Da Vinci Style',
-  'La Belle Ferronniere in Da Vinci Style',
-  'Portrait of Ginevra de Benci in Da Vinci Style',
-  'Leda and the Swan in Da Vinci Style',
-  'Saint Anne with the Virgin and Child in Da Vinci Style',
-  'The Last Judgement Sketch in Da Vinci Style',
-  'The Anatomist Notebook in Da Vinci Style',
-  'Mechanical Study with Gears in Da Vinci Style',
-  'The Flying Machine Study in Da Vinci Style',
-  'Architectural Study in Da Vinci Style',
-  'Starry Night in Da Vinci Style',
-  'Girl with a Pearl Earring in Da Vinci Style',
-  'Water Lilies in Da Vinci Style',
-  'Creation of Adam in Da Vinci Style',
-  'Persistence of Memory in Da Vinci Style',
-  'Guernica in Da Vinci Style',
-  'The Scream in Da Vinci Style',
-  'The Night Watch in Da Vinci Style',
-  'American Gothic in Da Vinci Style',
-  'Birth of Venus in Da Vinci Style',
+  'Renaissance Ceiling Fresco in Da Vinci Style',
+  'Cubist War Scene Reimagined in Da Vinci Style',
+  'Classical Goddess Portrait in Da Vinci Style',
+  'Sacred Hands Reaching in Da Vinci Style',
+  'Fragmented Monumental Composition in Da Vinci Style',
+  'Ideal Beauty from the Sea in Da Vinci Style'
 ]
 
 function safeFilePart(value: string) {
@@ -219,7 +205,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Da Vinci batch 2 complete',
+    message: 'Da Vinci safe retry batch complete',
     style: STYLE,
     count: TITLES.length,
     results,
