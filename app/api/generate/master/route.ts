@@ -9,26 +9,26 @@ const ARTIST = 'Leonardo da Vinci'
 const DEFAULT_ASSET_PROVIDER = 'vercel-blob'
 
 const TITLES = [
-  'Mona Lisa in Da Vinci Style',
-  'The Last Supper in Da Vinci Style',
-  'Lady with an Ermine in Da Vinci Style',
-  'Vitruvian Man in Da Vinci Style',
-  'Salvator Mundi in Da Vinci Style',
-  'Virgin of the Rocks in Da Vinci Style',
-  'Annunciation in Da Vinci Style',
-  'Adoration of the Magi in Da Vinci Style',
-  'Saint John the Baptist in Da Vinci Style',
-  'The Baptism of Christ in Da Vinci Style',
-  'Portrait in Soft Sfumato',
-  'Study of a Noble Woman',
-  'The Scholar at the Table',
-  'Young Man in Quiet Light',
-  'Lady with Folded Hands',
-  'The Inventor Desk',
-  'Portrait with Blue Robe',
-  'The Quiet Study Room',
-  'Woman with Delicate Veil',
-  'The Golden Chamber',
+  'Madonna of the Carnation in Da Vinci Style',
+  'La Belle Ferronniere in Da Vinci Style',
+  'Portrait of Ginevra de Benci in Da Vinci Style',
+  'Leda and the Swan in Da Vinci Style',
+  'Saint Anne with the Virgin and Child in Da Vinci Style',
+  'The Last Judgement Sketch in Da Vinci Style',
+  'The Anatomist Notebook in Da Vinci Style',
+  'Mechanical Study with Gears in Da Vinci Style',
+  'The Flying Machine Study in Da Vinci Style',
+  'Architectural Study in Da Vinci Style',
+  'Starry Night in Da Vinci Style',
+  'Girl with a Pearl Earring in Da Vinci Style',
+  'Water Lilies in Da Vinci Style',
+  'Creation of Adam in Da Vinci Style',
+  'Persistence of Memory in Da Vinci Style',
+  'Guernica in Da Vinci Style',
+  'The Scream in Da Vinci Style',
+  'The Night Watch in Da Vinci Style',
+  'American Gothic in Da Vinci Style',
+  'Birth of Venus in Da Vinci Style',
 ]
 
 function safeFilePart(value: string) {
@@ -151,7 +151,6 @@ async function processOneTitle(title: string) {
     }
 
     await createAssetIfMissing(existing.id, existingStable, prompt)
-
     return { title, success: true, reused: true }
   }
 
@@ -220,7 +219,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Da Vinci batch 1 complete',
+    message: 'Da Vinci batch 2 complete',
     style: STYLE,
     count: TITLES.length,
     results,
