@@ -9,26 +9,26 @@ const ARTIST = 'Johannes Vermeer'
 const DEFAULT_ASSET_PROVIDER = 'vercel-blob'
 
 const TITLES = [
-  'Girl with a Pearl Earring in Vermeer Style',
-  'The Milkmaid in Vermeer Style',
-  'Woman in Blue Reading a Letter in Vermeer Style',
-  'View of Delft in Vermeer Style',
-  'The Art of Painting in Vermeer Style',
-  'Girl Reading a Letter by an Open Window in Vermeer Style',
-  'Woman Holding a Balance in Vermeer Style',
-  'The Music Lesson in Vermeer Style',
-  'Young Woman with a Water Pitcher in Vermeer Style',
-  'Woman with a Lute in Vermeer Style',
-  'Mona Lisa in Vermeer Style',
-  'Starry Night in Vermeer Style',
-  'The Last Supper in Vermeer Style',
-  'Creation of Adam in Vermeer Style',
-  'Persistence of Memory in Vermeer Style',
-  'Guernica in Vermeer Style',
-  'The Scream in Vermeer Style',
-  'Water Lilies in Vermeer Style',
-  'The Night Watch in Vermeer Style',
-  'American Gothic in Vermeer Style',
+  'Officer and Laughing Girl in Vermeer Style',
+  'Girl Interrupted at Her Music in Vermeer Style',
+  'The Lacemaker in Vermeer Style',
+  'Mistress and Maid in Vermeer Style',
+  'A Lady Writing in Vermeer Style',
+  'A Lady Standing at a Virginal in Vermeer Style',
+  'A Lady Seated at a Virginal in Vermeer Style',
+  'The Little Street in Vermeer Style',
+  'The Glass of Wine in Vermeer Style',
+  'The Love Letter in Vermeer Style',
+  'Woman with a Pearl Necklace in Vermeer Style',
+  'Girl with a Red Hat in Vermeer Style',
+  'Young Woman Seated at a Virginal in Vermeer Style',
+  'Woman Writing a Letter with Her Maid in Vermeer Style',
+  'Interior with Woman and Window in Vermeer Style',
+  'Morning Light in Delft Interior in Vermeer Style',
+  'Quiet Window Study in Vermeer Style',
+  'Reading by Soft Light in Vermeer Style',
+  'Stillness in Blue Room in Vermeer Style',
+  'Domestic Silence Scene in Vermeer Style',
 ]
 
 function safeFilePart(value: string) {
@@ -252,7 +252,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Vermeer batch complete',
+    message: 'Vermeer batch 2 complete',
     style: STYLE,
     count: TITLES.length,
     results,
