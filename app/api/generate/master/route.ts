@@ -4,31 +4,31 @@ import { prisma } from '@/lib/prisma'
 
 export const dynamic = 'force-dynamic'
 
-const STYLE = 'VERMEER'
-const ARTIST = 'Johannes Vermeer'
+const STYLE = 'DA_VINCI'
+const ARTIST = 'Leonardo da Vinci'
 const DEFAULT_ASSET_PROVIDER = 'vercel-blob'
 
 const TITLES = [
-  'Birth of Venus in Vermeer Style',
-  'Liberty Leading the People in Vermeer Style',
-  'Whistler Mother in Vermeer Style',
-  'The Thinker in Vermeer Style',
-  'The Great Wave off Kanagawa in Vermeer Style',
-  'Nighthawks in Vermeer Style',
-  'The School of Athens in Vermeer Style',
-  'Balcony Scene at Sunset in Vermeer Style',
-  'Portrait of a Noble Lady in Vermeer Style',
-  'Woman with Candlelight Portrait in Vermeer Style',
-  'Still Life with Fruit in Vermeer Style',
-  'Quiet Kitchen Scene in Vermeer Style',
-  'Interior with Piano Player in Vermeer Style',
-  'Reading Woman by Candlelight in Vermeer Style',
-  'Window Light Portrait Study in Vermeer Style',
-  'Evening Interior Reflection in Vermeer Style',
-  'Soft Light Portrait of a Young Woman in Vermeer Style',
-  'Domestic Scene with Letters in Vermeer Style',
-  'Golden Hour Interior Study in Vermeer Style',
-  'Woman Seated by a Window in Vermeer Style',
+  'Mona Lisa in Da Vinci Style',
+  'The Last Supper in Da Vinci Style',
+  'Lady with an Ermine in Da Vinci Style',
+  'Vitruvian Man in Da Vinci Style',
+  'Salvator Mundi in Da Vinci Style',
+  'Virgin of the Rocks in Da Vinci Style',
+  'Annunciation in Da Vinci Style',
+  'Adoration of the Magi in Da Vinci Style',
+  'Saint John the Baptist in Da Vinci Style',
+  'The Baptism of Christ in Da Vinci Style',
+  'Portrait in Soft Sfumato',
+  'Study of a Noble Woman',
+  'The Scholar at the Table',
+  'Young Man in Quiet Light',
+  'Lady with Folded Hands',
+  'The Inventor Desk',
+  'Portrait with Blue Robe',
+  'The Quiet Study Room',
+  'Woman with Delicate Veil',
+  'The Golden Chamber',
 ]
 
 function safeFilePart(value: string) {
@@ -48,10 +48,7 @@ function isStableBlobSrc(value?: string | null) {
 
 async function generateOpenAiImageUrl(prompt: string) {
   const apiKey = process.env.OPENAI_API_KEY
-
-  if (!apiKey) {
-    throw new Error('Missing OPENAI_API_KEY')
-  }
+  if (!apiKey) throw new Error('Missing OPENAI_API_KEY')
 
   const res = await fetch('https://api.openai.com/v1/images/generations', {
     method: 'POST',
@@ -77,7 +74,6 @@ async function generateOpenAiImageUrl(prompt: string) {
 
   const data = await res.json()
   const imageUrl = data?.data?.[0]?.url
-
   if (!imageUrl || typeof imageUrl !== 'string') {
     throw new Error('No image URL returned from OpenAI')
   }
@@ -104,19 +100,13 @@ async function uploadImageToBlob(openAiUrl: string, title: string) {
     contentType,
   })
 
-  if (!blob?.url) {
-    throw new Error('Failed to upload generated image to Vercel Blob')
-  }
-
+  if (!blob?.url) throw new Error('Failed to upload generated image to Vercel Blob')
   return blob.url
 }
 
 async function createAssetIfMissing(artworkId: string, stableImageUrl: string, prompt: string) {
   const existingStableAsset = await prisma.asset.findFirst({
-    where: {
-      artworkId,
-      originalUrl: stableImageUrl,
-    },
+    where: { artworkId, originalUrl: stableImageUrl },
     select: { id: true },
   })
 
@@ -136,26 +126,19 @@ async function processOneTitle(title: string) {
   const prompt = title
 
   const existing = await prisma.artwork.findFirst({
-    where: {
-      title,
-      style: STYLE as any,
-    },
+    where: { title, style: STYLE as any },
     select: {
       id: true,
-      title: true,
       thumbnail: true,
       assets: {
         orderBy: { createdAt: 'desc' },
-        select: {
-          originalUrl: true,
-        },
+        select: { originalUrl: true },
       },
     },
   })
 
   const existingStableAsset =
     existing?.assets.find((a) => isStableBlobSrc(a.originalUrl))?.originalUrl || null
-
   const existingStableThumb = isStableBlobSrc(existing?.thumbnail) ? existing?.thumbnail : null
   const existingStable = existingStableAsset || existingStableThumb || null
 
@@ -169,11 +152,7 @@ async function processOneTitle(title: string) {
 
     await createAssetIfMissing(existing.id, existingStable, prompt)
 
-    return {
-      title,
-      success: true,
-      reused: true,
-    }
+    return { title, success: true, reused: true }
   }
 
   const openAiUrl = await generateOpenAiImageUrl(prompt)
@@ -189,12 +168,7 @@ async function processOneTitle(title: string) {
     })
 
     await createAssetIfMissing(existing.id, stableImageUrl, prompt)
-
-    return {
-      title,
-      success: true,
-      regenerated: true,
-    }
+    return { title, success: true, regenerated: true }
   }
 
   const artwork = await prisma.artwork.create({
@@ -207,9 +181,7 @@ async function processOneTitle(title: string) {
       tags: [],
       price: 9.99,
     },
-    select: {
-      id: true,
-    },
+    select: { id: true },
   })
 
   await prisma.asset.create({
@@ -221,11 +193,7 @@ async function processOneTitle(title: string) {
     },
   })
 
-  return {
-    title,
-    success: true,
-    created: true,
-  }
+  return { title, success: true, created: true }
 }
 
 export async function GET() {
@@ -252,7 +220,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Vermeer batch 3 complete',
+    message: 'Da Vinci batch 1 complete',
     style: STYLE,
     count: TITLES.length,
     results,
