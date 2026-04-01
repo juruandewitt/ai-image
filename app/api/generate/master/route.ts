@@ -9,26 +9,26 @@ const ARTIST = 'Leonardo da Vinci'
 const DEFAULT_ASSET_PROVIDER = 'vercel-blob'
 
 const TITLES = [
-  'Harbor at Sunrise in Da Vinci Style',
-  'Late Night City Interior in Da Vinci Style',
-  'Woman with Pearl Necklace in Da Vinci Style',
-  'The Love Letter in Da Vinci Style',
-  'The Glass of Wine in Da Vinci Style',
-  'Girl Interrupted at Her Music in Da Vinci Style',
-  'The Little Street in Da Vinci Style',
-  'Officer and Laughing Girl in Da Vinci Style',
-  'Woman Holding a Balance in Da Vinci Style',
-  'Young Woman with a Water Pitcher in Da Vinci Style',
-  'Sacred Family in Quiet Chamber in Da Vinci Style',
-  'Inventor with Drawing Tools in Da Vinci Style',
-  'Renaissance Engineer at Work in Da Vinci Style',
-  'Study of Draped Figure in Da Vinci Style',
-  'Soft Landscape with River in Da Vinci Style',
-  'Portrait with Crimson Sleeve in Da Vinci Style',
-  'Study of Nobleman in Profile in Da Vinci Style',
-  'Quiet Chapel Interior in Da Vinci Style',
-  'Architectural Arcade in Da Vinci Style',
-  'Golden Light over Marble Steps in Da Vinci Style',
+  'Reading Woman by Candlelight in Da Vinci Style',
+  'Interior with Piano Player in Da Vinci Style',
+  'Window Light Portrait Study in Da Vinci Style',
+  'Evening Interior Reflection in Da Vinci Style',
+  'Domestic Scene with Letters in Da Vinci Style',
+  'Golden Hour Interior Study in Da Vinci Style',
+  'Woman Seated by a Window in Da Vinci Style',
+  'Quiet Renaissance Library in Da Vinci Style',
+  'Study of Hands and Manuscripts in Da Vinci Style',
+  'Inventor Notes by Lamplight in Da Vinci Style',
+  'Bridge in a Garden in Da Vinci Style',
+  'The Red Vineyard in Da Vinci Style',
+  'The Sleeping Gypsy in Da Vinci Style',
+  'The Hay Wain in Da Vinci Style',
+  'The Milkmaid in Da Vinci Style',
+  'Girl Reading a Letter by an Open Window in Da Vinci Style',
+  'View of Delft in Da Vinci Style',
+  'The Art of Painting in Da Vinci Style',
+  'The Music Lesson in Da Vinci Style',
+  'Woman with a Lute in Da Vinci Style',
 ]
 
 function safeFilePart(value: string) {
@@ -219,7 +219,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Da Vinci batch 4 complete',
+    message: 'Da Vinci batch 5 complete',
     style: STYLE,
     count: TITLES.length,
     results,
