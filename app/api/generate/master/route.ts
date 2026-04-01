@@ -4,32 +4,31 @@ import { prisma } from '@/lib/prisma'
 
 export const dynamic = 'force-dynamic'
 
-const STYLE = 'VERMEER'
-const ARTIST = 'Johannes Vermeer'
+const STYLE = 'DA_VINCI'
+const ARTIST = 'Leonardo da Vinci'
 const DEFAULT_ASSET_PROVIDER = 'vercel-blob'
 
 const TITLES = [
-  'Woman Writing by Window in Vermeer Style',
-  'Letter Reading at Sunset in Vermeer Style',
-  'Quiet Delft Courtyard in Vermeer Style',
-  'Interior with Map and Window in Vermeer Style',
-  'Young Woman with Book in Vermeer Style',
-  'Seated Woman in Golden Light in Vermeer Style',
-  'Still Room with Open Window in Vermeer Style',
-  'Woman with Jug in Morning Light in Vermeer Style',
-  'Interior with Chair and Table in Vermeer Style',
-  'Girl Resting by Window in Vermeer Style',
-
-  'The Kiss in Vermeer Style',
-  'Cafe Terrace at Night in Vermeer Style',
-  'Impression Sunrise in Vermeer Style',
-  'The Thinker Sculpture in Vermeer Style',
-  'The Great Bathers in Vermeer Style',
-  'The Hay Wain in Vermeer Style',
-  'The Sleeping Gypsy in Vermeer Style',
-  'Olympia Reimagined in Vermeer Style',
-  'The Red Vineyard in Vermeer Style',
-  'Bridge in a Garden in Vermeer Style'
+  'The Kiss in Da Vinci Style',
+  'Cafe Terrace at Night in Da Vinci Style',
+  'Impression Sunrise in Da Vinci Style',
+  'The Thinker in Da Vinci Style',
+  'The Great Wave off Kanagawa in Da Vinci Style',
+  'Nighthawks in Da Vinci Style',
+  'The School of Athens in Da Vinci Style',
+  'Liberty Leading the People in Da Vinci Style',
+  'Whistler Mother in Da Vinci Style',
+  'Olympia Reimagined in Da Vinci Style',
+  'Renaissance Observatory in Da Vinci Style',
+  'Mechanical Wings Study in Da Vinci Style',
+  'Scientific Instruments Table in Da Vinci Style',
+  'Inventor Workshop at Dusk in Da Vinci Style',
+  'Architectural Dome Interior in Da Vinci Style',
+  'Portrait of a Court Musician in Da Vinci Style',
+  'Young Woman with Golden Veil in Da Vinci Style',
+  'Scholar Reading by Candlelight in Da Vinci Style',
+  'Marble Hall with Figures in Da Vinci Style',
+  'Window Study with Quiet Landscape in Da Vinci Style',
 ]
 
 function safeFilePart(value: string) {
@@ -220,7 +219,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Vermeer final batch complete',
+    message: 'Da Vinci batch 3 complete',
     style: STYLE,
     count: TITLES.length,
     results,
