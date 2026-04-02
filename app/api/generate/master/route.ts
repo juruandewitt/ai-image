@@ -9,27 +9,27 @@ const ARTIST = 'Michelangelo'
 const DEFAULT_ASSET_PROVIDER = 'vercel-blob'
 
 const TITLES = [
-  'Grand Cathedral Interior in Michelangelo Style',
-  'Renaissance Chapel Ceiling in Michelangelo Style',
-  'Fresco Vault with Light Beams in Michelangelo Style',
-  'Marble Hall of Columns in Michelangelo Style',
-  'Sacred Architecture Study in Michelangelo Style',
-  'Golden Chapel Light in Michelangelo Style',
-  'Vaulted Stone Ceiling Study in Michelangelo Style',
-  'Renaissance Basilica Interior in Michelangelo Style',
-  'Marble Staircase with Light in Michelangelo Style',
-  'Quiet Chapel with Candlelight in Michelangelo Style',
+  'Renaissance Dome Interior in Michelangelo Style',
+  'Stone Chapel Aisle in Michelangelo Style',
+  'Sunlight through Basilica Windows in Michelangelo Style',
+  'Sacred Vault with Fresco Panels in Michelangelo Style',
+  'Marble Courtyard with Arches in Michelangelo Style',
+  'Monumental Stone Passage in Michelangelo Style',
+  'Golden Nave Light in Michelangelo Style',
+  'Cathedral Columns at Dusk in Michelangelo Style',
+  'Painted Ceiling in Chapel Light in Michelangelo Style',
+  'Renaissance Sanctuary in Michelangelo Style',
 
-  'Starry Night in Michelangelo Style',
-  'Water Lilies in Michelangelo Style',
-  'The Night Watch in Michelangelo Style',
-  'Girl with a Pearl Earring in Michelangelo Style',
-  'Mona Lisa in Michelangelo Style',
-  'The Scream in Michelangelo Style',
-  'Persistence of Memory in Michelangelo Style',
-  'The Great Wave off Kanagawa in Michelangelo Style',
-  'American Gothic in Michelangelo Style',
-  'Nighthawks in Michelangelo Style'
+  'The Kiss in Michelangelo Style',
+  'The School of Athens in Michelangelo Style',
+  'Liberty Leading the People in Michelangelo Style',
+  'Whistler Mother in Michelangelo Style',
+  'The Thinker in Michelangelo Style',
+  'Bridge in a Garden in Michelangelo Style',
+  'The Hay Wain in Michelangelo Style',
+  'View of Delft in Michelangelo Style',
+  'The Art of Painting in Michelangelo Style',
+  'The Music Lesson in Michelangelo Style'
 ]
 
 function safeFilePart(value: string) {
@@ -40,11 +40,6 @@ function safeFilePart(value: string) {
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '')
     .slice(0, 80)
-}
-
-function isStableBlobSrc(value?: string | null) {
-  if (!value) return false
-  return value.toLowerCase().includes('.public.blob.vercel-storage.com/')
 }
 
 async function generateOpenAiImageUrl(prompt: string) {
@@ -158,7 +153,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Michelangelo batch completion 1 complete',
+    message: 'Michelangelo batch completion 2 complete',
     style: STYLE,
     count: TITLES.length,
     results,
