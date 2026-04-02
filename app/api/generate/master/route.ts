@@ -4,31 +4,31 @@ import { prisma } from '@/lib/prisma'
 
 export const dynamic = 'force-dynamic'
 
-const STYLE = 'DA_VINCI'
-const ARTIST = 'Leonardo da Vinci'
+const STYLE = 'MICHELANGELO'
+const ARTIST = 'Michelangelo'
 const DEFAULT_ASSET_PROVIDER = 'vercel-blob'
 
 const TITLES = [
-  'Reading Woman by Candlelight in Da Vinci Style',
-  'Interior with Piano Player in Da Vinci Style',
-  'Window Light Portrait Study in Da Vinci Style',
-  'Evening Interior Reflection in Da Vinci Style',
-  'Domestic Scene with Letters in Da Vinci Style',
-  'Golden Hour Interior Study in Da Vinci Style',
-  'Woman Seated by a Window in Da Vinci Style',
-  'Quiet Renaissance Library in Da Vinci Style',
-  'Study of Hands and Manuscripts in Da Vinci Style',
-  'Inventor Notes by Lamplight in Da Vinci Style',
-  'Bridge in a Garden in Da Vinci Style',
-  'The Red Vineyard in Da Vinci Style',
-  'The Sleeping Gypsy in Da Vinci Style',
-  'The Hay Wain in Da Vinci Style',
-  'The Milkmaid in Da Vinci Style',
-  'Girl Reading a Letter by an Open Window in Da Vinci Style',
-  'View of Delft in Da Vinci Style',
-  'The Art of Painting in Da Vinci Style',
-  'The Music Lesson in Da Vinci Style',
-  'Woman with a Lute in Da Vinci Style',
+  'Creation of Adam in Michelangelo Style',
+  'David in Michelangelo Style',
+  'Pieta in Michelangelo Style',
+  'The Last Judgement in Michelangelo Style',
+  'Moses in Michelangelo Style',
+  'Doni Tondo in Michelangelo Style',
+  'Sistine Chapel Ceiling Study in Michelangelo Style',
+  'Prophet on Ceiling Fresco in Michelangelo Style',
+  'Ignudi Figure Study in Michelangelo Style',
+  'Heroic Male Figure in Michelangelo Style',
+  'Marble Youth in Michelangelo Style',
+  'Sacred Family Composition in Michelangelo Style',
+  'Renaissance Vault Fresco in Michelangelo Style',
+  'Monumental Chapel Scene in Michelangelo Style',
+  'Mona Lisa in Michelangelo Style',
+  'Starry Night in Michelangelo Style',
+  'Girl with a Pearl Earring in Michelangelo Style',
+  'Water Lilies in Michelangelo Style',
+  'The Night Watch in Michelangelo Style',
+  'The Great Wave off Kanagawa in Michelangelo Style',
 ]
 
 function safeFilePart(value: string) {
@@ -219,7 +219,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Da Vinci batch 5 complete',
+    message: 'Michelangelo batch 1 complete',
     style: STYLE,
     count: TITLES.length,
     results,
