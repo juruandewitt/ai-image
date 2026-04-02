@@ -9,12 +9,27 @@ const ARTIST = 'Michelangelo'
 const DEFAULT_ASSET_PROVIDER = 'vercel-blob'
 
 const TITLES = [
-  'Classical Sea Born Figure in Michelangelo Style',
-  'Marble Study of Draped Figure in Michelangelo Style',
-  'Renaissance Beauty in Stone Light in Michelangelo Style',
-  'Ideal Figure beside Marble Column in Michelangelo Style',
-  'Chapel Fresco of Grace in Michelangelo Style',
-  'Monumental Renaissance Figure Study in Michelangelo Style'
+  'Grand Cathedral Interior in Michelangelo Style',
+  'Renaissance Chapel Ceiling in Michelangelo Style',
+  'Fresco Vault with Light Beams in Michelangelo Style',
+  'Marble Hall of Columns in Michelangelo Style',
+  'Sacred Architecture Study in Michelangelo Style',
+  'Golden Chapel Light in Michelangelo Style',
+  'Vaulted Stone Ceiling Study in Michelangelo Style',
+  'Renaissance Basilica Interior in Michelangelo Style',
+  'Marble Staircase with Light in Michelangelo Style',
+  'Quiet Chapel with Candlelight in Michelangelo Style',
+
+  'Starry Night in Michelangelo Style',
+  'Water Lilies in Michelangelo Style',
+  'The Night Watch in Michelangelo Style',
+  'Girl with a Pearl Earring in Michelangelo Style',
+  'Mona Lisa in Michelangelo Style',
+  'The Scream in Michelangelo Style',
+  'Persistence of Memory in Michelangelo Style',
+  'The Great Wave off Kanagawa in Michelangelo Style',
+  'American Gothic in Michelangelo Style',
+  'Nighthawks in Michelangelo Style'
 ]
 
 function safeFilePart(value: string) {
@@ -90,71 +105,17 @@ async function uploadImageToBlob(openAiUrl: string, title: string) {
   return blob.url
 }
 
-async function createAssetIfMissing(artworkId: string, stableImageUrl: string, prompt: string) {
-  const existingStableAsset = await prisma.asset.findFirst({
-    where: { artworkId, originalUrl: stableImageUrl },
-    select: { id: true },
-  })
-
-  if (existingStableAsset) return
-
-  await prisma.asset.create({
-    data: {
-      artworkId,
-      originalUrl: stableImageUrl,
-      provider: DEFAULT_ASSET_PROVIDER,
-      prompt,
-    },
-  })
-}
-
 async function processOneTitle(title: string) {
   const prompt = title
 
   const existing = await prisma.artwork.findFirst({
     where: { title, style: STYLE as any },
-    select: {
-      id: true,
-      thumbnail: true,
-      assets: {
-        orderBy: { createdAt: 'desc' },
-        select: { originalUrl: true },
-      },
-    },
   })
 
-  const existingStableAsset =
-    existing?.assets.find((a) => isStableBlobSrc(a.originalUrl))?.originalUrl || null
-  const existingStableThumb = isStableBlobSrc(existing?.thumbnail) ? existing?.thumbnail : null
-  const existingStable = existingStableAsset || existingStableThumb || null
-
-  if (existing && existingStable) {
-    if (!existingStableThumb) {
-      await prisma.artwork.update({
-        where: { id: existing.id },
-        data: { thumbnail: existingStable },
-      })
-    }
-
-    await createAssetIfMissing(existing.id, existingStable, prompt)
-    return { title, success: true, reused: true }
-  }
+  if (existing) return { title, success: true, reused: true }
 
   const openAiUrl = await generateOpenAiImageUrl(prompt)
   const stableImageUrl = await uploadImageToBlob(openAiUrl, title)
-
-  if (existing) {
-    await prisma.artwork.update({
-      where: { id: existing.id },
-      data: {
-        thumbnail: stableImageUrl,
-        artist: ARTIST,
-      },
-    })
-
-    await createAssetIfMissing(existing.id, stableImageUrl, prompt)
-    return { title, success: true, regenerated: true }
-  }
 
   const artwork = await prisma.artwork.create({
     data: {
@@ -166,7 +127,6 @@ async function processOneTitle(title: string) {
       tags: [],
       price: 9.99,
     },
-    select: { id: true },
   })
 
   await prisma.asset.create({
@@ -182,14 +142,7 @@ async function processOneTitle(title: string) {
 }
 
 export async function GET() {
-  const results: Array<{
-    title: string
-    success: boolean
-    reused?: boolean
-    regenerated?: boolean
-    created?: boolean
-    error?: string
-  }> = []
+  const results = []
 
   for (const title of TITLES) {
     try {
@@ -205,7 +158,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Michelangelo safe retry 2 complete',
+    message: 'Michelangelo batch completion 1 complete',
     style: STYLE,
     count: TITLES.length,
     results,
