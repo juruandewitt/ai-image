@@ -9,27 +9,27 @@ const ARTIST = 'Michelangelo'
 const DEFAULT_ASSET_PROVIDER = 'vercel-blob'
 
 const TITLES = [
-  'Renaissance Dome Interior in Michelangelo Style',
-  'Stone Chapel Aisle in Michelangelo Style',
-  'Sunlight through Basilica Windows in Michelangelo Style',
-  'Sacred Vault with Fresco Panels in Michelangelo Style',
-  'Marble Courtyard with Arches in Michelangelo Style',
-  'Monumental Stone Passage in Michelangelo Style',
-  'Golden Nave Light in Michelangelo Style',
-  'Cathedral Columns at Dusk in Michelangelo Style',
-  'Painted Ceiling in Chapel Light in Michelangelo Style',
-  'Renaissance Sanctuary in Michelangelo Style',
+  'High Renaissance Chapel in Michelangelo Style',
+  'Marble Cloister in Michelangelo Style',
+  'Frescoed Basilica Ceiling in Michelangelo Style',
+  'Sacred Stone Arcade in Michelangelo Style',
+  'Golden Apse Light in Michelangelo Style',
+  'Vaulted Hall of Frescoes in Michelangelo Style',
+  'Marble Sanctuary with Columns in Michelangelo Style',
+  'Renaissance Passage of Light in Michelangelo Style',
+  'Architectural Fresco Study in Michelangelo Style',
+  'Stone Steps beneath Painted Vault in Michelangelo Style',
 
-  'The Kiss in Michelangelo Style',
-  'The School of Athens in Michelangelo Style',
-  'Liberty Leading the People in Michelangelo Style',
-  'Whistler Mother in Michelangelo Style',
-  'The Thinker in Michelangelo Style',
-  'Bridge in a Garden in Michelangelo Style',
-  'The Hay Wain in Michelangelo Style',
-  'View of Delft in Michelangelo Style',
-  'The Art of Painting in Michelangelo Style',
-  'The Music Lesson in Michelangelo Style'
+  'Cafe Terrace at Night in Michelangelo Style',
+  'Impression Sunrise Reimagined in Michelangelo Style',
+  'The Milkmaid in Michelangelo Style',
+  'Girl Reading a Letter by an Open Window in Michelangelo Style',
+  'Woman with a Lute in Michelangelo Style',
+  'The Glass of Wine in Michelangelo Style',
+  'The Love Letter in Michelangelo Style',
+  'Officer and Laughing Girl in Michelangelo Style',
+  'Woman Holding a Balance in Michelangelo Style',
+  'Young Woman with a Water Pitcher in Michelangelo Style'
 ]
 
 function safeFilePart(value: string) {
@@ -101,16 +101,16 @@ async function uploadImageToBlob(openAiUrl: string, title: string) {
 }
 
 async function processOneTitle(title: string) {
-  const prompt = title
-
   const existing = await prisma.artwork.findFirst({
     where: { title, style: STYLE as any },
   })
 
   if (existing) return { title, success: true, reused: true }
 
-  const openAiUrl = await generateOpenAiImageUrl(prompt)
-  const stableImageUrl = await uploadImageToBlob(openAiUrl, title)
+  const stableImageUrl = await uploadImageToBlob(
+    await generateOpenAiImageUrl(title),
+    title
+  )
 
   const artwork = await prisma.artwork.create({
     data: {
@@ -129,7 +129,7 @@ async function processOneTitle(title: string) {
       artworkId: artwork.id,
       originalUrl: stableImageUrl,
       provider: DEFAULT_ASSET_PROVIDER,
-      prompt,
+      prompt: title,
     },
   })
 
@@ -153,7 +153,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Michelangelo batch completion 2 complete',
+    message: 'Michelangelo final main batch complete',
     style: STYLE,
     count: TITLES.length,
     results,
