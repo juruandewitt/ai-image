@@ -9,26 +9,12 @@ const ARTIST = 'Michelangelo'
 const DEFAULT_ASSET_PROVIDER = 'vercel-blob'
 
 const TITLES = [
-  'Creation of Adam in Michelangelo Style',
-  'David in Michelangelo Style',
-  'Pieta in Michelangelo Style',
-  'The Last Judgement in Michelangelo Style',
-  'Moses in Michelangelo Style',
-  'Doni Tondo in Michelangelo Style',
-  'Sistine Chapel Ceiling Study in Michelangelo Style',
-  'Prophet on Ceiling Fresco in Michelangelo Style',
-  'Ignudi Figure Study in Michelangelo Style',
-  'Heroic Male Figure in Michelangelo Style',
-  'Marble Youth in Michelangelo Style',
-  'Sacred Family Composition in Michelangelo Style',
-  'Renaissance Vault Fresco in Michelangelo Style',
-  'Monumental Chapel Scene in Michelangelo Style',
-  'Mona Lisa in Michelangelo Style',
-  'Starry Night in Michelangelo Style',
-  'Girl with a Pearl Earring in Michelangelo Style',
-  'Water Lilies in Michelangelo Style',
-  'The Night Watch in Michelangelo Style',
-  'The Great Wave off Kanagawa in Michelangelo Style',
+  'Sacred Hands in Fresco Light in Michelangelo Style',
+  'Marble Devotion Scene in Michelangelo Style',
+  'Renaissance Family Fresco in Michelangelo Style',
+  'Heavenly Ceiling Figure Study in Michelangelo Style',
+  'Monumental Marble Grace in Michelangelo Style',
+  'Chapel Gesture Study in Michelangelo Style'
 ]
 
 function safeFilePart(value: string) {
@@ -219,7 +205,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Michelangelo batch 1 complete',
+    message: 'Michelangelo safe retry batch complete',
     style: STYLE,
     count: TITLES.length,
     results,
