@@ -9,27 +9,18 @@ const ARTIST = 'Michelangelo'
 const DEFAULT_ASSET_PROVIDER = 'vercel-blob'
 
 const TITLES = [
-  'High Renaissance Chapel in Michelangelo Style',
-  'Marble Cloister in Michelangelo Style',
-  'Frescoed Basilica Ceiling in Michelangelo Style',
-  'Sacred Stone Arcade in Michelangelo Style',
-  'Golden Apse Light in Michelangelo Style',
-  'Vaulted Hall of Frescoes in Michelangelo Style',
-  'Marble Sanctuary with Columns in Michelangelo Style',
-  'Renaissance Passage of Light in Michelangelo Style',
-  'Architectural Fresco Study in Michelangelo Style',
-  'Stone Steps beneath Painted Vault in Michelangelo Style',
-
-  'Cafe Terrace at Night in Michelangelo Style',
-  'Impression Sunrise Reimagined in Michelangelo Style',
-  'The Milkmaid in Michelangelo Style',
-  'Girl Reading a Letter by an Open Window in Michelangelo Style',
-  'Woman with a Lute in Michelangelo Style',
-  'The Glass of Wine in Michelangelo Style',
-  'The Love Letter in Michelangelo Style',
-  'Officer and Laughing Girl in Michelangelo Style',
-  'Woman Holding a Balance in Michelangelo Style',
-  'Young Woman with a Water Pitcher in Michelangelo Style'
+  'Harbor Dawn in Michelangelo Style',
+  'Quiet Stone Courtyard in Michelangelo Style',
+  'Renaissance Library Interior in Michelangelo Style',
+  'Golden Window over Marble Floor in Michelangelo Style',
+  'Sacred Corridor with Light in Michelangelo Style',
+  'Painted Dome above Stone Hall in Michelangelo Style',
+  'Balcony at Sunset in Michelangelo Style',
+  'Garden Fountain in Michelangelo Style',
+  'Still Life in a Chapel Room in Michelangelo Style',
+  'Evening Basilica Passage in Michelangelo Style',
+  'Portrait beside Marble Wall in Michelangelo Style',
+  'Soft Light over Renaissance Steps in Michelangelo Style'
 ]
 
 function safeFilePart(value: string) {
@@ -153,7 +144,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Michelangelo final main batch complete',
+    message: 'Michelangelo final cleanup batch complete',
     style: STYLE,
     count: TITLES.length,
     results,
