@@ -9,58 +9,17 @@ const ARTIST = 'Claude Monet'
 const DEFAULT_ASSET_PROVIDER = 'vercel-blob'
 
 const TITLES = [
-  'The Night Watch in Monet Style',
-  'The Kiss in Monet Style',
-  'The Great Wave off Kanagawa in Monet Style',
-  'Nighthawks in Monet Style',
-  'The School of Athens in Monet Style',
-  'Liberty Leading the People in Monet Style',
-  'Whistler Mother in Monet Style',
-  'The Thinker in Monet Style',
-  'View of Delft in Monet Style',
-  'The Art of Painting in Monet Style',
-  'The Music Lesson in Monet Style',
-  'The Milkmaid in Monet Style',
-  'The Love Letter in Monet Style',
-  'The Glass of Wine in Monet Style',
-  'Woman Holding a Balance in Monet Style',
-  'Young Woman with a Water Pitcher in Monet Style',
-  'Officer and Laughing Girl in Monet Style',
-  'Girl Reading a Letter by an Open Window in Monet Style',
-  'Woman with a Lute in Monet Style',
-  'The Hay Wain in Monet Style',
-
-  'The Red Vineyard in Monet Style',
-  'Impression Sunrise in Monet Style',
-  'Cafe Terrace at Night in Monet Style',
-  'Bridge over Still Water in Monet Style',
-  'Woman by the Water Garden in Monet Style',
-  'Golden Willows at Noon in Monet Style',
-  'Cloud Reflections in Monet Style',
-  'Flower Market Morning in Monet Style',
-  'Sunlit Riverbank in Monet Style',
-  'Rain over Garden Pond in Monet Style',
-  'Blue Shadows on Snow in Monet Style',
-  'Pale Morning over Canal in Monet Style',
-  'Wind in the Poppies in Monet Style',
-  'Soft Light through Trees in Monet Style',
-  'Garden Steps in Spring in Monet Style',
-  'Lilac Bushes in Bloom in Monet Style',
-  'Quiet Terrace with Flowers in Monet Style',
-  'Sunlit Birch Grove in Monet Style',
-  'Wild Garden after Rain in Monet Style',
-  'Reflections of Golden Clouds in Monet Style',
-
-  'Path beside Water Lilies in Monet Style',
-  'Rose Arches in Summer in Monet Style',
-  'Still Water at Twilight in Monet Style',
-  'Warm Evening on the Seine in Monet Style',
-  'Boat Landing in Morning Light in Monet Style',
-  'Marigolds by the Window in Monet Style',
-  'Soft Breeze through Garden in Monet Style',
-  'Pond with White Lilies in Monet Style',
-  'Sunset Reflections in Monet Style',
-  'Quiet Garden after Rain in Monet Style'
+  'Romantic Garden Scene in Monet Style',
+  'Table with Glassware in Monet Style',
+  'Figure near Lily Pond in Monet Style',
+  'Winter Light over Snow in Monet Style',
+  'Sunlight through Woodland in Monet Style',
+  'Stone Steps in Garden Light in Monet Style',
+  'Golden Sky Reflections in Monet Style',
+  'Floral Archway in Monet Style',
+  'Small Boats at Dawn in Monet Style',
+  'Evening Reflections on Water in Monet Style',
+  'Garden Path after Rain in Monet Style'
 ]
 
 function safeFilePart(value: string) {
@@ -184,7 +143,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Monet 50-batch part 2 complete',
+    message: 'Monet safe retry batch complete',
     style: STYLE,
     count: TITLES.length,
     results,
