@@ -9,26 +9,26 @@ const ARTIST = 'Vincent van Gogh'
 const DEFAULT_ASSET_PROVIDER = 'vercel-blob'
 
 const TITLES = [
-  'Lantern Street at Dusk in Van Gogh Style',
-  'Cottage beneath Cypress Sky in Van Gogh Style',
-  'Night Window with Stars in Van Gogh Style',
-  'Orchard after Rain in Van Gogh Style',
-  'Sunlit Field with Haystacks in Van Gogh Style',
-  'Village Church in Blue Evening in Van Gogh Style',
-  'Flower Market Morning in Van Gogh Style',
-  'Potted Geraniums in Van Gogh Style',
-  'Rustic Table with Fruit in Van Gogh Style',
-  'Chair beside Open Window in Van Gogh Style',
-  'Girl Reading a Letter by an Open Window in Van Gogh Style',
-  'Woman with a Lute in Van Gogh Style',
-  'The Glass of Wine in Van Gogh Style',
-  'The Love Letter in Van Gogh Style',
-  'Officer and Laughing Girl in Van Gogh Style',
-  'Woman Holding a Balance in Van Gogh Style',
-  'Young Woman with a Water Pitcher in Van Gogh Style',
-  'The Great Bathers in Van Gogh Style',
-  'Bridge in a Garden in Van Gogh Style',
-  'The Hay Wain in Van Gogh Style'
+  'Morning Field with Larks in Van Gogh Style',
+  'Blue Hills under Swirling Sky in Van Gogh Style',
+  'Golden Wheat at Sunset in Van Gogh Style',
+  'Garden Path with Flowers in Van Gogh Style',
+  'Moonlit Riverbank in Van Gogh Style',
+  'Rustic Farm Courtyard in Van Gogh Style',
+  'Sunlit Vase of Daisies in Van Gogh Style',
+  'Village Square in Warm Evening Light in Van Gogh Style',
+  'Cypress Road after Rain in Van Gogh Style',
+  'Still Life with Books and Candle in Van Gogh Style',
+  'View of Delft in Van Gogh Style',
+  'The Art of Painting in Van Gogh Style',
+  'The Music Lesson in Van Gogh Style',
+  'The Milkmaid in Van Gogh Style',
+  'The Kiss in Van Gogh Style',
+  'Whistler Mother in Van Gogh Style',
+  'Liberty Leading the People in Van Gogh Style',
+  'Nighthawks in Van Gogh Style',
+  'The School of Athens in Van Gogh Style',
+  'Bridge over Quiet Water in Van Gogh Style'
 ]
 
 function safeFilePart(value: string) {
@@ -152,7 +152,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Van Gogh batch 4 complete',
+    message: 'Van Gogh final batch complete',
     style: STYLE,
     count: TITLES.length,
     results,
