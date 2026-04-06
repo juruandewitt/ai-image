@@ -9,26 +9,26 @@ const ARTIST = 'Vincent van Gogh'
 const DEFAULT_ASSET_PROVIDER = 'vercel-blob'
 
 const TITLES = [
-  'The Sower in Van Gogh Style',
-  'Starry Night over the Rhone in Van Gogh Style',
-  'Cypresses in Van Gogh Style',
-  'The Church at Auvers in Van Gogh Style',
-  'Flowering Garden in Van Gogh Style',
-  'Wheat Field at Sunrise in Van Gogh Style',
-  'Village Street in Van Gogh Style',
-  'Autumn Trees in Van Gogh Style',
-  'Stormy Sky over Fields in Van Gogh Style',
-  'Path through Olive Grove in Van Gogh Style',
-  'Mona Lisa in Van Gogh Style',
-  'Girl with a Pearl Earring in Van Gogh Style',
-  'The Last Supper in Van Gogh Style',
-  'Water Lilies in Van Gogh Style',
-  'The Night Watch in Van Gogh Style',
-  'The Scream in Van Gogh Style',
-  'Persistence of Memory in Van Gogh Style',
-  'The Great Wave off Kanagawa in Van Gogh Style',
-  'American Gothic in Van Gogh Style',
-  'The School of Athens in Van Gogh Style'
+  'Roses in a Vase in Van Gogh Style',
+  'Field of Poppies in Van Gogh Style',
+  'Rain over Wheat Field in Van Gogh Style',
+  'Evening Village under Stars in Van Gogh Style',
+  'Blue Irises beside Wall in Van Gogh Style',
+  'Country Road with Trees in Van Gogh Style',
+  'Moonlit Orchard in Van Gogh Style',
+  'Sunlit Farmhouse in Van Gogh Style',
+  'Golden Field with Path in Van Gogh Style',
+  'Still Life with Chair in Van Gogh Style',
+  'The Kiss in Van Gogh Style',
+  'Whistler Mother in Van Gogh Style',
+  'Liberty Leading the People in Van Gogh Style',
+  'The Thinker in Van Gogh Style',
+  'Nighthawks in Van Gogh Style',
+  'Birth of Venus in Van Gogh Style',
+  'View of Delft in Van Gogh Style',
+  'The Art of Painting in Van Gogh Style',
+  'The Music Lesson in Van Gogh Style',
+  'The Milkmaid in Van Gogh Style'
 ]
 
 function safeFilePart(value: string) {
@@ -152,7 +152,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Van Gogh batch 2 complete',
+    message: 'Van Gogh batch 3 complete',
     style: STYLE,
     count: TITLES.length,
     results,
