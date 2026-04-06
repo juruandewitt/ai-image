@@ -4,22 +4,63 @@ import { prisma } from '@/lib/prisma'
 
 export const dynamic = 'force-dynamic'
 
-const STYLE = 'MONET'
-const ARTIST = 'Claude Monet'
+const STYLE = 'PICASSO'
+const ARTIST = 'Pablo Picasso'
 const DEFAULT_ASSET_PROVIDER = 'vercel-blob'
 
 const TITLES = [
-  'Romantic Garden Scene in Monet Style',
-  'Table with Glassware in Monet Style',
-  'Figure near Lily Pond in Monet Style',
-  'Winter Light over Snow in Monet Style',
-  'Sunlight through Woodland in Monet Style',
-  'Stone Steps in Garden Light in Monet Style',
-  'Golden Sky Reflections in Monet Style',
-  'Floral Archway in Monet Style',
-  'Small Boats at Dawn in Monet Style',
-  'Evening Reflections on Water in Monet Style',
-  'Garden Path after Rain in Monet Style'
+  'Guernica in Picasso Style',
+  'Les Demoiselles d Avignon in Picasso Style',
+  'The Weeping Woman in Picasso Style',
+  'Girl before a Mirror in Picasso Style',
+  'Three Musicians in Picasso Style',
+  'Woman with a Mandolin in Picasso Style',
+  'Portrait of Dora Maar in Picasso Style',
+  'The Old Guitarist in Picasso Style',
+  'Harlequin with Violin in Picasso Style',
+  'Still Life with Guitar in Picasso Style',
+  'Bullfight Scene in Picasso Style',
+  'Seated Woman in Picasso Style',
+  'Woman in Armchair in Picasso Style',
+  'Cubist Still Life in Picasso Style',
+  'Blue Period Portrait in Picasso Style',
+  'Rose Period Acrobat in Picasso Style',
+  'Mother and Child in Picasso Style',
+  'The Dream in Picasso Style',
+  'Girl with Flower Crown in Picasso Style',
+  'Mona Lisa in Picasso Style',
+
+  'Girl with a Pearl Earring in Picasso Style',
+  'The Last Supper in Picasso Style',
+  'Starry Night in Picasso Style',
+  'Water Lilies in Picasso Style',
+  'The Night Watch in Picasso Style',
+  'The Scream in Picasso Style',
+  'Persistence of Memory in Picasso Style',
+  'The Great Wave off Kanagawa in Picasso Style',
+  'American Gothic in Picasso Style',
+  'The School of Athens in Picasso Style',
+  'Liberty Leading the People in Picasso Style',
+  'Whistler Mother in Picasso Style',
+  'The Thinker in Picasso Style',
+  'View of Delft in Picasso Style',
+  'The Art of Painting in Picasso Style',
+  'The Music Lesson in Picasso Style',
+  'The Milkmaid in Picasso Style',
+  'The Love Letter in Picasso Style',
+  'The Glass of Wine in Picasso Style',
+  'Woman Holding a Balance in Picasso Style',
+
+  'Young Woman with a Water Pitcher in Picasso Style',
+  'Officer and Laughing Girl in Picasso Style',
+  'Girl Reading a Letter by an Open Window in Picasso Style',
+  'Woman with a Lute in Picasso Style',
+  'The Hay Wain in Picasso Style',
+  'The Red Vineyard in Picasso Style',
+  'Impression Sunrise in Picasso Style',
+  'Cafe Terrace at Night in Picasso Style',
+  'Bridge in a Garden in Picasso Style',
+  'Nighthawks in Picasso Style'
 ]
 
 function safeFilePart(value: string) {
@@ -143,7 +184,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Monet safe retry batch complete',
+    message: 'Picasso 50-batch part 1 complete',
     style: STYLE,
     count: TITLES.length,
     results,
