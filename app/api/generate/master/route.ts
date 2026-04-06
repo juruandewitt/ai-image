@@ -9,26 +9,26 @@ const ARTIST = 'Vincent van Gogh'
 const DEFAULT_ASSET_PROVIDER = 'vercel-blob'
 
 const TITLES = [
-  'Starry Night in Van Gogh Style',
-  'Sunflowers in Van Gogh Style',
-  'Cafe Terrace at Night in Van Gogh Style',
-  'Irises in Van Gogh Style',
-  'Wheatfield with Crows in Van Gogh Style',
-  'Bedroom in Arles in Van Gogh Style',
-  'The Potato Eaters in Van Gogh Style',
-  'Almond Blossoms in Van Gogh Style',
-  'Olive Trees in Van Gogh Style',
-  'The Red Vineyard in Van Gogh Style',
-  'The Night Cafe in Van Gogh Style',
-  'Self Portrait in Van Gogh Style',
-  'Portrait of Doctor Gachet in Van Gogh Style',
-  'The Langlois Bridge at Arles in Van Gogh Style',
-  'Road with Cypress and Star in Van Gogh Style',
-  'Harvest Landscape in Van Gogh Style',
-  'Garden at Arles in Van Gogh Style',
-  'Yellow House in Van Gogh Style',
-  'Blossoming Orchard in Van Gogh Style',
-  'Vase with Flowers in Van Gogh Style'
+  'The Sower in Van Gogh Style',
+  'Starry Night over the Rhone in Van Gogh Style',
+  'Cypresses in Van Gogh Style',
+  'The Church at Auvers in Van Gogh Style',
+  'Flowering Garden in Van Gogh Style',
+  'Wheat Field at Sunrise in Van Gogh Style',
+  'Village Street in Van Gogh Style',
+  'Autumn Trees in Van Gogh Style',
+  'Stormy Sky over Fields in Van Gogh Style',
+  'Path through Olive Grove in Van Gogh Style',
+  'Mona Lisa in Van Gogh Style',
+  'Girl with a Pearl Earring in Van Gogh Style',
+  'The Last Supper in Van Gogh Style',
+  'Water Lilies in Van Gogh Style',
+  'The Night Watch in Van Gogh Style',
+  'The Scream in Van Gogh Style',
+  'Persistence of Memory in Van Gogh Style',
+  'The Great Wave off Kanagawa in Van Gogh Style',
+  'American Gothic in Van Gogh Style',
+  'The School of Athens in Van Gogh Style'
 ]
 
 function safeFilePart(value: string) {
@@ -152,7 +152,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Van Gogh batch 1 complete',
+    message: 'Van Gogh batch 2 complete',
     style: STYLE,
     count: TITLES.length,
     results,
