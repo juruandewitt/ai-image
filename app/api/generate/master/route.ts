@@ -4,23 +4,31 @@ import { prisma } from '@/lib/prisma'
 
 export const dynamic = 'force-dynamic'
 
-const STYLE = 'MICHELANGELO'
-const ARTIST = 'Michelangelo'
+const STYLE = 'VAN_GOGH'
+const ARTIST = 'Vincent van Gogh'
 const DEFAULT_ASSET_PROVIDER = 'vercel-blob'
 
 const TITLES = [
-  'Harbor Dawn in Michelangelo Style',
-  'Quiet Stone Courtyard in Michelangelo Style',
-  'Renaissance Library Interior in Michelangelo Style',
-  'Golden Window over Marble Floor in Michelangelo Style',
-  'Sacred Corridor with Light in Michelangelo Style',
-  'Painted Dome above Stone Hall in Michelangelo Style',
-  'Balcony at Sunset in Michelangelo Style',
-  'Garden Fountain in Michelangelo Style',
-  'Still Life in a Chapel Room in Michelangelo Style',
-  'Evening Basilica Passage in Michelangelo Style',
-  'Portrait beside Marble Wall in Michelangelo Style',
-  'Soft Light over Renaissance Steps in Michelangelo Style'
+  'Starry Night in Van Gogh Style',
+  'Sunflowers in Van Gogh Style',
+  'Cafe Terrace at Night in Van Gogh Style',
+  'Irises in Van Gogh Style',
+  'Wheatfield with Crows in Van Gogh Style',
+  'Bedroom in Arles in Van Gogh Style',
+  'The Potato Eaters in Van Gogh Style',
+  'Almond Blossoms in Van Gogh Style',
+  'Olive Trees in Van Gogh Style',
+  'The Red Vineyard in Van Gogh Style',
+  'The Night Cafe in Van Gogh Style',
+  'Self Portrait in Van Gogh Style',
+  'Portrait of Doctor Gachet in Van Gogh Style',
+  'The Langlois Bridge at Arles in Van Gogh Style',
+  'Road with Cypress and Star in Van Gogh Style',
+  'Harvest Landscape in Van Gogh Style',
+  'Garden at Arles in Van Gogh Style',
+  'Yellow House in Van Gogh Style',
+  'Blossoming Orchard in Van Gogh Style',
+  'Vase with Flowers in Van Gogh Style'
 ]
 
 function safeFilePart(value: string) {
@@ -144,7 +152,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Michelangelo final cleanup batch complete',
+    message: 'Van Gogh batch 1 complete',
     style: STYLE,
     count: TITLES.length,
     results,
