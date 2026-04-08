@@ -29,24 +29,169 @@ const STYLE_LABELS: Record<string, string> = {
   CARAVAGGIO: 'Caravaggio',
   DA_VINCI: 'Leonardo da Vinci',
   MICHELANGELO: 'Michelangelo',
+  MUNCH: 'Edvard Munch',
 }
 
 const FEATURED_MASTERS = [
-  { key: 'VAN_GOGH', label: 'Van Gogh', slug: 'van-gogh', artworkId: '' },
-  { key: 'DALI', label: 'Dalí', slug: 'dali', artworkId: '' },
-  { key: 'POLLOCK', label: 'Jackson Pollock', slug: 'jackson-pollock', artworkId: '' },
-  { key: 'VERMEER', label: 'Johannes Vermeer', slug: 'johannes-vermeer', artworkId: '' },
-  { key: 'MONET', label: 'Claude Monet', slug: 'claude-monet', artworkId: '' },
-  { key: 'PICASSO', label: 'Pablo Picasso', slug: 'pablo-picasso', artworkId: '' },
-  { key: 'REMBRANDT', label: 'Rembrandt', slug: 'rembrandt', artworkId: '' },
-  { key: 'CARAVAGGIO', label: 'Caravaggio', slug: 'caravaggio', artworkId: '' },
-  { key: 'DA_VINCI', label: 'Leonardo da Vinci', slug: 'leonardo-da-vinci', artworkId: '' },
-  { key: 'MICHELANGELO', label: 'Michelangelo', slug: 'michelangelo', artworkId: '' },
-]
+  { key: 'VAN_GOGH', label: 'Van Gogh', slug: 'van-gogh' },
+  { key: 'DALI', label: 'Dalí', slug: 'dali' },
+  { key: 'POLLOCK', label: 'Jackson Pollock', slug: 'jackson-pollock' },
+  { key: 'VERMEER', label: 'Johannes Vermeer', slug: 'johannes-vermeer' },
+  { key: 'MONET', label: 'Claude Monet', slug: 'claude-monet' },
+  { key: 'PICASSO', label: 'Pablo Picasso', slug: 'pablo-picasso' },
+  { key: 'REMBRANDT', label: 'Rembrandt', slug: 'rembrandt' },
+  { key: 'CARAVAGGIO', label: 'Caravaggio', slug: 'caravaggio' },
+  { key: 'DA_VINCI', label: 'Leonardo da Vinci', slug: 'leonardo-da-vinci' },
+  { key: 'MICHELANGELO', label: 'Michelangelo', slug: 'michelangelo' },
+  { key: 'MUNCH', label: 'Edvard Munch', slug: 'edvard-munch' },
+] as const
+
+const FEATURED_TITLE_PREFERENCES: Record<string, string[]> = {
+  VAN_GOGH: [
+    'Starry Night in Van Gogh Style',
+    'Sunflowers in Van Gogh Style',
+    'Cafe Terrace at Night in Van Gogh Style',
+    'Irises in Van Gogh Style',
+    'Wheatfield with Crows in Van Gogh Style',
+  ],
+  DALI: [
+    'Persistence of Memory in Dali Style',
+    'Swans Reflecting Elephants in Dali Style',
+    'The Elephants in Dali Style',
+    'The Burning Giraffe in Dali Style',
+    'Dream Caused by the Flight of a Bee in Dali Style',
+  ],
+  POLLOCK: [
+    'Autumn Rhythm in Pollock Style',
+    'Lavender Mist in Pollock Style',
+    'Blue Poles in Pollock Style',
+    'Convergence in Pollock Style',
+    'Number 5 in Pollock Style',
+  ],
+  VERMEER: [
+    'Girl with a Pearl Earring in Vermeer Style',
+    'The Milkmaid in Vermeer Style',
+    'View of Delft in Vermeer Style',
+    'The Art of Painting in Vermeer Style',
+    'Woman in Blue Reading a Letter in Vermeer Style',
+  ],
+  MONET: [
+    'Water Lilies in Monet Style',
+    'Japanese Bridge in Monet Style',
+    'Woman with Parasol in Monet Style',
+    'Impression Sunrise in Monet Style',
+    'Haystacks at Sunset in Monet Style',
+  ],
+  PICASSO: [
+    'Guernica in Picasso Style',
+    'Les Demoiselles d Avignon in Picasso Style',
+    'The Weeping Woman in Picasso Style',
+    'Girl before a Mirror in Picasso Style',
+    'Three Musicians in Picasso Style',
+  ],
+  REMBRANDT: [
+    'The Night Watch in Rembrandt Style',
+    'The Return of the Prodigal Son in Rembrandt Style',
+    'The Anatomy Lesson in Rembrandt Style',
+    'The Jewish Bride in Rembrandt Style',
+    'Self Portrait in Rembrandt Style',
+  ],
+  CARAVAGGIO: [
+    'The Calling of Saint Matthew in Caravaggio Style',
+    'The Supper at Emmaus in Caravaggio Style',
+    'The Taking of Christ in Caravaggio Style',
+    'Bacchus in Caravaggio Style',
+    'Medusa in Caravaggio Style',
+  ],
+  DA_VINCI: [
+    'Mona Lisa in Da Vinci Style',
+    'The Last Supper in Da Vinci Style',
+    'Lady with an Ermine in Da Vinci Style',
+    'Vitruvian Man in Da Vinci Style',
+    'Salvator Mundi in Da Vinci Style',
+  ],
+  MICHELANGELO: [
+    'David in Michelangelo Style',
+    'The Last Judgement in Michelangelo Style',
+    'Moses in Michelangelo Style',
+    'Sistine Chapel Ceiling Study in Michelangelo Style',
+    'Creation of Adam in Michelangelo Style',
+  ],
+  MUNCH: [
+    'The Scream in Munch Style',
+    'Madonna in Munch Style',
+    'The Dance of Life in Munch Style',
+    'Anxiety in Munch Style',
+    'Girls on the Bridge in Munch Style',
+  ],
+}
 
 function styleLabel(style: string | null) {
   if (!style) return 'AI Image'
   return STYLE_LABELS[String(style)] || String(style)
+}
+
+async function getFeaturedArtworkForStyle(style: string) {
+  const preferredTitles = FEATURED_TITLE_PREFERENCES[style] || []
+
+  if (preferredTitles.length > 0) {
+    const preferred = await prisma.artwork.findMany({
+      where: {
+        style: style as any,
+        status: 'PUBLISHED',
+        title: { in: preferredTitles },
+      },
+      select: {
+        id: true,
+        title: true,
+        createdAt: true,
+      },
+    })
+
+    const byTitle = new Map(preferred.map((item) => [item.title, item]))
+    for (const title of preferredTitles) {
+      const match = byTitle.get(title)
+      if (match) return match
+    }
+  }
+
+  return prisma.artwork.findFirst({
+    where: {
+      style: style as any,
+      status: 'PUBLISHED',
+      NOT: [
+        { tags: { has: 'smoketest' } },
+        { title: { contains: 'smoketest', mode: 'insensitive' } },
+        { title: { contains: 'diagnostic', mode: 'insensitive' } },
+        { title: { contains: 'test artwork', mode: 'insensitive' } },
+        { title: { contains: 'db smoketest', mode: 'insensitive' } },
+      ],
+      OR: [
+        {
+          thumbnail: {
+            contains: '.public.blob.vercel-storage.com',
+            mode: 'insensitive',
+          },
+        },
+        {
+          assets: {
+            some: {
+              originalUrl: {
+                contains: '.public.blob.vercel-storage.com',
+                mode: 'insensitive',
+              },
+            },
+          },
+        },
+      ],
+    },
+    orderBy: { createdAt: 'desc' },
+    select: {
+      id: true,
+      title: true,
+      createdAt: true,
+    },
+  })
 }
 
 export default async function HomePage() {
@@ -80,7 +225,7 @@ export default async function HomePage() {
       ],
     },
     orderBy: { createdAt: 'desc' },
-    take: 10,
+    take: 12,
     select: {
       id: true,
       title: true,
@@ -90,18 +235,7 @@ export default async function HomePage() {
 
   const masters = await Promise.all(
     FEATURED_MASTERS.map(async (master) => {
-      if (!master.artworkId) {
-        return { ...master, artwork: null as null | { id: string; title: string } }
-      }
-
-      const artwork = await prisma.artwork.findUnique({
-        where: { id: master.artworkId },
-        select: {
-          id: true,
-          title: true,
-        },
-      })
-
+      const artwork = await getFeaturedArtworkForStyle(master.key)
       return {
         ...master,
         artwork,
@@ -174,8 +308,8 @@ export default async function HomePage() {
               />
               <div className="p-3">
                 <div className="text-sm text-slate-100">{master.label}</div>
-                <div className="text-xs text-slate-400">
-                  {master.artwork?.title || 'Select featured artwork'}
+                <div className="text-xs text-slate-400 line-clamp-1">
+                  {master.artwork?.title || 'Featured artwork coming soon'}
                 </div>
               </div>
             </Link>
