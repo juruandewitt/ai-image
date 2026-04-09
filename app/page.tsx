@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
 import SafeImg from '@/components/safe-img'
 
-const PREVIEW_VERSION = 'v7'
+const PREVIEW_VERSION = 'v8'
 
 const FALLBACK_DATA_URL =
   'data:image/svg+xml;utf8,' +
@@ -46,6 +46,8 @@ const FEATURED_MASTERS = [
   { key: 'MUNCH', label: 'Edvard Munch', slug: 'edvard-munch' },
 ] as const
 
+// These are now curated for recognisability and visual strength.
+// Michelangelo intentionally prioritises your favourite reinterpretation.
 const FEATURED_TITLE_PREFERENCES: Record<string, string[]> = {
   VAN_GOGH: [
     'Starry Night in Van Gogh Style',
@@ -111,18 +113,18 @@ const FEATURED_TITLE_PREFERENCES: Record<string, string[]> = {
     'Salvator Mundi in Da Vinci Style',
   ],
   MICHELANGELO: [
+    'The Scream in Michelangelo Style',
     'David in Michelangelo Style',
     'The Last Judgement in Michelangelo Style',
     'Moses in Michelangelo Style',
     'Sistine Chapel Ceiling Study in Michelangelo Style',
-    'Doni Tondo in Michelangelo Style',
   ],
   MUNCH: [
-    'The Scream in Munch Style',
-    'Madonna in Munch Style',
-    'The Dance of Life in Munch Style',
     'Anxiety in Munch Style',
+    'The Dance of Life in Munch Style',
     'Girls on the Bridge in Munch Style',
+    'Madonna in Munch Style',
+    'The Scream in Munch Style',
   ],
 }
 
@@ -131,39 +133,35 @@ function styleLabel(style: string | null) {
   return STYLE_LABELS[String(style)] || String(style)
 }
 
-function stableAssetFilter() {
-  return {
-    OR: [
-      {
-        thumbnail: {
-          contains: '.public.blob.vercel-storage.com',
-          mode: 'insensitive' as const,
-        },
+const blobBackedWhere = {
+  OR: [
+    {
+      thumbnail: {
+        contains: '.public.blob.vercel-storage.com',
+        mode: 'insensitive' as const,
       },
-      {
-        assets: {
-          some: {
-            originalUrl: {
-              contains: '.public.blob.vercel-storage.com',
-              mode: 'insensitive' as const,
-            },
+    },
+    {
+      assets: {
+        some: {
+          originalUrl: {
+            contains: '.public.blob.vercel-storage.com',
+            mode: 'insensitive' as const,
           },
         },
       },
-    ],
-  }
+    },
+  ],
 }
 
-function junkFilter() {
-  return {
-    NOT: [
-      { tags: { has: 'smoketest' } },
-      { title: { contains: 'smoketest', mode: 'insensitive' as const } },
-      { title: { contains: 'diagnostic', mode: 'insensitive' as const } },
-      { title: { contains: 'test artwork', mode: 'insensitive' as const } },
-      { title: { contains: 'db smoketest', mode: 'insensitive' as const } },
-    ],
-  }
+const cleanWhere = {
+  NOT: [
+    { tags: { has: 'smoketest' } },
+    { title: { contains: 'smoketest', mode: 'insensitive' as const } },
+    { title: { contains: 'diagnostic', mode: 'insensitive' as const } },
+    { title: { contains: 'test artwork', mode: 'insensitive' as const } },
+    { title: { contains: 'db smoketest', mode: 'insensitive' as const } },
+  ],
 }
 
 async function findFeaturedByExactTitle(style: string, title: string) {
@@ -172,14 +170,13 @@ async function findFeaturedByExactTitle(style: string, title: string) {
       style: style as any,
       status: 'PUBLISHED',
       title,
-      ...stableAssetFilter(),
-      ...junkFilter(),
+      ...blobBackedWhere,
+      ...cleanWhere,
     },
     orderBy: { createdAt: 'desc' },
     select: {
       id: true,
       title: true,
-      createdAt: true,
     },
   })
 }
@@ -188,22 +185,21 @@ async function getFeaturedArtworkForStyle(style: string) {
   const preferredTitles = FEATURED_TITLE_PREFERENCES[style] || []
 
   for (const title of preferredTitles) {
-    const exact = await findFeaturedByExactTitle(style, title)
-    if (exact) return exact
+    const match = await findFeaturedByExactTitle(style, title)
+    if (match) return match
   }
 
   return prisma.artwork.findFirst({
     where: {
       style: style as any,
       status: 'PUBLISHED',
-      ...stableAssetFilter(),
-      ...junkFilter(),
+      ...blobBackedWhere,
+      ...cleanWhere,
     },
     orderBy: { createdAt: 'desc' },
     select: {
       id: true,
       title: true,
-      createdAt: true,
     },
   })
 }
@@ -212,8 +208,8 @@ export default async function HomePage() {
   const newDrops = await prisma.artwork.findMany({
     where: {
       status: 'PUBLISHED',
-      ...stableAssetFilter(),
-      ...junkFilter(),
+      ...blobBackedWhere,
+      ...cleanWhere,
     },
     orderBy: { createdAt: 'desc' },
     take: 12,
@@ -227,10 +223,7 @@ export default async function HomePage() {
   const masters = await Promise.all(
     FEATURED_MASTERS.map(async (master) => {
       const artwork = await getFeaturedArtworkForStyle(master.key)
-      return {
-        ...master,
-        artwork,
-      }
+      return { ...master, artwork }
     })
   )
 
