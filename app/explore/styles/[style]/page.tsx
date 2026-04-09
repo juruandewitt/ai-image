@@ -1,41 +1,11 @@
-// app/explore/styles/[style]/page.tsx
+export const dynamic = 'force-dynamic'
 
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import SafeImg from '@/components/safe-img'
 
-export const dynamic = 'force-dynamic'
-
-const PREVIEW_VERSION = 'v6'
-const TARGET_TOTAL = 100
-const TARGET_REAL = 50
-
-const SLUG_TO_STYLE_KEY: Record<string, string> = {
-  'van-gogh': 'VAN_GOGH',
-  'dali': 'DALI',
-  'jackson-pollock': 'POLLOCK',
-  'johannes-vermeer': 'VERMEER',
-  'claude-monet': 'MONET',
-  'pablo-picasso': 'PICASSO',
-  'rembrandt': 'REMBRANDT',
-  'caravaggio': 'CARAVAGGIO',
-  'leonardo-da-vinci': 'DA_VINCI',
-  'michelangelo': 'MICHELANGELO',
-}
-
-const STYLE_LABELS: Record<string, string> = {
-  VAN_GOGH: 'Van Gogh',
-  DALI: 'Dalí',
-  POLLOCK: 'Jackson Pollock',
-  VERMEER: 'Johannes Vermeer',
-  MONET: 'Claude Monet',
-  PICASSO: 'Pablo Picasso',
-  REMBRANDT: 'Rembrandt',
-  CARAVAGGIO: 'Caravaggio',
-  DA_VINCI: 'Leonardo da Vinci',
-  MICHELANGELO: 'Michelangelo',
-}
+const PREVIEW_VERSION = 'v8'
 
 const FALLBACK_DATA_URL =
   'data:image/svg+xml;utf8,' +
@@ -49,50 +19,49 @@ const FALLBACK_DATA_URL =
     </svg>`
   )
 
-function normalizeSlug(input: string) {
-  let s = input
-  try {
-    s = decodeURIComponent(s)
-  } catch {}
-
-  s = s.normalize('NFKD').replace(/[\u0300-\u036f]/g, '')
-
-  return s
-    .trim()
-    .toLowerCase()
-    .replace(/['"]/g, '')
-    .replace(/[_\s]+/g, '-')
-    .replace(/[^a-z0-9-]/g, '-')
-    .replace(/-+/g, '-')
-    .replace(/^-|-$/g, '')
+const STYLE_BY_SLUG: Record<string, { key: string; label: string }> = {
+  'van-gogh': { key: 'VAN_GOGH', label: 'Van Gogh' },
+  dali: { key: 'DALI', label: 'Dalí' },
+  'jackson-pollock': { key: 'POLLOCK', label: 'Jackson Pollock' },
+  'johannes-vermeer': { key: 'VERMEER', label: 'Johannes Vermeer' },
+  'claude-monet': { key: 'MONET', label: 'Claude Monet' },
+  'pablo-picasso': { key: 'PICASSO', label: 'Pablo Picasso' },
+  rembrandt: { key: 'REMBRANDT', label: 'Rembrandt' },
+  caravaggio: { key: 'CARAVAGGIO', label: 'Caravaggio' },
+  'leonardo-da-vinci': { key: 'DA_VINCI', label: 'Leonardo da Vinci' },
+  michelangelo: { key: 'MICHELANGELO', label: 'Michelangelo' },
+  'edvard-munch': { key: 'MUNCH', label: 'Edvard Munch' },
 }
 
-type RealRow = {
-  kind: 'real'
-  id: string
-  title: string
-  style: string
+const blobBackedWhere = {
+  OR: [
+    {
+      thumbnail: {
+        contains: '.public.blob.vercel-storage.com',
+        mode: 'insensitive' as const,
+      },
+    },
+    {
+      assets: {
+        some: {
+          originalUrl: {
+            contains: '.public.blob.vercel-storage.com',
+            mode: 'insensitive' as const,
+          },
+        },
+      },
+    },
+  ],
 }
 
-type PlaceholderRow = {
-  kind: 'placeholder'
-  id: string
-  title: string
-  description: string
-}
-
-type CardRow = RealRow | PlaceholderRow
-
-function buildPlaceholders(label: string, count: number, startIndex: number): PlaceholderRow[] {
-  return Array.from({ length: count }, (_, i) => {
-    const num = startIndex + i + 1
-    return {
-      kind: 'placeholder' as const,
-      id: `placeholder-${label}-${num}`,
-      title: `${label} Mock-up ${num}`,
-      description: `Reimagined ${label} work coming soon`,
-    }
-  })
+const cleanWhere = {
+  NOT: [
+    { tags: { has: 'smoketest' } },
+    { title: { contains: 'smoketest', mode: 'insensitive' as const } },
+    { title: { contains: 'diagnostic', mode: 'insensitive' as const } },
+    { title: { contains: 'test artwork', mode: 'insensitive' as const } },
+    { title: { contains: 'db smoketest', mode: 'insensitive' as const } },
+  ],
 }
 
 export default async function ExploreStylePage({
@@ -100,148 +69,59 @@ export default async function ExploreStylePage({
 }: {
   params: { style: string }
 }) {
-  const slug = normalizeSlug(params.style)
-  const styleKey = SLUG_TO_STYLE_KEY[slug]
+  const styleInfo = STYLE_BY_SLUG[params.style]
+  if (!styleInfo) notFound()
 
-  if (!styleKey) return notFound()
-
-  const label = STYLE_LABELS[styleKey] ?? styleKey
-
-  let rows: RealRow[] = []
-
-  try {
-    const dbRows = await prisma.artwork.findMany({
-      where: {
-        style: styleKey as any,
-        status: 'PUBLISHED',
-        NOT: [
-          { tags: { has: 'smoketest' } },
-          { title: { contains: 'smoketest', mode: 'insensitive' } },
-          { title: { contains: 'diagnostic', mode: 'insensitive' } },
-          { title: { contains: 'test artwork', mode: 'insensitive' } },
-          { title: { contains: 'db smoketest', mode: 'insensitive' } },
-        ],
-        OR: [
-          {
-            thumbnail: {
-              contains: '.public.blob.vercel-storage.com',
-              mode: 'insensitive',
-            },
-          },
-          {
-            assets: {
-              some: {
-                originalUrl: {
-                  contains: '.public.blob.vercel-storage.com',
-                  mode: 'insensitive',
-                },
-              },
-            },
-          },
-        ],
-      },
-      orderBy: { createdAt: 'desc' },
-      take: 200,
-      select: {
-        id: true,
-        title: true,
-        style: true,
-      },
-    })
-
-    rows = dbRows.map((row) => ({
-      kind: 'real' as const,
-      id: row.id,
-      title: row.title,
-      style: row.style as string,
-    }))
-  } catch (e) {
-    console.error('Explore style page query failed:', e)
-    rows = []
-  }
-
-  const realRows = rows.slice(0, TARGET_REAL)
-  const placeholderCount = Math.max(0, TARGET_TOTAL - realRows.length)
-  const placeholderRows = buildPlaceholders(label, placeholderCount, realRows.length)
-
-  const visibleRows: CardRow[] = [...realRows, ...placeholderRows]
+  const artworks = await prisma.artwork.findMany({
+    where: {
+      style: styleInfo.key as any,
+      status: 'PUBLISHED',
+      ...blobBackedWhere,
+      ...cleanWhere,
+    },
+    orderBy: { createdAt: 'desc' },
+    take: 200,
+    select: {
+      id: true,
+      title: true,
+    },
+  })
 
   return (
-    <div className="space-y-8">
-      <div className="flex items-baseline justify-between">
-        <div className="space-y-1">
-          <h1 className="text-3xl font-semibold">{label}</h1>
-          <p className="text-slate-400 text-sm">
-            Browse all published artworks in this master style.
-          </p>
-          <p className="text-slate-500 text-xs">
-            Showing {realRows.length} real works and {placeholderRows.length} placeholders
-          </p>
-        </div>
-
-        <Link href="/explore" className="text-amber-400 hover:underline text-sm">
-          ← Back
+    <main className="space-y-6">
+      <div className="space-y-2">
+        <Link href="/explore" className="text-sm text-amber-400 hover:underline">
+          ← Back to Explore
         </Link>
+        <h1 className="text-3xl font-semibold">{styleInfo.label}</h1>
+        <p className="text-sm text-slate-400">
+          {artworks.length} published works currently available
+        </p>
       </div>
 
-      {visibleRows.length === 0 ? (
-        <div className="rounded-xl border border-slate-800 bg-slate-900/40 p-4">
-          <p className="text-slate-300 text-sm">
-            No artworks found for this style yet.
-          </p>
-        </div>
+      {artworks.length === 0 ? (
+        <div className="text-sm text-slate-400">No published works available yet.</div>
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          {visibleRows.map((row) => {
-            if (row.kind === 'real') {
-              return (
-                <Link
-                  key={row.id}
-                  href={`/artwork/${row.id}`}
-                  className="group block rounded-xl overflow-hidden bg-slate-900/60 border border-slate-800 hover:border-amber-400/60 transition-colors"
-                >
-                  <SafeImg
-                    src={`/api/artwork/preview/${row.id}?w=520&v=${PREVIEW_VERSION}`}
-                    fallbackSrc={FALLBACK_DATA_URL}
-                    alt={row.title}
-                    className="w-full aspect-square object-cover"
-                    loading="lazy"
-                  />
-                  <div className="p-3">
-                    <div className="text-sm text-slate-300 line-clamp-1">
-                      {row.title}
-                    </div>
-                    <div className="text-xs text-slate-400">{label}</div>
-                  </div>
-                </Link>
-              )
-            }
-
-            return (
-              <div
-                key={row.id}
-                className="rounded-xl overflow-hidden bg-slate-900/40 border border-dashed border-slate-700"
-              >
-                <SafeImg
-                  src={FALLBACK_DATA_URL}
-                  fallbackSrc={FALLBACK_DATA_URL}
-                  alt={row.title}
-                  className="w-full aspect-square object-cover"
-                  loading="lazy"
-                />
-                <div className="p-3">
-                  <div className="text-sm text-slate-300 line-clamp-1">
-                    {row.title}
-                  </div>
-                  <div className="text-xs text-slate-400">
-                    {row.description}
-                  </div>
-                </div>
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-4">
+          {artworks.map((art) => (
+            <Link
+              key={art.id}
+              href={`/artwork/${art.id}`}
+              className="rounded-2xl overflow-hidden border border-slate-800 bg-slate-900/50 hover:border-amber-400/60 transition-colors"
+            >
+              <SafeImg
+                src={`/api/artwork/preview/${art.id}?w=520&v=${PREVIEW_VERSION}`}
+                fallbackSrc={FALLBACK_DATA_URL}
+                alt={art.title}
+                className="aspect-square w-full object-cover"
+              />
+              <div className="p-3">
+                <div className="text-sm text-slate-100 line-clamp-2">{art.title}</div>
               </div>
-            )
-          })}
+            </Link>
+          ))}
         </div>
       )}
-    </div>
+    </main>
   )
 }
