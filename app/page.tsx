@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
 import SafeImg from '@/components/safe-img'
 
-const PREVIEW_VERSION = 'v6'
+const PREVIEW_VERSION = 'v7'
 
 const FALLBACK_DATA_URL =
   'data:image/svg+xml;utf8,' +
@@ -77,10 +77,10 @@ const FEATURED_TITLE_PREFERENCES: Record<string, string[]> = {
   ],
   MONET: [
     'Water Lilies in Monet Style',
-    'Japanese Bridge in Monet Style',
-    'Woman with Parasol in Monet Style',
     'Impression Sunrise in Monet Style',
     'Haystacks at Sunset in Monet Style',
+    'Woman with Parasol in Monet Style',
+    'Japanese Bridge in Monet Style',
   ],
   PICASSO: [
     'Guernica in Picasso Style',
@@ -115,7 +115,7 @@ const FEATURED_TITLE_PREFERENCES: Record<string, string[]> = {
     'The Last Judgement in Michelangelo Style',
     'Moses in Michelangelo Style',
     'Sistine Chapel Ceiling Study in Michelangelo Style',
-    'Creation of Adam in Michelangelo Style',
+    'Doni Tondo in Michelangelo Style',
   ],
   MUNCH: [
     'The Scream in Munch Style',
@@ -131,59 +131,73 @@ function styleLabel(style: string | null) {
   return STYLE_LABELS[String(style)] || String(style)
 }
 
+function stableAssetFilter() {
+  return {
+    OR: [
+      {
+        thumbnail: {
+          contains: '.public.blob.vercel-storage.com',
+          mode: 'insensitive' as const,
+        },
+      },
+      {
+        assets: {
+          some: {
+            originalUrl: {
+              contains: '.public.blob.vercel-storage.com',
+              mode: 'insensitive' as const,
+            },
+          },
+        },
+      },
+    ],
+  }
+}
+
+function junkFilter() {
+  return {
+    NOT: [
+      { tags: { has: 'smoketest' } },
+      { title: { contains: 'smoketest', mode: 'insensitive' as const } },
+      { title: { contains: 'diagnostic', mode: 'insensitive' as const } },
+      { title: { contains: 'test artwork', mode: 'insensitive' as const } },
+      { title: { contains: 'db smoketest', mode: 'insensitive' as const } },
+    ],
+  }
+}
+
+async function findFeaturedByExactTitle(style: string, title: string) {
+  return prisma.artwork.findFirst({
+    where: {
+      style: style as any,
+      status: 'PUBLISHED',
+      title,
+      ...stableAssetFilter(),
+      ...junkFilter(),
+    },
+    orderBy: { createdAt: 'desc' },
+    select: {
+      id: true,
+      title: true,
+      createdAt: true,
+    },
+  })
+}
+
 async function getFeaturedArtworkForStyle(style: string) {
   const preferredTitles = FEATURED_TITLE_PREFERENCES[style] || []
 
-  if (preferredTitles.length > 0) {
-    const preferred = await prisma.artwork.findMany({
-      where: {
-        style: style as any,
-        status: 'PUBLISHED',
-        title: { in: preferredTitles },
-      },
-      select: {
-        id: true,
-        title: true,
-        createdAt: true,
-      },
-    })
-
-    const byTitle = new Map(preferred.map((item) => [item.title, item]))
-    for (const title of preferredTitles) {
-      const match = byTitle.get(title)
-      if (match) return match
-    }
+  for (const title of preferredTitles) {
+    const exact = await findFeaturedByExactTitle(style, title)
+    if (exact) return exact
   }
 
   return prisma.artwork.findFirst({
     where: {
       style: style as any,
       status: 'PUBLISHED',
-      NOT: [
-        { tags: { has: 'smoketest' } },
-        { title: { contains: 'smoketest', mode: 'insensitive' } },
-        { title: { contains: 'diagnostic', mode: 'insensitive' } },
-        { title: { contains: 'test artwork', mode: 'insensitive' } },
-        { title: { contains: 'db smoketest', mode: 'insensitive' } },
-      ],
-      OR: [
-        {
-          thumbnail: {
-            contains: '.public.blob.vercel-storage.com',
-            mode: 'insensitive',
-          },
-        },
-        {
-          assets: {
-            some: {
-              originalUrl: {
-                contains: '.public.blob.vercel-storage.com',
-                mode: 'insensitive',
-              },
-            },
-          },
-        },
-      ],
+      ...stableAssetFilter(),
+      ...junkFilter(),
     },
     orderBy: { createdAt: 'desc' },
     select: {
@@ -198,31 +212,8 @@ export default async function HomePage() {
   const newDrops = await prisma.artwork.findMany({
     where: {
       status: 'PUBLISHED',
-      NOT: [
-        { tags: { has: 'smoketest' } },
-        { title: { contains: 'smoketest', mode: 'insensitive' } },
-        { title: { contains: 'diagnostic', mode: 'insensitive' } },
-        { title: { contains: 'test artwork', mode: 'insensitive' } },
-        { title: { contains: 'db smoketest', mode: 'insensitive' } },
-      ],
-      OR: [
-        {
-          thumbnail: {
-            contains: '.public.blob.vercel-storage.com',
-            mode: 'insensitive',
-          },
-        },
-        {
-          assets: {
-            some: {
-              originalUrl: {
-                contains: '.public.blob.vercel-storage.com',
-                mode: 'insensitive',
-              },
-            },
-          },
-        },
-      ],
+      ...stableAssetFilter(),
+      ...junkFilter(),
     },
     orderBy: { createdAt: 'desc' },
     take: 12,
