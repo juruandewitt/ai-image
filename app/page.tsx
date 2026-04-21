@@ -112,12 +112,17 @@ const FEATURED_TITLE_PREFERENCES: Record<string, string[]> = {
     'Vitruvian Man in Da Vinci Style',
     'Salvator Mundi in Da Vinci Style',
   ],
-  MICHELANGELO: [
+    MICHELANGELO: [
+    'The Creation of Adam in Michelangelo Style',
     'The Scream in Michelangelo Style',
     'David in Michelangelo Style',
     'The Last Judgement in Michelangelo Style',
     'Moses in Michelangelo Style',
+    'Doni Tondo in Michelangelo Style',
     'Sistine Chapel Ceiling Study in Michelangelo Style',
+    'Prophet on Ceiling Fresco in Michelangelo Style',
+    'Ignudi Figure Study in Michelangelo Style',
+    'Renaissance Vault Fresco in Michelangelo Style',
   ],
   MUNCH: [
     'Anxiety in Munch Style',
