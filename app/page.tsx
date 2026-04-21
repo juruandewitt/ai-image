@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
 import SafeImg from '@/components/safe-img'
 
-const PREVIEW_VERSION = 'v8'
+const PREVIEW_VERSION = 'v10'
 
 const FALLBACK_DATA_URL =
   'data:image/svg+xml;utf8,' +
@@ -46,8 +46,6 @@ const FEATURED_MASTERS = [
   { key: 'MUNCH', label: 'Edvard Munch', slug: 'edvard-munch' },
 ] as const
 
-// These are now curated for recognisability and visual strength.
-// Michelangelo intentionally prioritises your favourite reinterpretation.
 const FEATURED_TITLE_PREFERENCES: Record<string, string[]> = {
   VAN_GOGH: [
     'Starry Night in Van Gogh Style',
@@ -112,7 +110,7 @@ const FEATURED_TITLE_PREFERENCES: Record<string, string[]> = {
     'Vitruvian Man in Da Vinci Style',
     'Salvator Mundi in Da Vinci Style',
   ],
-    MICHELANGELO: [
+  MICHELANGELO: [
     'The Creation of Adam in Michelangelo Style',
     'The Scream in Michelangelo Style',
     'David in Michelangelo Style',
@@ -124,9 +122,9 @@ const FEATURED_TITLE_PREFERENCES: Record<string, string[]> = {
     'Ignudi Figure Study in Michelangelo Style',
     'Renaissance Vault Fresco in Michelangelo Style',
   ],
-    MUNCH: [
-    'The Dance of Life in Munch Style',
+  MUNCH: [
     'The Scream in Munch Style',
+    'The Dance of Life in Munch Style',
     'Madonna in Munch Style',
     'Anxiety in Munch Style',
     'Girls on the Bridge in Munch Style',
@@ -292,7 +290,9 @@ export default async function HomePage() {
             >
               <SafeImg
                 src={
-                  master.artwork
+                  master.key === 'MUNCH'
+                    ? '/featured/munch-the-scream.png'
+                    : master.artwork
                     ? `/api/artwork/preview/${master.artwork.id}?w=520&v=${PREVIEW_VERSION}`
                     : FALLBACK_DATA_URL
                 }
