@@ -4,13 +4,13 @@ import { prisma } from '@/lib/prisma'
 
 export const dynamic = 'force-dynamic'
 
-const STYLE = 'MICHELANGELO'
-const ARTIST = 'Michelangelo'
+const STYLE = 'MUNCH'
+const ARTIST = 'Edvard Munch'
 const DEFAULT_ASSET_PROVIDER = 'vercel-blob'
 
-const ARTWORK_TITLE = 'The Creation of Adam in Michelangelo Style'
+const ARTWORK_TITLE = 'The Dance of Life in Munch Style'
 const SAFE_GENERATION_PROMPT =
-  'Renaissance fresco ceiling scene with two monumental reaching hands, dramatic Michelangelo-inspired composition, monumental anatomy implied through drapery, divine atmosphere, chapel ceiling painting, powerful sculptural forms, high renaissance masterpiece'
+  'Expressionist moonlit shoreline scene inspired by Edvard Munch, three symbolic figures in dramatic emotional composition, flowing lines, vivid red and deep blue tones, melancholy atmosphere, iconic Munch-like painting'
 
 function safeFilePart(value: string) {
   return value
@@ -198,14 +198,14 @@ export async function GET() {
     const result = await run()
 
     return NextResponse.json({
-      message: 'Michelangelo Creation of Adam generated',
+      message: 'Munch Dance of Life generated',
       style: STYLE,
       result,
     })
   } catch (error) {
     return NextResponse.json(
       {
-        message: 'Michelangelo Creation of Adam failed',
+        message: 'Munch Dance of Life failed',
         style: STYLE,
         error: error instanceof Error ? error.message : 'Unknown error',
       },
