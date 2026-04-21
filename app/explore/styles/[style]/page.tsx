@@ -174,7 +174,8 @@ const CORE_TITLE_PREFERENCES: Record<string, string[]> = {
     'Saint John the Baptist in Da Vinci Style',
     'The Baptism of Christ in Da Vinci Style',
   ],
-  MICHELANGELO: [
+    MICHELANGELO: [
+    'The Creation of Adam in Michelangelo Style',
     'The Scream in Michelangelo Style',
     'David in Michelangelo Style',
     'The Last Judgement in Michelangelo Style',
@@ -184,7 +185,6 @@ const CORE_TITLE_PREFERENCES: Record<string, string[]> = {
     'Prophet on Ceiling Fresco in Michelangelo Style',
     'Ignudi Figure Study in Michelangelo Style',
     'Renaissance Vault Fresco in Michelangelo Style',
-    'Monumental Chapel Scene in Michelangelo Style',
   ],
   MUNCH: [
     'The Scream in Munch Style',
