@@ -5,7 +5,7 @@ import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import SafeImg from '@/components/safe-img'
 
-const PREVIEW_VERSION = 'v9'
+const PREVIEW_VERSION = 'v11'
 
 const FALLBACK_DATA_URL =
   'data:image/svg+xml;utf8,' +
@@ -64,7 +64,6 @@ const cleanWhere = {
   ],
 }
 
-// These should lead each Master page.
 const CORE_TITLE_PREFERENCES: Record<string, string[]> = {
   VAN_GOGH: [
     'Starry Night in Van Gogh Style',
@@ -174,7 +173,7 @@ const CORE_TITLE_PREFERENCES: Record<string, string[]> = {
     'Saint John the Baptist in Da Vinci Style',
     'The Baptism of Christ in Da Vinci Style',
   ],
-    MICHELANGELO: [
+  MICHELANGELO: [
     'The Creation of Adam in Michelangelo Style',
     'The Scream in Michelangelo Style',
     'David in Michelangelo Style',
@@ -186,9 +185,9 @@ const CORE_TITLE_PREFERENCES: Record<string, string[]> = {
     'Ignudi Figure Study in Michelangelo Style',
     'Renaissance Vault Fresco in Michelangelo Style',
   ],
-    MUNCH: [
-    'The Dance of Life in Munch Style',
+  MUNCH: [
     'The Scream in Munch Style',
+    'The Dance of Life in Munch Style',
     'Madonna in Munch Style',
     'Anxiety in Munch Style',
     'Girls on the Bridge in Munch Style',
@@ -200,7 +199,6 @@ const CORE_TITLE_PREFERENCES: Record<string, string[]> = {
   ],
 }
 
-// Common reinterpretation source titles we want to push later in the list.
 const CROSSOVER_MARKERS = [
   'Mona Lisa',
   'Girl with a Pearl Earring',
@@ -265,18 +263,17 @@ const CROSSOVER_MARKERS = [
   'Golden Apse Light',
 ]
 
-function isCrossoverTitle(title: string, styleLabel: string) {
-  return CROSSOVER_MARKERS.some((marker) => {
-    // allow titles that are genuinely native anchors for that master
-    if (title === `${marker} in ${styleLabel} Style`) return true
-    return title.includes(marker)
-  })
-}
-
 type ArtworkRow = {
   id: string
   title: string
   createdAt: Date
+}
+
+function isCrossoverTitle(title: string, styleLabel: string) {
+  return CROSSOVER_MARKERS.some((marker) => {
+    if (title === `${marker} in ${styleLabel} Style`) return true
+    return title.includes(marker)
+  })
 }
 
 function sortArtworks(styleKey: string, styleLabel: string, artworks: ArtworkRow[]) {
@@ -346,23 +343,32 @@ export default async function ExploreStylePage({
         <div className="text-sm text-slate-400">No published works available yet.</div>
       ) : (
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-4">
-          {sorted.map((art) => (
-            <Link
-              key={art.id}
-              href={`/artwork/${art.id}`}
-              className="rounded-2xl overflow-hidden border border-slate-800 bg-slate-900/50 hover:border-amber-400/60 transition-colors"
-            >
-              <SafeImg
-                src={`/api/artwork/preview/${art.id}?w=520&v=${PREVIEW_VERSION}`}
-                fallbackSrc={FALLBACK_DATA_URL}
-                alt={art.title}
-                className="aspect-square w-full object-cover"
-              />
-              <div className="p-3">
-                <div className="text-sm text-slate-100 line-clamp-2">{art.title}</div>
-              </div>
-            </Link>
-          ))}
+          {sorted.map((art, index) => {
+            const isFirstMunchTile =
+              styleInfo.key === 'MUNCH' && index === 0 && art.title === 'The Scream in Munch Style'
+
+            return (
+              <Link
+                key={art.id}
+                href={`/artwork/${art.id}`}
+                className="rounded-2xl overflow-hidden border border-slate-800 bg-slate-900/50 hover:border-amber-400/60 transition-colors"
+              >
+                <SafeImg
+                  src={
+                    isFirstMunchTile
+                      ? '/featured/munch-the-scream.png'
+                      : `/api/artwork/preview/${art.id}?w=520&v=${PREVIEW_VERSION}`
+                  }
+                  fallbackSrc={FALLBACK_DATA_URL}
+                  alt={art.title}
+                  className="aspect-square w-full object-cover"
+                />
+                <div className="p-3">
+                  <div className="text-sm text-slate-100 line-clamp-2">{art.title}</div>
+                </div>
+              </Link>
+            )
+          })}
         </div>
       )}
     </main>
