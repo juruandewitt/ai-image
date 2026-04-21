@@ -114,8 +114,8 @@ const CORE_TITLE_PREFERENCES: Record<string, string[]> = {
     'Woman with a Lute in Vermeer Style',
   ],
   MONET: [
-    'Water Lilies in Monet Style',
     'Impression Sunrise in Monet Style',
+    'Water Lilies in Monet Style',
     'Japanese Bridge in Monet Style',
     'Woman with Parasol in Monet Style',
     'Haystacks at Sunset in Monet Style',
