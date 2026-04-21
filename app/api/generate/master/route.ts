@@ -4,33 +4,13 @@ import { prisma } from '@/lib/prisma'
 
 export const dynamic = 'force-dynamic'
 
-const STYLE = 'MUNCH'
-const ARTIST = 'Edvard Munch'
+const STYLE = 'MICHELANGELO'
+const ARTIST = 'Michelangelo'
 const DEFAULT_ASSET_PROVIDER = 'vercel-blob'
 
-const TITLES = [
-  'Evening Sky over Quiet Fjord in Munch Style',
-  'Lonely Figure beneath Red Horizon in Munch Style',
-  'Melancholy Interior with Soft Light in Munch Style',
-  'Emotional Portrait with Dark Background in Munch Style',
-  'Woman Standing by Dim Window in Munch Style',
-  'Silent Street under Night Sky in Munch Style',
-  'Figure Walking along Dark Shore in Munch Style',
-  'Twilight Scene with Distant Lights in Munch Style',
-  'Red Glow over Calm Water in Munch Style',
-  'Solitary Figure in Open Landscape in Munch Style',
-
-  'Golden Field under Expressionist Sky in Munch Style',
-  'Dark Trees against Evening Light in Munch Style',
-  'Quiet Room with Chair and Window in Munch Style',
-  'Figure Seated in Shadowed Interior in Munch Style',
-  'Night Path through Sparse Landscape in Munch Style',
-  'Distant Town under Red Sky in Munch Style',
-  'Soft Reflections on Still Water in Munch Style',
-  'Lonely Bridge across Silent Water in Munch Style',
-  'Expressionist Landscape with Rolling Hills in Munch Style',
-  'Muted Garden Scene at Dusk in Munch Style'
-]
+const ARTWORK_TITLE = 'The Creation of Adam in Michelangelo Style'
+const SAFE_GENERATION_PROMPT =
+  'Renaissance fresco ceiling scene with two monumental reaching hands, dramatic Michelangelo-inspired composition, monumental anatomy implied through drapery, divine atmosphere, chapel ceiling painting, powerful sculptural forms, high renaissance masterpiece'
 
 function safeFilePart(value: string) {
   return value
@@ -40,6 +20,11 @@ function safeFilePart(value: string) {
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '')
     .slice(0, 80)
+}
+
+function isStableBlobSrc(value?: string | null) {
+  if (!value) return false
+  return value.toLowerCase().includes('.public.blob.vercel-storage.com/')
 }
 
 async function generateOpenAiImageUrl(prompt: string) {
@@ -100,21 +85,87 @@ async function uploadImageToBlob(openAiUrl: string, title: string) {
   return blob.url
 }
 
-async function processOneTitle(title: string) {
-  const existing = await prisma.artwork.findFirst({
-    where: { title, style: STYLE as any },
+async function createAssetIfMissing(artworkId: string, stableImageUrl: string, prompt: string) {
+  const existingStableAsset = await prisma.asset.findFirst({
+    where: { artworkId, originalUrl: stableImageUrl },
+    select: { id: true },
   })
 
-  if (existing) return { title, success: true, reused: true }
+  if (existingStableAsset) return
 
-  const stableImageUrl = await uploadImageToBlob(
-    await generateOpenAiImageUrl(title),
-    title
-  )
+  await prisma.asset.create({
+    data: {
+      artworkId,
+      originalUrl: stableImageUrl,
+      provider: DEFAULT_ASSET_PROVIDER,
+      prompt,
+    },
+  })
+}
+
+async function run() {
+  const existing = await prisma.artwork.findFirst({
+    where: { title: ARTWORK_TITLE, style: STYLE as any },
+    select: {
+      id: true,
+      title: true,
+      thumbnail: true,
+      assets: {
+        orderBy: { createdAt: 'desc' },
+        select: { originalUrl: true },
+      },
+    },
+  })
+
+  const existingStableAsset =
+    existing?.assets.find((a) => isStableBlobSrc(a.originalUrl))?.originalUrl || null
+  const existingStableThumb = isStableBlobSrc(existing?.thumbnail) ? existing?.thumbnail : null
+  const existingStable = existingStableAsset || existingStableThumb || null
+
+  if (existing && existingStable) {
+    if (!existingStableThumb) {
+      await prisma.artwork.update({
+        where: { id: existing.id },
+        data: { thumbnail: existingStable, artist: ARTIST },
+      })
+    }
+
+    await createAssetIfMissing(existing.id, existingStable, SAFE_GENERATION_PROMPT)
+
+    return {
+      title: ARTWORK_TITLE,
+      success: true,
+      reused: true,
+      artworkId: existing.id,
+    }
+  }
+
+  const openAiUrl = await generateOpenAiImageUrl(SAFE_GENERATION_PROMPT)
+  const stableImageUrl = await uploadImageToBlob(openAiUrl, ARTWORK_TITLE)
+
+  if (existing) {
+    await prisma.artwork.update({
+      where: { id: existing.id },
+      data: {
+        thumbnail: stableImageUrl,
+        artist: ARTIST,
+        status: 'PUBLISHED' as any,
+      },
+    })
+
+    await createAssetIfMissing(existing.id, stableImageUrl, SAFE_GENERATION_PROMPT)
+
+    return {
+      title: ARTWORK_TITLE,
+      success: true,
+      regenerated: true,
+      artworkId: existing.id,
+    }
+  }
 
   const artwork = await prisma.artwork.create({
     data: {
-      title,
+      title: ARTWORK_TITLE,
       style: STYLE as any,
       artist: ARTIST,
       thumbnail: stableImageUrl,
@@ -122,6 +173,7 @@ async function processOneTitle(title: string) {
       tags: [],
       price: 9.99,
     },
+    select: { id: true },
   })
 
   await prisma.asset.create({
@@ -129,33 +181,35 @@ async function processOneTitle(title: string) {
       artworkId: artwork.id,
       originalUrl: stableImageUrl,
       provider: DEFAULT_ASSET_PROVIDER,
-      prompt: title,
+      prompt: SAFE_GENERATION_PROMPT,
     },
   })
 
-  return { title, success: true, created: true }
+  return {
+    title: ARTWORK_TITLE,
+    success: true,
+    created: true,
+    artworkId: artwork.id,
+  }
 }
 
 export async function GET() {
-  const results = []
+  try {
+    const result = await run()
 
-  for (const title of TITLES) {
-    try {
-      const result = await processOneTitle(title)
-      results.push(result)
-    } catch (error) {
-      results.push({
-        title,
-        success: false,
+    return NextResponse.json({
+      message: 'Michelangelo Creation of Adam generated',
+      style: STYLE,
+      result,
+    })
+  } catch (error) {
+    return NextResponse.json(
+      {
+        message: 'Michelangelo Creation of Adam failed',
+        style: STYLE,
         error: error instanceof Error ? error.message : 'Unknown error',
-      })
-    }
+      },
+      { status: 500 }
+    )
   }
-
-  return NextResponse.json({
-    message: 'Munch final batch complete',
-    style: STYLE,
-    count: TITLES.length,
-    results,
-  })
 }
