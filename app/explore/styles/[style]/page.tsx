@@ -186,17 +186,17 @@ const CORE_TITLE_PREFERENCES: Record<string, string[]> = {
     'Ignudi Figure Study in Michelangelo Style',
     'Renaissance Vault Fresco in Michelangelo Style',
   ],
-  MUNCH: [
+    MUNCH: [
+    'The Dance of Life in Munch Style',
     'The Scream in Munch Style',
     'Madonna in Munch Style',
-    'The Dance of Life in Munch Style',
     'Anxiety in Munch Style',
+    'Girls on the Bridge in Munch Style',
     'Ashes in Munch Style',
     'Jealousy in Munch Style',
     'Melancholy in Munch Style',
-    'Self Portrait in Munch Style',
-    'Girls on the Bridge in Munch Style',
     'Moonlight by the Shore in Munch Style',
+    'Evening on Karl Johan Street in Munch Style',
   ],
 }
 
