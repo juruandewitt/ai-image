@@ -10,16 +10,16 @@ const ARTIST = 'Leonardo da Vinci'
 
 const ITEMS = [
   {
-    title: 'Salvator Mundi in Da Vinci Style',
+    title: 'Annunciation in Da Vinci Style',
     sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Leonardo%20da%20Vinci%20%28attrib.%29%20-%20Salvator%20Mundi.jpg',
-    prompt: 'Public-domain source image: Salvator Mundi attributed to Leonardo da Vinci',
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Leonardo%20da%20Vinci%20-%20Annunciation%20-%20WGA12677.jpg',
+    prompt: 'Public-domain source image: Annunciation by Leonardo da Vinci',
   },
   {
-    title: 'Virgin of the Rocks in Da Vinci Style',
+    title: 'Adoration of the Magi in Da Vinci Style',
     sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Leonardo%20da%20Vinci%20Virgin%20of%20the%20Rocks%20%28National%20Gallery%20London%29.jpg',
-    prompt: 'Public-domain source image: Virgin of the Rocks by Leonardo da Vinci',
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Adoration%20of%20the%20Magi%20%28Leonardo%29.jpg',
+    prompt: 'Public-domain source image: Adoration of the Magi by Leonardo da Vinci',
   },
 ]
 
