@@ -10,16 +10,16 @@ const ARTIST = 'Leonardo da Vinci'
 
 const ITEMS = [
   {
-    title: 'Lady with an Ermine in Da Vinci Style',
+    title: 'Salvator Mundi in Da Vinci Style',
     sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Dama%20z%20gronostajem.jpg',
-    prompt: 'Public-domain source image: Lady with an Ermine by Leonardo da Vinci',
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Leonardo%20da%20Vinci%20%28attrib.%29%20-%20Salvator%20Mundi.jpg',
+    prompt: 'Public-domain source image: Salvator Mundi attributed to Leonardo da Vinci',
   },
   {
-    title: 'Vitruvian Man in Da Vinci Style',
+    title: 'Virgin of the Rocks in Da Vinci Style',
     sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Da%20Vinci%20Vitruve%20Luc%20Viatour.jpg',
-    prompt: 'Public-domain source image: Vitruvian Man by Leonardo da Vinci',
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Leonardo%20da%20Vinci%20Virgin%20of%20the%20Rocks%20%28National%20Gallery%20London%29.jpg',
+    prompt: 'Public-domain source image: Virgin of the Rocks by Leonardo da Vinci',
   },
 ]
 
