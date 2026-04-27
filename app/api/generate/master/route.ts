@@ -4,22 +4,13 @@ import { prisma } from '@/lib/prisma'
 
 export const dynamic = 'force-dynamic'
 
-const FIXES = [
-  {
-    style: 'MUNCH',
-    artist: 'Edvard Munch',
-    title: 'The Scream in Munch Style',
-    publicPath: '/featured/munch-the-scream.png',
-    prompt: 'Manual approved replacement for Munch The Scream',
-  },
-  {
-    style: 'MONET',
-    artist: 'Claude Monet',
-    title: 'Impression Sunrise in Monet Style',
-    publicPath: '/featured/monet-impression-sunrise.png',
-    prompt: 'Manual approved replacement for Monet Impression Sunrise',
-  },
-]
+const FIX = {
+  style: 'DA_VINCI',
+  artist: 'Leonardo da Vinci',
+  title: 'Mona Lisa in Da Vinci Style',
+  publicPath: '/featured/da-vinci-mona-lisa.png',
+  prompt: 'Manual approved replacement for Da Vinci Mona Lisa',
+}
 
 function safeFilePart(value: string) {
   return value
@@ -31,19 +22,19 @@ function safeFilePart(value: string) {
     .slice(0, 80)
 }
 
-async function publicImageToBlob(origin: string, fix: (typeof FIXES)[number]) {
-  const publicUrl = `${origin}${fix.publicPath}`
+async function publicImageToBlob(origin: string) {
+  const publicUrl = `${origin}${FIX.publicPath}`
   const imageRes = await fetch(publicUrl, { cache: 'no-store' })
 
   if (!imageRes.ok) {
-    throw new Error(`Could not fetch ${fix.publicPath}: ${imageRes.status}`)
+    throw new Error(`Could not fetch ${FIX.publicPath}: ${imageRes.status}`)
   }
 
   const contentType = imageRes.headers.get('content-type') || 'image/png'
   const arrayBuffer = await imageRes.arrayBuffer()
 
   const blob = await put(
-    `artworks/${safeFilePart(fix.style)}/${safeFilePart(fix.title)}-manual.png`,
+    `artworks/${safeFilePart(FIX.style)}/${safeFilePart(FIX.title)}-manual.png`,
     arrayBuffer,
     {
       access: 'public',
@@ -52,79 +43,69 @@ async function publicImageToBlob(origin: string, fix: (typeof FIXES)[number]) {
     }
   )
 
-  if (!blob.url) throw new Error(`Blob upload failed for ${fix.title}`)
+  if (!blob.url) throw new Error(`Blob upload failed for ${FIX.title}`)
   return blob.url
-}
-
-async function applyFix(origin: string, fix: (typeof FIXES)[number]) {
-  const blobUrl = await publicImageToBlob(origin, fix)
-
-  const existing = await prisma.artwork.findFirst({
-    where: {
-      title: fix.title,
-      style: fix.style as any,
-    },
-    select: { id: true },
-  })
-
-  const artwork = existing
-    ? await prisma.artwork.update({
-        where: { id: existing.id },
-        data: {
-          artist: fix.artist,
-          thumbnail: blobUrl,
-          status: 'PUBLISHED' as any,
-        },
-        select: { id: true },
-      })
-    : await prisma.artwork.create({
-        data: {
-          title: fix.title,
-          style: fix.style as any,
-          artist: fix.artist,
-          thumbnail: blobUrl,
-          status: 'PUBLISHED' as any,
-          tags: [],
-          price: 9.99,
-        },
-        select: { id: true },
-      })
-
-  await prisma.asset.create({
-    data: {
-      artworkId: artwork.id,
-      originalUrl: blobUrl,
-      provider: 'manual-approved-blob',
-      prompt: fix.prompt,
-    },
-  })
-
-  return {
-    title: fix.title,
-    style: fix.style,
-    success: true,
-    artworkId: artwork.id,
-    blobUrl,
-  }
 }
 
 export async function GET(req: NextRequest) {
   try {
     const origin = req.nextUrl.origin
-    const results = []
+    const blobUrl = await publicImageToBlob(origin)
 
-    for (const fix of FIXES) {
-      results.push(await applyFix(origin, fix))
-    }
+    const existing = await prisma.artwork.findFirst({
+      where: {
+        title: FIX.title,
+        style: FIX.style as any,
+      },
+      select: { id: true },
+    })
+
+    const artwork = existing
+      ? await prisma.artwork.update({
+          where: { id: existing.id },
+          data: {
+            artist: FIX.artist,
+            thumbnail: blobUrl,
+            status: 'PUBLISHED' as any,
+          },
+          select: { id: true },
+        })
+      : await prisma.artwork.create({
+          data: {
+            title: FIX.title,
+            style: FIX.style as any,
+            artist: FIX.artist,
+            thumbnail: blobUrl,
+            status: 'PUBLISHED' as any,
+            tags: [],
+            price: 9.99,
+          },
+          select: { id: true },
+        })
+
+    await prisma.asset.create({
+      data: {
+        artworkId: artwork.id,
+        originalUrl: blobUrl,
+        provider: 'manual-approved-blob',
+        prompt: FIX.prompt,
+      },
+    })
 
     return NextResponse.json({
-      message: 'Manual featured images uploaded to blob and applied',
-      results,
+      message: 'Da Vinci Mona Lisa uploaded to blob and applied',
+      result: {
+        title: FIX.title,
+        style: FIX.style,
+        success: true,
+        artworkId: artwork.id,
+        blobUrl,
+      },
     })
   } catch (error) {
     return NextResponse.json(
       {
-        message: 'Manual featured image update failed',
+        message: 'Da Vinci Mona Lisa update failed',
         error: error instanceof Error ? error.message : 'Unknown error',
       },
       { status: 500 }
