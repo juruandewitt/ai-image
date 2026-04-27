@@ -10,64 +10,16 @@ const ARTIST = 'Leonardo da Vinci'
 
 const ITEMS = [
   {
-    title: 'Mona Lisa in Da Vinci Style',
-    sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Leonardo%20da%20Vinci%20-%20Mona%20Lisa.jpg',
-    prompt: 'Public-domain source image: Mona Lisa by Leonardo da Vinci',
-  },
-  {
-    title: 'The Last Supper in Da Vinci Style',
-    sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Leonardo%20da%20Vinci%20-%20The%20Last%20Supper%20high%20res.jpg',
-    prompt: 'Public-domain source image: The Last Supper by Leonardo da Vinci',
-  },
-  {
     title: 'Lady with an Ermine in Da Vinci Style',
     sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Lady%20with%20an%20Ermine%20-%20Leonardo%20da%20Vinci%20-%20Google%20Art%20Project.jpg',
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Dama%20z%20gronostajem.jpg',
     prompt: 'Public-domain source image: Lady with an Ermine by Leonardo da Vinci',
   },
   {
     title: 'Vitruvian Man in Da Vinci Style',
     sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Vitruvian%20Man%20by%20Leonardo%20da%20Vinci.jpg',
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Da%20Vinci%20Vitruve%20Luc%20Viatour.jpg',
     prompt: 'Public-domain source image: Vitruvian Man by Leonardo da Vinci',
-  },
-  {
-    title: 'Salvator Mundi in Da Vinci Style',
-    sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Leonardo%20da%20Vinci%20%28attrib.%29%20-%20Salvator%20Mundi.jpg',
-    prompt: 'Public-domain source image: Salvator Mundi attributed to Leonardo da Vinci',
-  },
-  {
-    title: 'Virgin of the Rocks in Da Vinci Style',
-    sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Leonardo%20da%20Vinci%20Virgin%20of%20the%20Rocks%20%28National%20Gallery%20London%29.jpg',
-    prompt: 'Public-domain source image: Virgin of the Rocks by Leonardo da Vinci',
-  },
-  {
-    title: 'Annunciation in Da Vinci Style',
-    sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Leonardo%20da%20Vinci%20-%20Annunciation%20-%20WGA12677.jpg',
-    prompt: 'Public-domain source image: Annunciation by Leonardo da Vinci',
-  },
-  {
-    title: 'Adoration of the Magi in Da Vinci Style',
-    sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Adoration%20of%20the%20Magi%20%28Leonardo%29.jpg',
-    prompt: 'Public-domain source image: Adoration of the Magi by Leonardo da Vinci',
-  },
-  {
-    title: 'Saint John the Baptist in Da Vinci Style',
-    sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Leonardo%20da%20Vinci%20-%20Saint%20John%20the%20Baptist%20C2RMF%20retouched.jpg',
-    prompt: 'Public-domain source image: Saint John the Baptist by Leonardo da Vinci',
-  },
-  {
-    title: 'The Baptism of Christ in Da Vinci Style',
-    sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Leonardo%20da%20Vinci%20-%20Baptism%20of%20Christ%20-%20WGA12649.jpg',
-    prompt: 'Public-domain source image: The Baptism of Christ with Leonardo da Vinci contribution',
   },
 ]
 
@@ -81,18 +33,39 @@ function safeFilePart(value: string) {
     .slice(0, 90)
 }
 
-async function uploadSourceToBlob(item: (typeof ITEMS)[number]) {
-  const response = await fetch(item.sourceUrl, {
-    cache: 'no-store',
-    redirect: 'follow',
-    headers: {
-      'User-Agent': 'AI Image quality replacement bot',
-    },
-  })
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
 
-  if (!response.ok) {
+async function fetchWithRetry(url: string) {
+  let lastError = ''
+
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    const response = await fetch(url, {
+      cache: 'no-store',
+      redirect: 'follow',
+      headers: {
+        'User-Agent': 'AI Image quality replacement bot; contact=juruandewitt@gmail.com',
+      },
+    })
+
+    if (response.ok) return response
+
+    lastError = `${response.status}`
+
+    if (response.status === 429) {
+      await sleep(3000 * attempt)
+      continue
+    }
+
     throw new Error(`Failed to fetch source image: ${response.status}`)
   }
+
+  throw new Error(`Failed to fetch source image after retries: ${lastError}`)
+}
+
+async function uploadSourceToBlob(item: (typeof ITEMS)[number]) {
+  const response = await fetchWithRetry(item.sourceUrl)
 
   const contentType = response.headers.get('content-type') || 'image/jpeg'
   const arrayBuffer = await response.arrayBuffer()
@@ -170,6 +143,8 @@ export async function GET() {
         artworkId,
         imageUrl,
       })
+
+      await sleep(3000)
     } catch (error) {
       results.push({
         title: item.title,
@@ -180,7 +155,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Da Vinci public-domain top 10 replacement complete',
+    message: 'Da Vinci public-domain replacement mini-batch complete',
     style: STYLE,
     count: ITEMS.length,
     results,
