@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { put } from '@vercel/blob'
 import { prisma } from '@/lib/prisma'
 
@@ -12,53 +12,53 @@ const DEFAULT_ASSET_PROVIDER = 'quality-replacement-blob'
 const ITEMS = [
   {
     title: 'Mona Lisa in Da Vinci Style',
-    prompt:
-      'Faithful Renaissance oil portrait inspired by Leonardo da Vinci’s Mona Lisa: seated enigmatic woman, three-quarter pose, folded hands, dark veil, subtle smile, atmospheric hazy landscape with winding paths and water behind her, warm muted browns and greens, delicate sfumato shading, soft realistic face, museum-quality Renaissance painting.',
+    publicPath: '/featured/da-vinci-mona-lisa.png',
+    prompt: 'Manual approved Mona Lisa replacement',
   },
   {
     title: 'The Last Supper in Da Vinci Style',
     prompt:
-      'Faithful Renaissance fresco-style composition inspired by Leonardo da Vinci’s The Last Supper: long horizontal dining table, central calm figure, twelve expressive figures arranged in groups, architectural perspective, coffered ceiling, rear windows with pale landscape, balanced symmetry, muted Renaissance palette, dramatic but restrained gestures, fresco texture.',
+      'Accurate Renaissance fresco recreation of Leonardo da Vinci’s The Last Supper. Wide horizontal composition, Jesus centered at a long table, twelve apostles arranged in expressive groups of three, strong one-point perspective, rear wall with three windows, coffered ceiling, muted fresco colors, architectural symmetry, no modern elements.',
   },
   {
     title: 'Lady with an Ermine in Da Vinci Style',
     prompt:
-      'Faithful Renaissance portrait inspired by Leonardo da Vinci’s Lady with an Ermine: young noblewoman turned three-quarter view, dark simple background, elegant braided hair, refined face, delicate hands holding a small white ermine-like animal, muted black and brown clothing, soft sfumato modeling, intimate Renaissance oil portrait.',
+      'Accurate Renaissance portrait recreation of Leonardo da Vinci’s Lady with an Ermine. Young noblewoman in three-quarter pose turned to the side, dark plain background, elegant braided hair, refined pale face, both hands holding a small white ermine, muted black and brown garments, soft sfumato, museum oil portrait.',
   },
   {
     title: 'Vitruvian Man in Da Vinci Style',
     prompt:
-      'Faithful Renaissance anatomical study inspired by Leonardo da Vinci’s Vitruvian Man: sepia ink drawing on aged parchment, idealized male figure with multiple arm and leg positions inside circle and square, precise proportional study, handwritten notes around figure, delicate linework, scientific notebook aesthetic, high Renaissance draftsmanship.',
+      'Accurate sepia ink drawing recreation of Leonardo da Vinci’s Vitruvian Man. A proportional male anatomical figure with multiple arm and leg positions, placed inside a circle and square, aged parchment background, handwritten mirror-script notes around the drawing, precise high Renaissance scientific linework.',
   },
   {
     title: 'Salvator Mundi in Da Vinci Style',
     prompt:
-      'Faithful Renaissance devotional portrait inspired by Leonardo da Vinci’s Salvator Mundi: serene frontal figure in deep blue robe, one hand raised in blessing, other hand holding a transparent crystal orb, dark background, calm expression, delicate curls, soft sfumato, luminous face and hands, sacred Renaissance oil painting.',
+      'Accurate Renaissance portrait recreation of Salvator Mundi in Leonardo da Vinci style. Frontal serene figure against dark background, deep blue robe, right hand raised in blessing, left hand holding a transparent crystal orb, delicate curled hair, soft sfumato face, luminous hands, sacred quiet atmosphere.',
   },
   {
     title: 'Virgin of the Rocks in Da Vinci Style',
     prompt:
-      'Faithful Renaissance scene inspired by Leonardo da Vinci’s Virgin of the Rocks: sacred group of figures gathered in a mysterious rocky grotto, soft atmospheric blue-gray landscape, gentle hand gestures, pyramidal composition, delicate faces, flowing drapery, subtle sfumato, quiet spiritual mood, Renaissance oil painting.',
+      'Accurate Renaissance composition inspired by Leonardo da Vinci’s Virgin of the Rocks. Sacred figures arranged in pyramidal composition inside a shadowy rocky grotto, soft blue-gray atmospheric landscape, gentle gestures, flowing drapery, delicate faces, subtle sfumato, mysterious devotional mood.',
   },
   {
     title: 'Annunciation in Da Vinci Style',
     prompt:
-      'Faithful early Renaissance scene inspired by Leonardo da Vinci’s Annunciation: angel kneeling before a seated young woman at a lectern, garden setting, architectural building, distant landscape, graceful gestures, delicate wings, soft natural light, clear perspective, refined Renaissance details, muted pastel colors.',
+      'Accurate early Renaissance scene inspired by Leonardo da Vinci’s Annunciation. Angel kneeling on the left before Mary seated at a lectern on the right, garden foreground, Renaissance building, distant landscape, graceful wings, clear perspective, calm gestures, delicate natural light, muted colors.',
   },
   {
     title: 'Adoration of the Magi in Da Vinci Style',
     prompt:
-      'Faithful Renaissance study inspired by Leonardo da Vinci’s Adoration of the Magi: central mother and child surrounded by worshippers, many expressive figures, unfinished sepia-brown underpainting feeling, dynamic circular composition, distant ruins and horses, dramatic gestures, Renaissance sketch-like energy with sfumato depth.',
+      'Accurate Renaissance underdrawing-style recreation inspired by Leonardo da Vinci’s Adoration of the Magi. Central mother and child surrounded by many worshippers, dynamic circular crowd, ruins and horses in the background, sepia-brown unfinished underpainting look, energetic sketch lines, Renaissance composition.',
   },
   {
     title: 'Saint John the Baptist in Da Vinci Style',
     prompt:
-      'Faithful Renaissance portrait inspired by Leonardo da Vinci’s Saint John the Baptist: youthful figure emerging from dark background, subtle enigmatic smile, softly curled hair, one hand pointing upward, warm golden-brown light, delicate sfumato, spiritual mysterious mood, dark atmospheric Renaissance oil painting.',
+      'Accurate Renaissance portrait inspired by Leonardo da Vinci’s Saint John the Baptist. Youthful figure emerging from dark background, soft curled hair, enigmatic smile, one hand pointing upward, warm golden-brown light, strong sfumato, mysterious spiritual atmosphere.',
   },
   {
     title: 'The Baptism of Christ in Da Vinci Style',
     prompt:
-      'Faithful Renaissance religious scene inspired by The Baptism of Christ with Leonardo da Vinci influence: riverbank scene, central baptism gesture, kneeling angel with delicate features, soft landscape background, luminous water, graceful figures, early Renaissance composition, refined faces, gentle atmospheric light.',
+      'Accurate Renaissance religious scene inspired by The Baptism of Christ with Leonardo da Vinci influence. Riverbank scene, central baptism gesture, kneeling angel with delicate Leonardo-like face, soft landscape background, luminous water, graceful early Renaissance figures, calm sacred atmosphere.',
   },
 ]
 
@@ -70,6 +70,29 @@ function safeFilePart(value: string) {
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '')
     .slice(0, 90)
+}
+
+async function fetchPublicImageToBlob(origin: string, item: (typeof ITEMS)[number]) {
+  if (!item.publicPath) throw new Error(`Missing publicPath for ${item.title}`)
+
+  const publicUrl = `${origin}${item.publicPath}`
+  const imageRes = await fetch(publicUrl, { cache: 'no-store' })
+
+  if (!imageRes.ok) {
+    throw new Error(`Could not fetch ${item.publicPath}: ${imageRes.status}`)
+  }
+
+  const contentType = imageRes.headers.get('content-type') || 'image/png'
+  const arrayBuffer = await imageRes.arrayBuffer()
+
+  const blob = await put(
+    `artworks/${safeFilePart(STYLE)}/${safeFilePart(item.title)}-approved.png`,
+    arrayBuffer,
+    { access: 'public', addRandomSuffix: true, contentType }
+  )
+
+  if (!blob.url) throw new Error(`Blob upload failed for ${item.title}`)
+  return blob.url
 }
 
 async function generateOpenAiImageUrl(prompt: string) {
@@ -100,48 +123,34 @@ async function generateOpenAiImageUrl(prompt: string) {
 
   const data = await res.json()
   const imageUrl = data?.data?.[0]?.url
-
-  if (!imageUrl || typeof imageUrl !== 'string') {
-    throw new Error('No image URL returned from OpenAI')
-  }
+  if (!imageUrl || typeof imageUrl !== 'string') throw new Error('No image URL returned')
 
   return imageUrl
 }
 
-async function uploadImageToBlob(openAiUrl: string, title: string) {
+async function uploadGeneratedImageToBlob(openAiUrl: string, title: string) {
   const imageRes = await fetch(openAiUrl, { cache: 'no-store' })
 
   if (!imageRes.ok) {
-    const text = await imageRes.text().catch(() => '')
-    throw new Error(`Failed to download generated image (${imageRes.status}): ${text}`)
+    throw new Error(`Failed to download generated image: ${imageRes.status}`)
   }
 
   const contentType = imageRes.headers.get('content-type') || 'image/png'
   const arrayBuffer = await imageRes.arrayBuffer()
 
   const blob = await put(
-    `artworks/${safeFilePart(STYLE)}/${safeFilePart(title)}-quality.png`,
+    `artworks/${safeFilePart(STYLE)}/${safeFilePart(title)}-quality-v2.png`,
     arrayBuffer,
-    {
-      access: 'public',
-      addRandomSuffix: true,
-      contentType,
-    }
+    { access: 'public', addRandomSuffix: true, contentType }
   )
 
   if (!blob.url) throw new Error(`Blob upload failed for ${title}`)
   return blob.url
 }
 
-async function replaceArtwork(item: (typeof ITEMS)[number]) {
-  const openAiUrl = await generateOpenAiImageUrl(item.prompt)
-  const blobUrl = await uploadImageToBlob(openAiUrl, item.title)
-
+async function upsertArtwork(item: (typeof ITEMS)[number], blobUrl: string) {
   const existing = await prisma.artwork.findFirst({
-    where: {
-      title: item.title,
-      style: STYLE as any,
-    },
+    where: { title: item.title, style: STYLE as any },
     select: { id: true },
   })
 
@@ -172,26 +181,36 @@ async function replaceArtwork(item: (typeof ITEMS)[number]) {
     data: {
       artworkId: artwork.id,
       originalUrl: blobUrl,
-      provider: DEFAULT_ASSET_PROVIDER,
+      provider: item.publicPath ? 'manual-approved-blob' : DEFAULT_ASSET_PROVIDER,
       prompt: item.prompt,
     },
   })
 
-  return {
-    title: item.title,
-    success: true,
-    artworkId: artwork.id,
-    blobUrl,
-  }
+  return artwork.id
 }
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const origin = req.nextUrl.origin
   const results = []
 
   for (const item of ITEMS) {
     try {
-      const result = await replaceArtwork(item)
-      results.push(result)
+      const blobUrl = item.publicPath
+        ? await fetchPublicImageToBlob(origin, item)
+        : await uploadGeneratedImageToBlob(
+            await generateOpenAiImageUrl(item.prompt),
+            item.title
+          )
+
+      const artworkId = await upsertArtwork(item, blobUrl)
+
+      results.push({
+        title: item.title,
+        success: true,
+        artworkId,
+        restoredFromApprovedFile: Boolean(item.publicPath),
+        blobUrl,
+      })
     } catch (error) {
       results.push({
         title: item.title,
@@ -202,7 +221,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Da Vinci top 10 quality replacement complete',
+    message: 'Da Vinci top 10 quality replacement retry complete',
     style: STYLE,
     count: ITEMS.length,
     results,
