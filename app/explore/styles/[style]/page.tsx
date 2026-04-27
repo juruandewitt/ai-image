@@ -5,7 +5,7 @@ import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import SafeImg from '@/components/safe-img'
 
-const PREVIEW_VERSION = 'v11'
+const PREVIEW_VERSION = 'v12'
 
 const FALLBACK_DATA_URL =
   'data:image/svg+xml;utf8,' +
@@ -271,7 +271,7 @@ type ArtworkRow = {
 
 function isCrossoverTitle(title: string, styleLabel: string) {
   return CROSSOVER_MARKERS.some((marker) => {
-    if (title === `${marker} in ${styleLabel} Style`) return true
+    if (title === `${marker} in ${styleLabel} Style`) return false
     return title.includes(marker)
   })
 }
