@@ -10,16 +10,16 @@ const ARTIST = 'Leonardo da Vinci'
 
 const ITEMS = [
   {
-    title: 'Annunciation in Da Vinci Style',
+    title: 'Saint John the Baptist in Da Vinci Style',
     sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Leonardo%20da%20Vinci%20-%20Annunciation%20-%20WGA12677.jpg',
-    prompt: 'Public-domain source image: Annunciation by Leonardo da Vinci',
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Leonardo%20da%20Vinci%20-%20Saint%20John%20the%20Baptist%20C2RMF%20retouched.jpg',
+    prompt: 'Public-domain source image: Saint John the Baptist by Leonardo da Vinci',
   },
   {
-    title: 'Adoration of the Magi in Da Vinci Style',
+    title: 'The Baptism of Christ in Da Vinci Style',
     sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Adoration%20of%20the%20Magi%20%28Leonardo%29.jpg',
-    prompt: 'Public-domain source image: Adoration of the Magi by Leonardo da Vinci',
+      'https://commons.wikimedia.org/wiki/Special:FilePath/The%20Baptism%20of%20Christ%20-%20Verrocchio%20and%20Leonardo.jpg',
+    prompt: 'Public-domain source image: The Baptism of Christ (Verrocchio with Leonardo contribution)',
   },
 ]
 
@@ -155,7 +155,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Da Vinci public-domain replacement mini-batch complete',
+    message: 'Da Vinci public-domain final batch complete',
     style: STYLE,
     count: ITEMS.length,
     results,
