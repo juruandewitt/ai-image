@@ -10,16 +10,10 @@ const ARTIST = 'Leonardo da Vinci'
 
 const ITEMS = [
   {
-    title: 'Saint John the Baptist in Da Vinci Style',
-    sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Leonardo%20da%20Vinci%20-%20Saint%20John%20the%20Baptist%20C2RMF%20retouched.jpg',
-    prompt: 'Public-domain source image: Saint John the Baptist by Leonardo da Vinci',
-  },
-  {
     title: 'The Baptism of Christ in Da Vinci Style',
     sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/The%20Baptism%20of%20Christ%20-%20Verrocchio%20and%20Leonardo.jpg',
-    prompt: 'Public-domain source image: The Baptism of Christ (Verrocchio with Leonardo contribution)',
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Andrea%20del%20Verrocchio%2C%20Leonardo%20da%20Vinci%20-%20Baptism%20of%20Christ%20-%20Uffizi.jpg',
+    prompt: 'Public-domain source image: The Baptism of Christ by Verrocchio with Leonardo da Vinci contribution',
   },
 ]
 
@@ -33,13 +27,7 @@ function safeFilePart(value: string) {
     .slice(0, 90)
 }
 
-function sleep(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms))
-}
-
 async function fetchWithRetry(url: string) {
-  let lastError = ''
-
   for (let attempt = 1; attempt <= 3; attempt++) {
     const response = await fetch(url, {
       cache: 'no-store',
@@ -51,22 +39,19 @@ async function fetchWithRetry(url: string) {
 
     if (response.ok) return response
 
-    lastError = `${response.status}`
-
     if (response.status === 429) {
-      await sleep(3000 * attempt)
+      await new Promise((resolve) => setTimeout(resolve, 3000 * attempt))
       continue
     }
 
     throw new Error(`Failed to fetch source image: ${response.status}`)
   }
 
-  throw new Error(`Failed to fetch source image after retries: ${lastError}`)
+  throw new Error('Failed to fetch source image after retries')
 }
 
 async function uploadSourceToBlob(item: (typeof ITEMS)[number]) {
   const response = await fetchWithRetry(item.sourceUrl)
-
   const contentType = response.headers.get('content-type') || 'image/jpeg'
   const arrayBuffer = await response.arrayBuffer()
 
@@ -81,7 +66,6 @@ async function uploadSourceToBlob(item: (typeof ITEMS)[number]) {
   )
 
   if (!blob.url) throw new Error(`Blob upload failed for ${item.title}`)
-
   return blob.url
 }
 
@@ -143,8 +127,6 @@ export async function GET() {
         artworkId,
         imageUrl,
       })
-
-      await sleep(3000)
     } catch (error) {
       results.push({
         title: item.title,
@@ -155,7 +137,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Da Vinci public-domain final batch complete',
+    message: 'Da Vinci Baptism of Christ replacement complete',
     style: STYLE,
     count: ITEMS.length,
     results,
