@@ -12,62 +12,38 @@ const ITEMS = [
   {
     title: 'Impression Sunrise in Monet Style',
     sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Claude%20Monet%20-%20Impression%2C%20Sunrise.jpg',
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Monet%20-%20Impression%2C%20Sunrise.jpg',
     prompt: 'Public-domain source image: Impression, Sunrise by Claude Monet',
-  },
-  {
-    title: 'Water Lilies in Monet Style',
-    sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Claude%20Monet%20-%20Water%20Lilies%20-%20Google%20Art%20Project.jpg',
-    prompt: 'Public-domain source image: Water Lilies by Claude Monet',
-  },
-  {
-    title: 'Japanese Bridge in Monet Style',
-    sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Claude%20Monet%20-%20The%20Japanese%20Footbridge.jpg',
-    prompt: 'Public-domain source image: Japanese Bridge by Claude Monet',
   },
   {
     title: 'Woman with a Parasol in Monet Style',
     sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Claude%20Monet%20-%20Woman%20with%20a%20Parasol.jpg',
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Claude%20Monet%20-%20Woman%20with%20a%20Parasol%20-%20Madame%20Monet%20and%20Her%20Son%20-%20Google%20Art%20Project.jpg',
     prompt: 'Public-domain source image: Woman with a Parasol by Claude Monet',
   },
   {
     title: 'Rouen Cathedral in Monet Style',
     sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Claude%20Monet%20-%20Rouen%20Cathedral%2C%20Facade.jpg',
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Claude%20Monet%20-%20Rouen%20Cathedral%2C%20Facade%20I.jpg',
     prompt: 'Public-domain source image: Rouen Cathedral by Claude Monet',
-  },
-  {
-    title: 'Parliament in Fog in Monet Style',
-    sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Claude%20Monet%20-%20Houses%20of%20Parliament%2C%20London.jpg',
-    prompt: 'Public-domain source image: Houses of Parliament by Claude Monet',
   },
   {
     title: 'Poppy Field in Monet Style',
     sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Claude%20Monet%20-%20Poppy%20Field.jpg',
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Claude%20Monet%20-%20Poppy%20Field%20-%20Google%20Art%20Project.jpg',
     prompt: 'Public-domain source image: Poppy Field by Claude Monet',
-  },
-  {
-    title: 'Haystacks in Monet Style',
-    sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Claude%20Monet%20-%20Haystacks.jpg',
-    prompt: 'Public-domain source image: Haystacks by Claude Monet',
   },
   {
     title: 'Garden at Giverny in Monet Style',
     sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Claude%20Monet%20-%20Garden%20at%20Giverny.jpg',
-    prompt: 'Public-domain source image: Garden at Giverny by Claude Monet',
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Monet%20-%20Monets%20Garten%20in%20Giverny.jpg',
+    prompt: 'Public-domain source image: The Artist’s Garden at Giverny by Claude Monet',
   },
   {
     title: 'Boats on the Seine in Monet Style',
     sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Claude%20Monet%20-%20Boats%20on%20the%20Seine.jpg',
-    prompt: 'Public-domain source image: Boats on the Seine by Claude Monet',
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Monet%20-%20Red%20Boats%20at%20Argenteuil.jpg',
+    prompt: 'Public-domain source image: Boats on the Seine / Red Boats at Argenteuil by Claude Monet',
   },
 ]
 
@@ -201,7 +177,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Monet public-domain top 10 replacement complete',
+    message: 'Monet remaining public-domain replacement complete',
     style: STYLE,
     count: ITEMS.length,
     results,
