@@ -13,51 +13,61 @@ const ITEMS = [
     title: 'Starry Night in Van Gogh Style',
     sourceUrl:
       'https://commons.wikimedia.org/wiki/Special:FilePath/The%20Starry%20Night.jpg',
+    prompt: 'Public-domain source image: The Starry Night by Vincent van Gogh',
   },
   {
     title: 'Sunflowers in Van Gogh Style',
     sourceUrl:
       'https://commons.wikimedia.org/wiki/Special:FilePath/Vincent%20van%20Gogh%20-%20Sunflowers%20%281889%29.jpg',
+    prompt: 'Public-domain source image: Sunflowers by Vincent van Gogh',
   },
   {
     title: 'Cafe Terrace at Night in Van Gogh Style',
     sourceUrl:
       'https://commons.wikimedia.org/wiki/Special:FilePath/Vincent%20van%20Gogh%20-%20Cafe%20Terrace%20at%20Night.jpg',
+    prompt: 'Public-domain source image: Cafe Terrace at Night by Vincent van Gogh',
   },
   {
     title: 'Bedroom in Arles in Van Gogh Style',
     sourceUrl:
       'https://commons.wikimedia.org/wiki/Special:FilePath/Vincent%20van%20Gogh%20-%20Bedroom%20in%20Arles.jpg',
+    prompt: 'Public-domain source image: Bedroom in Arles by Vincent van Gogh',
   },
   {
     title: 'Irises in Van Gogh Style',
     sourceUrl:
       'https://commons.wikimedia.org/wiki/Special:FilePath/Irises-Vincent%20van%20Gogh.jpg',
+    prompt: 'Public-domain source image: Irises by Vincent van Gogh',
   },
   {
     title: 'Wheatfield with Crows in Van Gogh Style',
     sourceUrl:
       'https://commons.wikimedia.org/wiki/Special:FilePath/Vincent%20van%20Gogh%20-%20Wheatfield%20with%20Crows.jpg',
+    prompt: 'Public-domain source image: Wheatfield with Crows by Vincent van Gogh',
   },
   {
-    title: 'Almond Blossom in Van Gogh Style',
+    title: 'Almond Blossoms in Van Gogh Style',
     sourceUrl:
       'https://commons.wikimedia.org/wiki/Special:FilePath/Vincent%20van%20Gogh%20-%20Almond%20Blossom.jpg',
+    prompt: 'Public-domain source image: Almond Blossom by Vincent van Gogh',
   },
   {
     title: 'Self Portrait in Van Gogh Style',
     sourceUrl:
       'https://commons.wikimedia.org/wiki/Special:FilePath/Vincent%20van%20Gogh%20-%20Self-Portrait%20-%20Google%20Art%20Project.jpg',
+    prompt: 'Public-domain source image: Self Portrait by Vincent van Gogh',
   },
   {
     title: 'The Night Cafe in Van Gogh Style',
     sourceUrl:
       'https://commons.wikimedia.org/wiki/Special:FilePath/Vincent%20van%20Gogh%20-%20The%20Night%20Cafe.jpg',
+    prompt: 'Public-domain source image: The Night Cafe by Vincent van Gogh',
   },
   {
     title: 'The Potato Eaters in Van Gogh Style',
     sourceUrl:
       'https://commons.wikimedia.org/wiki/Special:FilePath/The%20Potato%20Eaters.jpg',
+    prompt: 'Public-domain source image: The Potato Eaters by Vincent van Gogh',
   },
 ]
 
@@ -76,71 +86,93 @@ function sleep(ms: number) {
 }
 
 async function fetchWithRetry(url: string) {
+  let lastError = ''
+
   for (let attempt = 1; attempt <= 3; attempt++) {
-    const res = await fetch(url, {
+    const response = await fetch(url, {
       cache: 'no-store',
       redirect: 'follow',
       headers: {
-        'User-Agent': 'AI Image quality replacement bot',
+        'User-Agent': 'AI Image quality replacement bot; contact=juruandewitt@gmail.com',
       },
     })
 
-    if (res.ok) return res
+    if (response.ok) return response
 
-    if (res.status === 429) {
+    lastError = `${response.status}`
+
+    if (response.status === 429) {
       await sleep(3000 * attempt)
       continue
     }
 
-    throw new Error(`Fetch failed: ${res.status}`)
+    throw new Error(`Failed to fetch source image: ${response.status}`)
   }
 
-  throw new Error('Fetch failed after retries')
+  throw new Error(`Failed to fetch source image after retries: ${lastError}`)
 }
 
-async function upload(item: any) {
-  const res = await fetchWithRetry(item.sourceUrl)
-  const buffer = await res.arrayBuffer()
-  const type = res.headers.get('content-type') || 'image/jpeg'
+async function uploadSourceToBlob(item: (typeof ITEMS)[number]) {
+  const response = await fetchWithRetry(item.sourceUrl)
+  const contentType = response.headers.get('content-type') || 'image/jpeg'
+  const arrayBuffer = await response.arrayBuffer()
 
   const blob = await put(
-    `artworks/van-gogh/${safeFilePart(item.title)}`,
-    buffer,
-    { access: 'public', contentType: type }
+    `artworks/van-gogh/${safeFilePart(item.title)}-public-domain-source`,
+    arrayBuffer,
+    {
+      access: 'public',
+      addRandomSuffix: true,
+      contentType,
+    }
   )
 
+  if (!blob.url) throw new Error(`Blob upload failed for ${item.title}`)
   return blob.url
 }
 
-async function upsert(item: any, url: string) {
+async function upsertArtwork(item: (typeof ITEMS)[number], imageUrl: string) {
   const existing = await prisma.artwork.findFirst({
-    where: { title: item.title, style: STYLE as any },
+    where: {
+      title: item.title,
+      style: STYLE as any,
+    },
     select: { id: true },
   })
 
   const artwork = existing
     ? await prisma.artwork.update({
         where: { id: existing.id },
-        data: { thumbnail: url, artist: ARTIST, status: 'PUBLISHED' as any },
+        data: {
+          artist: ARTIST,
+          thumbnail: imageUrl,
+          status: 'PUBLISHED' as any,
+        },
+        select: { id: true },
       })
     : await prisma.artwork.create({
         data: {
           title: item.title,
           style: STYLE as any,
           artist: ARTIST,
-          thumbnail: url,
+          thumbnail: imageUrl,
           status: 'PUBLISHED' as any,
+          tags: [],
           price: 9.99,
         },
+        select: { id: true },
       })
 
   await prisma.asset.create({
     data: {
       artworkId: artwork.id,
-      originalUrl: url,
-      provider: 'public-domain',
+      originalUrl: imageUrl,
+      provider: 'public-domain-source-blob',
+      prompt: item.prompt,
     },
   })
+
+  return artwork.id
 }
 
 export async function GET() {
@@ -148,18 +180,30 @@ export async function GET() {
 
   for (const item of ITEMS) {
     try {
-      const url = await upload(item)
-      await upsert(item, url)
+      const imageUrl = await uploadSourceToBlob(item)
+      const artworkId = await upsertArtwork(item, imageUrl)
 
-      results.push({ title: item.title, success: true })
-      await sleep(2500)
-    } catch (e: any) {
-      results.push({ title: item.title, success: false, error: e.message })
+      results.push({
+        title: item.title,
+        success: true,
+        artworkId,
+        imageUrl,
+      })
+
+      await sleep(3000)
+    } catch (error) {
+      results.push({
+        title: item.title,
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
+      })
     }
   }
 
   return NextResponse.json({
-    message: 'Van Gogh Top 10 complete',
+    message: 'Van Gogh public-domain top 10 replacement complete',
+    style: STYLE,
+    count: ITEMS.length,
     results,
   })
 }
