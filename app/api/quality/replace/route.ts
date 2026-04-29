@@ -12,8 +12,8 @@ const ITEMS = [
   {
     title: 'Boats on the Seine in Monet Style',
     sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Claude%20Monet%20-%20Regatta%20at%20Argenteuil.jpg',
-    prompt: 'Public-domain source image: Regatta at Argenteuil / boats on the Seine by Claude Monet',
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Claude%20Monet%20-%20Voiliers%20sur%20la%20Seine%20%281874%29.jpg',
+    prompt: 'Public-domain source image: Sailboats on the Seine by Claude Monet',
   },
 ]
 
