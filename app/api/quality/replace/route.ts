@@ -10,63 +10,45 @@ const ARTIST = 'Vincent van Gogh'
 
 const ITEMS = [
   {
-    title: 'Starry Night in Van Gogh Style',
-    sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/The%20Starry%20Night.jpg',
-    prompt: 'Public-domain source image: The Starry Night by Vincent van Gogh',
-  },
-  {
     title: 'Sunflowers in Van Gogh Style',
     sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Vincent%20van%20Gogh%20-%20Sunflowers%20%281889%29.jpg',
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Vincent%20van%20Gogh%20-%20Sunflowers%20-%20VGM%20F458.jpg',
     prompt: 'Public-domain source image: Sunflowers by Vincent van Gogh',
   },
   {
     title: 'Cafe Terrace at Night in Van Gogh Style',
     sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Vincent%20van%20Gogh%20-%20Cafe%20Terrace%20at%20Night.jpg',
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Vincent%20van%20Gogh%20-%20Cafe%20Terrace%20at%20Night%20%281888%29.jpg',
     prompt: 'Public-domain source image: Cafe Terrace at Night by Vincent van Gogh',
   },
   {
     title: 'Bedroom in Arles in Van Gogh Style',
     sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Vincent%20van%20Gogh%20-%20Bedroom%20in%20Arles.jpg',
+      "https://commons.wikimedia.org/wiki/Special:FilePath/Vincent%20van%20Gogh%20-%20Van%20Gogh's%20Bedroom%20in%20Arles%20-%20Google%20Art%20Project.jpg",
     prompt: 'Public-domain source image: Bedroom in Arles by Vincent van Gogh',
-  },
-  {
-    title: 'Irises in Van Gogh Style',
-    sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Irises-Vincent%20van%20Gogh.jpg',
-    prompt: 'Public-domain source image: Irises by Vincent van Gogh',
   },
   {
     title: 'Wheatfield with Crows in Van Gogh Style',
     sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Vincent%20van%20Gogh%20-%20Wheatfield%20with%20Crows.jpg',
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Vincent%20van%20Gogh%20-%20Wheatfield%20with%20crows%20-%20Google%20Art%20Project.jpg',
     prompt: 'Public-domain source image: Wheatfield with Crows by Vincent van Gogh',
   },
   {
     title: 'Almond Blossoms in Van Gogh Style',
     sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Vincent%20van%20Gogh%20-%20Almond%20Blossom.jpg',
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Vincent%20van%20Gogh%20-%20Almond%20blossom%20-%20Google%20Art%20Project.jpg',
     prompt: 'Public-domain source image: Almond Blossom by Vincent van Gogh',
-  },
-  {
-    title: 'Self Portrait in Van Gogh Style',
-    sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Vincent%20van%20Gogh%20-%20Self-Portrait%20-%20Google%20Art%20Project.jpg',
-    prompt: 'Public-domain source image: Self Portrait by Vincent van Gogh',
   },
   {
     title: 'The Night Cafe in Van Gogh Style',
     sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Vincent%20van%20Gogh%20-%20The%20Night%20Cafe.jpg',
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Van%20Gogh%20The%20Night%20Cafe.jpg',
     prompt: 'Public-domain source image: The Night Cafe by Vincent van Gogh',
   },
   {
     title: 'The Potato Eaters in Van Gogh Style',
     sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/The%20Potato%20Eaters.jpg',
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Vincent%20van%20Gogh%20-%20The%20potato%20eaters%20-%20Google%20Art%20Project.jpg',
     prompt: 'Public-domain source image: The Potato Eaters by Vincent van Gogh',
   },
 ]
@@ -201,7 +183,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Van Gogh public-domain top 10 replacement complete',
+    message: 'Van Gogh remaining public-domain replacement complete',
     style: STYLE,
     count: ITEMS.length,
     results,
