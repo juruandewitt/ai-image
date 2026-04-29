@@ -10,63 +10,45 @@ const ARTIST = 'Edvard Munch'
 
 const ITEMS = [
   {
-    title: 'The Scream in Munch Style',
-    sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/The%20Scream.jpg',
-    prompt: 'Public-domain source image: The Scream by Edvard Munch',
-  },
-  {
     title: 'The Dance of Life in Munch Style',
     sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Edvard%20Munch%20-%20The%20Dance%20of%20Life.jpg',
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Edvard%20Munch%20-%20The%20dance%20of%20life%20%281899-1900%29.jpg',
     prompt: 'Public-domain source image: The Dance of Life by Edvard Munch',
-  },
-  {
-    title: 'Madonna in Munch Style',
-    sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Edvard%20Munch%20-%20Madonna.jpg',
-    prompt: 'Public-domain source image: Madonna by Edvard Munch',
   },
   {
     title: 'The Sick Child in Munch Style',
     sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Edvard%20Munch%20-%20The%20Sick%20Child.jpg',
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Edvard%20Munch%20-%20The%20Sick%20Child%20-%20MM.M.00052%20-%20Munch%20Museum.jpg',
     prompt: 'Public-domain source image: The Sick Child by Edvard Munch',
   },
   {
     title: 'Anxiety in Munch Style',
     sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Edvard%20Munch%20-%20Anxiety.jpg',
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Edvard%20Munch%20-%20Anxiety%20-%20Google%20Art%20Project.jpg',
     prompt: 'Public-domain source image: Anxiety by Edvard Munch',
   },
   {
     title: 'Ashes in Munch Style',
     sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Edvard%20Munch%20-%20Ashes.jpg',
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Edvard%20Munch%20-%20Ashes%20%281895%29.jpg',
     prompt: 'Public-domain source image: Ashes by Edvard Munch',
-  },
-  {
-    title: 'Vampire in Munch Style',
-    sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Edvard%20Munch%20-%20Vampire.jpg',
-    prompt: 'Public-domain source image: Vampire by Edvard Munch',
   },
   {
     title: 'Evening on Karl Johan Street in Munch Style',
     sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Edvard%20Munch%20-%20Evening%20on%20Karl%20Johan%20Street.jpg',
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Edvard%20Munch%20-%20Evening%20on%20Karl%20Johan%20Street%20%281892%29.jpg',
     prompt: 'Public-domain source image: Evening on Karl Johan Street by Edvard Munch',
   },
   {
     title: 'Girls on the Bridge in Munch Style',
     sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Edvard%20Munch%20-%20Girls%20on%20the%20Bridge.jpg',
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Edvard%20Munch%20-%20The%20Girls%20on%20the%20Bridge%20-%20NG.M.00844%20-%20National%20Museum%20of%20Art%2C%20Architecture%20and%20Design.jpg',
     prompt: 'Public-domain source image: Girls on the Bridge by Edvard Munch',
   },
   {
     title: 'Self Portrait with Cigarette in Munch Style',
     sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Edvard%20Munch%20-%20Self-Portrait%20with%20Cigarette.jpg',
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Munch%20SelfBurningCigarette.jpg',
     prompt: 'Public-domain source image: Self-Portrait with Cigarette by Edvard Munch',
   },
 ]
@@ -201,7 +183,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Munch public-domain top 10 replacement complete',
+    message: 'Munch remaining public-domain replacement complete',
     style: STYLE,
     count: ITEMS.length,
     results,
