@@ -12,13 +12,13 @@ const ITEMS = [
   {
     title: 'The Fortune Teller in Caravaggio Style',
     sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Caravaggio%20-%20The%20Fortune%20Teller%20-%20Google%20Art%20Project.jpg',
+      'https://commons.wikimedia.org/wiki/Special:FilePath/The%20Fortune%20Teller-Caravaggio%20%28Louvre%29.jpg',
     prompt: 'Public-domain source image: The Fortune Teller by Caravaggio',
   },
   {
     title: 'The Cardsharps in Caravaggio Style',
     sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/The%20Cardsharps-Caravaggio%20%281594%29.jpg',
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Caravaggio%20%28Michelangelo%20Merisi%29%20-%20The%20Cardsharps%20-%20Google%20Art%20Project.jpg',
     prompt: 'Public-domain source image: The Cardsharps by Caravaggio',
   },
 ]
