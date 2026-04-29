@@ -10,63 +10,9 @@ const ARTIST = 'Johannes Vermeer'
 
 const ITEMS = [
   {
-    title: 'Girl with a Pearl Earring in Vermeer Style',
-    sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/1665%20Girl%20with%20a%20Pearl%20Earring.jpg',
-    prompt: 'Public-domain source image: Girl with a Pearl Earring by Johannes Vermeer',
-  },
-  {
-    title: 'The Milkmaid in Vermeer Style',
-    sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Johannes%20Vermeer%20-%20Het%20melkmeisje%20-%20Google%20Art%20Project.jpg',
-    prompt: 'Public-domain source image: The Milkmaid by Johannes Vermeer',
-  },
-  {
-    title: 'View of Delft in Vermeer Style',
-    sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Vermeer-view-of-delft.jpg',
-    prompt: 'Public-domain source image: View of Delft by Johannes Vermeer',
-  },
-  {
-    title: 'The Art of Painting in Vermeer Style',
-    sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Jan%20Vermeer%20-%20The%20Art%20of%20Painting%20-%20Google%20Art%20Project.jpg',
-    prompt: 'Public-domain source image: The Art of Painting by Johannes Vermeer',
-  },
-  {
-    title: 'Woman in Blue Reading a Letter in Vermeer Style',
-    sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Johannes%20Vermeer%20-%20Woman%20in%20Blue%20Reading%20a%20Letter%20-%20WGA24657.jpg',
-    prompt: 'Public-domain source image: Woman in Blue Reading a Letter by Johannes Vermeer',
-  },
-  {
-    title: 'Girl Reading a Letter by an Open Window in Vermeer Style',
-    sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Johannes%20Vermeer%20-%20Girl%20Reading%20a%20Letter%20by%20an%20Open%20Window%20-%20Google%20Art%20Project.jpg',
-    prompt: 'Public-domain source image: Girl Reading a Letter by an Open Window by Johannes Vermeer',
-  },
-  {
-    title: 'Woman Holding a Balance in Vermeer Style',
-    sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Johannes%20Vermeer%20-%20Woman%20Holding%20a%20Balance%20-%20Google%20Art%20Project.jpg',
-    prompt: 'Public-domain source image: Woman Holding a Balance by Johannes Vermeer',
-  },
-  {
-    title: 'The Music Lesson in Vermeer Style',
-    sourceUrl:
-      "https://commons.wikimedia.org/wiki/Special:FilePath/Johannes%20Vermeer%20-%20Lady%20at%20the%20Virginal%20with%20a%20Gentleman%2C%20'The%20Music%20Lesson'%20-%20Google%20Art%20Project.jpg",
-    prompt: 'Public-domain source image: The Music Lesson by Johannes Vermeer',
-  },
-  {
-    title: 'Young Woman with a Water Pitcher in Vermeer Style',
-    sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Jan%20Vermeer%20van%20Delft%20018.jpg',
-    prompt: 'Public-domain source image: Young Woman with a Water Pitcher by Johannes Vermeer',
-  },
-  {
     title: 'Woman with a Lute in Vermeer Style',
     sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Johannes%20Vermeer%20-%20Woman%20with%20a%20Lute%20-%20WGA24656.jpg',
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Johannes%20Vermeer%20-%20A%20Lady%20with%20a%20Lute%20-%20Google%20Art%20Project.jpg',
     prompt: 'Public-domain source image: Woman with a Lute by Johannes Vermeer',
   },
 ]
@@ -81,13 +27,7 @@ function safeFilePart(value: string) {
     .slice(0, 90)
 }
 
-function sleep(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms))
-}
-
 async function fetchWithRetry(url: string) {
-  let lastError = ''
-
   for (let attempt = 1; attempt <= 3; attempt++) {
     const response = await fetch(url, {
       cache: 'no-store',
@@ -99,17 +39,15 @@ async function fetchWithRetry(url: string) {
 
     if (response.ok) return response
 
-    lastError = `${response.status}`
-
     if (response.status === 429) {
-      await sleep(3000 * attempt)
+      await new Promise((resolve) => setTimeout(resolve, 3000 * attempt))
       continue
     }
 
     throw new Error(`Failed to fetch source image: ${response.status}`)
   }
 
-  throw new Error(`Failed to fetch source image after retries: ${lastError}`)
+  throw new Error('Failed to fetch source image after retries')
 }
 
 async function uploadSourceToBlob(item: (typeof ITEMS)[number]) {
@@ -189,8 +127,6 @@ export async function GET() {
         artworkId,
         imageUrl,
       })
-
-      await sleep(3000)
     } catch (error) {
       results.push({
         title: item.title,
@@ -201,7 +137,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Vermeer public-domain top 10 replacement complete',
+    message: 'Vermeer Woman with a Lute replacement complete',
     style: STYLE,
     count: ITEMS.length,
     results,
