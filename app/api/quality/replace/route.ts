@@ -10,63 +10,15 @@ const ARTIST = 'Caravaggio'
 
 const ITEMS = [
   {
-    title: 'The Calling of Saint Matthew in Caravaggio Style',
-    sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Caravaggio%20%E2%80%94%20The%20Calling%20of%20Saint%20Matthew.jpg',
-    prompt: 'Public-domain source image: The Calling of Saint Matthew by Caravaggio',
-  },
-  {
-    title: 'The Supper at Emmaus in Caravaggio Style',
-    sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Caravaggio%20%E2%80%94%20Supper%20at%20Emmaus.jpg',
-    prompt: 'Public-domain source image: Supper at Emmaus by Caravaggio',
-  },
-  {
-    title: 'The Taking of Christ in Caravaggio Style',
-    sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/The%20Taking%20of%20Christ-Caravaggio%20%28c.1602%29.jpg',
-    prompt: 'Public-domain source image: The Taking of Christ by Caravaggio',
-  },
-  {
-    title: 'Bacchus in Caravaggio Style',
-    sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Bacchus%20by%20Caravaggio%201.jpg',
-    prompt: 'Public-domain source image: Bacchus by Caravaggio',
-  },
-  {
-    title: 'Boy with a Basket of Fruit in Caravaggio Style',
-    sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Boy%20with%20a%20Basket%20of%20Fruit-Caravaggio%20%281593%29.jpg',
-    prompt: 'Public-domain source image: Boy with a Basket of Fruit by Caravaggio',
-  },
-  {
-    title: 'The Musicians in Caravaggio Style',
-    sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Caravaggio%20-%20I%20Musici.jpg',
-    prompt: 'Public-domain source image: The Musicians by Caravaggio',
-  },
-  {
-    title: 'Medusa in Caravaggio Style',
-    sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Caravaggio%20-%20Medusa%20-%20Google%20Art%20Project.jpg',
-    prompt: 'Public-domain source image: Medusa by Caravaggio',
-  },
-  {
-    title: 'Saint Jerome Writing in Caravaggio Style',
-    sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Saint%20Jerome%20Writing-Caravaggio%20%281605-6%29.jpg',
-    prompt: 'Public-domain source image: Saint Jerome Writing by Caravaggio',
-  },
-  {
     title: 'The Fortune Teller in Caravaggio Style',
     sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Caravaggio%20-%20The%20Fortune%20Teller.jpg',
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Caravaggio%20-%20The%20Fortune%20Teller%20-%20Google%20Art%20Project.jpg',
     prompt: 'Public-domain source image: The Fortune Teller by Caravaggio',
   },
   {
     title: 'The Cardsharps in Caravaggio Style',
     sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Caravaggio%20-%20The%20Cardsharps.jpg',
+      'https://commons.wikimedia.org/wiki/Special:FilePath/The%20Cardsharps-Caravaggio%20%281594%29.jpg',
     prompt: 'Public-domain source image: The Cardsharps by Caravaggio',
   },
 ]
@@ -81,13 +33,7 @@ function safeFilePart(value: string) {
     .slice(0, 90)
 }
 
-function sleep(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms))
-}
-
 async function fetchWithRetry(url: string) {
-  let lastError = ''
-
   for (let attempt = 1; attempt <= 3; attempt++) {
     const response = await fetch(url, {
       cache: 'no-store',
@@ -99,17 +45,15 @@ async function fetchWithRetry(url: string) {
 
     if (response.ok) return response
 
-    lastError = `${response.status}`
-
     if (response.status === 429) {
-      await sleep(3000 * attempt)
+      await new Promise((resolve) => setTimeout(resolve, 3000 * attempt))
       continue
     }
 
     throw new Error(`Failed to fetch source image: ${response.status}`)
   }
 
-  throw new Error(`Failed to fetch source image after retries: ${lastError}`)
+  throw new Error('Failed to fetch source image after retries')
 }
 
 async function uploadSourceToBlob(item: (typeof ITEMS)[number]) {
@@ -189,8 +133,6 @@ export async function GET() {
         artworkId,
         imageUrl,
       })
-
-      await sleep(3000)
     } catch (error) {
       results.push({
         title: item.title,
@@ -201,7 +143,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Caravaggio public-domain top 10 replacement complete',
+    message: 'Caravaggio final public-domain replacement complete',
     style: STYLE,
     count: ITEMS.length,
     results,
