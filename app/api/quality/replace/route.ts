@@ -12,14 +12,14 @@ const ITEMS = [
   {
     title: 'Prophet on Ceiling Fresco in Michelangelo Style',
     sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Michelangelo%2C%20sistine%20chapel%2C%20prophet%20isaiah.jpg',
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Michelangelo%2C%20profeti%2C%20Isaiah%2001.jpg',
     prompt: 'Public-domain source image: Prophet Isaiah ceiling fresco by Michelangelo',
   },
   {
     title: 'Renaissance Vault Fresco in Michelangelo Style',
     sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Michelangelo%2C%20sistine%20chapel%2C%20creation%20of%20the%20sun%20and%20moon%2001.jpg',
-    prompt: 'Public-domain source image: Sistine Chapel vault fresco by Michelangelo',
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Michelangelo%2C%20Creation%20of%20the%20Sun%2C%20Moon%2C%20and%20Plants%2001.jpg',
+    prompt: 'Public-domain source image: Creation of the Sun, Moon and Planets ceiling fresco by Michelangelo',
   },
 ]
 
