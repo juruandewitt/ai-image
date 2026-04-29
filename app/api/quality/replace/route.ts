@@ -5,51 +5,69 @@ import { prisma } from '@/lib/prisma'
 export const dynamic = 'force-dynamic'
 export const maxDuration = 300
 
-const STYLE = 'VAN_GOGH'
-const ARTIST = 'Vincent van Gogh'
+const STYLE = 'MONET'
+const ARTIST = 'Claude Monet'
 
 const ITEMS = [
   {
-    title: 'Sunflowers in Van Gogh Style',
+    title: 'Impression Sunrise in Monet Style',
     sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Vincent%20van%20Gogh%20-%20Sunflowers%20-%20VGM%20F458.jpg',
-    prompt: 'Public-domain source image: Sunflowers by Vincent van Gogh',
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Claude%20Monet%20-%20Impression%2C%20Sunrise.jpg',
+    prompt: 'Public-domain source image: Impression, Sunrise by Claude Monet',
   },
   {
-    title: 'Cafe Terrace at Night in Van Gogh Style',
+    title: 'Water Lilies in Monet Style',
     sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Vincent%20van%20Gogh%20-%20Cafe%20Terrace%20at%20Night%20%281888%29.jpg',
-    prompt: 'Public-domain source image: Cafe Terrace at Night by Vincent van Gogh',
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Claude%20Monet%20-%20Water%20Lilies%20-%20Google%20Art%20Project.jpg',
+    prompt: 'Public-domain source image: Water Lilies by Claude Monet',
   },
   {
-    title: 'Bedroom in Arles in Van Gogh Style',
+    title: 'Japanese Bridge in Monet Style',
     sourceUrl:
-      "https://commons.wikimedia.org/wiki/Special:FilePath/Vincent%20van%20Gogh%20-%20Van%20Gogh's%20Bedroom%20in%20Arles%20-%20Google%20Art%20Project.jpg",
-    prompt: 'Public-domain source image: Bedroom in Arles by Vincent van Gogh',
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Claude%20Monet%20-%20The%20Japanese%20Footbridge.jpg',
+    prompt: 'Public-domain source image: Japanese Bridge by Claude Monet',
   },
   {
-    title: 'Wheatfield with Crows in Van Gogh Style',
+    title: 'Woman with a Parasol in Monet Style',
     sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Vincent%20van%20Gogh%20-%20Wheatfield%20with%20crows%20-%20Google%20Art%20Project.jpg',
-    prompt: 'Public-domain source image: Wheatfield with Crows by Vincent van Gogh',
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Claude%20Monet%20-%20Woman%20with%20a%20Parasol.jpg',
+    prompt: 'Public-domain source image: Woman with a Parasol by Claude Monet',
   },
   {
-    title: 'Almond Blossoms in Van Gogh Style',
+    title: 'Rouen Cathedral in Monet Style',
     sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Vincent%20van%20Gogh%20-%20Almond%20blossom%20-%20Google%20Art%20Project.jpg',
-    prompt: 'Public-domain source image: Almond Blossom by Vincent van Gogh',
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Claude%20Monet%20-%20Rouen%20Cathedral%2C%20Facade.jpg',
+    prompt: 'Public-domain source image: Rouen Cathedral by Claude Monet',
   },
   {
-    title: 'The Night Cafe in Van Gogh Style',
+    title: 'Parliament in Fog in Monet Style',
     sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Van%20Gogh%20The%20Night%20Cafe.jpg',
-    prompt: 'Public-domain source image: The Night Cafe by Vincent van Gogh',
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Claude%20Monet%20-%20Houses%20of%20Parliament%2C%20London.jpg',
+    prompt: 'Public-domain source image: Houses of Parliament by Claude Monet',
   },
   {
-    title: 'The Potato Eaters in Van Gogh Style',
+    title: 'Poppy Field in Monet Style',
     sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Vincent%20van%20Gogh%20-%20The%20potato%20eaters%20-%20Google%20Art%20Project.jpg',
-    prompt: 'Public-domain source image: The Potato Eaters by Vincent van Gogh',
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Claude%20Monet%20-%20Poppy%20Field.jpg',
+    prompt: 'Public-domain source image: Poppy Field by Claude Monet',
+  },
+  {
+    title: 'Haystacks in Monet Style',
+    sourceUrl:
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Claude%20Monet%20-%20Haystacks.jpg',
+    prompt: 'Public-domain source image: Haystacks by Claude Monet',
+  },
+  {
+    title: 'Garden at Giverny in Monet Style',
+    sourceUrl:
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Claude%20Monet%20-%20Garden%20at%20Giverny.jpg',
+    prompt: 'Public-domain source image: Garden at Giverny by Claude Monet',
+  },
+  {
+    title: 'Boats on the Seine in Monet Style',
+    sourceUrl:
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Claude%20Monet%20-%20Boats%20on%20the%20Seine.jpg',
+    prompt: 'Public-domain source image: Boats on the Seine by Claude Monet',
   },
 ]
 
@@ -100,7 +118,7 @@ async function uploadSourceToBlob(item: (typeof ITEMS)[number]) {
   const arrayBuffer = await response.arrayBuffer()
 
   const blob = await put(
-    `artworks/van-gogh/${safeFilePart(item.title)}-public-domain-source`,
+    `artworks/monet/${safeFilePart(item.title)}-public-domain-source`,
     arrayBuffer,
     {
       access: 'public',
@@ -183,7 +201,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Van Gogh remaining public-domain replacement complete',
+    message: 'Monet public-domain top 10 replacement complete',
     style: STYLE,
     count: ITEMS.length,
     results,
