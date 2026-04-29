@@ -5,59 +5,59 @@ import { prisma } from '@/lib/prisma'
 export const dynamic = 'force-dynamic'
 export const maxDuration = 300
 
-const STYLE = 'POLLOCK'
-const ARTIST = 'Jackson Pollock'
+const STYLE = 'DALI'
+const ARTIST = 'Salvador Dalí'
 
 const ITEMS = [
   {
-    title: 'Autumn Rhythm in Pollock Style',
+    title: 'Persistence of Memory Inspired',
     prompt:
-      'Large abstract expressionist drip painting inspired by Jackson Pollock action painting, dense rhythmic web of black, white, tan, and earthy brown enamel-like paint lines over raw canvas, layered splatters, poured paint trails, physical paint texture, chaotic but balanced all-over composition, no figures, no objects, no text.',
+      'surreal dreamlike landscape inspired by Salvador Dali, melting clock forms draped over objects, vast empty desert, hyper realistic lighting, long shadows, highly detailed, no text',
   },
   {
-    title: 'Lavender Mist in Pollock Style',
+    title: 'Surreal Melting Landscape',
     prompt:
-      'Abstract expressionist all-over drip painting inspired by Jackson Pollock, pale lavender, smoky gray, white, black, and muted beige paint splatters, fine tangled skeins of poured paint, atmospheric layered mist effect, real wet paint texture, no figures, no objects, no text.',
+      'melting organic shapes in a barren surreal landscape, dali style dream logic, soft distorted forms, hyper realistic rendering, cinematic lighting',
   },
   {
-    title: 'Blue Poles in Pollock Style',
+    title: 'Dreamlike Desert Clocks',
     prompt:
-      'Abstract expressionist drip painting inspired by Jackson Pollock with strong vertical blue pole-like accents, chaotic networks of black, white, orange, yellow, and blue poured paint, energetic layered splatter, raw canvas texture, gallery-grade action painting, no figures, no objects, no text.',
+      'surreal desert scene with melting clocks and distorted time objects, ultra detailed, hyper realistic, dali inspired, dramatic shadows',
   },
   {
-    title: 'Convergence in Pollock Style',
+    title: 'Floating Objects Composition',
     prompt:
-      'High-energy abstract expressionist drip painting inspired by Jackson Pollock, dense multicolored poured paint lines in red, yellow, black, white, blue, and green, explosive all-over composition, layered enamel splatter texture, dynamic motion, no figures, no objects, no text.',
+      'objects floating in impossible space, surreal composition, hyper realism, dali style dream imagery, strong contrast lighting',
   },
   {
-    title: 'Mural in Pollock Style',
+    title: 'Impossible Architecture Scene',
     prompt:
-      'Large horizontal abstract expressionist painting inspired by Jackson Pollock mural-scale action painting, sweeping rhythmic vertical and diagonal strokes, black and white structure with muted red, yellow, blue, and earthy tones, energetic all-over movement, layered paint texture, no figures, no objects, no text.',
+      'surreal architecture defying physics, stretched and distorted buildings, dali style, highly detailed, dramatic perspective',
   },
   {
-    title: 'Drip Composition in Pollock Style',
+    title: 'Surreal Reflections Study',
     prompt:
-      'Pure Jackson Pollock inspired drip composition, thick and thin poured paint lines, black white tan and ochre splatters, dense overlapping network, raw physical enamel paint texture on canvas, balanced chaos, no recognizable objects, no figures, no text.',
+      'mirror-like reflections in surreal environment, dream logic, hyper realistic textures, dali inspired composition',
   },
   {
-    title: 'Action Painting in Pollock Style',
+    title: 'Distorted Reality Composition',
     prompt:
-      'Authentic abstract expressionist action painting inspired by Jackson Pollock, aggressive thrown and poured paint, rapid gestures, dense layered splatter, black white red yellow and blue accents, tactile paint buildup, no figures, no objects, no text.',
+      'warped and stretched reality, surreal figures and objects, dali style, highly detailed, cinematic lighting',
   },
   {
-    title: 'Splatter Field in Pollock Style',
+    title: 'Time Collapse Landscape',
     prompt:
-      'All-over abstract splatter field inspired by Jackson Pollock, fine webs of black and white paint over warm beige canvas, scattered red and yellow accents, realistic fluid drips and splashes, high-detail paint texture, no figures, no objects, no text.',
+      'time distortion visualized as melting structures and flowing forms, surreal landscape, dali inspired, hyper realistic',
   },
   {
-    title: 'Black and White Energy in Pollock Style',
+    title: 'Hyperreal Dream Sequence',
     prompt:
-      'Minimal black and white abstract expressionist drip painting inspired by Jackson Pollock, dense energetic web of poured black enamel over white and raw canvas, splatters and looping trails, intense motion and texture, no figures, no objects, no text.',
+      'ultra realistic dreamlike scene with impossible elements, surrealism, dali inspired, crisp detail, dramatic lighting',
   },
   {
-    title: 'Dynamic Color Field in Pollock Style',
+    title: 'Symbolic Surreal Study',
     prompt:
-      'Dynamic abstract expressionist color field inspired by Jackson Pollock, layered poured paint lines in black, white, blue, red, yellow, and tan, chaotic all-over balance, realistic splatter physics, wet enamel texture, no figures, no objects, no text.',
+      'symbolic surreal imagery with abstract meaning, dali inspired composition, highly detailed, clean background, no text',
   },
 ]
 
@@ -71,103 +71,54 @@ function safeFilePart(value: string) {
     .slice(0, 90)
 }
 
-async function generateOpenAiImageUrl(prompt: string) {
-  const apiKey = process.env.OPENAI_API_KEY
-  if (!apiKey) throw new Error('Missing OPENAI_API_KEY')
-
-  const response = await fetch('https://api.openai.com/v1/images/generations', {
+async function generateImage(prompt: string) {
+  const res = await fetch('https://api.openai.com/v1/images/generations', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${apiKey}`,
+      Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
     },
     body: JSON.stringify({
       model: 'dall-e-3',
       prompt,
       size: '1024x1024',
-      quality: 'standard',
-      response_format: 'url',
-      n: 1,
     }),
-    cache: 'no-store',
   })
 
-  if (!response.ok) {
-    const text = await response.text()
-    throw new Error(`OpenAI image generation failed (${response.status}): ${text}`)
-  }
-
-  const data = await response.json()
-  const imageUrl = data?.data?.[0]?.url
-
-  if (!imageUrl || typeof imageUrl !== 'string') {
-    throw new Error('No image URL returned from OpenAI')
-  }
-
-  return imageUrl
+  const data = await res.json()
+  return data.data[0].url
 }
 
-async function uploadGeneratedImageToBlob(openAiUrl: string, title: string) {
-  const imageResponse = await fetch(openAiUrl, { cache: 'no-store' })
-
-  if (!imageResponse.ok) {
-    throw new Error(`Failed to download generated image: ${imageResponse.status}`)
-  }
-
-  const contentType = imageResponse.headers.get('content-type') || 'image/png'
-  const arrayBuffer = await imageResponse.arrayBuffer()
+async function upload(url: string, title: string) {
+  const img = await fetch(url)
+  const buffer = await img.arrayBuffer()
 
   const blob = await put(
-    `artworks/pollock/${safeFilePart(title)}-quality-generated.png`,
-    arrayBuffer,
-    {
-      access: 'public',
-      addRandomSuffix: true,
-      contentType,
-    }
+    `artworks/dali/${safeFilePart(title)}`,
+    buffer,
+    { access: 'public' }
   )
 
-  if (!blob.url) throw new Error(`Blob upload failed for ${title}`)
   return blob.url
 }
 
-async function upsertArtwork(item: (typeof ITEMS)[number], imageUrl: string) {
-  const existing = await prisma.artwork.findFirst({
-    where: {
+async function upsert(item: any, imageUrl: string) {
+  const artwork = await prisma.artwork.create({
+    data: {
       title: item.title,
       style: STYLE as any,
+      artist: ARTIST,
+      thumbnail: imageUrl,
+      status: 'PUBLISHED' as any,
+      price: 9.99,
     },
-    select: { id: true },
   })
-
-  const artwork = existing
-    ? await prisma.artwork.update({
-        where: { id: existing.id },
-        data: {
-          artist: ARTIST,
-          thumbnail: imageUrl,
-          status: 'PUBLISHED' as any,
-        },
-        select: { id: true },
-      })
-    : await prisma.artwork.create({
-        data: {
-          title: item.title,
-          style: STYLE as any,
-          artist: ARTIST,
-          thumbnail: imageUrl,
-          status: 'PUBLISHED' as any,
-          tags: [],
-          price: 9.99,
-        },
-        select: { id: true },
-      })
 
   await prisma.asset.create({
     data: {
       artworkId: artwork.id,
       originalUrl: imageUrl,
-      provider: 'ai-quality-generated-blob',
+      provider: 'ai-generated',
       prompt: item.prompt,
     },
   })
@@ -180,29 +131,18 @@ export async function GET() {
 
   for (const item of ITEMS) {
     try {
-      const openAiUrl = await generateOpenAiImageUrl(item.prompt)
-      const imageUrl = await uploadGeneratedImageToBlob(openAiUrl, item.title)
-      const artworkId = await upsertArtwork(item, imageUrl)
+      const aiUrl = await generateImage(item.prompt)
+      const blobUrl = await upload(aiUrl, item.title)
+      const id = await upsert(item, blobUrl)
 
-      results.push({
-        title: item.title,
-        success: true,
-        artworkId,
-        imageUrl,
-      })
-    } catch (error) {
-      results.push({
-        title: item.title,
-        success: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
-      })
+      results.push({ title: item.title, success: true, artworkId: id })
+    } catch (e) {
+      results.push({ title: item.title, success: false })
     }
   }
 
   return NextResponse.json({
-    message: 'Pollock generated top 10 replacement complete',
-    style: STYLE,
-    count: ITEMS.length,
+    message: 'Dali set created',
     results,
   })
 }
