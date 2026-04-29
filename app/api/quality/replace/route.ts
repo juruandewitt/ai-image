@@ -5,69 +5,69 @@ import { prisma } from '@/lib/prisma'
 export const dynamic = 'force-dynamic'
 export const maxDuration = 300
 
-const STYLE = 'REMBRANDT'
-const ARTIST = 'Rembrandt'
+const STYLE = 'CARAVAGGIO'
+const ARTIST = 'Caravaggio'
 
 const ITEMS = [
   {
-    title: 'The Night Watch in Rembrandt Style',
+    title: 'The Calling of Saint Matthew in Caravaggio Style',
     sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/The%20Night%20Watch%20-%20HD.jpg',
-    prompt: 'Public-domain source image: The Night Watch by Rembrandt',
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Caravaggio%20%E2%80%94%20The%20Calling%20of%20Saint%20Matthew.jpg',
+    prompt: 'Public-domain source image: The Calling of Saint Matthew by Caravaggio',
   },
   {
-    title: 'The Return of the Prodigal Son in Rembrandt Style',
+    title: 'The Supper at Emmaus in Caravaggio Style',
     sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Rembrandt%20Harmensz%20van%20Rijn%20-%20Return%20of%20the%20Prodigal%20Son%20-%20Google%20Art%20Project.jpg',
-    prompt: 'Public-domain source image: The Return of the Prodigal Son by Rembrandt',
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Caravaggio%20%E2%80%94%20Supper%20at%20Emmaus.jpg',
+    prompt: 'Public-domain source image: Supper at Emmaus by Caravaggio',
   },
   {
-    title: 'The Anatomy Lesson in Rembrandt Style',
+    title: 'The Taking of Christ in Caravaggio Style',
     sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Rembrandt%20-%20The%20Anatomy%20Lesson%20of%20Dr.%20Nicolaes%20Tulp.jpg',
-    prompt: 'Public-domain source image: The Anatomy Lesson of Dr Nicolaes Tulp by Rembrandt',
+      'https://commons.wikimedia.org/wiki/Special:FilePath/The%20Taking%20of%20Christ-Caravaggio%20%28c.1602%29.jpg',
+    prompt: 'Public-domain source image: The Taking of Christ by Caravaggio',
   },
   {
-    title: 'The Jewish Bride in Rembrandt Style',
+    title: 'Bacchus in Caravaggio Style',
     sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Rembrandt%20-%20The%20Jewish%20Bride%20-%20WGA19158.jpg',
-    prompt: 'Public-domain source image: The Jewish Bride by Rembrandt',
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Bacchus%20by%20Caravaggio%201.jpg',
+    prompt: 'Public-domain source image: Bacchus by Caravaggio',
   },
   {
-    title: 'Self Portrait in Rembrandt Style',
+    title: 'Boy with a Basket of Fruit in Caravaggio Style',
     sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Rembrandt%20-%20Zelfportret%20-%20Google%20Art%20Project.jpg',
-    prompt: 'Public-domain source image: Self Portrait by Rembrandt',
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Boy%20with%20a%20Basket%20of%20Fruit-Caravaggio%20%281593%29.jpg',
+    prompt: 'Public-domain source image: Boy with a Basket of Fruit by Caravaggio',
   },
   {
-    title: 'Self Portrait with Two Circles in Rembrandt Style',
+    title: 'The Musicians in Caravaggio Style',
     sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Rembrandt%20Self%20Portrait%20with%20Two%20Circles.jpg',
-    prompt: 'Public-domain source image: Self Portrait with Two Circles by Rembrandt',
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Caravaggio%20-%20I%20Musici.jpg',
+    prompt: 'Public-domain source image: The Musicians by Caravaggio',
   },
   {
-    title: 'The Storm on the Sea of Galilee in Rembrandt Style',
+    title: 'Medusa in Caravaggio Style',
     sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Rembrandt%20Christ%20in%20the%20Storm%20on%20the%20Lake%20of%20Galilee.jpg',
-    prompt: 'Public-domain source image: The Storm on the Sea of Galilee by Rembrandt',
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Caravaggio%20-%20Medusa%20-%20Google%20Art%20Project.jpg',
+    prompt: 'Public-domain source image: Medusa by Caravaggio',
   },
   {
-    title: 'The Syndics in Rembrandt Style',
+    title: 'Saint Jerome Writing in Caravaggio Style',
     sourceUrl:
-      "https://commons.wikimedia.org/wiki/Special:FilePath/Rembrandt%20-%20De%20Staalmeesters%20-%20The%20Syndics%20of%20the%20Clothmaker's%20Guild.jpg",
-    prompt: 'Public-domain source image: The Syndics by Rembrandt',
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Saint%20Jerome%20Writing-Caravaggio%20%281605-6%29.jpg',
+    prompt: 'Public-domain source image: Saint Jerome Writing by Caravaggio',
   },
   {
-    title: 'Scholar at Candlelight in Rembrandt Style',
+    title: 'The Fortune Teller in Caravaggio Style',
     sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Rembrandt%20-%20The%20Philosopher%20in%20Meditation.jpg',
-    prompt: 'Public-domain source image: Philosopher in Meditation by Rembrandt, used for Scholar at Candlelight',
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Caravaggio%20-%20The%20Fortune%20Teller.jpg',
+    prompt: 'Public-domain source image: The Fortune Teller by Caravaggio',
   },
   {
-    title: 'Old Man in Shadow in Rembrandt Style',
+    title: 'The Cardsharps in Caravaggio Style',
     sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Rembrandt%20-%20Self-Portrait%20-%20WGA19221.jpg',
-    prompt: 'Public-domain source image: Rembrandt old-master portrait source used for Old Man in Shadow',
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Caravaggio%20-%20The%20Cardsharps.jpg',
+    prompt: 'Public-domain source image: The Cardsharps by Caravaggio',
   },
 ]
 
@@ -118,7 +118,7 @@ async function uploadSourceToBlob(item: (typeof ITEMS)[number]) {
   const arrayBuffer = await response.arrayBuffer()
 
   const blob = await put(
-    `artworks/rembrandt/${safeFilePart(item.title)}-public-domain-source`,
+    `artworks/caravaggio/${safeFilePart(item.title)}-public-domain-source`,
     arrayBuffer,
     {
       access: 'public',
@@ -201,7 +201,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Rembrandt public-domain top 10 replacement complete',
+    message: 'Caravaggio public-domain top 10 replacement complete',
     style: STYLE,
     count: ITEMS.length,
     results,
