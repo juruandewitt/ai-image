@@ -10,40 +10,10 @@ const ARTIST = 'Claude Monet'
 
 const ITEMS = [
   {
-    title: 'Impression Sunrise in Monet Style',
-    sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Monet%20-%20Impression%2C%20Sunrise.jpg',
-    prompt: 'Public-domain source image: Impression, Sunrise by Claude Monet',
-  },
-  {
-    title: 'Woman with a Parasol in Monet Style',
-    sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Claude%20Monet%20-%20Woman%20with%20a%20Parasol%20-%20Madame%20Monet%20and%20Her%20Son%20-%20Google%20Art%20Project.jpg',
-    prompt: 'Public-domain source image: Woman with a Parasol by Claude Monet',
-  },
-  {
-    title: 'Rouen Cathedral in Monet Style',
-    sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Claude%20Monet%20-%20Rouen%20Cathedral%2C%20Facade%20I.jpg',
-    prompt: 'Public-domain source image: Rouen Cathedral by Claude Monet',
-  },
-  {
-    title: 'Poppy Field in Monet Style',
-    sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Claude%20Monet%20-%20Poppy%20Field%20-%20Google%20Art%20Project.jpg',
-    prompt: 'Public-domain source image: Poppy Field by Claude Monet',
-  },
-  {
-    title: 'Garden at Giverny in Monet Style',
-    sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Monet%20-%20Monets%20Garten%20in%20Giverny.jpg',
-    prompt: 'Public-domain source image: The Artist’s Garden at Giverny by Claude Monet',
-  },
-  {
     title: 'Boats on the Seine in Monet Style',
     sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Monet%20-%20Red%20Boats%20at%20Argenteuil.jpg',
-    prompt: 'Public-domain source image: Boats on the Seine / Red Boats at Argenteuil by Claude Monet',
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Claude%20Monet%20-%20Regatta%20at%20Argenteuil.jpg',
+    prompt: 'Public-domain source image: Regatta at Argenteuil / boats on the Seine by Claude Monet',
   },
 ]
 
@@ -57,13 +27,7 @@ function safeFilePart(value: string) {
     .slice(0, 90)
 }
 
-function sleep(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms))
-}
-
 async function fetchWithRetry(url: string) {
-  let lastError = ''
-
   for (let attempt = 1; attempt <= 3; attempt++) {
     const response = await fetch(url, {
       cache: 'no-store',
@@ -75,17 +39,15 @@ async function fetchWithRetry(url: string) {
 
     if (response.ok) return response
 
-    lastError = `${response.status}`
-
     if (response.status === 429) {
-      await sleep(3000 * attempt)
+      await new Promise((resolve) => setTimeout(resolve, 3000 * attempt))
       continue
     }
 
     throw new Error(`Failed to fetch source image: ${response.status}`)
   }
 
-  throw new Error(`Failed to fetch source image after retries: ${lastError}`)
+  throw new Error('Failed to fetch source image after retries')
 }
 
 async function uploadSourceToBlob(item: (typeof ITEMS)[number]) {
@@ -165,8 +127,6 @@ export async function GET() {
         artworkId,
         imageUrl,
       })
-
-      await sleep(3000)
     } catch (error) {
       results.push({
         title: item.title,
@@ -177,7 +137,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Monet remaining public-domain replacement complete',
+    message: 'Monet Boats on the Seine replacement complete',
     style: STYLE,
     count: ITEMS.length,
     results,
