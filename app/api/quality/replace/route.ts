@@ -1,124 +1,67 @@
 import { NextResponse } from 'next/server'
-import { put } from '@vercel/blob'
 import { prisma } from '@/lib/prisma'
 
 export const dynamic = 'force-dynamic'
-export const maxDuration = 300
 
-const STYLE = 'MUNCH'
-const ARTIST = 'Edvard Munch'
+const STYLE = 'POLLOCK'
+const ARTIST = 'Jackson Pollock'
 
 const ITEMS = [
   {
-    title: 'The Dance of Life in Munch Style',
-    sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Edvard%20Munch%20-%20The%20dance%20of%20life%20%281899-1900%29.jpg',
-    prompt: 'Public-domain source image: The Dance of Life by Edvard Munch',
+    title: 'Number 1A Inspired Drip Composition',
+    prompt:
+      'authentic jackson pollock drip painting, chaotic layered paint splatter, raw canvas, energetic movement, thick paint trails, no gradients, real paint physics',
   },
   {
-    title: 'The Sick Child in Munch Style',
-    sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Edvard%20Munch%20-%20The%20Sick%20Child%20-%20MM.M.00052%20-%20Munch%20Museum.jpg',
-    prompt: 'Public-domain source image: The Sick Child by Edvard Munch',
+    title: 'Autumn Rhythm Inspired Drip Field',
+    prompt:
+      'large scale pollock drip painting, flowing black and brown lines, rhythmic composition, natural motion, splattered paint, highly detailed',
   },
   {
-    title: 'Anxiety in Munch Style',
-    sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Edvard%20Munch%20-%20Anxiety%20-%20Google%20Art%20Project.jpg',
-    prompt: 'Public-domain source image: Anxiety by Edvard Munch',
+    title: 'Lavender Mist Inspired Composition',
+    prompt:
+      'soft grey and lavender pollock drip painting, delicate layered splatter, atmospheric but chaotic, real paint texture',
   },
   {
-    title: 'Ashes in Munch Style',
-    sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Edvard%20Munch%20-%20Ashes%20%281895%29.jpg',
-    prompt: 'Public-domain source image: Ashes by Edvard Munch',
+    title: 'Blue Poles Inspired Structure',
+    prompt:
+      'pollock drip painting with strong vertical blue structures, chaotic splatter around, bold contrast, real paint strokes',
   },
   {
-    title: 'Evening on Karl Johan Street in Munch Style',
-    sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Edvard%20Munch%20-%20Evening%20on%20Karl%20Johan%20Street%20%281892%29.jpg',
-    prompt: 'Public-domain source image: Evening on Karl Johan Street by Edvard Munch',
+    title: 'Convergence Inspired Chaos',
+    prompt:
+      'intense pollock style action painting, dense chaotic splatter, multicolor paint, overlapping layers, energetic composition',
   },
   {
-    title: 'Girls on the Bridge in Munch Style',
-    sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Edvard%20Munch%20-%20The%20Girls%20on%20the%20Bridge%20-%20NG.M.00844%20-%20National%20Museum%20of%20Art%2C%20Architecture%20and%20Design.jpg',
-    prompt: 'Public-domain source image: Girls on the Bridge by Edvard Munch',
+    title: 'Number 31 Inspired Energy Field',
+    prompt:
+      'black and white pollock drip painting, high contrast, dense network of lines, raw expressive energy',
   },
   {
-    title: 'Self Portrait with Cigarette in Munch Style',
-    sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Munch%20SelfBurningCigarette.jpg',
-    prompt: 'Public-domain source image: Self-Portrait with Cigarette by Edvard Munch',
+    title: 'Black Pour Inspired Minimal Drip',
+    prompt:
+      'minimalist pollock painting, black paint drips on raw canvas, simple but expressive, real fluid motion',
+  },
+  {
+    title: 'Multicolor Drip Explosion',
+    prompt:
+      'vibrant pollock drip painting, bright colors splattered dynamically, energetic motion, layered paint texture',
+  },
+  {
+    title: 'Dense Layered Drip Composition',
+    prompt:
+      'very dense pollock style painting, heavy layering of paint splashes, chaotic but balanced, thick texture',
+  },
+  {
+    title: 'Controlled Chaos Drip Study',
+    prompt:
+      'controlled pollock drip painting, structured chaos, deliberate splatter placement, realistic paint behavior',
   },
 ]
 
-function safeFilePart(value: string) {
-  return value
-    .normalize('NFKD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '')
-    .slice(0, 90)
-}
-
-function sleep(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms))
-}
-
-async function fetchWithRetry(url: string) {
-  let lastError = ''
-
-  for (let attempt = 1; attempt <= 3; attempt++) {
-    const response = await fetch(url, {
-      cache: 'no-store',
-      redirect: 'follow',
-      headers: {
-        'User-Agent': 'AI Image quality replacement bot; contact=juruandewitt@gmail.com',
-      },
-    })
-
-    if (response.ok) return response
-
-    lastError = `${response.status}`
-
-    if (response.status === 429) {
-      await sleep(3000 * attempt)
-      continue
-    }
-
-    throw new Error(`Failed to fetch source image: ${response.status}`)
-  }
-
-  throw new Error(`Failed to fetch source image after retries: ${lastError}`)
-}
-
-async function uploadSourceToBlob(item: (typeof ITEMS)[number]) {
-  const response = await fetchWithRetry(item.sourceUrl)
-  const contentType = response.headers.get('content-type') || 'image/jpeg'
-  const arrayBuffer = await response.arrayBuffer()
-
-  const blob = await put(
-    `artworks/munch/${safeFilePart(item.title)}-public-domain-source`,
-    arrayBuffer,
-    {
-      access: 'public',
-      addRandomSuffix: true,
-      contentType,
-    }
-  )
-
-  if (!blob.url) throw new Error(`Blob upload failed for ${item.title}`)
-  return blob.url
-}
-
-async function upsertArtwork(item: (typeof ITEMS)[number], imageUrl: string) {
+async function upsertArtwork(item: (typeof ITEMS)[number]) {
   const existing = await prisma.artwork.findFirst({
-    where: {
-      title: item.title,
-      style: STYLE as any,
-    },
+    where: { title: item.title, style: STYLE as any },
     select: { id: true },
   })
 
@@ -127,29 +70,24 @@ async function upsertArtwork(item: (typeof ITEMS)[number], imageUrl: string) {
         where: { id: existing.id },
         data: {
           artist: ARTIST,
-          thumbnail: imageUrl,
           status: 'PUBLISHED' as any,
         },
-        select: { id: true },
       })
     : await prisma.artwork.create({
         data: {
           title: item.title,
           style: STYLE as any,
           artist: ARTIST,
-          thumbnail: imageUrl,
           status: 'PUBLISHED' as any,
-          tags: [],
           price: 9.99,
         },
-        select: { id: true },
       })
 
   await prisma.asset.create({
     data: {
       artworkId: artwork.id,
-      originalUrl: imageUrl,
-      provider: 'public-domain-source-blob',
+      originalUrl: '',
+      provider: 'ai-generated',
       prompt: item.prompt,
     },
   })
@@ -162,17 +100,13 @@ export async function GET() {
 
   for (const item of ITEMS) {
     try {
-      const imageUrl = await uploadSourceToBlob(item)
-      const artworkId = await upsertArtwork(item, imageUrl)
+      const artworkId = await upsertArtwork(item)
 
       results.push({
         title: item.title,
         success: true,
         artworkId,
-        imageUrl,
       })
-
-      await sleep(3000)
     } catch (error) {
       results.push({
         title: item.title,
@@ -183,9 +117,8 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Munch remaining public-domain replacement complete',
+    message: 'Pollock inspired top 10 created',
     style: STYLE,
-    count: ITEMS.length,
     results,
   })
 }
