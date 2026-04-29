@@ -5,21 +5,69 @@ import { prisma } from '@/lib/prisma'
 export const dynamic = 'force-dynamic'
 export const maxDuration = 300
 
-const STYLE = 'MICHELANGELO'
-const ARTIST = 'Michelangelo'
+const STYLE = 'MUNCH'
+const ARTIST = 'Edvard Munch'
 
 const ITEMS = [
   {
-    title: 'Prophet on Ceiling Fresco in Michelangelo Style',
+    title: 'The Scream in Munch Style',
     sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Michelangelo%2C%20profeti%2C%20Isaiah%2001.jpg',
-    prompt: 'Public-domain source image: Prophet Isaiah ceiling fresco by Michelangelo',
+      'https://commons.wikimedia.org/wiki/Special:FilePath/The%20Scream.jpg',
+    prompt: 'Public-domain source image: The Scream by Edvard Munch',
   },
   {
-    title: 'Renaissance Vault Fresco in Michelangelo Style',
+    title: 'The Dance of Life in Munch Style',
     sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Michelangelo%2C%20Creation%20of%20the%20Sun%2C%20Moon%2C%20and%20Plants%2001.jpg',
-    prompt: 'Public-domain source image: Creation of the Sun, Moon and Planets ceiling fresco by Michelangelo',
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Edvard%20Munch%20-%20The%20Dance%20of%20Life.jpg',
+    prompt: 'Public-domain source image: The Dance of Life by Edvard Munch',
+  },
+  {
+    title: 'Madonna in Munch Style',
+    sourceUrl:
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Edvard%20Munch%20-%20Madonna.jpg',
+    prompt: 'Public-domain source image: Madonna by Edvard Munch',
+  },
+  {
+    title: 'The Sick Child in Munch Style',
+    sourceUrl:
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Edvard%20Munch%20-%20The%20Sick%20Child.jpg',
+    prompt: 'Public-domain source image: The Sick Child by Edvard Munch',
+  },
+  {
+    title: 'Anxiety in Munch Style',
+    sourceUrl:
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Edvard%20Munch%20-%20Anxiety.jpg',
+    prompt: 'Public-domain source image: Anxiety by Edvard Munch',
+  },
+  {
+    title: 'Ashes in Munch Style',
+    sourceUrl:
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Edvard%20Munch%20-%20Ashes.jpg',
+    prompt: 'Public-domain source image: Ashes by Edvard Munch',
+  },
+  {
+    title: 'Vampire in Munch Style',
+    sourceUrl:
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Edvard%20Munch%20-%20Vampire.jpg',
+    prompt: 'Public-domain source image: Vampire by Edvard Munch',
+  },
+  {
+    title: 'Evening on Karl Johan Street in Munch Style',
+    sourceUrl:
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Edvard%20Munch%20-%20Evening%20on%20Karl%20Johan%20Street.jpg',
+    prompt: 'Public-domain source image: Evening on Karl Johan Street by Edvard Munch',
+  },
+  {
+    title: 'Girls on the Bridge in Munch Style',
+    sourceUrl:
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Edvard%20Munch%20-%20Girls%20on%20the%20Bridge.jpg',
+    prompt: 'Public-domain source image: Girls on the Bridge by Edvard Munch',
+  },
+  {
+    title: 'Self Portrait with Cigarette in Munch Style',
+    sourceUrl:
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Edvard%20Munch%20-%20Self-Portrait%20with%20Cigarette.jpg',
+    prompt: 'Public-domain source image: Self-Portrait with Cigarette by Edvard Munch',
   },
 ]
 
@@ -33,7 +81,13 @@ function safeFilePart(value: string) {
     .slice(0, 90)
 }
 
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
 async function fetchWithRetry(url: string) {
+  let lastError = ''
+
   for (let attempt = 1; attempt <= 3; attempt++) {
     const response = await fetch(url, {
       cache: 'no-store',
@@ -45,15 +99,17 @@ async function fetchWithRetry(url: string) {
 
     if (response.ok) return response
 
+    lastError = `${response.status}`
+
     if (response.status === 429) {
-      await new Promise((resolve) => setTimeout(resolve, 3000 * attempt))
+      await sleep(3000 * attempt)
       continue
     }
 
     throw new Error(`Failed to fetch source image: ${response.status}`)
   }
 
-  throw new Error('Failed to fetch source image after retries')
+  throw new Error(`Failed to fetch source image after retries: ${lastError}`)
 }
 
 async function uploadSourceToBlob(item: (typeof ITEMS)[number]) {
@@ -62,7 +118,7 @@ async function uploadSourceToBlob(item: (typeof ITEMS)[number]) {
   const arrayBuffer = await response.arrayBuffer()
 
   const blob = await put(
-    `artworks/michelangelo/${safeFilePart(item.title)}-public-domain-source`,
+    `artworks/munch/${safeFilePart(item.title)}-public-domain-source`,
     arrayBuffer,
     {
       access: 'public',
@@ -133,6 +189,8 @@ export async function GET() {
         artworkId,
         imageUrl,
       })
+
+      await sleep(3000)
     } catch (error) {
       results.push({
         title: item.title,
@@ -143,7 +201,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Michelangelo final public-domain replacement complete',
+    message: 'Munch public-domain top 10 replacement complete',
     style: STYLE,
     count: ITEMS.length,
     results,
