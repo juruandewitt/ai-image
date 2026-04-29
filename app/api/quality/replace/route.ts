@@ -10,63 +10,15 @@ const ARTIST = 'Michelangelo'
 
 const ITEMS = [
   {
-    title: 'The Creation of Adam in Michelangelo Style',
-    sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Michelangelo%2C%20The%20Creation%20of%20Adam.jpg',
-    prompt: 'Public-domain source image: The Creation of Adam by Michelangelo',
-  },
-  {
-    title: 'David in Michelangelo Style',
-    sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/David%20-%20%28Michelangelo%29.jpg',
-    prompt: 'Public-domain source image: David by Michelangelo',
-  },
-  {
-    title: 'Pieta in Michelangelo Style',
-    sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/The%20Piet%C3%A0%20by%20Michelangelo%20%2848135182552%29.jpg',
-    prompt: 'Public-domain source image: Pieta by Michelangelo',
-  },
-  {
-    title: 'The Last Judgement in Michelangelo Style',
-    sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Last%20Judgement%20%28Michelangelo%29.jpg',
-    prompt: 'Public-domain source image: The Last Judgement by Michelangelo',
-  },
-  {
-    title: 'Moses in Michelangelo Style',
-    sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Michelangelo%20Moses.jpg',
-    prompt: 'Public-domain source image: Moses by Michelangelo',
-  },
-  {
-    title: 'Doni Tondo in Michelangelo Style',
-    sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Michelangelo%20Buonarroti%20Tondo%20Doni.jpg',
-    prompt: 'Public-domain source image: Doni Tondo by Michelangelo',
-  },
-  {
-    title: 'Sistine Chapel Ceiling Study in Michelangelo Style',
-    sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Sistine%20Chapel%20ceiling%2002.jpg',
-    prompt: 'Public-domain source image: Sistine Chapel Ceiling by Michelangelo',
-  },
-  {
     title: 'Prophet on Ceiling Fresco in Michelangelo Style',
     sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Michelangelo%20-%20Prophet%20Isaiah.jpg',
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Michelangelo%2C%20sistine%20chapel%2C%20prophet%20isaiah.jpg',
     prompt: 'Public-domain source image: Prophet Isaiah ceiling fresco by Michelangelo',
-  },
-  {
-    title: 'Ignudi Figure Study in Michelangelo Style',
-    sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Sistine%20Chapel%20fresco%20of%20an%20Ignudo%20right%20of%20Isaiah%20-%20Michelangelo.jpg',
-    prompt: 'Public-domain source image: Ignudo figure by Michelangelo',
   },
   {
     title: 'Renaissance Vault Fresco in Michelangelo Style',
     sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Michelangelo%20-%20Sistine%20Chapel%20ceiling%20-%20The%20Creation%20of%20the%20Sun%2C%20Moon%20and%20Planets.jpg',
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Michelangelo%2C%20sistine%20chapel%2C%20creation%20of%20the%20sun%20and%20moon%2001.jpg',
     prompt: 'Public-domain source image: Sistine Chapel vault fresco by Michelangelo',
   },
 ]
@@ -81,13 +33,7 @@ function safeFilePart(value: string) {
     .slice(0, 90)
 }
 
-function sleep(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms))
-}
-
 async function fetchWithRetry(url: string) {
-  let lastError = ''
-
   for (let attempt = 1; attempt <= 3; attempt++) {
     const response = await fetch(url, {
       cache: 'no-store',
@@ -99,17 +45,15 @@ async function fetchWithRetry(url: string) {
 
     if (response.ok) return response
 
-    lastError = `${response.status}`
-
     if (response.status === 429) {
-      await sleep(3000 * attempt)
+      await new Promise((resolve) => setTimeout(resolve, 3000 * attempt))
       continue
     }
 
     throw new Error(`Failed to fetch source image: ${response.status}`)
   }
 
-  throw new Error(`Failed to fetch source image after retries: ${lastError}`)
+  throw new Error('Failed to fetch source image after retries')
 }
 
 async function uploadSourceToBlob(item: (typeof ITEMS)[number]) {
@@ -189,8 +133,6 @@ export async function GET() {
         artworkId,
         imageUrl,
       })
-
-      await sleep(3000)
     } catch (error) {
       results.push({
         title: item.title,
@@ -201,7 +143,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Michelangelo public-domain top 10 replacement complete',
+    message: 'Michelangelo final public-domain replacement complete',
     style: STYLE,
     count: ITEMS.length,
     results,
