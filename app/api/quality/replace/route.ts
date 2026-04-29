@@ -12,7 +12,7 @@ const ITEMS = [
   {
     title: 'Woman with a Lute in Vermeer Style',
     sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Johannes%20Vermeer%20-%20A%20Lady%20with%20a%20Lute%20-%20Google%20Art%20Project.jpg',
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Vermeer%20-%20Woman%20with%20a%20Lute%20near%20a%20window.jpg',
     prompt: 'Public-domain source image: Woman with a Lute by Johannes Vermeer',
   },
 ]
