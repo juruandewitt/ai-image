@@ -12,52 +12,17 @@ const ITEMS = [
   {
     title: 'Persistence of Memory Inspired',
     prompt:
-      'surreal dreamlike landscape inspired by Salvador Dali, melting clock forms draped over objects, vast empty desert, hyper realistic lighting, long shadows, highly detailed, no text',
-  },
-  {
-    title: 'Surreal Melting Landscape',
-    prompt:
-      'melting organic shapes in a barren surreal landscape, dali style dream logic, soft distorted forms, hyper realistic rendering, cinematic lighting',
+      'museum-quality surrealist oil painting inspired by Salvador Dali, vast coastal landscape at dusk, precise long shadows, hyper-realistic textures, a single subtly distorted clock draped over a natural rock form, minimal composition, cinematic lighting, no clutter, no repetition, no cartoon style',
   },
   {
     title: 'Dreamlike Desert Clocks',
     prompt:
-      'surreal desert scene with melting clocks and distorted time objects, ultra detailed, hyper realistic, dali inspired, dramatic shadows',
-  },
-  {
-    title: 'Floating Objects Composition',
-    prompt:
-      'objects floating in impossible space, surreal composition, hyper realism, dali style dream imagery, strong contrast lighting',
-  },
-  {
-    title: 'Impossible Architecture Scene',
-    prompt:
-      'surreal architecture defying physics, stretched and distorted buildings, dali style, highly detailed, dramatic perspective',
-  },
-  {
-    title: 'Surreal Reflections Study',
-    prompt:
-      'mirror-like reflections in surreal environment, dream logic, hyper realistic textures, dali inspired composition',
-  },
-  {
-    title: 'Distorted Reality Composition',
-    prompt:
-      'warped and stretched reality, surreal figures and objects, dali style, highly detailed, cinematic lighting',
+      'high-end surrealist desert scene inspired by Salvador Dali, expansive empty landscape, one or two distorted time objects integrated naturally into the environment, hyper realistic lighting, sharp shadows, restrained composition, fine detail, no clutter, no cartoon style',
   },
   {
     title: 'Time Collapse Landscape',
     prompt:
-      'time distortion visualized as melting structures and flowing forms, surreal landscape, dali inspired, hyper realistic',
-  },
-  {
-    title: 'Hyperreal Dream Sequence',
-    prompt:
-      'ultra realistic dreamlike scene with impossible elements, surrealism, dali inspired, crisp detail, dramatic lighting',
-  },
-  {
-    title: 'Symbolic Surreal Study',
-    prompt:
-      'symbolic surreal imagery with abstract meaning, dali inspired composition, highly detailed, clean background, no text',
+      'premium surrealist landscape inspired by Salvador Dali, time distortion visualized through melting architectural and geological forms, cinematic perspective, hyper realistic textures, controlled composition, dramatic lighting, no repetition, no cartoon style',
   },
 ]
 
@@ -85,6 +50,11 @@ async function generateImage(prompt: string) {
     }),
   })
 
+  if (!res.ok) {
+    const text = await res.text()
+    throw new Error(`OpenAI error: ${text}`)
+  }
+
   const data = await res.json()
   return data.data[0].url
 }
@@ -94,7 +64,7 @@ async function upload(url: string, title: string) {
   const buffer = await img.arrayBuffer()
 
   const blob = await put(
-    `artworks/dali/${safeFilePart(title)}`,
+    `artworks/dali/${safeFilePart(title)}-refined`,
     buffer,
     { access: 'public' }
   )
@@ -102,28 +72,35 @@ async function upload(url: string, title: string) {
   return blob.url
 }
 
-async function upsert(item: any, imageUrl: string) {
-  const artwork = await prisma.artwork.create({
-    data: {
+async function updateArtwork(item: any, imageUrl: string) {
+  const existing = await prisma.artwork.findFirst({
+    where: {
       title: item.title,
       style: STYLE as any,
-      artist: ARTIST,
+    },
+  })
+
+  if (!existing) throw new Error('Artwork not found')
+
+  await prisma.artwork.update({
+    where: { id: existing.id },
+    data: {
       thumbnail: imageUrl,
+      artist: ARTIST,
       status: 'PUBLISHED' as any,
-      price: 9.99,
     },
   })
 
   await prisma.asset.create({
     data: {
-      artworkId: artwork.id,
+      artworkId: existing.id,
       originalUrl: imageUrl,
-      provider: 'ai-generated',
+      provider: 'ai-refined',
       prompt: item.prompt,
     },
   })
 
-  return artwork.id
+  return existing.id
 }
 
 export async function GET() {
@@ -133,16 +110,27 @@ export async function GET() {
     try {
       const aiUrl = await generateImage(item.prompt)
       const blobUrl = await upload(aiUrl, item.title)
-      const id = await upsert(item, blobUrl)
+      const id = await updateArtwork(item, blobUrl)
 
-      results.push({ title: item.title, success: true, artworkId: id })
+      results.push({
+        title: item.title,
+        success: true,
+        artworkId: id,
+        imageUrl: blobUrl,
+      })
     } catch (e) {
-      results.push({ title: item.title, success: false })
+      results.push({
+        title: item.title,
+        success: false,
+        error: e instanceof Error ? e.message : 'Unknown error',
+      })
     }
   }
 
   return NextResponse.json({
-    message: 'Dali set created',
+    message: 'Dalí refinement batch complete',
+    style: STYLE,
+    count: ITEMS.length,
     results,
   })
 }
