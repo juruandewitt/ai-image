@@ -61,26 +61,37 @@ async function generateImage(prompt: string) {
 
 async function upload(url: string, title: string) {
   const img = await fetch(url)
+
+  if (!img.ok) {
+    throw new Error(`Failed to download generated image: ${img.status}`)
+  }
+
+  const contentType = img.headers.get('content-type') || 'image/png'
   const buffer = await img.arrayBuffer()
 
   const blob = await put(
-    `artworks/dali/${safeFilePart(title)}-refined`,
+    `artworks/dali/${safeFilePart(title)}-refined.png`,
     buffer,
-    { access: 'public' }
+    {
+      access: 'public',
+      addRandomSuffix: true,
+      contentType,
+    }
   )
 
   return blob.url
 }
 
-async function updateArtwork(item: any, imageUrl: string) {
+async function updateArtwork(item: (typeof ITEMS)[number], imageUrl: string) {
   const existing = await prisma.artwork.findFirst({
     where: {
       title: item.title,
       style: STYLE as any,
     },
+    select: { id: true },
   })
 
-  if (!existing) throw new Error('Artwork not found')
+  if (!existing) throw new Error(`Artwork not found: ${item.title}`)
 
   await prisma.artwork.update({
     where: { id: existing.id },
@@ -118,11 +129,11 @@ export async function GET() {
         artworkId: id,
         imageUrl: blobUrl,
       })
-    } catch (e) {
+    } catch (error) {
       results.push({
         title: item.title,
         success: false,
-        error: e instanceof Error ? e.message : 'Unknown error',
+        error: error instanceof Error ? error.message : 'Unknown error',
       })
     }
   }
