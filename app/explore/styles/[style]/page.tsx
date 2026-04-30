@@ -5,7 +5,7 @@ import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import SafeImg from '@/components/safe-img'
 
-const PREVIEW_VERSION = 'v12'
+const PREVIEW_VERSION = 'v13'
 
 const FALLBACK_DATA_URL =
   'data:image/svg+xml;utf8,' +
@@ -74,20 +74,20 @@ const CORE_TITLE_PREFERENCES: Record<string, string[]> = {
     'Bedroom in Arles in Van Gogh Style',
     'The Potato Eaters in Van Gogh Style',
     'Almond Blossoms in Van Gogh Style',
-    'Olive Trees in Van Gogh Style',
-    'The Red Vineyard in Van Gogh Style',
+    'Self Portrait in Van Gogh Style',
+    'The Night Cafe in Van Gogh Style',
   ],
   DALI: [
-    'Persistence of Memory in Dali Style',
-    'Swans Reflecting Elephants in Dali Style',
-    'The Elephants in Dali Style',
-    'The Burning Giraffe in Dali Style',
-    'Dream Caused by the Flight of a Bee in Dali Style',
-    'Metamorphosis of Narcissus in Dali Style',
-    'Galatea of the Spheres in Dali Style',
-    'Soft Construction with Boiled Beans in Dali Style',
-    'The Temptation of Saint Anthony in Dali Style',
-    'Christ of Saint John of the Cross in Dali Style',
+    'Persistence of Memory Inspired',
+    'Dreamlike Desert Clocks',
+    'Time Collapse Landscape',
+    'Surreal Melting Landscape',
+    'Floating Objects Composition',
+    'Impossible Architecture Scene',
+    'Surreal Reflections Study',
+    'Distorted Reality Composition',
+    'Hyperreal Dream Sequence',
+    'Symbolic Surreal Study',
   ],
   POLLOCK: [
     'Autumn Rhythm in Pollock Style',
@@ -117,13 +117,13 @@ const CORE_TITLE_PREFERENCES: Record<string, string[]> = {
     'Impression Sunrise in Monet Style',
     'Water Lilies in Monet Style',
     'Japanese Bridge in Monet Style',
-    'Woman with Parasol in Monet Style',
-    'Haystacks at Sunset in Monet Style',
-    'Rouen Cathedral in Soft Light in Monet Style',
+    'Woman with a Parasol in Monet Style',
+    'Rouen Cathedral in Monet Style',
     'Parliament in Fog in Monet Style',
-    'Poppies in a Field in Monet Style',
+    'Poppy Field in Monet Style',
+    'Haystacks in Monet Style',
+    'Garden at Giverny in Monet Style',
     'Boats on the Seine in Monet Style',
-    'Lily Pond with Reflections in Monet Style',
   ],
   PICASSO: [
     'Guernica in Picasso Style',
@@ -175,8 +175,8 @@ const CORE_TITLE_PREFERENCES: Record<string, string[]> = {
   ],
   MICHELANGELO: [
     'The Creation of Adam in Michelangelo Style',
-    'The Scream in Michelangelo Style',
     'David in Michelangelo Style',
+    'Pieta in Michelangelo Style',
     'The Last Judgement in Michelangelo Style',
     'Moses in Michelangelo Style',
     'Doni Tondo in Michelangelo Style',
@@ -184,18 +184,19 @@ const CORE_TITLE_PREFERENCES: Record<string, string[]> = {
     'Prophet on Ceiling Fresco in Michelangelo Style',
     'Ignudi Figure Study in Michelangelo Style',
     'Renaissance Vault Fresco in Michelangelo Style',
+    'The Scream in Michelangelo Style',
   ],
   MUNCH: [
     'The Scream in Munch Style',
     'The Dance of Life in Munch Style',
     'Madonna in Munch Style',
+    'The Sick Child in Munch Style',
     'Anxiety in Munch Style',
-    'Girls on the Bridge in Munch Style',
     'Ashes in Munch Style',
-    'Jealousy in Munch Style',
-    'Melancholy in Munch Style',
-    'Moonlight by the Shore in Munch Style',
+    'Vampire in Munch Style',
     'Evening on Karl Johan Street in Munch Style',
+    'Girls on the Bridge in Munch Style',
+    'Self Portrait with Cigarette in Munch Style',
   ],
 }
 
@@ -287,6 +288,7 @@ function sortArtworks(styleKey: string, styleLabel: string, artworks: ArtworkRow
     if (aPreferred && bPreferred) {
       return preferredIndex.get(a.title)! - preferredIndex.get(b.title)!
     }
+
     if (aPreferred) return -1
     if (bPreferred) return 1
 
@@ -345,7 +347,9 @@ export default async function ExploreStylePage({
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-4">
           {sorted.map((art, index) => {
             const isFirstMunchTile =
-              styleInfo.key === 'MUNCH' && index === 0 && art.title === 'The Scream in Munch Style'
+              styleInfo.key === 'MUNCH' &&
+              index === 0 &&
+              art.title === 'The Scream in Munch Style'
 
             return (
               <Link
