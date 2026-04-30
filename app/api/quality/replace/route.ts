@@ -5,24 +5,59 @@ import { prisma } from '@/lib/prisma'
 export const dynamic = 'force-dynamic'
 export const maxDuration = 300
 
-const STYLE = 'DALI'
-const ARTIST = 'Salvador Dalí'
+const STYLE = 'PICASSO'
+const ARTIST = 'Pablo Picasso'
 
 const ITEMS = [
   {
-    title: 'Persistence of Memory Inspired',
+    title: 'Cubist Woman with Mirror in Picasso Style',
     prompt:
-      'museum-quality surrealist oil painting inspired by Salvador Dali, vast coastal landscape at dusk, precise long shadows, hyper-realistic textures, a single subtly distorted clock draped over a natural rock form, minimal composition, cinematic lighting, no clutter, no repetition, no cartoon style',
+      'premium cubist-inspired portrait, fractured geometric female figure beside an angular mirror, multiple viewpoints, strong planes of color, expressive asymmetry, painterly texture, gallery-quality modernist composition, no text, no direct copy of any existing artwork',
   },
   {
-    title: 'Dreamlike Desert Clocks',
+    title: 'Blue Period Guitarist Inspired in Picasso Style',
     prompt:
-      'high-end surrealist desert scene inspired by Salvador Dali, expansive empty landscape, one or two distorted time objects integrated naturally into the environment, hyper realistic lighting, sharp shadows, restrained composition, fine detail, no clutter, no cartoon style',
+      'melancholic blue-period-inspired modernist painting, seated guitarist figure built from elongated angular forms, deep blue and muted teal palette, emotional atmosphere, simplified geometry, painterly texture, no text, no direct copy of any existing artwork',
   },
   {
-    title: 'Time Collapse Landscape',
+    title: 'Three Musicians Inspired Cubist Scene in Picasso Style',
     prompt:
-      'premium surrealist landscape inspired by Salvador Dali, time distortion visualized through melting architectural and geological forms, cinematic perspective, hyper realistic textures, controlled composition, dramatic lighting, no repetition, no cartoon style',
+      'cubist-inspired scene of three abstract musicians, fragmented instruments, angular overlapping shapes, warm ochre, black, cream, and deep red palette, rhythmic geometry, high-end modernist painting, no text, no direct copy of any existing artwork',
+  },
+  {
+    title: 'Harlequin Studio Composition in Picasso Style',
+    prompt:
+      'cubist-inspired studio scene with harlequin motifs, diamond patterns, abstract seated figure, fractured table and instrument forms, sophisticated muted colors, painterly modernist texture, no text, no direct copy of any existing artwork',
+  },
+  {
+    title: 'Cubist Still Life with Guitar in Picasso Style',
+    prompt:
+      'premium cubist still life, fragmented guitar, bottle, fruit bowl, newspaper-like abstract planes without readable text, layered beige, charcoal, ochre, and muted blue tones, collage-inspired geometry, museum-quality painting, no text',
+  },
+  {
+    title: 'Fragmented Portrait in Rose and Blue in Picasso Style',
+    prompt:
+      'cubist-inspired portrait with fractured face, one eye in profile and one frontal, rose and blue palette, angular planes, expressive modernist distortion, elegant gallery composition, painterly texture, no text, no direct copy of any existing artwork',
+  },
+  {
+    title: 'Cubist Bull and Moon Composition in Picasso Style',
+    prompt:
+      'cubist-inspired symbolic composition with abstract bull form beneath a pale moon, fractured black, cream, ochre, and blue planes, bold modernist geometry, dramatic but refined, painterly texture, no text, no direct copy of any existing artwork',
+  },
+  {
+    title: 'Abstract Studio with Mandolin in Picasso Style',
+    prompt:
+      'cubist-inspired interior studio, abstract figure with mandolin, angular table, window, and patterned wall, overlapping viewpoints, muted ochre, olive, cream, black, and blue palette, high-end modernist painting, no text',
+  },
+  {
+    title: 'Cubist Mother and Child Composition in Picasso Style',
+    prompt:
+      'cubist-inspired mother and child composition, tender figures simplified into soft angular planes, muted rose, blue, cream, and warm gray palette, emotional modernist painting, painterly texture, no text, no direct copy of any existing artwork',
+  },
+  {
+    title: 'Monumental Cubist Interior in Picasso Style',
+    prompt:
+      'large-scale cubist-inspired interior, fragmented architectural planes, abstract figures, dynamic angular composition, muted modernist palette with black, ochre, cream, blue, and terracotta, museum-quality painting, no text, no direct copy of any existing artwork',
   },
 ]
 
@@ -36,42 +71,55 @@ function safeFilePart(value: string) {
     .slice(0, 90)
 }
 
-async function generateImage(prompt: string) {
-  const res = await fetch('https://api.openai.com/v1/images/generations', {
+async function generateOpenAiImageUrl(prompt: string) {
+  const apiKey = process.env.OPENAI_API_KEY
+  if (!apiKey) throw new Error('Missing OPENAI_API_KEY')
+
+  const response = await fetch('https://api.openai.com/v1/images/generations', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+      Authorization: `Bearer ${apiKey}`,
     },
     body: JSON.stringify({
       model: 'dall-e-3',
       prompt,
       size: '1024x1024',
+      quality: 'standard',
+      response_format: 'url',
+      n: 1,
     }),
+    cache: 'no-store',
   })
 
-  if (!res.ok) {
-    const text = await res.text()
-    throw new Error(`OpenAI error: ${text}`)
+  if (!response.ok) {
+    const text = await response.text()
+    throw new Error(`OpenAI image generation failed (${response.status}): ${text}`)
   }
 
-  const data = await res.json()
-  return data.data[0].url
+  const data = await response.json()
+  const imageUrl = data?.data?.[0]?.url
+
+  if (!imageUrl || typeof imageUrl !== 'string') {
+    throw new Error('No image URL returned from OpenAI')
+  }
+
+  return imageUrl
 }
 
-async function upload(url: string, title: string) {
-  const img = await fetch(url)
+async function uploadGeneratedImageToBlob(openAiUrl: string, title: string) {
+  const imageResponse = await fetch(openAiUrl, { cache: 'no-store' })
 
-  if (!img.ok) {
-    throw new Error(`Failed to download generated image: ${img.status}`)
+  if (!imageResponse.ok) {
+    throw new Error(`Failed to download generated image: ${imageResponse.status}`)
   }
 
-  const contentType = img.headers.get('content-type') || 'image/png'
-  const buffer = await img.arrayBuffer()
+  const contentType = imageResponse.headers.get('content-type') || 'image/png'
+  const arrayBuffer = await imageResponse.arrayBuffer()
 
   const blob = await put(
-    `artworks/dali/${safeFilePart(title)}-refined.png`,
-    buffer,
+    `artworks/picasso/${safeFilePart(title)}-quality-generated.png`,
+    arrayBuffer,
     {
       access: 'public',
       addRandomSuffix: true,
@@ -79,10 +127,11 @@ async function upload(url: string, title: string) {
     }
   )
 
+  if (!blob.url) throw new Error(`Blob upload failed for ${title}`)
   return blob.url
 }
 
-async function updateArtwork(item: (typeof ITEMS)[number], imageUrl: string) {
+async function upsertArtwork(item: (typeof ITEMS)[number], imageUrl: string) {
   const existing = await prisma.artwork.findFirst({
     where: {
       title: item.title,
@@ -91,27 +140,39 @@ async function updateArtwork(item: (typeof ITEMS)[number], imageUrl: string) {
     select: { id: true },
   })
 
-  if (!existing) throw new Error(`Artwork not found: ${item.title}`)
-
-  await prisma.artwork.update({
-    where: { id: existing.id },
-    data: {
-      thumbnail: imageUrl,
-      artist: ARTIST,
-      status: 'PUBLISHED' as any,
-    },
-  })
+  const artwork = existing
+    ? await prisma.artwork.update({
+        where: { id: existing.id },
+        data: {
+          artist: ARTIST,
+          thumbnail: imageUrl,
+          status: 'PUBLISHED' as any,
+        },
+        select: { id: true },
+      })
+    : await prisma.artwork.create({
+        data: {
+          title: item.title,
+          style: STYLE as any,
+          artist: ARTIST,
+          thumbnail: imageUrl,
+          status: 'PUBLISHED' as any,
+          tags: [],
+          price: 9.99,
+        },
+        select: { id: true },
+      })
 
   await prisma.asset.create({
     data: {
-      artworkId: existing.id,
+      artworkId: artwork.id,
       originalUrl: imageUrl,
-      provider: 'ai-refined',
+      provider: 'ai-quality-generated-blob',
       prompt: item.prompt,
     },
   })
 
-  return existing.id
+  return artwork.id
 }
 
 export async function GET() {
@@ -119,15 +180,15 @@ export async function GET() {
 
   for (const item of ITEMS) {
     try {
-      const aiUrl = await generateImage(item.prompt)
-      const blobUrl = await upload(aiUrl, item.title)
-      const id = await updateArtwork(item, blobUrl)
+      const openAiUrl = await generateOpenAiImageUrl(item.prompt)
+      const imageUrl = await uploadGeneratedImageToBlob(openAiUrl, item.title)
+      const artworkId = await upsertArtwork(item, imageUrl)
 
       results.push({
         title: item.title,
         success: true,
-        artworkId: id,
-        imageUrl: blobUrl,
+        artworkId,
+        imageUrl,
       })
     } catch (error) {
       results.push({
@@ -139,7 +200,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Dalí refinement batch complete',
+    message: 'Picasso inspired top 10 replacement complete',
     style: STYLE,
     count: ITEMS.length,
     results,
