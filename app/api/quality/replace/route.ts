@@ -10,54 +10,9 @@ const ARTIST = 'Pablo Picasso'
 
 const ITEMS = [
   {
-    title: 'Cubist Woman with Mirror in Picasso Style',
+    title: 'Cubist Family Interior in Picasso Style',
     prompt:
-      'premium cubist-inspired portrait, fractured geometric female figure beside an angular mirror, multiple viewpoints, strong planes of color, expressive asymmetry, painterly texture, gallery-quality modernist composition, no text, no direct copy of any existing artwork',
-  },
-  {
-    title: 'Blue Period Guitarist Inspired in Picasso Style',
-    prompt:
-      'melancholic blue-period-inspired modernist painting, seated guitarist figure built from elongated angular forms, deep blue and muted teal palette, emotional atmosphere, simplified geometry, painterly texture, no text, no direct copy of any existing artwork',
-  },
-  {
-    title: 'Three Musicians Inspired Cubist Scene in Picasso Style',
-    prompt:
-      'cubist-inspired scene of three abstract musicians, fragmented instruments, angular overlapping shapes, warm ochre, black, cream, and deep red palette, rhythmic geometry, high-end modernist painting, no text, no direct copy of any existing artwork',
-  },
-  {
-    title: 'Harlequin Studio Composition in Picasso Style',
-    prompt:
-      'cubist-inspired studio scene with harlequin motifs, diamond patterns, abstract seated figure, fractured table and instrument forms, sophisticated muted colors, painterly modernist texture, no text, no direct copy of any existing artwork',
-  },
-  {
-    title: 'Cubist Still Life with Guitar in Picasso Style',
-    prompt:
-      'premium cubist still life, fragmented guitar, bottle, fruit bowl, newspaper-like abstract planes without readable text, layered beige, charcoal, ochre, and muted blue tones, collage-inspired geometry, museum-quality painting, no text',
-  },
-  {
-    title: 'Fragmented Portrait in Rose and Blue in Picasso Style',
-    prompt:
-      'cubist-inspired portrait with fractured face, one eye in profile and one frontal, rose and blue palette, angular planes, expressive modernist distortion, elegant gallery composition, painterly texture, no text, no direct copy of any existing artwork',
-  },
-  {
-    title: 'Cubist Bull and Moon Composition in Picasso Style',
-    prompt:
-      'cubist-inspired symbolic composition with abstract bull form beneath a pale moon, fractured black, cream, ochre, and blue planes, bold modernist geometry, dramatic but refined, painterly texture, no text, no direct copy of any existing artwork',
-  },
-  {
-    title: 'Abstract Studio with Mandolin in Picasso Style',
-    prompt:
-      'cubist-inspired interior studio, abstract figure with mandolin, angular table, window, and patterned wall, overlapping viewpoints, muted ochre, olive, cream, black, and blue palette, high-end modernist painting, no text',
-  },
-  {
-    title: 'Cubist Mother and Child Composition in Picasso Style',
-    prompt:
-      'cubist-inspired mother and child composition, tender figures simplified into soft angular planes, muted rose, blue, cream, and warm gray palette, emotional modernist painting, painterly texture, no text, no direct copy of any existing artwork',
-  },
-  {
-    title: 'Monumental Cubist Interior in Picasso Style',
-    prompt:
-      'large-scale cubist-inspired interior, fragmented architectural planes, abstract figures, dynamic angular composition, muted modernist palette with black, ochre, cream, blue, and terracotta, museum-quality painting, no text, no direct copy of any existing artwork',
+      'premium cubist-inspired family interior scene, abstract adult figures seated together in a calm studio, simplified angular planes, warm rose, muted blue, cream, and gray palette, emotional modernist atmosphere, painterly texture, no children, no text, no direct copy of any existing artwork',
   },
 ]
 
@@ -200,7 +155,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Picasso inspired top 10 replacement complete',
+    message: 'Picasso final inspired replacement complete',
     style: STYLE,
     count: ITEMS.length,
     results,
