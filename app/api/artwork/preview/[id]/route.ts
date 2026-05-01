@@ -1,92 +1,56 @@
-import { NextRequest, NextResponse } from 'next/server'
-import sharp from 'sharp'
+import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 
 export const dynamic = 'force-dynamic'
 
-function isStableBlobSrc(value?: string | null) {
-  if (!value) return false
-  return value.toLowerCase().includes('.public.blob.vercel-storage.com/')
-}
-
-function pickStableImgSrc(a: {
-  thumbnail?: string | null
-  assets?: { originalUrl: string | null }[]
-}) {
-  const stableAsset =
-    a.assets?.find((x) => isStableBlobSrc(x.originalUrl))?.originalUrl || null
-
-  const stableThumbnail = isStableBlobSrc(a.thumbnail) ? a.thumbnail : null
-
-  return stableAsset || stableThumbnail || null
-}
-
-function clampWidth(value: number) {
-  if (Number.isNaN(value)) return 900
-  return Math.max(320, Math.min(1400, value))
-}
-
 export async function GET(
-  request: NextRequest,
+  req: Request,
   { params }: { params: { id: string } }
 ) {
   try {
     const artwork = await prisma.artwork.findUnique({
       where: { id: params.id },
-      select: {
-        id: true,
-        thumbnail: true,
+      include: {
         assets: {
           orderBy: { createdAt: 'desc' },
           take: 1,
-          select: { originalUrl: true },
         },
       },
     })
 
     if (!artwork) {
-      return new NextResponse('Artwork not found', { status: 404 })
+      return new NextResponse('Not found', { status: 404 })
     }
 
-    const originalUrl = pickStableImgSrc(artwork)
+    // 🔥 Priority order
+    const imageUrl =
+      artwork.thumbnail ||
+      artwork.assets?.[0]?.originalUrl ||
+      null
 
-    if (!originalUrl) {
-      return new NextResponse('No image found', { status: 404 })
+    if (!imageUrl) {
+      return new NextResponse('No image', { status: 404 })
     }
 
-    const widthParam = Number(request.nextUrl.searchParams.get('w') || '900')
-    const targetWidth = clampWidth(widthParam)
+    // 🔥 Fetch image directly
+    const img = await fetch(imageUrl, { cache: 'no-store' })
 
-    const imageRes = await fetch(originalUrl, { cache: 'no-store' })
-
-    if (!imageRes.ok) {
-      return new NextResponse('Could not fetch image', { status: 502 })
+    if (!img.ok) {
+      // 👉 CRITICAL: fallback instead of breaking
+      return NextResponse.redirect(imageUrl)
     }
 
-    const arrayBuffer = await imageRes.arrayBuffer()
-    const inputBuffer = Buffer.from(arrayBuffer)
+    const contentType = img.headers.get('content-type') || 'image/png'
+    const buffer = await img.arrayBuffer()
 
-    const output = await sharp(inputBuffer)
-      .rotate()
-      .resize({
-        width: targetWidth,
-        withoutEnlargement: true,
-        fit: 'inside',
-      })
-      .webp({ quality: 72 })
-      .toBuffer()
-
-    return new NextResponse(output, {
-      status: 200,
+    return new NextResponse(buffer, {
       headers: {
-        'Content-Type': 'image/webp',
-        'Cache-Control': 'no-store',
+        'Content-Type': contentType,
+        'Cache-Control': 'public, max-age=31536000, immutable',
       },
     })
-  } catch (err) {
-    return new NextResponse(
-      err instanceof Error ? err.message : 'Preview failed',
-      { status: 500 }
-    )
+  } catch (e) {
+    // 👉 FINAL fallback: never break UI
+    return new NextResponse('Preview error', { status: 500 })
   }
 }
