@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server'
 import { put } from '@vercel/blob'
-import sharp from 'sharp'
 import { prisma } from '@/lib/prisma'
 
 export const dynamic = 'force-dynamic'
@@ -13,13 +12,13 @@ const ITEMS = [
   {
     title: 'The Night Watch in Rembrandt Style',
     sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/The%20Night%20Watch%20-%20HD.jpg',
+      'https://commons.wikimedia.org/wiki/Special:Redirect/file/The%20Night%20Watch%20-%20HD.jpg?width=1400',
     prompt: 'Optimized public-domain source image: The Night Watch by Rembrandt',
   },
   {
     title: 'The Return of the Prodigal Son in Rembrandt Style',
     sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:FilePath/Rembrandt%20Harmensz%20van%20Rijn%20-%20Return%20of%20the%20Prodigal%20Son%20-%20Google%20Art%20Project.jpg',
+      'https://commons.wikimedia.org/wiki/Special:Redirect/file/Rembrandt%20Harmensz%20van%20Rijn%20-%20Return%20of%20the%20Prodigal%20Son%20-%20Google%20Art%20Project.jpg?width=1400',
     prompt:
       'Optimized public-domain source image: The Return of the Prodigal Son by Rembrandt',
   },
@@ -48,37 +47,22 @@ async function fetchSource(url: string) {
     throw new Error(`Failed to fetch source image: ${res.status}`)
   }
 
-  return Buffer.from(await res.arrayBuffer())
-}
+  const contentType = res.headers.get('content-type') || 'image/jpeg'
+  const buffer = await res.arrayBuffer()
 
-async function optimizeImage(buffer: Buffer) {
-  return sharp(buffer, {
-    limitInputPixels: 268402689,
-  })
-    .resize({
-      width: 1200,
-      height: 1200,
-      fit: 'inside',
-      withoutEnlargement: true,
-    })
-    .jpeg({
-      quality: 86,
-      progressive: true,
-    })
-    .toBuffer()
+  return { buffer, contentType }
 }
 
 async function uploadOptimized(item: (typeof ITEMS)[number]) {
-  const originalBuffer = await fetchSource(item.sourceUrl)
-  const optimizedBuffer = await optimizeImage(originalBuffer)
+  const { buffer, contentType } = await fetchSource(item.sourceUrl)
 
   const blob = await put(
-    `artworks/rembrandt/${safeFilePart(item.title)}-optimized.jpg`,
-    optimizedBuffer,
+    `artworks/rembrandt/${safeFilePart(item.title)}-optimized-source.jpg`,
+    buffer,
     {
       access: 'public',
       addRandomSuffix: true,
-      contentType: 'image/jpeg',
+      contentType,
     }
   )
 
