@@ -52,7 +52,9 @@ async function fetchSource(url: string) {
 }
 
 async function optimizeImage(buffer: Buffer) {
-  return sharp(buffer)
+  return sharp(buffer, {
+    limitInputPixels: 268402689,
+  })
     .resize({
       width: 1200,
       height: 1200,
