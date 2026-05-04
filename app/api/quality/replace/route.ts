@@ -1,18 +1,27 @@
 import { NextResponse } from 'next/server'
 import { put } from '@vercel/blob'
+import sharp from 'sharp'
 import { prisma } from '@/lib/prisma'
 
 export const dynamic = 'force-dynamic'
 export const maxDuration = 300
 
-const STYLE = 'PICASSO'
-const ARTIST = 'Pablo Picasso'
+const STYLE = 'REMBRANDT'
+const ARTIST = 'Rembrandt'
 
 const ITEMS = [
   {
-    title: 'Cubist Family Interior in Picasso Style',
+    title: 'The Night Watch in Rembrandt Style',
+    sourceUrl:
+      'https://commons.wikimedia.org/wiki/Special:FilePath/The%20Night%20Watch%20-%20HD.jpg',
+    prompt: 'Optimized public-domain source image: The Night Watch by Rembrandt',
+  },
+  {
+    title: 'The Return of the Prodigal Son in Rembrandt Style',
+    sourceUrl:
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Rembrandt%20Harmensz%20van%20Rijn%20-%20Return%20of%20the%20Prodigal%20Son%20-%20Google%20Art%20Project.jpg',
     prompt:
-      'premium cubist-inspired family interior scene, abstract adult figures seated together in a calm studio, simplified angular planes, warm rose, muted blue, cream, and gray palette, emotional modernist atmosphere, painterly texture, no children, no text, no direct copy of any existing artwork',
+      'Optimized public-domain source image: The Return of the Prodigal Son by Rembrandt',
   },
 ]
 
@@ -26,67 +35,56 @@ function safeFilePart(value: string) {
     .slice(0, 90)
 }
 
-async function generateOpenAiImageUrl(prompt: string) {
-  const apiKey = process.env.OPENAI_API_KEY
-  if (!apiKey) throw new Error('Missing OPENAI_API_KEY')
-
-  const response = await fetch('https://api.openai.com/v1/images/generations', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${apiKey}`,
-    },
-    body: JSON.stringify({
-      model: 'dall-e-3',
-      prompt,
-      size: '1024x1024',
-      quality: 'standard',
-      response_format: 'url',
-      n: 1,
-    }),
+async function fetchSource(url: string) {
+  const res = await fetch(url, {
     cache: 'no-store',
+    redirect: 'follow',
+    headers: {
+      'User-Agent': 'AI Image quality replacement bot; contact=juruandewitt@gmail.com',
+    },
   })
 
-  if (!response.ok) {
-    const text = await response.text()
-    throw new Error(`OpenAI image generation failed (${response.status}): ${text}`)
+  if (!res.ok) {
+    throw new Error(`Failed to fetch source image: ${res.status}`)
   }
 
-  const data = await response.json()
-  const imageUrl = data?.data?.[0]?.url
-
-  if (!imageUrl || typeof imageUrl !== 'string') {
-    throw new Error('No image URL returned from OpenAI')
-  }
-
-  return imageUrl
+  return Buffer.from(await res.arrayBuffer())
 }
 
-async function uploadGeneratedImageToBlob(openAiUrl: string, title: string) {
-  const imageResponse = await fetch(openAiUrl, { cache: 'no-store' })
+async function optimizeImage(buffer: Buffer) {
+  return sharp(buffer)
+    .resize({
+      width: 1200,
+      height: 1200,
+      fit: 'inside',
+      withoutEnlargement: true,
+    })
+    .jpeg({
+      quality: 86,
+      progressive: true,
+    })
+    .toBuffer()
+}
 
-  if (!imageResponse.ok) {
-    throw new Error(`Failed to download generated image: ${imageResponse.status}`)
-  }
-
-  const contentType = imageResponse.headers.get('content-type') || 'image/png'
-  const arrayBuffer = await imageResponse.arrayBuffer()
+async function uploadOptimized(item: (typeof ITEMS)[number]) {
+  const originalBuffer = await fetchSource(item.sourceUrl)
+  const optimizedBuffer = await optimizeImage(originalBuffer)
 
   const blob = await put(
-    `artworks/picasso/${safeFilePart(title)}-quality-generated.png`,
-    arrayBuffer,
+    `artworks/rembrandt/${safeFilePart(item.title)}-optimized.jpg`,
+    optimizedBuffer,
     {
       access: 'public',
       addRandomSuffix: true,
-      contentType,
+      contentType: 'image/jpeg',
     }
   )
 
-  if (!blob.url) throw new Error(`Blob upload failed for ${title}`)
+  if (!blob.url) throw new Error(`Blob upload failed for ${item.title}`)
   return blob.url
 }
 
-async function upsertArtwork(item: (typeof ITEMS)[number], imageUrl: string) {
+async function updateArtwork(item: (typeof ITEMS)[number], imageUrl: string) {
   const existing = await prisma.artwork.findFirst({
     where: {
       title: item.title,
@@ -95,39 +93,29 @@ async function upsertArtwork(item: (typeof ITEMS)[number], imageUrl: string) {
     select: { id: true },
   })
 
-  const artwork = existing
-    ? await prisma.artwork.update({
-        where: { id: existing.id },
-        data: {
-          artist: ARTIST,
-          thumbnail: imageUrl,
-          status: 'PUBLISHED' as any,
-        },
-        select: { id: true },
-      })
-    : await prisma.artwork.create({
-        data: {
-          title: item.title,
-          style: STYLE as any,
-          artist: ARTIST,
-          thumbnail: imageUrl,
-          status: 'PUBLISHED' as any,
-          tags: [],
-          price: 9.99,
-        },
-        select: { id: true },
-      })
+  if (!existing) {
+    throw new Error(`Artwork not found: ${item.title}`)
+  }
+
+  await prisma.artwork.update({
+    where: { id: existing.id },
+    data: {
+      artist: ARTIST,
+      thumbnail: imageUrl,
+      status: 'PUBLISHED' as any,
+    },
+  })
 
   await prisma.asset.create({
     data: {
-      artworkId: artwork.id,
+      artworkId: existing.id,
       originalUrl: imageUrl,
-      provider: 'ai-quality-generated-blob',
+      provider: 'public-domain-source-blob-optimized',
       prompt: item.prompt,
     },
   })
 
-  return artwork.id
+  return existing.id
 }
 
 export async function GET() {
@@ -135,9 +123,8 @@ export async function GET() {
 
   for (const item of ITEMS) {
     try {
-      const openAiUrl = await generateOpenAiImageUrl(item.prompt)
-      const imageUrl = await uploadGeneratedImageToBlob(openAiUrl, item.title)
-      const artworkId = await upsertArtwork(item, imageUrl)
+      const imageUrl = await uploadOptimized(item)
+      const artworkId = await updateArtwork(item, imageUrl)
 
       results.push({
         title: item.title,
@@ -155,7 +142,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Picasso final inspired replacement complete',
+    message: 'Rembrandt optimized thumbnail repair complete',
     style: STYLE,
     count: ITEMS.length,
     results,
