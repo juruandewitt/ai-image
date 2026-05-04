@@ -16,96 +16,85 @@ const FALLBACK_DATA_URL =
   )
 
 const FEATURED_ARTWORKS = [
-  {
-    title: 'Mona Lisa',
-    artist: 'Da Vinci',
-    href: '/artwork/cmngh924c0000gfum690drnoh',
-    image: '/api/artwork/preview/cmngh924c0000gfum690drnoh?w=700&v=home-v2',
-  },
-  {
-    title: 'Starry Night',
-    artist: 'Van Gogh',
-    href: '/explore/styles/van-gogh',
-    image: '/api/artwork/preview/cmnn9rage0000w3tg10mfkpev?w=700&v=home-v2',
-  },
-  {
-    title: 'Girl with a Pearl Earring',
-    artist: 'Vermeer',
-    href: '/explore/styles/johannes-vermeer',
-    image: '/api/artwork/preview/cmngfwqth000037jqrfa2havj?w=700&v=home-v2',
-  },
-  {
-    title: 'The Scream',
-    artist: 'Munch',
-    href: '/explore/styles/edvard-munch',
-    image: '/api/artwork/preview/cmnqg55x60000uijqc07vfxob?w=700&v=home-v2',
-  },
+  { title: 'Mona Lisa', artist: 'Da Vinci', href: '/artwork/cmngh924c0000gfum690drnoh', image: '/api/artwork/preview/cmngh924c0000gfum690drnoh?w=700&v=home-v3' },
+  { title: 'The Last Supper', artist: 'Da Vinci', href: '/artwork/cmngh9cth0003gfumhtsyipq0', image: '/api/artwork/preview/cmngh9cth0003gfumhtsyipq0?w=700&v=home-v3' },
+  { title: 'The Creation of Adam', artist: 'Michelangelo', href: '/artwork/cmo8fdmat00004fp854r2lodn', image: '/api/artwork/preview/cmo8fdmat00004fp854r2lodn?w=700&v=home-v3' },
+  { title: 'Starry Night', artist: 'Van Gogh', href: '/artwork/cmnn9rage0000w3tg10mfkpev', image: '/api/artwork/preview/cmnn9rage0000w3tg10mfkpev?w=700&v=home-v3' },
+  { title: 'Impression Sunrise', artist: 'Monet', href: '/artwork/cmnnla8tb0016rnlqgeqmkslu', image: '/api/artwork/preview/cmnnla8tb0016rnlqgeqmkslu?w=700&v=home-v3' },
+  { title: 'The Night Watch', artist: 'Rembrandt', href: '/artwork/cmnotftfu0000jd2lgw17a20y', image: '/api/artwork/preview/cmnotftfu0000jd2lgw17a20y?w=700&v=home-v3' },
+  { title: 'Girl with a Pearl Earring', artist: 'Vermeer', href: '/artwork/cmngfwqth000037jqrfa2havj', image: '/api/artwork/preview/cmngfwqth000037jqrfa2havj?w=700&v=home-v3' },
+  { title: 'The Scream', artist: 'Munch', href: '/artwork/cmnqg55x60000uijqc07vfxob', image: '/api/artwork/preview/cmnqg55x60000uijqc07vfxob?w=700&v=home-v3' },
+  { title: 'The Calling of Saint Matthew', artist: 'Caravaggio', href: '/artwork/cmnowyzys0000vtrya8t4lj2o', image: '/api/artwork/preview/cmnowyzys0000vtrya8t4lj2o?w=700&v=home-v3' },
+  { title: 'Autumn Rhythm', artist: 'Pollock', href: '/artwork/cmnp0xr2j0000utfte34mxv4n', image: '/api/artwork/preview/cmnp0xr2j0000utfte34mxv4n?w=700&v=home-v3' },
 ]
 
 const MASTER_COLLECTIONS = [
-  {
-    label: 'Da Vinci',
-    href: '/explore/styles/leonardo-da-vinci',
-    image: '/api/artwork/preview/cmngh924c0000gfum690drnoh?w=600&v=home-v2',
-  },
-  {
-    label: 'Van Gogh',
-    href: '/explore/styles/van-gogh',
-    image: '/api/artwork/preview/cmnn9rage0000w3tg10mfkpev?w=600&v=home-v2',
-  },
-  {
-    label: 'Monet',
-    href: '/explore/styles/claude-monet',
-    image: '/api/artwork/preview/cmnnla8tb0016rnlqgeqmkslu?w=600&v=home-v2',
-  },
-  {
-    label: 'Rembrandt',
-    href: '/explore/styles/rembrandt',
-    image: '/api/artwork/preview/cmnotftfu0000jd2lgw17a20y?w=600&v=home-v2',
-  },
-  {
-    label: 'Vermeer',
-    href: '/explore/styles/johannes-vermeer',
-    image: '/api/artwork/preview/cmngfwqth000037jqrfa2havj?w=600&v=home-v2',
-  },
-  {
-    label: 'Michelangelo',
-    href: '/explore/styles/michelangelo',
-    image: '/api/artwork/preview/cmo8fdmat00004fp854r2lodn?w=600&v=home-v2',
-  },
+  { label: 'Da Vinci', href: '/explore/styles/leonardo-da-vinci', image: '/api/artwork/preview/cmngh924c0000gfum690drnoh?w=600&v=home-v3' },
+  { label: 'Michelangelo', href: '/explore/styles/michelangelo', image: '/api/artwork/preview/cmo8fdmat00004fp854r2lodn?w=600&v=home-v3' },
+  { label: 'Van Gogh', href: '/explore/styles/van-gogh', image: '/api/artwork/preview/cmnn9rigq0003w3tgewx4e5c0?w=600&v=home-v3' },
+  { label: 'Monet', href: '/explore/styles/claude-monet', image: '/api/artwork/preview/cmnnla8tb0016rnlqgeqmkslu?w=600&v=home-v3' },
+  { label: 'Rembrandt', href: '/explore/styles/rembrandt', image: '/api/artwork/preview/cmnotftfu0000jd2lgw17a20y?w=600&v=home-v3' },
+  { label: 'Caravaggio', href: '/explore/styles/caravaggio', image: '/api/artwork/preview/cmnowyzys0000vtrya8t4lj2o?w=600&v=home-v3' },
+  { label: 'Vermeer', href: '/explore/styles/johannes-vermeer', image: '/api/artwork/preview/cmngfwqth000037jqrfa2havj?w=600&v=home-v3' },
+  { label: 'Munch', href: '/explore/styles/edvard-munch', image: '/api/artwork/preview/cmnqg55x60000uijqc07vfxob?w=600&v=home-v3' },
+  { label: 'Pollock', href: '/explore/styles/jackson-pollock', image: '/api/artwork/preview/cmnp0xr2j0000utfte34mxv4n?w=600&v=home-v3' },
+  { label: 'Dalí-Inspired', href: '/explore/styles/dali', image: '/api/artwork/preview/cmokppri00000vg99j9we8g9v?w=600&v=home-v3' },
+  { label: 'Picasso-Inspired', href: '/explore/styles/pablo-picasso', image: '/api/artwork/preview/cmolyv23t000011ndvoxcxgbw?w=600&v=home-v3' },
 ]
 
 const INSPIRED_COLLECTIONS = [
-  {
-    label: 'Dalí-Inspired',
-    href: '/explore/styles/dali',
-    image: '/api/artwork/preview/cmokppri00000vg99j9we8g9v?w=700&v=home-v2',
-    text: 'Surreal dream-world compositions with premium visual impact.',
-  },
-  {
-    label: 'Picasso-Inspired',
-    href: '/explore/styles/pablo-picasso',
-    image: '/api/artwork/preview/cmolyv23t000011ndvoxcxgbw?w=700&v=home-v2',
-    text: 'Original cubist-inspired works with bold modernist structure.',
-  },
-  {
-    label: 'Pollock-Inspired',
-    href: '/explore/styles/jackson-pollock',
-    image: '/api/artwork/preview/cmnp0xr2j0000utfte34mxv4n?w=700&v=home-v2',
-    text: 'Energetic drip-painting compositions made for bold spaces.',
-  },
+  { label: 'Dalí-Inspired', href: '/explore/styles/dali', image: '/api/artwork/preview/cmokppri00000vg99j9we8g9v?w=700&v=home-v3', text: 'Surreal dream-world compositions with premium visual impact.' },
+  { label: 'Picasso-Inspired', href: '/explore/styles/pablo-picasso', image: '/api/artwork/preview/cmolyv23t000011ndvoxcxgbw?w=700&v=home-v3', text: 'Original cubist-inspired works with bold modernist structure.' },
+  { label: 'Pollock-Inspired', href: '/explore/styles/jackson-pollock', image: '/api/artwork/preview/cmnp0xr2j0000utfte34mxv4n?w=700&v=home-v3', text: 'Energetic drip-painting compositions made for bold spaces.' },
 ]
+
+function ArtworkCard({ item }: { item: (typeof FEATURED_ARTWORKS)[number] }) {
+  return (
+    <Link
+      href={item.href}
+      className="group min-w-[220px] max-w-[220px] overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/50 transition hover:border-amber-400/70 md:min-w-[260px] md:max-w-[260px]"
+    >
+      <SafeImg
+        src={item.image}
+        fallbackSrc={FALLBACK_DATA_URL}
+        alt={item.title}
+        className="aspect-square w-full object-cover transition duration-500 group-hover:scale-105"
+      />
+      <div className="p-4">
+        <div className="line-clamp-1 text-sm font-semibold text-white">{item.title}</div>
+        <div className="text-xs text-slate-400">{item.artist}</div>
+      </div>
+    </Link>
+  )
+}
+
+function MasterCard({ item }: { item: (typeof MASTER_COLLECTIONS)[number] }) {
+  return (
+    <Link
+      href={item.href}
+      className="group min-w-[180px] max-w-[180px] overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/50 transition hover:border-amber-400/70 md:min-w-[220px] md:max-w-[220px]"
+    >
+      <SafeImg
+        src={item.image}
+        fallbackSrc={FALLBACK_DATA_URL}
+        alt={item.label}
+        className="aspect-square w-full object-cover transition duration-500 group-hover:scale-105"
+      />
+      <div className="p-4 text-center text-sm font-semibold">{item.label}</div>
+    </Link>
+  )
+}
 
 export default function HomePage() {
   return (
     <main className="space-y-20">
-      <section className="grid gap-10 md:grid-cols-[1fr_0.9fr] items-center">
+      <section className="grid items-center gap-10 md:grid-cols-[1fr_0.9fr]">
         <div className="space-y-7">
           <div className="inline-flex rounded-full border border-amber-400/30 bg-amber-400/10 px-4 py-2 text-xs font-medium text-amber-300">
             Premium AI art marketplace
           </div>
 
-          <h1 className="text-4xl md:text-6xl font-semibold leading-tight">
+          <h1 className="text-4xl font-semibold leading-tight md:text-6xl">
             Timeless masterpieces.
             <br />
             <span className="text-amber-400">Modern digital ownership.</span>
@@ -138,7 +127,7 @@ export default function HomePage() {
           className="group overflow-hidden rounded-3xl border border-slate-800 bg-slate-900/60 shadow-2xl"
         >
           <SafeImg
-            src="/api/artwork/preview/cmngh924c0000gfum690drnoh?w=1100&v=home-v2"
+            src="/api/artwork/preview/cmngh924c0000gfum690drnoh?w=1100&v=home-v3"
             fallbackSrc={FALLBACK_DATA_URL}
             alt="Mona Lisa"
             className="aspect-[4/5] w-full object-cover transition duration-500 group-hover:scale-105"
@@ -151,22 +140,10 @@ export default function HomePage() {
       </section>
 
       <section className="grid grid-cols-2 gap-6 rounded-3xl border border-slate-800 bg-slate-900/40 p-6 text-center md:grid-cols-4">
-        <div>
-          <div className="text-3xl font-semibold text-white">1000+</div>
-          <div className="text-sm text-slate-400">Digital artworks</div>
-        </div>
-        <div>
-          <div className="text-3xl font-semibold text-white">11</div>
-          <div className="text-sm text-slate-400">Master collections</div>
-        </div>
-        <div>
-          <div className="text-3xl font-semibold text-white">HD</div>
-          <div className="text-sm text-slate-400">Download-ready</div>
-        </div>
-        <div>
-          <div className="text-3xl font-semibold text-white">✔</div>
-          <div className="text-sm text-slate-400">Commercial rights</div>
-        </div>
+        <div><div className="text-3xl font-semibold text-white">1000+</div><div className="text-sm text-slate-400">Digital artworks</div></div>
+        <div><div className="text-3xl font-semibold text-white">11</div><div className="text-sm text-slate-400">Master collections</div></div>
+        <div><div className="text-3xl font-semibold text-white">HD</div><div className="text-sm text-slate-400">Download-ready</div></div>
+        <div><div className="text-3xl font-semibold text-white">✔</div><div className="text-sm text-slate-400">Commercial rights</div></div>
       </section>
 
       <section className="space-y-6">
@@ -174,56 +151,37 @@ export default function HomePage() {
           <div>
             <h2 className="text-3xl font-semibold">Iconic works</h2>
             <p className="mt-2 text-sm text-slate-400">
-              Recognition builds trust. Start with the strongest anchors.
+              Scroll through ten instantly recognizable trust anchors.
             </p>
           </div>
-
-          <Link href="/explore" className="text-sm text-amber-400 hover:underline">
+          <Link href="/explore" className="shrink-0 text-sm text-amber-400 hover:underline">
             Browse all →
           </Link>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-          {FEATURED_ARTWORKS.map((item) => (
-            <Link
-              key={item.title}
-              href={item.href}
-              className="group overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/50 transition hover:border-amber-400/70"
-            >
-              <SafeImg
-                src={item.image}
-                fallbackSrc={FALLBACK_DATA_URL}
-                alt={item.title}
-                className="aspect-square w-full object-cover transition duration-500 group-hover:scale-105"
-              />
-              <div className="p-4">
-                <div className="text-sm font-semibold text-white">{item.title}</div>
-                <div className="text-xs text-slate-400">{item.artist}</div>
-              </div>
-            </Link>
-          ))}
+        <div className="-mx-4 overflow-x-auto px-4 pb-3">
+          <div className="flex gap-4">
+            {FEATURED_ARTWORKS.map((item) => (
+              <ArtworkCard key={`${item.artist}-${item.title}`} item={item} />
+            ))}
+          </div>
         </div>
       </section>
 
       <section className="space-y-6">
-        <h2 className="text-3xl font-semibold">Explore the Masters</h2>
+        <div>
+          <h2 className="text-3xl font-semibold">Explore the Masters</h2>
+          <p className="mt-2 text-sm text-slate-400">
+            All Master collections are available in a horizontal gallery.
+          </p>
+        </div>
 
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
-          {MASTER_COLLECTIONS.map((item) => (
-            <Link
-              key={item.label}
-              href={item.href}
-              className="group overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/50 transition hover:border-amber-400/70"
-            >
-              <SafeImg
-                src={item.image}
-                fallbackSrc={FALLBACK_DATA_URL}
-                alt={item.label}
-                className="aspect-square w-full object-cover transition duration-500 group-hover:scale-105"
-              />
-              <div className="p-4 text-center text-sm font-semibold">{item.label}</div>
-            </Link>
-          ))}
+        <div className="-mx-4 overflow-x-auto px-4 pb-3">
+          <div className="flex gap-4">
+            {MASTER_COLLECTIONS.map((item) => (
+              <MasterCard key={item.label} item={item} />
+            ))}
+          </div>
         </div>
       </section>
 
