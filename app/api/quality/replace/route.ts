@@ -5,24 +5,15 @@ import { prisma } from '@/lib/prisma'
 export const dynamic = 'force-dynamic'
 export const maxDuration = 300
 
-const STYLE = 'REMBRANDT'
-const ARTIST = 'Rembrandt'
+const STYLE = 'VAN_GOGH'
+const ARTIST = 'Vincent van Gogh'
 
-const ITEMS = [
-  {
-    title: 'The Night Watch in Rembrandt Style',
-    sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:Redirect/file/The%20Night%20Watch%20-%20HD.jpg?width=1400',
-    prompt: 'Optimized public-domain source image: The Night Watch by Rembrandt',
-  },
-  {
-    title: 'The Return of the Prodigal Son in Rembrandt Style',
-    sourceUrl:
-      'https://commons.wikimedia.org/wiki/Special:Redirect/file/Rembrandt%20Harmensz%20van%20Rijn%20-%20Return%20of%20the%20Prodigal%20Son%20-%20Google%20Art%20Project.jpg?width=1400',
-    prompt:
-      'Optimized public-domain source image: The Return of the Prodigal Son by Rembrandt',
-  },
-]
+const ITEM = {
+  title: 'Starry Night in Van Gogh Style',
+  sourceUrl:
+    'https://commons.wikimedia.org/wiki/Special:FilePath/VanGogh-starry%20night.jpg',
+  prompt: 'Corrected public-domain source image: The Starry Night by Vincent van Gogh',
+}
 
 function safeFilePart(value: string) {
   return value
@@ -53,11 +44,11 @@ async function fetchSource(url: string) {
   return { buffer, contentType }
 }
 
-async function uploadOptimized(item: (typeof ITEMS)[number]) {
-  const { buffer, contentType } = await fetchSource(item.sourceUrl)
+async function uploadSourceToBlob() {
+  const { buffer, contentType } = await fetchSource(ITEM.sourceUrl)
 
   const blob = await put(
-    `artworks/rembrandt/${safeFilePart(item.title)}-optimized-source.jpg`,
+    `artworks/van-gogh/${safeFilePart(ITEM.title)}-correct-source.jpg`,
     buffer,
     {
       access: 'public',
@@ -66,22 +57,20 @@ async function uploadOptimized(item: (typeof ITEMS)[number]) {
     }
   )
 
-  if (!blob.url) throw new Error(`Blob upload failed for ${item.title}`)
+  if (!blob.url) throw new Error(`Blob upload failed for ${ITEM.title}`)
   return blob.url
 }
 
-async function updateArtwork(item: (typeof ITEMS)[number], imageUrl: string) {
+async function updateArtwork(imageUrl: string) {
   const existing = await prisma.artwork.findFirst({
     where: {
-      title: item.title,
+      title: ITEM.title,
       style: STYLE as any,
     },
     select: { id: true },
   })
 
-  if (!existing) {
-    throw new Error(`Artwork not found: ${item.title}`)
-  }
+  if (!existing) throw new Error(`Artwork not found: ${ITEM.title}`)
 
   await prisma.artwork.update({
     where: { id: existing.id },
@@ -96,8 +85,8 @@ async function updateArtwork(item: (typeof ITEMS)[number], imageUrl: string) {
     data: {
       artworkId: existing.id,
       originalUrl: imageUrl,
-      provider: 'public-domain-source-blob-optimized',
-      prompt: item.prompt,
+      provider: 'public-domain-source-blob-corrected',
+      prompt: ITEM.prompt,
     },
   })
 
@@ -105,32 +94,32 @@ async function updateArtwork(item: (typeof ITEMS)[number], imageUrl: string) {
 }
 
 export async function GET() {
-  const results = []
+  try {
+    const imageUrl = await uploadSourceToBlob()
+    const artworkId = await updateArtwork(imageUrl)
 
-  for (const item of ITEMS) {
-    try {
-      const imageUrl = await uploadOptimized(item)
-      const artworkId = await updateArtwork(item, imageUrl)
-
-      results.push({
-        title: item.title,
+    return NextResponse.json({
+      message: 'Van Gogh Starry Night corrected',
+      style: STYLE,
+      result: {
+        title: ITEM.title,
         success: true,
         artworkId,
         imageUrl,
-      })
-    } catch (error) {
-      results.push({
-        title: item.title,
-        success: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
-      })
-    }
+      },
+    })
+  } catch (error) {
+    return NextResponse.json(
+      {
+        message: 'Van Gogh Starry Night correction failed',
+        style: STYLE,
+        result: {
+          title: ITEM.title,
+          success: false,
+          error: error instanceof Error ? error.message : 'Unknown error',
+        },
+      },
+      { status: 500 }
+    )
   }
-
-  return NextResponse.json({
-    message: 'Rembrandt optimized thumbnail repair complete',
-    style: STYLE,
-    count: ITEMS.length,
-    results,
-  })
 }
