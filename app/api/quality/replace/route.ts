@@ -15,25 +15,9 @@ const ITEMS = [
   'Deep Space Horizon',
   'Cosmic Storm',
   'Planetary Rings',
-  'Astronaut over Blue Planet',
-  'Distant Exoplanet',
-  'Star Birth Nebula',
-  'Black Hole Accretion Disk',
-  'Lunar Outpost',
-  'Mars Colony Vista',
-  'Jupiter Clouds',
-  'Saturn Sunrise',
-  'Interstellar Portal',
-  'Alien Moon Landscape',
-  'Cosmic Ocean',
-  'Aurora over Ice Planet',
-  'Solar Flare',
-  'Asteroid Belt',
-  'Space Station Dawn',
 ].map((name) => ({
   title: `${name} - Space Universe Theme`,
-  prompt:
-    `premium cinematic space artwork, ${name}, ultra detailed, deep cosmic atmosphere, dramatic lighting, vibrant nebula colors, high-end digital art, commercial poster quality, no text, no watermark`,
+  prompt: `premium cinematic space artwork, ${name}, ultra detailed, deep cosmic atmosphere, dramatic lighting, vibrant nebula colors, high-end digital art, commercial poster quality, no text, no watermark`,
 }))
 
 function safeFilePart(value: string) {
@@ -74,7 +58,6 @@ async function generateOpenAiImageUrl(prompt: string) {
 
   const data = await response.json()
   const imageUrl = data?.data?.[0]?.url
-
   if (!imageUrl || typeof imageUrl !== 'string') {
     throw new Error('No image URL returned from OpenAI')
   }
@@ -84,7 +67,6 @@ async function generateOpenAiImageUrl(prompt: string) {
 
 async function uploadGeneratedImageToBlob(openAiUrl: string, title: string) {
   const imageResponse = await fetch(openAiUrl, { cache: 'no-store' })
-
   if (!imageResponse.ok) {
     throw new Error(`Failed to download generated image: ${imageResponse.status}`)
   }
@@ -108,9 +90,7 @@ async function uploadGeneratedImageToBlob(openAiUrl: string, title: string) {
 
 async function upsertArtwork(item: (typeof ITEMS)[number], imageUrl: string) {
   const existing = await prisma.artwork.findFirst({
-    where: {
-      title: item.title,
-    },
+    where: { title: item.title },
     select: { id: true },
   })
 
@@ -159,12 +139,7 @@ export async function GET() {
       const imageUrl = await uploadGeneratedImageToBlob(openAiUrl, item.title)
       const artworkId = await upsertArtwork(item, imageUrl)
 
-      results.push({
-        title: item.title,
-        success: true,
-        artworkId,
-        imageUrl,
-      })
+      results.push({ title: item.title, success: true, artworkId, imageUrl })
     } catch (error) {
       results.push({
         title: item.title,
@@ -175,7 +150,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Space & Universe theme batch complete',
+    message: 'Space & Universe theme batch 1 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
