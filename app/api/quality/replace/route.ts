@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Crimson Supernova Remnant', 'crimson red, hot pink, black, glowing white'],
-  ['Golden Spiral Galaxy', 'gold, amber, deep indigo, soft white stars'],
-  ['Frozen Neptune Orbit', 'icy cyan, navy blue, silver, pale lavender'],
-  ['Purple Nebula Canyon', 'purple, violet, magenta, black, starlight white'],
-  ['Emerald Alien Atmosphere', 'emerald green, jade, black, pale yellow'],
-  ['White Dwarf Silence', 'white, pearl gray, soft blue, deep black'],
-  ['Orange Dust Planet', 'burnt orange, rust, bronze, dark brown'],
-  ['Blue Star Cluster', 'electric blue, cobalt, white, midnight navy'],
-  ['Pink Cosmic Bloom', 'rose pink, coral, violet, black'],
-  ['Dark Matter Veil', 'black, charcoal, silver, faint blue glow'],
+  ['Ruby Quasar Jet', 'ruby red, violet, white plasma, deep black'],
+  ['Turquoise Star Lagoon', 'turquoise, aqua, pearl white, midnight blue'],
+  ['Bronze Planet Graveyard', 'bronze, rust, smoky gray, black'],
+  ['Violet Wormhole Gate', 'violet, electric purple, blue lightning, black'],
+  ['Green Ion Storm', 'acid green, emerald, dark teal, white sparks'],
+  ['Silver Lunar Eclipse', 'silver, charcoal, pale blue, soft white'],
+  ['Rose Gold Galaxy Rift', 'rose gold, champagne, mauve, deep indigo'],
+  ['Blue Ice Asteroid Field', 'ice blue, cobalt, white, slate gray'],
+  ['Red Giant Starfall', 'scarlet, orange, molten yellow, dark maroon'],
+  ['Opal Nebula Garden', 'opal pink, mint, pale lavender, pearl white'],
 ].map(([name, palette]) => ({
   title: `${name} - Space Universe Theme`,
   prompt: `premium cinematic space artwork, ${name}, distinct color palette of ${palette}, ultra detailed, deep cosmic atmosphere, dramatic lighting, high-end digital art, commercial poster quality, varied composition, no text, no watermark`,
@@ -167,7 +167,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Space & Universe theme batch 4 complete',
+    message: 'Space & Universe theme batch 5 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
