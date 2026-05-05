@@ -8,17 +8,22 @@ export const maxDuration = 300
 const THEME = 'space-universe'
 const THEME_TAG = `theme:${THEME}`
 const ARTIST = 'AI Image'
-const STYLE = 'POLLOCK' // valid existing enum; theme pages use tags
+const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  'Astronaut over Blue Planet',
-  'Distant Exoplanet',
-  'Star Birth Nebula',
-  'Black Hole Accretion Disk',
-  'Lunar Outpost',
-].map((name) => ({
+  ['Mars Colony Vista', 'rust red, copper orange, dusty gold, deep navy'],
+  ['Jupiter Cloud Kingdom', 'cream, burnt orange, burgundy, storm gray'],
+  ['Saturn Ice Sunrise', 'icy blue, pale gold, silver white, violet shadow'],
+  ['Interstellar Portal', 'electric cyan, magenta, black, ultraviolet'],
+  ['Alien Moon Landscape', 'emerald green, teal, black rock, pale yellow sky'],
+  ['Cosmic Ocean', 'deep sapphire, turquoise, white foam nebula, pearl'],
+  ['Aurora over Ice Planet', 'lime green, violet, icy blue, midnight black'],
+  ['Solar Flare Cathedral', 'molten yellow, fiery orange, crimson, black'],
+  ['Asteroid Belt Drift', 'charcoal, bronze, muted blue, starlight white'],
+  ['Space Station Dawn', 'white metal, sunrise pink, soft orange, Earth blue'],
+].map(([name, palette]) => ({
   title: `${name} - Space Universe Theme`,
-  prompt: `premium cinematic space artwork, ${name}, ultra detailed, deep cosmic atmosphere, dramatic lighting, vibrant nebula colors, high-end digital art, commercial poster quality, no text, no watermark`,
+  prompt: `premium cinematic space artwork, ${name}, distinct color palette of ${palette}, ultra detailed, deep cosmic atmosphere, dramatic lighting, high-end digital art, commercial poster quality, varied composition, no text, no watermark`,
 }))
 
 function safeFilePart(value: string) {
@@ -162,7 +167,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Space & Universe theme batch 2 complete',
+    message: 'Space & Universe theme varied color batch complete',
     theme: THEME,
     count: ITEMS.length,
     results,
