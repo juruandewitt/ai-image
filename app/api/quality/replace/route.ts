@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Ruby Quasar Jet', 'ruby red, violet, white plasma, deep black'],
-  ['Turquoise Star Lagoon', 'turquoise, aqua, pearl white, midnight blue'],
-  ['Bronze Planet Graveyard', 'bronze, rust, smoky gray, black'],
-  ['Violet Wormhole Gate', 'violet, electric purple, blue lightning, black'],
-  ['Green Ion Storm', 'acid green, emerald, dark teal, white sparks'],
-  ['Silver Lunar Eclipse', 'silver, charcoal, pale blue, soft white'],
-  ['Rose Gold Galaxy Rift', 'rose gold, champagne, mauve, deep indigo'],
-  ['Blue Ice Asteroid Field', 'ice blue, cobalt, white, slate gray'],
-  ['Red Giant Starfall', 'scarlet, orange, molten yellow, dark maroon'],
-  ['Opal Nebula Garden', 'opal pink, mint, pale lavender, pearl white'],
+  ['Crystal Comet Trail', 'crystal white, icy blue, silver, deep indigo'],
+  ['Neon Binary Stars', 'neon pink, electric blue, black, white flares'],
+  ['Golden Eclipse Horizon', 'gold, black, burnt orange, soft amber'],
+  ['Emerald Planet Rise', 'emerald green, teal, midnight navy, pale gold'],
+  ['Violet Deep Space Reef', 'violet, lavender, aqua, black'],
+  ['Scarlet Nebula Rift', 'scarlet red, magenta, orange, dark purple'],
+  ['Frozen Galaxy Bridge', 'ice blue, white, cobalt, silver gray'],
+  ['Celestial Dust Cathedral', 'warm beige, bronze, pearl, deep navy'],
+  ['Quantum Star Garden', 'cyan, lime green, purple, black'],
+  ['Silent Edge of the Universe', 'black, charcoal, dim blue, distant white stars'],
 ].map(([name, palette]) => ({
   title: `${name} - Space Universe Theme`,
   prompt: `premium cinematic space artwork, ${name}, distinct color palette of ${palette}, ultra detailed, deep cosmic atmosphere, dramatic lighting, high-end digital art, commercial poster quality, varied composition, no text, no watermark`,
@@ -167,7 +167,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Space & Universe theme batch 5 complete',
+    message: 'Space & Universe theme final batch complete',
     theme: THEME,
     count: ITEMS.length,
     results,
