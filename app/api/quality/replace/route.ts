@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { put } from '@vercel/blob'
 import { prisma } from '@/lib/prisma'
 
 export const dynamic = 'force-dynamic'
@@ -7,50 +8,84 @@ export const maxDuration = 300
 const THEME = 'space-universe'
 const THEME_TAG = `theme:${THEME}`
 const ARTIST = 'AI Image'
-
-// Use an existing valid Style enum.
-// Theme pages rely on tags, not style.
-const STYLE = 'POLLOCK'
+const STYLE = 'POLLOCK' // valid existing enum; theme pages use tags
 
 const ITEMS = [
-  {
-    title: 'Nebula Dreamscape - Space Universe Theme',
-    imageUrl:
-      'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/themes/space-universe/nebula-dreamscape-space-universe-theme-NuKZII6jkuRCPNIZzXgIpfTtwlnRDi.png',
-    prompt:
-      'premium cinematic space artwork, Nebula Dreamscape, ultra detailed, deep cosmic atmosphere, dramatic lighting, vibrant nebula colors, high-end digital art, commercial poster quality, no text, no watermark',
-  },
-  {
-    title: 'Galaxy Core - Space Universe Theme',
-    imageUrl:
-      'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/themes/space-universe/galaxy-core-space-universe-theme-lha2yp55NTnaP4haxWJJlGC5Qmg4zM.png',
-    prompt:
-      'premium cinematic space artwork, Galaxy Core, ultra detailed, deep cosmic atmosphere, dramatic lighting, vibrant nebula colors, high-end digital art, commercial poster quality, no text, no watermark',
-  },
-  {
-    title: 'Deep Space Horizon - Space Universe Theme',
-    imageUrl:
-      'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/themes/space-universe/deep-space-horizon-space-universe-theme-04uGmAdUbsA4mS6wiVFmYTk6171h6n.png',
-    prompt:
-      'premium cinematic space artwork, Deep Space Horizon, ultra detailed, deep cosmic atmosphere, dramatic lighting, vibrant nebula colors, high-end digital art, commercial poster quality, no text, no watermark',
-  },
-  {
-    title: 'Cosmic Storm - Space Universe Theme',
-    imageUrl:
-      'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/themes/space-universe/cosmic-storm-space-universe-theme-UoZfAilCsDKHqsQQrapnfGFF9UqA5H.png',
-    prompt:
-      'premium cinematic space artwork, Cosmic Storm, ultra detailed, deep cosmic atmosphere, dramatic lighting, vibrant nebula colors, high-end digital art, commercial poster quality, no text, no watermark',
-  },
-  {
-    title: 'Planetary Rings - Space Universe Theme',
-    imageUrl:
-      'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/themes/space-universe/planetary-rings-space-universe-theme-ER0qFIB5NYtY1FgexdmXj4JleLfYl9.png',
-    prompt:
-      'premium cinematic space artwork, Planetary Rings, ultra detailed, deep cosmic atmosphere, dramatic lighting, vibrant nebula colors, high-end digital art, commercial poster quality, no text, no watermark',
-  },
-]
+  'Astronaut over Blue Planet',
+  'Distant Exoplanet',
+  'Star Birth Nebula',
+  'Black Hole Accretion Disk',
+  'Lunar Outpost',
+].map((name) => ({
+  title: `${name} - Space Universe Theme`,
+  prompt: `premium cinematic space artwork, ${name}, ultra detailed, deep cosmic atmosphere, dramatic lighting, vibrant nebula colors, high-end digital art, commercial poster quality, no text, no watermark`,
+}))
 
-async function upsertArtwork(item: (typeof ITEMS)[number]) {
+function safeFilePart(value: string) {
+  return value
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 90)
+}
+
+async function generateOpenAiImageUrl(prompt: string) {
+  const apiKey = process.env.OPENAI_API_KEY
+  if (!apiKey) throw new Error('Missing OPENAI_API_KEY')
+
+  const response = await fetch('https://api.openai.com/v1/images/generations', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify({
+      model: 'dall-e-3',
+      prompt,
+      size: '1024x1024',
+      quality: 'standard',
+      response_format: 'url',
+      n: 1,
+    }),
+    cache: 'no-store',
+  })
+
+  if (!response.ok) {
+    const text = await response.text()
+    throw new Error(`OpenAI image generation failed (${response.status}): ${text}`)
+  }
+
+  const data = await response.json()
+  const imageUrl = data?.data?.[0]?.url
+  if (!imageUrl || typeof imageUrl !== 'string') throw new Error('No image URL returned')
+
+  return imageUrl
+}
+
+async function uploadGeneratedImageToBlob(openAiUrl: string, title: string) {
+  const imageResponse = await fetch(openAiUrl, { cache: 'no-store' })
+  if (!imageResponse.ok) throw new Error(`Failed to download generated image: ${imageResponse.status}`)
+
+  const contentType = imageResponse.headers.get('content-type') || 'image/png'
+  const arrayBuffer = await imageResponse.arrayBuffer()
+
+  const blob = await put(
+    `artworks/themes/${THEME}/${safeFilePart(title)}.png`,
+    arrayBuffer,
+    {
+      access: 'public',
+      addRandomSuffix: true,
+      contentType,
+    }
+  )
+
+  if (!blob.url) throw new Error(`Blob upload failed for ${title}`)
+  return blob.url
+}
+
+async function upsertArtwork(item: (typeof ITEMS)[number], imageUrl: string) {
   const tags = [
     THEME_TAG,
     'theme',
@@ -71,7 +106,7 @@ async function upsertArtwork(item: (typeof ITEMS)[number]) {
         where: { id: existing.id },
         data: {
           artist: ARTIST,
-          thumbnail: item.imageUrl,
+          thumbnail: imageUrl,
           status: 'PUBLISHED' as any,
           tags,
         },
@@ -82,7 +117,7 @@ async function upsertArtwork(item: (typeof ITEMS)[number]) {
           title: item.title,
           style: STYLE as any,
           artist: ARTIST,
-          thumbnail: item.imageUrl,
+          thumbnail: imageUrl,
           status: 'PUBLISHED' as any,
           tags,
           price: 9.99,
@@ -93,7 +128,7 @@ async function upsertArtwork(item: (typeof ITEMS)[number]) {
   await prisma.asset.create({
     data: {
       artworkId: artwork.id,
-      originalUrl: item.imageUrl,
+      originalUrl: imageUrl,
       provider: 'theme-ai-generated-blob',
       prompt: item.prompt,
     },
@@ -107,13 +142,15 @@ export async function GET() {
 
   for (const item of ITEMS) {
     try {
-      const artworkId = await upsertArtwork(item)
+      const openAiUrl = await generateOpenAiImageUrl(item.prompt)
+      const imageUrl = await uploadGeneratedImageToBlob(openAiUrl, item.title)
+      const artworkId = await upsertArtwork(item, imageUrl)
 
       results.push({
         title: item.title,
         success: true,
         artworkId,
-        imageUrl: item.imageUrl,
+        imageUrl,
       })
     } catch (error) {
       results.push({
@@ -125,7 +162,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Space & Universe theme batch 1 repaired',
+    message: 'Space & Universe theme batch 2 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
