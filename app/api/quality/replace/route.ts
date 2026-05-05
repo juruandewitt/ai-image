@@ -5,25 +5,25 @@ import { prisma } from '@/lib/prisma'
 export const dynamic = 'force-dynamic'
 export const maxDuration = 300
 
-const THEME = 'space-universe'
+const THEME = 'landscapes'
 const THEME_TAG = `theme:${THEME}`
 const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Crystal Comet Trail', 'crystal white, icy blue, silver, deep indigo'],
-  ['Neon Binary Stars', 'neon pink, electric blue, black, white flares'],
-  ['Golden Eclipse Horizon', 'gold, black, burnt orange, soft amber'],
-  ['Emerald Planet Rise', 'emerald green, teal, midnight navy, pale gold'],
-  ['Violet Deep Space Reef', 'violet, lavender, aqua, black'],
-  ['Scarlet Nebula Rift', 'scarlet red, magenta, orange, dark purple'],
-  ['Frozen Galaxy Bridge', 'ice blue, white, cobalt, silver gray'],
-  ['Celestial Dust Cathedral', 'warm beige, bronze, pearl, deep navy'],
-  ['Quantum Star Garden', 'cyan, lime green, purple, black'],
-  ['Silent Edge of the Universe', 'black, charcoal, dim blue, distant white stars'],
+  ['Alpine Sunrise Peaks', 'golden sunrise, snow white, deep blue shadows'],
+  ['Misty Forest Path', 'soft green, fog gray, warm light rays'],
+  ['Ocean Cliff Sunset', 'orange sunset, deep blue sea, dark cliffs'],
+  ['Desert Dunes at Dawn', 'sand gold, pale pink sky, soft shadows'],
+  ['Lake Reflection Serenity', 'mirror lake, blue sky, green mountains'],
+  ['Autumn Mountain Valley', 'burnt orange, yellow, forest green'],
+  ['Tropical Beach Escape', 'turquoise water, white sand, palm green'],
+  ['Storm over Open Plains', 'dark gray clouds, muted green, lightning white'],
+  ['Frozen Lake Horizon', 'icy blue, white frost, pale sky'],
+  ['Countryside Golden Fields', 'gold wheat, soft blue sky, warm sunlight'],
 ].map(([name, palette]) => ({
-  title: `${name} - Space Universe Theme`,
-  prompt: `premium cinematic space artwork, ${name}, distinct color palette of ${palette}, ultra detailed, deep cosmic atmosphere, dramatic lighting, high-end digital art, commercial poster quality, varied composition, no text, no watermark`,
+  title: `${name} - Landscape Theme`,
+  prompt: `ultra high-end landscape photography style, ${name}, ${palette}, highly realistic with slight cinematic enhancement, natural lighting, depth, atmospheric perspective, professional composition, print quality, no people, no text, no watermark`,
 }))
 
 function safeFilePart(value: string) {
@@ -64,21 +64,21 @@ async function generateOpenAiImageUrl(prompt: string) {
 
   const data = await response.json()
   const imageUrl = data?.data?.[0]?.url
-  if (!imageUrl || typeof imageUrl !== 'string') throw new Error('No image URL returned')
+  if (!imageUrl) throw new Error('No image URL returned')
 
   return imageUrl
 }
 
 async function uploadGeneratedImageToBlob(openAiUrl: string, title: string) {
   const imageResponse = await fetch(openAiUrl, { cache: 'no-store' })
-  if (!imageResponse.ok) throw new Error(`Failed to download generated image: ${imageResponse.status}`)
+  if (!imageResponse.ok) throw new Error(`Failed to download image: ${imageResponse.status}`)
 
   const contentType = imageResponse.headers.get('content-type') || 'image/png'
-  const arrayBuffer = await imageResponse.arrayBuffer()
+  const buffer = await imageResponse.arrayBuffer()
 
   const blob = await put(
     `artworks/themes/${THEME}/${safeFilePart(title)}.png`,
-    arrayBuffer,
+    buffer,
     {
       access: 'public',
       addRandomSuffix: true,
@@ -86,19 +86,17 @@ async function uploadGeneratedImageToBlob(openAiUrl: string, title: string) {
     }
   )
 
-  if (!blob.url) throw new Error(`Blob upload failed for ${title}`)
+  if (!blob.url) throw new Error('Blob upload failed')
   return blob.url
 }
 
 async function upsertArtwork(item: (typeof ITEMS)[number], imageUrl: string) {
   const tags = [
     THEME_TAG,
-    'theme',
-    'space',
-    'universe',
-    'galaxy',
-    'sci-fi',
+    'landscape',
+    'nature',
     'wallpaper',
+    'decor',
   ]
 
   const existing = await prisma.artwork.findFirst({
@@ -110,10 +108,9 @@ async function upsertArtwork(item: (typeof ITEMS)[number], imageUrl: string) {
     ? await prisma.artwork.update({
         where: { id: existing.id },
         data: {
-          artist: ARTIST,
           thumbnail: imageUrl,
-          status: 'PUBLISHED' as any,
           tags,
+          status: 'PUBLISHED' as any,
         },
         select: { id: true },
       })
@@ -123,8 +120,8 @@ async function upsertArtwork(item: (typeof ITEMS)[number], imageUrl: string) {
           style: STYLE as any,
           artist: ARTIST,
           thumbnail: imageUrl,
-          status: 'PUBLISHED' as any,
           tags,
+          status: 'PUBLISHED' as any,
           price: 9.99,
         },
         select: { id: true },
@@ -134,7 +131,7 @@ async function upsertArtwork(item: (typeof ITEMS)[number], imageUrl: string) {
     data: {
       artworkId: artwork.id,
       originalUrl: imageUrl,
-      provider: 'theme-ai-generated-blob',
+      provider: 'theme-ai-generated',
       prompt: item.prompt,
     },
   })
@@ -147,27 +144,22 @@ export async function GET() {
 
   for (const item of ITEMS) {
     try {
-      const openAiUrl = await generateOpenAiImageUrl(item.prompt)
-      const imageUrl = await uploadGeneratedImageToBlob(openAiUrl, item.title)
-      const artworkId = await upsertArtwork(item, imageUrl)
+      const aiUrl = await generateOpenAiImageUrl(item.prompt)
+      const blobUrl = await uploadGeneratedImageToBlob(aiUrl, item.title)
+      const artworkId = await upsertArtwork(item, blobUrl)
 
-      results.push({
-        title: item.title,
-        success: true,
-        artworkId,
-        imageUrl,
-      })
-    } catch (error) {
+      results.push({ title: item.title, success: true, artworkId, imageUrl: blobUrl })
+    } catch (err) {
       results.push({
         title: item.title,
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: err instanceof Error ? err.message : 'Unknown error',
       })
     }
   }
 
   return NextResponse.json({
-    message: 'Space & Universe theme final batch complete',
+    message: 'Landscapes batch 1 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
