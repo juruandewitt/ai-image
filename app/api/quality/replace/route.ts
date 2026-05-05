@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Mars Colony Vista', 'rust red, copper orange, dusty gold, deep navy'],
-  ['Jupiter Cloud Kingdom', 'cream, burnt orange, burgundy, storm gray'],
-  ['Saturn Ice Sunrise', 'icy blue, pale gold, silver white, violet shadow'],
-  ['Interstellar Portal', 'electric cyan, magenta, black, ultraviolet'],
-  ['Alien Moon Landscape', 'emerald green, teal, black rock, pale yellow sky'],
-  ['Cosmic Ocean', 'deep sapphire, turquoise, white foam nebula, pearl'],
-  ['Aurora over Ice Planet', 'lime green, violet, icy blue, midnight black'],
-  ['Solar Flare Cathedral', 'molten yellow, fiery orange, crimson, black'],
-  ['Asteroid Belt Drift', 'charcoal, bronze, muted blue, starlight white'],
-  ['Space Station Dawn', 'white metal, sunrise pink, soft orange, Earth blue'],
+  ['Crimson Supernova Remnant', 'crimson red, hot pink, black, glowing white'],
+  ['Golden Spiral Galaxy', 'gold, amber, deep indigo, soft white stars'],
+  ['Frozen Neptune Orbit', 'icy cyan, navy blue, silver, pale lavender'],
+  ['Purple Nebula Canyon', 'purple, violet, magenta, black, starlight white'],
+  ['Emerald Alien Atmosphere', 'emerald green, jade, black, pale yellow'],
+  ['White Dwarf Silence', 'white, pearl gray, soft blue, deep black'],
+  ['Orange Dust Planet', 'burnt orange, rust, bronze, dark brown'],
+  ['Blue Star Cluster', 'electric blue, cobalt, white, midnight navy'],
+  ['Pink Cosmic Bloom', 'rose pink, coral, violet, black'],
+  ['Dark Matter Veil', 'black, charcoal, silver, faint blue glow'],
 ].map(([name, palette]) => ({
   title: `${name} - Space Universe Theme`,
   prompt: `premium cinematic space artwork, ${name}, distinct color palette of ${palette}, ultra detailed, deep cosmic atmosphere, dramatic lighting, high-end digital art, commercial poster quality, varied composition, no text, no watermark`,
@@ -167,7 +167,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Space & Universe theme varied color batch complete',
+    message: 'Space & Universe theme batch 4 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
