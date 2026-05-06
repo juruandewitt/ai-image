@@ -11,19 +11,19 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Nordic Snow Valley - Landscape Theme', 'snow white, blue twilight, distant pine forest, calm valley'],
-  ['Icelandic Waterfall Cliffs - Landscape Theme', 'white waterfall, black cliffs, moss green, soft gray sky'],
-  ['Canyon Sunset Overlook - Landscape Theme', 'red canyon rock, orange sunset, purple shadows'],
-  ['Misty Blue Ridge Mountains - Landscape Theme', 'blue mountain layers, soft fog, pale morning light'],
-  ['Tropical Jungle Lagoon - Landscape Theme', 'emerald jungle, turquoise lagoon, sunlit mist'],
-  ['Arctic Glacier Coast - Landscape Theme', 'ice blue, white glacier, dark ocean, pale sky'],
-  ['Golden Rice Terrace Valley - Landscape Theme', 'golden terraces, green hills, warm sunrise'],
-  ['Rocky Coast Lighthouse View - Landscape Theme', 'stormy sea, white lighthouse, dark rocks, muted blue sky'],
-  ['Quiet Desert Oasis - Landscape Theme', 'warm sand, date palms, reflective water, soft dawn light'],
-  ['Spring Meadow Mountain View - Landscape Theme', 'wildflower meadow, snow peaks, bright spring sky'],
-].map(([title, palette]) => ({
-  title,
-  prompt: `ultra high-end landscape photography style, ${title.replace(' - Landscape Theme', '')}, ${palette}, 70 percent photorealistic and 30 percent cinematic, natural lighting, atmospheric depth, professional composition, premium wall art, print quality, no people, no animals, no buildings with visible occupants, no text, no watermark`,
+  ['Sunlit Redwood Forest', 'towering redwoods, warm golden light, deep green forest floor'],
+  ['Maldives Lagoon Aerial', 'turquoise lagoon, white sandbars, deep blue ocean'],
+  ['Dolomite Mountain Pass', 'sharp limestone peaks, alpine grass, clear morning sky'],
+  ['Namib Desert Twilight', 'orange dunes, purple dusk sky, soft wind patterns'],
+  ['Irish Coastal Cliffs', 'emerald grass, dramatic cliffs, deep Atlantic blue'],
+  ['Japanese Maple Garden', 'red maple leaves, moss stones, calm reflecting pond'],
+  ['Canadian Lake Autumn', 'orange forest, still lake, snow-dusted mountains'],
+  ['New Zealand Valley Light', 'green valley, braided river, dramatic mountain backdrop'],
+  ['Mediterranean Coastline', 'blue sea, white cliffs, sunlit coastal vegetation'],
+  ['Calm River at Golden Hour', 'soft river reflections, warm amber light, green riverbanks'],
+].map(([name, palette]) => ({
+  title: `${name} - Landscape Theme`,
+  prompt: `ultra high-end landscape photography style, ${name}, ${palette}, 70 percent photorealistic and 30 percent cinematic, natural lighting, atmospheric depth, professional composition, premium wall art, print quality, no people, no animals, no text, no watermark`,
 }))
 
 function safeFilePart(value: string) {
@@ -159,7 +159,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Landscapes batch 4 complete',
+    message: 'Landscapes batch 5 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
