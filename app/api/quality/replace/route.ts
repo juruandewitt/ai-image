@@ -5,23 +5,25 @@ import { prisma } from '@/lib/prisma'
 export const dynamic = 'force-dynamic'
 export const maxDuration = 300
 
-const THEME = 'landscapes'
+const THEME = 'wildlife'
 const THEME_TAG = `theme:${THEME}`
 const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  [
-    'Snow Silence Mountain Basin',
-    'wide mountain basin covered in untouched snow, pale blue shadows, soft sunrise glow, distant peaks',
-  ],
-  [
-    'Moonlit Desert Arch',
-    'natural desert stone arch under moonlight, warm sandstone, deep blue night sky, subtle stars',
-  ],
-].map(([name, palette]) => ({
-  title: `${name} - Landscape Theme`,
-  prompt: `ultra high-end landscape photography style, ${name}, ${palette}, 70 percent photorealistic and 30 percent cinematic, natural lighting, atmospheric depth, professional composition, premium wall art, print quality, no people, no animals, no text, no watermark`,
+  ['Golden Lion Portrait', 'majestic lion, dark background, golden rim lighting'],
+  ['Elephant Herd at Sunset', 'warm sunset, dusty savannah, soft silhouettes'],
+  ['Bald Eagle Close-Up', 'sharp feathers, piercing eyes, clean sky background'],
+  ['Leopard in Tree', 'spotted leopard, tree branch, soft green jungle blur'],
+  ['Wolf in Snow Forest', 'gray wolf, snow-covered forest, cold blue tones'],
+  ['Giraffes on the Horizon', 'tall giraffes, golden light, African plains'],
+  ['Tiger Shadow Portrait', 'tiger face emerging from darkness, dramatic lighting'],
+  ['Herd of Zebras Running', 'motion blur, dust, black and white stripes contrast'],
+  ['Polar Bear Ice Drift', 'white bear, icy blue ocean, minimal composition'],
+  ['Owl Night Watch', 'owl glowing eyes, dark background, soft moonlight'],
+].map(([name, description]) => ({
+  title: `${name} - Wildlife Theme`,
+  prompt: `ultra high-end wildlife photography, ${description}, 60 percent photorealistic and 40 percent cinematic, highly detailed fur and textures, dramatic lighting, professional composition, premium wall art, no text, no watermark`,
 }))
 
 function safeFilePart(value: string) {
@@ -62,7 +64,7 @@ async function generateOpenAiImageUrl(prompt: string) {
 
   const data = await response.json()
   const imageUrl = data?.data?.[0]?.url
-  if (!imageUrl || typeof imageUrl !== 'string') throw new Error('No image URL returned')
+  if (!imageUrl) throw new Error('No image URL returned')
 
   return imageUrl
 }
@@ -89,7 +91,14 @@ async function uploadGeneratedImageToBlob(openAiUrl: string, title: string) {
 }
 
 async function upsertArtwork(item: (typeof ITEMS)[number], imageUrl: string) {
-  const tags = [THEME_TAG, 'theme', 'landscape', 'nature', 'wallpaper', 'decor']
+  const tags = [
+    THEME_TAG,
+    'wildlife',
+    'animals',
+    'nature',
+    'wall-art',
+    'decor',
+  ]
 
   const existing = await prisma.artwork.findFirst({
     where: { title: item.title },
@@ -157,7 +166,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Landscapes final batch complete',
+    message: 'Wildlife batch 1 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
