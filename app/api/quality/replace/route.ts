@@ -11,16 +11,14 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Sunlit Redwood Forest', 'towering redwoods, warm golden light, deep green forest floor'],
-  ['Maldives Lagoon Aerial', 'turquoise lagoon, white sandbars, deep blue ocean'],
-  ['Dolomite Mountain Pass', 'sharp limestone peaks, alpine grass, clear morning sky'],
-  ['Namib Desert Twilight', 'orange dunes, purple dusk sky, soft wind patterns'],
-  ['Irish Coastal Cliffs', 'emerald grass, dramatic cliffs, deep Atlantic blue'],
-  ['Japanese Maple Garden', 'red maple leaves, moss stones, calm reflecting pond'],
-  ['Canadian Lake Autumn', 'orange forest, still lake, snow-dusted mountains'],
-  ['New Zealand Valley Light', 'green valley, braided river, dramatic mountain backdrop'],
-  ['Mediterranean Coastline', 'blue sea, white cliffs, sunlit coastal vegetation'],
-  ['Calm River at Golden Hour', 'soft river reflections, warm amber light, green riverbanks'],
+  [
+    'Snow Silence Mountain Basin',
+    'wide mountain basin covered in untouched snow, pale blue shadows, soft sunrise glow, distant peaks',
+  ],
+  [
+    'Moonlit Desert Arch',
+    'natural desert stone arch under moonlight, warm sandstone, deep blue night sky, subtle stars',
+  ],
 ].map(([name, palette]) => ({
   title: `${name} - Landscape Theme`,
   prompt: `ultra high-end landscape photography style, ${name}, ${palette}, 70 percent photorealistic and 30 percent cinematic, natural lighting, atmospheric depth, professional composition, premium wall art, print quality, no people, no animals, no text, no watermark`,
@@ -159,7 +157,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Landscapes batch 5 complete',
+    message: 'Landscapes final batch complete',
     theme: THEME,
     count: ITEMS.length,
     results,
