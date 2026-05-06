@@ -11,19 +11,19 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Alpine Sunrise Peaks', 'golden sunrise, snow white, deep blue shadows'],
-  ['Misty Forest Path', 'soft green, fog gray, warm light rays'],
-  ['Ocean Cliff Sunset', 'orange sunset, deep blue sea, dark cliffs'],
-  ['Desert Dunes at Dawn', 'sand gold, pale pink sky, soft shadows'],
-  ['Lake Reflection Serenity', 'mirror lake, blue sky, green mountains'],
-  ['Autumn Mountain Valley', 'burnt orange, yellow, forest green'],
-  ['Tropical Beach Escape', 'turquoise water, white sand, palm green'],
-  ['Storm over Open Plains', 'dark gray clouds, muted green, lightning white'],
-  ['Frozen Lake Horizon', 'icy blue, white frost, pale sky'],
-  ['Countryside Golden Fields', 'gold wheat, soft blue sky, warm sunlight'],
+  ['Hidden Waterfall Gorge', 'emerald forest, white waterfall mist, dark wet stone'],
+  ['Swiss Valley Morning', 'soft green meadows, snow peaks, golden morning haze'],
+  ['Northern Lights Mountain Lake', 'aurora green, violet sky, icy reflections'],
+  ['Red Desert Canyon Vista', 'red rock, orange sunlight, cobalt blue sky'],
+  ['Rainforest River Bend', 'deep jungle green, soft river blue, humid mist'],
+  ['Scottish Highland Storm', 'dark moody hills, gray clouds, muted gold grass'],
+  ['Lavender Field Horizon', 'lavender purple, warm sunset peach, soft green rows'],
+  ['Volcanic Island Coast', 'black volcanic cliffs, turquoise sea, white surf'],
+  ['Winter Pine Forest', 'snow white, evergreen pine, pale blue shadows'],
+  ['Golden Savannah Sunset', 'gold grassland, orange sky, distant acacia silhouettes'],
 ].map(([name, palette]) => ({
   title: `${name} - Landscape Theme`,
-  prompt: `ultra high-end landscape photography style, ${name}, ${palette}, highly realistic with slight cinematic enhancement, natural lighting, depth, atmospheric perspective, professional composition, print quality, no people, no text, no watermark`,
+  prompt: `ultra high-end landscape photography style, ${name}, ${palette}, 70 percent photorealistic and 30 percent cinematic, natural lighting, atmospheric depth, professional composition, premium wall art, print quality, no people, no text, no watermark`,
 }))
 
 function safeFilePart(value: string) {
@@ -64,7 +64,7 @@ async function generateOpenAiImageUrl(prompt: string) {
 
   const data = await response.json()
   const imageUrl = data?.data?.[0]?.url
-  if (!imageUrl) throw new Error('No image URL returned')
+  if (!imageUrl || typeof imageUrl !== 'string') throw new Error('No image URL returned')
 
   return imageUrl
 }
@@ -91,13 +91,7 @@ async function uploadGeneratedImageToBlob(openAiUrl: string, title: string) {
 }
 
 async function upsertArtwork(item: (typeof ITEMS)[number], imageUrl: string) {
-  const tags = [
-    THEME_TAG,
-    'landscape',
-    'nature',
-    'wallpaper',
-    'decor',
-  ]
+  const tags = [THEME_TAG, 'theme', 'landscape', 'nature', 'wallpaper', 'decor']
 
   const existing = await prisma.artwork.findFirst({
     where: { title: item.title },
@@ -108,6 +102,7 @@ async function upsertArtwork(item: (typeof ITEMS)[number], imageUrl: string) {
     ? await prisma.artwork.update({
         where: { id: existing.id },
         data: {
+          artist: ARTIST,
           thumbnail: imageUrl,
           tags,
           status: 'PUBLISHED' as any,
@@ -148,7 +143,12 @@ export async function GET() {
       const blobUrl = await uploadGeneratedImageToBlob(aiUrl, item.title)
       const artworkId = await upsertArtwork(item, blobUrl)
 
-      results.push({ title: item.title, success: true, artworkId, imageUrl: blobUrl })
+      results.push({
+        title: item.title,
+        success: true,
+        artworkId,
+        imageUrl: blobUrl,
+      })
     } catch (err) {
       results.push({
         title: item.title,
@@ -159,7 +159,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Landscapes batch 1 complete',
+    message: 'Landscapes batch 2 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
