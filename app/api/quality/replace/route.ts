@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Hidden Waterfall Gorge', 'emerald forest, white waterfall mist, dark wet stone'],
-  ['Swiss Valley Morning', 'soft green meadows, snow peaks, golden morning haze'],
-  ['Northern Lights Mountain Lake', 'aurora green, violet sky, icy reflections'],
-  ['Red Desert Canyon Vista', 'red rock, orange sunlight, cobalt blue sky'],
-  ['Rainforest River Bend', 'deep jungle green, soft river blue, humid mist'],
-  ['Scottish Highland Storm', 'dark moody hills, gray clouds, muted gold grass'],
-  ['Lavender Field Horizon', 'lavender purple, warm sunset peach, soft green rows'],
-  ['Volcanic Island Coast', 'black volcanic cliffs, turquoise sea, white surf'],
-  ['Winter Pine Forest', 'snow white, evergreen pine, pale blue shadows'],
-  ['Golden Savannah Sunset', 'gold grassland, orange sky, distant acacia silhouettes'],
+  ['Emerald Fjord Sunrise', 'emerald water, golden sunrise, steep dark cliffs'],
+  ['Patagonian Glacier Valley', 'ice blue glacier, gray peaks, pale sunlight'],
+  ['Tuscan Hills Evening', 'olive green hills, warm ochre fields, amber sky'],
+  ['Black Sand Beach Storm', 'black sand, white surf, storm gray sky'],
+  ['Bamboo Forest Morning', 'soft bamboo green, mist white, filtered sunlight'],
+  ['Rocky Mountain Wildflowers', 'alpine flowers, blue sky, snow peaks'],
+  ['Sahara Night Dunes', 'deep indigo sky, silver moonlight, warm sand shadows'],
+  ['Amazon Waterfall Mist', 'lush jungle green, white mist, dark river'],
+  ['Norwegian Winter Village', 'snow white, warm cabin lights, blue twilight'],
+  ['Golden River Canyon', 'gold canyon walls, turquoise river, clear sky'],
 ].map(([name, palette]) => ({
   title: `${name} - Landscape Theme`,
   prompt: `ultra high-end landscape photography style, ${name}, ${palette}, 70 percent photorealistic and 30 percent cinematic, natural lighting, atmospheric depth, professional composition, premium wall art, print quality, no people, no text, no watermark`,
@@ -159,7 +159,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Landscapes batch 2 complete',
+    message: 'Landscapes batch 3 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
