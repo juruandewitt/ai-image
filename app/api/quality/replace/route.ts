@@ -11,19 +11,19 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Emerald Fjord Sunrise', 'emerald water, golden sunrise, steep dark cliffs'],
-  ['Patagonian Glacier Valley', 'ice blue glacier, gray peaks, pale sunlight'],
-  ['Tuscan Hills Evening', 'olive green hills, warm ochre fields, amber sky'],
-  ['Black Sand Beach Storm', 'black sand, white surf, storm gray sky'],
-  ['Bamboo Forest Morning', 'soft bamboo green, mist white, filtered sunlight'],
-  ['Rocky Mountain Wildflowers', 'alpine flowers, blue sky, snow peaks'],
-  ['Sahara Night Dunes', 'deep indigo sky, silver moonlight, warm sand shadows'],
-  ['Amazon Waterfall Mist', 'lush jungle green, white mist, dark river'],
-  ['Norwegian Winter Village', 'snow white, warm cabin lights, blue twilight'],
-  ['Golden River Canyon', 'gold canyon walls, turquoise river, clear sky'],
-].map(([name, palette]) => ({
-  title: `${name} - Landscape Theme`,
-  prompt: `ultra high-end landscape photography style, ${name}, ${palette}, 70 percent photorealistic and 30 percent cinematic, natural lighting, atmospheric depth, professional composition, premium wall art, print quality, no people, no text, no watermark`,
+  ['Nordic Snow Valley - Landscape Theme', 'snow white, blue twilight, distant pine forest, calm valley'],
+  ['Icelandic Waterfall Cliffs - Landscape Theme', 'white waterfall, black cliffs, moss green, soft gray sky'],
+  ['Canyon Sunset Overlook - Landscape Theme', 'red canyon rock, orange sunset, purple shadows'],
+  ['Misty Blue Ridge Mountains - Landscape Theme', 'blue mountain layers, soft fog, pale morning light'],
+  ['Tropical Jungle Lagoon - Landscape Theme', 'emerald jungle, turquoise lagoon, sunlit mist'],
+  ['Arctic Glacier Coast - Landscape Theme', 'ice blue, white glacier, dark ocean, pale sky'],
+  ['Golden Rice Terrace Valley - Landscape Theme', 'golden terraces, green hills, warm sunrise'],
+  ['Rocky Coast Lighthouse View - Landscape Theme', 'stormy sea, white lighthouse, dark rocks, muted blue sky'],
+  ['Quiet Desert Oasis - Landscape Theme', 'warm sand, date palms, reflective water, soft dawn light'],
+  ['Spring Meadow Mountain View - Landscape Theme', 'wildflower meadow, snow peaks, bright spring sky'],
+].map(([title, palette]) => ({
+  title,
+  prompt: `ultra high-end landscape photography style, ${title.replace(' - Landscape Theme', '')}, ${palette}, 70 percent photorealistic and 30 percent cinematic, natural lighting, atmospheric depth, professional composition, premium wall art, print quality, no people, no animals, no buildings with visible occupants, no text, no watermark`,
 }))
 
 function safeFilePart(value: string) {
@@ -159,7 +159,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Landscapes batch 3 complete',
+    message: 'Landscapes batch 4 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
