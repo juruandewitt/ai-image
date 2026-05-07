@@ -11,19 +11,19 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Black Rhino Portrait', 'black rhino, dramatic side profile, dusty savannah background, warm sunset rim light'],
-  ['Cheetah Sprint', 'cheetah running through golden grass, motion energy, dust trail, sharp focus on face'],
-  ['Humpback Whale Breach', 'humpback whale leaping from deep blue ocean, white spray, dramatic sunlight'],
-  ['Dolphins in Clear Water', 'two dolphins underwater, turquoise ocean, sunlight rays, clean composition'],
-  ['Silverback Gorilla Portrait', 'silverback gorilla, dark forest background, powerful calm expression, cinematic lighting'],
-  ['Flamingos at Pink Lake', 'flamingos standing in reflective pink lake, soft sunrise, pastel sky'],
-  ['Red Fox in Autumn', 'red fox in orange autumn forest, soft background blur, warm natural light'],
-  ['Stag in Misty Woods', 'large stag with antlers, misty forest, golden morning light'],
-  ['Crocodile River Eyes', 'crocodile eyes above dark river surface, moody green water, dramatic close-up'],
-  ['Giant Panda Bamboo Calm', 'giant panda among bamboo, soft green background, peaceful premium wildlife portrait'],
+  ['Meerkat Desert Watch', 'meerkat standing alert on warm desert sand, golden light, clean background'],
+  ['Hippo River Sunset', 'hippo partly submerged in calm river, orange sunset reflection, soft mist'],
+  ['Cape Buffalo Power Portrait', 'cape buffalo close portrait, dark horn texture, dusty African plains background'],
+  ['Scarlet Macaw Rainforest', 'scarlet macaw on branch, vivid red blue yellow feathers, lush green rainforest blur'],
+  ['Penguins on Ice Shore', 'penguins standing on icy shore, pale blue ocean, clean cold atmosphere'],
+  ['Snow Leopard Ridge', 'snow leopard on rocky mountain ridge, pale snow, dramatic cold light'],
+  ['Sea Turtle Sun Rays', 'sea turtle swimming underwater, turquoise water, sunlight rays from above'],
+  ['Bison Prairie Morning', 'large bison in open prairie, golden morning grass, soft fog'],
+  ['Peacock Jewel Display', 'peacock displaying feathers, jewel blue and emerald tones, elegant dark background'],
+  ['Orca Ocean Breach', 'orca breaching from deep ocean, white spray, dramatic cloudy sky'],
 ].map(([name, description]) => ({
   title: `${name} - Wildlife Theme`,
-  prompt: `ultra high-end wildlife photography, ${description}, 60 percent photorealistic and 40 percent cinematic, highly detailed fur feathers skin and textures, dramatic lighting, professional composition, premium wall art, no text, no watermark`,
+  prompt: `ultra high-end wildlife photography, ${description}, 60 percent photorealistic and 40 percent cinematic, highly detailed fur feathers skin scales and textures, dramatic lighting, professional composition, premium wall art, no text, no watermark`,
 }))
 
 function safeFilePart(value: string) {
@@ -166,7 +166,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Wildlife batch 2 complete',
+    message: 'Wildlife batch 3 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
