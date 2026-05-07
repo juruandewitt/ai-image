@@ -5,25 +5,25 @@ import { prisma } from '@/lib/prisma'
 export const dynamic = 'force-dynamic'
 export const maxDuration = 300
 
-const THEME = 'wildlife'
+const THEME = 'automotive'
 const THEME_TAG = `theme:${THEME}`
 const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Kudu Antelope Majesty', 'kudu antelope with spiral horns, warm African bush background, golden rim light'],
-  ['Meerkat Sunset Silhouette', 'meerkat silhouette on desert ridge, orange sunset sky, clean minimal composition'],
-  ['African Wild Dog Pack', 'African wild dog pack in dry grassland, painted coat patterns, warm natural light'],
-  ['Flamingo Flight Glow', 'flamingos flying over reflective water, coral pink wings, soft sunrise glow'],
-  ['Elephant Portrait in Dust', 'close elephant portrait, textured skin, soft dust cloud, warm golden light'],
-  ['Lioness Savannah Focus', 'lioness walking through dry savannah grass, focused eyes, cinematic low light'],
-  ['Kingfisher Jewel Perch', 'kingfisher bird on branch, electric blue and orange feathers, soft river background'],
-  ['Whale Tail at Sunset', 'large whale tail above ocean surface, sunset reflections, dramatic sea spray'],
-  ['Zebra Portrait Contrast', 'zebra close portrait, strong black and white stripe pattern, clean dark background'],
-  ['Pangolin Forest Floor', 'pangolin walking on forest floor, detailed scales, warm earthy light'],
+  ['Midnight Supercar Glow', 'sleek black supercar, neon reflections, wet street, night city'],
+  ['Luxury Coupe Studio Light', 'high-end coupe, dark studio, soft spotlight, glossy reflections'],
+  ['Electric Hypercar Neon Drift', 'futuristic hypercar, neon blue and purple light streaks'],
+  ['Classic Muscle Car Power', 'vintage muscle car, low angle, dramatic shadows, smoky atmosphere'],
+  ['Desert Supercar Run', 'exotic car on open desert road, golden sunset, heat haze'],
+  ['Cyberpunk Street Racer', 'aggressive street car, cyberpunk city, rain reflections, neon signage'],
+  ['Matte Black Performance SUV', 'luxury SUV, dark environment, minimal lighting, strong silhouette'],
+  ['Red Sports Car Motion Blur', 'red sports car speeding, motion blur, dynamic light trails'],
+  ['Convertible Coastal Drive', 'open-top car, ocean road, soft sunset light, cinematic calm'],
+  ['Futuristic Concept Vehicle', 'next-gen concept car, glowing accents, ultra-clean background'],
 ].map(([name, description]) => ({
-  title: `${name} - Wildlife Theme`,
-  prompt: `ultra high-end wildlife photography, ${description}, 60 percent photorealistic and 40 percent cinematic, highly detailed fur feathers skin scales and textures, dramatic lighting, professional composition, premium wall art, no text, no watermark`,
+  title: `${name} - Automotive Theme`,
+  prompt: `ultra high-end automotive photography, ${description}, cinematic luxury style, dramatic lighting, glossy reflections, premium composition, showroom quality, 8k detail, no logos, no text, no watermark`,
 }))
 
 function safeFilePart(value: string) {
@@ -64,7 +64,7 @@ async function generateOpenAiImageUrl(prompt: string) {
 
   const data = await response.json()
   const imageUrl = data?.data?.[0]?.url
-  if (!imageUrl || typeof imageUrl !== 'string') throw new Error('No image URL returned')
+  if (!imageUrl) throw new Error('No image URL returned')
 
   return imageUrl
 }
@@ -93,11 +93,11 @@ async function uploadGeneratedImageToBlob(openAiUrl: string, title: string) {
 async function upsertArtwork(item: (typeof ITEMS)[number], imageUrl: string) {
   const tags = [
     THEME_TAG,
-    'wildlife',
-    'animals',
-    'nature',
+    'automotive',
+    'cars',
+    'luxury',
     'wall-art',
-    'decor',
+    'performance',
   ]
 
   const existing = await prisma.artwork.findFirst({
@@ -166,7 +166,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Wildlife final batch complete',
+    message: 'Automotive batch 1 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
