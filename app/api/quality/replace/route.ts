@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Jaguar Rainforest Gaze', 'jaguar close portrait in rainforest shadow, amber eyes, lush green background blur'],
-  ['Koala Eucalyptus Calm', 'koala resting on eucalyptus branch, soft gray fur, pale green leaves, gentle daylight'],
-  ['Lynx Winter Portrait', 'lynx with tufted ears in snowy forest, pale blue shadows, sharp eyes'],
-  ['Toucan Tropical Color', 'toucan on branch, vivid orange beak, emerald rainforest, clean background'],
-  ['Manta Ray Blue Depths', 'manta ray gliding through deep blue water, sunlight beams, elegant silhouette'],
-  ['Grizzly Bear River Walk', 'grizzly bear walking through shallow river, misty forest, powerful natural pose'],
-  ['Meerkat Family Watch', 'small group of meerkats standing alert on warm sand, golden desert light'],
-  ['Chameleon Emerald Detail', 'chameleon close-up on branch, emerald and turquoise scales, soft jungle blur'],
-  ['Falcon Desert Flight', 'falcon flying over desert cliffs, spread wings, golden sky, sharp feather detail'],
-  ['Springbok Golden Plains', 'springbok antelope on open plains, warm sunrise light, elegant natural stance'],
+  ['Kudu Antelope Majesty', 'kudu antelope with spiral horns, warm African bush background, golden rim light'],
+  ['Meerkat Sunset Silhouette', 'meerkat silhouette on desert ridge, orange sunset sky, clean minimal composition'],
+  ['African Wild Dog Pack', 'African wild dog pack in dry grassland, painted coat patterns, warm natural light'],
+  ['Flamingo Flight Glow', 'flamingos flying over reflective water, coral pink wings, soft sunrise glow'],
+  ['Elephant Portrait in Dust', 'close elephant portrait, textured skin, soft dust cloud, warm golden light'],
+  ['Lioness Savannah Focus', 'lioness walking through dry savannah grass, focused eyes, cinematic low light'],
+  ['Kingfisher Jewel Perch', 'kingfisher bird on branch, electric blue and orange feathers, soft river background'],
+  ['Whale Tail at Sunset', 'large whale tail above ocean surface, sunset reflections, dramatic sea spray'],
+  ['Zebra Portrait Contrast', 'zebra close portrait, strong black and white stripe pattern, clean dark background'],
+  ['Pangolin Forest Floor', 'pangolin walking on forest floor, detailed scales, warm earthy light'],
 ].map(([name, description]) => ({
   title: `${name} - Wildlife Theme`,
   prompt: `ultra high-end wildlife photography, ${description}, 60 percent photorealistic and 40 percent cinematic, highly detailed fur feathers skin scales and textures, dramatic lighting, professional composition, premium wall art, no text, no watermark`,
@@ -166,7 +166,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Wildlife batch 4 complete',
+    message: 'Wildlife final batch complete',
     theme: THEME,
     count: ITEMS.length,
     results,
