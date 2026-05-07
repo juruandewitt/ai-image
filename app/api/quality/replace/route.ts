@@ -11,19 +11,19 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Golden Lion Portrait', 'majestic lion, dark background, golden rim lighting'],
-  ['Elephant Herd at Sunset', 'warm sunset, dusty savannah, soft silhouettes'],
-  ['Bald Eagle Close-Up', 'sharp feathers, piercing eyes, clean sky background'],
-  ['Leopard in Tree', 'spotted leopard, tree branch, soft green jungle blur'],
-  ['Wolf in Snow Forest', 'gray wolf, snow-covered forest, cold blue tones'],
-  ['Giraffes on the Horizon', 'tall giraffes, golden light, African plains'],
-  ['Tiger Shadow Portrait', 'tiger face emerging from darkness, dramatic lighting'],
-  ['Herd of Zebras Running', 'motion blur, dust, black and white stripes contrast'],
-  ['Polar Bear Ice Drift', 'white bear, icy blue ocean, minimal composition'],
-  ['Owl Night Watch', 'owl glowing eyes, dark background, soft moonlight'],
+  ['Black Rhino Portrait', 'black rhino, dramatic side profile, dusty savannah background, warm sunset rim light'],
+  ['Cheetah Sprint', 'cheetah running through golden grass, motion energy, dust trail, sharp focus on face'],
+  ['Humpback Whale Breach', 'humpback whale leaping from deep blue ocean, white spray, dramatic sunlight'],
+  ['Dolphins in Clear Water', 'two dolphins underwater, turquoise ocean, sunlight rays, clean composition'],
+  ['Silverback Gorilla Portrait', 'silverback gorilla, dark forest background, powerful calm expression, cinematic lighting'],
+  ['Flamingos at Pink Lake', 'flamingos standing in reflective pink lake, soft sunrise, pastel sky'],
+  ['Red Fox in Autumn', 'red fox in orange autumn forest, soft background blur, warm natural light'],
+  ['Stag in Misty Woods', 'large stag with antlers, misty forest, golden morning light'],
+  ['Crocodile River Eyes', 'crocodile eyes above dark river surface, moody green water, dramatic close-up'],
+  ['Giant Panda Bamboo Calm', 'giant panda among bamboo, soft green background, peaceful premium wildlife portrait'],
 ].map(([name, description]) => ({
   title: `${name} - Wildlife Theme`,
-  prompt: `ultra high-end wildlife photography, ${description}, 60 percent photorealistic and 40 percent cinematic, highly detailed fur and textures, dramatic lighting, professional composition, premium wall art, no text, no watermark`,
+  prompt: `ultra high-end wildlife photography, ${description}, 60 percent photorealistic and 40 percent cinematic, highly detailed fur feathers skin and textures, dramatic lighting, professional composition, premium wall art, no text, no watermark`,
 }))
 
 function safeFilePart(value: string) {
@@ -64,7 +64,7 @@ async function generateOpenAiImageUrl(prompt: string) {
 
   const data = await response.json()
   const imageUrl = data?.data?.[0]?.url
-  if (!imageUrl) throw new Error('No image URL returned')
+  if (!imageUrl || typeof imageUrl !== 'string') throw new Error('No image URL returned')
 
   return imageUrl
 }
@@ -166,7 +166,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Wildlife batch 1 complete',
+    message: 'Wildlife batch 2 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
