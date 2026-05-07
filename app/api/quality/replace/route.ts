@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Meerkat Desert Watch', 'meerkat standing alert on warm desert sand, golden light, clean background'],
-  ['Hippo River Sunset', 'hippo partly submerged in calm river, orange sunset reflection, soft mist'],
-  ['Cape Buffalo Power Portrait', 'cape buffalo close portrait, dark horn texture, dusty African plains background'],
-  ['Scarlet Macaw Rainforest', 'scarlet macaw on branch, vivid red blue yellow feathers, lush green rainforest blur'],
-  ['Penguins on Ice Shore', 'penguins standing on icy shore, pale blue ocean, clean cold atmosphere'],
-  ['Snow Leopard Ridge', 'snow leopard on rocky mountain ridge, pale snow, dramatic cold light'],
-  ['Sea Turtle Sun Rays', 'sea turtle swimming underwater, turquoise water, sunlight rays from above'],
-  ['Bison Prairie Morning', 'large bison in open prairie, golden morning grass, soft fog'],
-  ['Peacock Jewel Display', 'peacock displaying feathers, jewel blue and emerald tones, elegant dark background'],
-  ['Orca Ocean Breach', 'orca breaching from deep ocean, white spray, dramatic cloudy sky'],
+  ['Jaguar Rainforest Gaze', 'jaguar close portrait in rainforest shadow, amber eyes, lush green background blur'],
+  ['Koala Eucalyptus Calm', 'koala resting on eucalyptus branch, soft gray fur, pale green leaves, gentle daylight'],
+  ['Lynx Winter Portrait', 'lynx with tufted ears in snowy forest, pale blue shadows, sharp eyes'],
+  ['Toucan Tropical Color', 'toucan on branch, vivid orange beak, emerald rainforest, clean background'],
+  ['Manta Ray Blue Depths', 'manta ray gliding through deep blue water, sunlight beams, elegant silhouette'],
+  ['Grizzly Bear River Walk', 'grizzly bear walking through shallow river, misty forest, powerful natural pose'],
+  ['Meerkat Family Watch', 'small group of meerkats standing alert on warm sand, golden desert light'],
+  ['Chameleon Emerald Detail', 'chameleon close-up on branch, emerald and turquoise scales, soft jungle blur'],
+  ['Falcon Desert Flight', 'falcon flying over desert cliffs, spread wings, golden sky, sharp feather detail'],
+  ['Springbok Golden Plains', 'springbok antelope on open plains, warm sunrise light, elegant natural stance'],
 ].map(([name, description]) => ({
   title: `${name} - Wildlife Theme`,
   prompt: `ultra high-end wildlife photography, ${description}, 60 percent photorealistic and 40 percent cinematic, highly detailed fur feathers skin scales and textures, dramatic lighting, professional composition, premium wall art, no text, no watermark`,
@@ -166,7 +166,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Wildlife batch 3 complete',
+    message: 'Wildlife batch 4 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
