@@ -11,19 +11,19 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Midnight Supercar Glow', 'sleek black supercar, neon reflections, wet street, night city'],
-  ['Luxury Coupe Studio Light', 'high-end coupe, dark studio, soft spotlight, glossy reflections'],
-  ['Electric Hypercar Neon Drift', 'futuristic hypercar, neon blue and purple light streaks'],
-  ['Classic Muscle Car Power', 'vintage muscle car, low angle, dramatic shadows, smoky atmosphere'],
-  ['Desert Supercar Run', 'exotic car on open desert road, golden sunset, heat haze'],
-  ['Cyberpunk Street Racer', 'aggressive street car, cyberpunk city, rain reflections, neon signage'],
-  ['Matte Black Performance SUV', 'luxury SUV, dark environment, minimal lighting, strong silhouette'],
-  ['Red Sports Car Motion Blur', 'red sports car speeding, motion blur, dynamic light trails'],
-  ['Convertible Coastal Drive', 'open-top car, ocean road, soft sunset light, cinematic calm'],
-  ['Futuristic Concept Vehicle', 'next-gen concept car, glowing accents, ultra-clean background'],
+  ['Silver Hypercar Tunnel', 'silver hypercar in illuminated tunnel, sharp reflections, futuristic speed atmosphere'],
+  ['Classic Roadster Sunset', 'vintage open-top roadster, warm sunset road, chrome reflections, elegant composition'],
+  ['Racing Prototype Track Light', 'low racing prototype car on empty track, dramatic side lighting, carbon fiber texture'],
+  ['Off Road Desert Truck', 'rugged off-road truck on desert dunes, dust trail, golden evening light'],
+  ['Luxury Sedan Night Arrival', 'executive luxury sedan arriving at modern building, dark reflections, soft warm lights'],
+  ['Black Gold Supercar', 'black supercar with gold accents, dark studio, high contrast spotlight, luxury finish'],
+  ['Rain Soaked City Coupe', 'sleek coupe parked on wet city street, rain reflections, neon glow, cinematic night'],
+  ['Mountain Pass Sports Car', 'sports car on winding mountain road, sunrise mist, dynamic road perspective'],
+  ['Retro Futuristic Concept Car', 'retro inspired concept car, smooth curves, pastel neon studio, clean reflections'],
+  ['Electric Grand Tourer', 'elegant electric grand tourer, minimal studio background, cool blue accent lighting'],
 ].map(([name, description]) => ({
   title: `${name} - Automotive Theme`,
-  prompt: `ultra high-end automotive photography, ${description}, cinematic luxury style, dramatic lighting, glossy reflections, premium composition, showroom quality, 8k detail, no logos, no text, no watermark`,
+  prompt: `ultra high-end automotive photography, ${description}, cinematic luxury style, dramatic lighting, glossy reflections, premium composition, showroom quality, 8k detail, no logos, no brand badges, no license plates, no text, no watermark`,
 }))
 
 function safeFilePart(value: string) {
@@ -64,7 +64,7 @@ async function generateOpenAiImageUrl(prompt: string) {
 
   const data = await response.json()
   const imageUrl = data?.data?.[0]?.url
-  if (!imageUrl) throw new Error('No image URL returned')
+  if (!imageUrl || typeof imageUrl !== 'string') throw new Error('No image URL returned')
 
   return imageUrl
 }
@@ -166,7 +166,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Automotive batch 1 complete',
+    message: 'Automotive batch 2 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
