@@ -11,16 +11,20 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Red Hypercar Studio', 'red hypercar in dark studio, sharp side lighting, glossy paint, aggressive stance'],
-  ['Midnight Racing Coupe', 'low racing coupe on empty night road, blue reflections, cinematic speed mood'],
-  ['Classic Convertible Elegance', 'classic convertible car, cream paint, chrome details, warm sunset boulevard'],
-  ['Futuristic Luxury SUV', 'futuristic luxury SUV, angular design, dark showroom, cool white accent lights'],
-  ['Private Luxury Garage', 'premium sports car parked in modern luxury garage, soft lighting, polished floor'],
-  ['Carbon Fiber Speedster', 'carbon fiber speedster, exposed texture, low angle, dramatic black background'],
-  ['Alpine Road Supercar', 'supercar on alpine pass, snow mountains, clean road, sunrise reflection'],
-  ['Urban Night Sedan', 'luxury sedan on empty city street at night, rain reflections, warm window lights'],
-  ['Desert Rally Machine', 'rugged rally car crossing desert terrain, dust cloud, golden horizon'],
-  ['Silver Concept Coupe', 'silver concept coupe, smooth aerodynamic body, minimal studio, soft reflections'],
+  // Retry (fixed)
+  ['Urban Night Sedan', 'luxury sedan on wet city street at night, neon reflections, cinematic lighting, empty street'],
+
+  // Final 10
+  ['White Hypercar Reflection', 'white hypercar on glossy black floor, mirror reflections, minimal studio lighting'],
+  ['Stealth Black Track Machine', 'black track-focused car, aggressive aero, dark background, sharp highlights'],
+  ['Sunset Boulevard Cruiser', 'sleek coupe driving along palm-lined boulevard, warm sunset glow'],
+  ['Luxury Limousine Presence', 'long luxury limousine, dark elegant setting, soft ambient lighting'],
+  ['Neon Tunnel Speed Car', 'sports car speeding through neon tunnel, streaking lights, high contrast'],
+  ['Off Road Jungle Truck', 'rugged off-road truck in dense jungle, mud splashes, green atmosphere'],
+  ['Classic Garage Restoration', 'vintage car in workshop garage, warm lighting, tools and textures'],
+  ['Ice Road Performance Car', 'sports car on frozen road, icy reflections, cold blue lighting'],
+  ['Future Autonomous Vehicle', 'futuristic autonomous vehicle, clean white environment, glowing accents'],
+  ['Midnight Drift Machine', 'drift car sliding on dark road, smoke clouds, red taillight streaks'],
 ].map(([name, description]) => ({
   title: `${name} - Automotive Theme`,
   prompt: `ultra high-end automotive photography, ${description}, cinematic luxury style, dramatic lighting, glossy reflections, premium composition, showroom quality, 8k detail, no logos, no brand badges, no license plates, no text, no watermark`,
@@ -166,7 +170,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Automotive batch 4 complete',
+    message: 'Automotive final batch complete',
     theme: THEME,
     count: ITEMS.length,
     results,
