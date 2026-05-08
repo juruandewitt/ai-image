@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Bronze Mechanical Whale', 'massive brass and copper mechanical whale floating through cloudy sky, steam vents'],
-  ['Steam City Market', 'busy Victorian market street with steam machines, copper stalls, warm glowing lamps'],
-  ['Clockwork Skull Artifact', 'ornate mechanical skull made of gears and brass plates, dark dramatic lighting'],
-  ['Brass Flying Machine', 'early flying machine with spinning propellers, brass frame, sky backdrop'],
-  ['Gear Driven Ocean Liner', 'huge steam-powered ocean liner with visible gears, pipes, smokestacks, misty sea'],
-  ['Victorian Power Station', 'industrial power station with copper generators, steam turbines, glowing energy'],
-  ['Copper Robot Workshop', 'workshop filled with partially built brass robots, tools, gears, warm light'],
-  ['Mechanical Butterfly Close-Up', 'delicate butterfly made of brass and glass wings, intricate gear details'],
-  ['Steampunk Tower Bridge', 'ornate mechanical bridge with gears and steam engines, dramatic sunset sky'],
-  ['Steam Powered Mansion', 'grand Victorian mansion with pipes, steam vents, copper roofs, cinematic night'],
+  ['Clockwork Compass Artifact', 'ornate brass compass with exposed gears, copper engravings, dark velvet background'],
+  ['Brass Underground Station', 'Victorian underground station with brass tunnels, steam vents, glowing platform lamps'],
+  ['Steam Greenhouse Conservatory', 'glass greenhouse filled with brass irrigation pipes, copper machinery, warm mist'],
+  ['Copper Lunar Train', 'steam-powered train crossing a lunar landscape, brass engine, starry sky, copper moonlight'],
+  ['Mechanical Sea Turtle', 'sea turtle made of brass plates and glass gears, underwater steampunk atmosphere'],
+  ['Victorian Skyline at Night', 'Victorian industrial skyline at night, copper rooftops, steam chimneys, amber windows'],
+  ['Gearwork Throne Room', 'grand empty throne room filled with giant gears, brass pillars, dramatic golden light'],
+  ['Steam Powered Lighthouse', 'lighthouse powered by steam engines, copper pipes, stormy sea, glowing beacon'],
+  ['Brass Automaton Fox', 'fox-shaped brass automaton, clockwork joints, polished copper body, dark elegant background'],
+  ['Clockwork Universe Map', 'vast mechanical star map with brass orbit rings, gears, glowing planets, cinematic darkness'],
 ].map(([name, description]) => ({
   title: `${name} - Steampunk Theme`,
   prompt: `premium steampunk digital artwork, ${description}, brass copper gears pipes steam Victorian industrial design, cinematic lighting, high-end poster composition, rich textures, commercial wall art quality, no people, no text, no watermark`,
@@ -167,7 +167,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Steampunk batch 4 complete',
+    message: 'Steampunk final batch complete',
     theme: THEME,
     count: ITEMS.length,
     results,
