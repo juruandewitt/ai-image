@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['White Supercar Showroom', 'white sculptural supercar in minimalist showroom, soft overhead lighting, clean reflections'],
-  ['Orange Track Car Apex', 'orange performance track car cornering on empty race circuit, dramatic motion, sunset backlight'],
-  ['Black Classic Coupe', 'black vintage coupe, polished chrome details, dark garage atmosphere, cinematic side profile'],
-  ['Blue Electric Racer', 'blue electric racing car, futuristic aero design, glowing blue accents, night circuit lighting'],
-  ['Vintage Rally Car Dust', 'classic rally car on gravel road, dust cloud, golden countryside light, dynamic action'],
-  ['Luxury Dashboard Detail', 'premium automotive interior dashboard, leather texture, ambient lighting, elegant controls, close-up'],
-  ['Desert Night Hypercar', 'low hypercar parked in desert at night, stars above, cool blue moonlight, warm ground glow'],
-  ['Grand Prix Silhouette', 'single-seat racing car silhouette, dramatic pit lane lighting, dark reflective floor'],
-  ['Chrome Concept Roadster', 'chrome concept roadster, smooth reflective body, futuristic studio, clean black background'],
-  ['Forest Road Sports Coupe', 'sports coupe on winding forest road, green reflections, morning mist, cinematic composition'],
+  ['Red Hypercar Studio', 'red hypercar in dark studio, sharp side lighting, glossy paint, aggressive stance'],
+  ['Midnight Racing Coupe', 'low racing coupe on empty night road, blue reflections, cinematic speed mood'],
+  ['Classic Convertible Elegance', 'classic convertible car, cream paint, chrome details, warm sunset boulevard'],
+  ['Futuristic Luxury SUV', 'futuristic luxury SUV, angular design, dark showroom, cool white accent lights'],
+  ['Private Luxury Garage', 'premium sports car parked in modern luxury garage, soft lighting, polished floor'],
+  ['Carbon Fiber Speedster', 'carbon fiber speedster, exposed texture, low angle, dramatic black background'],
+  ['Alpine Road Supercar', 'supercar on alpine pass, snow mountains, clean road, sunrise reflection'],
+  ['Urban Night Sedan', 'luxury sedan on empty city street at night, rain reflections, warm window lights'],
+  ['Desert Rally Machine', 'rugged rally car crossing desert terrain, dust cloud, golden horizon'],
+  ['Silver Concept Coupe', 'silver concept coupe, smooth aerodynamic body, minimal studio, soft reflections'],
 ].map(([name, description]) => ({
   title: `${name} - Automotive Theme`,
   prompt: `ultra high-end automotive photography, ${description}, cinematic luxury style, dramatic lighting, glossy reflections, premium composition, showroom quality, 8k detail, no logos, no brand badges, no license plates, no text, no watermark`,
@@ -166,7 +166,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Automotive batch 3 complete',
+    message: 'Automotive batch 4 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
