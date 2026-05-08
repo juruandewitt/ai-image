@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Steam Carriage on Cobblestones', 'ornate steam-powered carriage on wet cobblestone street, brass lamps, soft fog'],
-  ['Gear Planetarium Hall', 'grand planetarium hall filled with brass orbit rings, gears, star maps, golden light'],
-  ['Bronze City Skyline', 'Victorian bronze city skyline with towers, smokestacks, steam clouds, amber sunset'],
-  ['Mechanical Raven Portrait', 'clockwork raven made of black iron feathers, brass gears, dark elegant background'],
-  ['Airship Engine Room', 'airship engine room with copper boilers, pressure gauges, spinning gears, warm lamp glow'],
-  ['Clockwork Garden Conservatory', 'glass conservatory filled with mechanical flowers, brass vines, steam mist'],
-  ['Industrial Harbor of Steam', 'steampunk harbor with copper cranes, steam ships, foggy water, glowing lamps'],
-  ['Brass Railway Bridge', 'massive brass railway bridge over canyon, steam train crossing, cinematic sunrise'],
-  ['Steam Cathedral Exterior', 'cathedral-like industrial building with chimneys, gears, copper domes, dramatic sky'],
-  ['Copper Moonlit Alley', 'narrow Victorian alley with copper pipes, steam vents, wet stones, moonlit atmosphere'],
+  ['Bronze Mechanical Whale', 'massive brass and copper mechanical whale floating through cloudy sky, steam vents'],
+  ['Steam City Market', 'busy Victorian market street with steam machines, copper stalls, warm glowing lamps'],
+  ['Clockwork Skull Artifact', 'ornate mechanical skull made of gears and brass plates, dark dramatic lighting'],
+  ['Brass Flying Machine', 'early flying machine with spinning propellers, brass frame, sky backdrop'],
+  ['Gear Driven Ocean Liner', 'huge steam-powered ocean liner with visible gears, pipes, smokestacks, misty sea'],
+  ['Victorian Power Station', 'industrial power station with copper generators, steam turbines, glowing energy'],
+  ['Copper Robot Workshop', 'workshop filled with partially built brass robots, tools, gears, warm light'],
+  ['Mechanical Butterfly Close-Up', 'delicate butterfly made of brass and glass wings, intricate gear details'],
+  ['Steampunk Tower Bridge', 'ornate mechanical bridge with gears and steam engines, dramatic sunset sky'],
+  ['Steam Powered Mansion', 'grand Victorian mansion with pipes, steam vents, copper roofs, cinematic night'],
 ].map(([name, description]) => ({
   title: `${name} - Steampunk Theme`,
   prompt: `premium steampunk digital artwork, ${description}, brass copper gears pipes steam Victorian industrial design, cinematic lighting, high-end poster composition, rich textures, commercial wall art quality, no people, no text, no watermark`,
@@ -167,7 +167,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Steampunk batch 3 complete',
+    message: 'Steampunk batch 4 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
