@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Clockwork Airship Above City', 'giant brass airship floating above a Victorian industrial city, smoky sunset sky'],
-  ['Steampunk Train Station', 'ornate steam train station, brass machinery, glowing lamps, cinematic atmosphere'],
-  ['Mechanical Owl Portrait', 'clockwork owl made of brass gears and copper plates, dark elegant background'],
-  ['Victorian Engineer Workshop', 'empty workshop filled with brass tools, gears, steam pipes, warm lamp light'],
-  ['Steam Powered Street', 'cobblestone street with steam machines, copper pipes, glowing windows, misty night'],
-  ['Clock Tower Machinery', 'massive exposed clock tower gears, brass and steel, dramatic golden lighting'],
-  ['Steampunk Submarine Interior', 'retro submarine control room, brass dials, pressure gauges, green glass lights'],
-  ['Airship Dock at Dawn', 'airship dock with gantries and steam vents, copper sunrise, cinematic clouds'],
-  ['Mechanical Dragon Engine', 'dragon-shaped brass machine with gears and steam vents, dark industrial backdrop'],
-  ['Copper Observatory Telescope', 'Victorian observatory with giant brass telescope, starry sky, warm interior glow'],
+  ['Clockwork Castle on the Hill', 'massive Victorian clockwork castle with brass towers, steam vents, sunset sky'],
+  ['Brass Robot Guardian', 'large brass robot guardian standing in an industrial hall, gears and glowing gauges'],
+  ['Steam Powered Library', 'grand Victorian library with steam pipes, brass ladders, warm lamp glow'],
+  ['Mechanical Horse Engine', 'horse-shaped mechanical engine made of copper pistons and brass plates, dark workshop'],
+  ['Victorian City Bridge', 'ornate bridge crossing a foggy industrial river, steam traffic, copper lights'],
+  ['Copper Factory Skyline', 'vast copper factory skyline, chimneys, steam clouds, amber evening light'],
+  ['Airship Battle Sky', 'dramatic sky filled with brass airships and steam trails, cinematic clouds'],
+  ['Gear Filled Cathedral', 'cathedral interior filled with giant rotating gears, brass machinery, golden shafts of light'],
+  ['Steampunk Laboratory', 'empty laboratory with brass instruments, glass tubes, pressure gauges, electric glow'],
+  ['Clockwork Moon Machine', 'giant clockwork machine pointed toward the moon, gears, brass telescope, starry night'],
 ].map(([name, description]) => ({
   title: `${name} - Steampunk Theme`,
   prompt: `premium steampunk digital artwork, ${description}, brass copper gears pipes steam Victorian industrial design, cinematic lighting, high-end poster composition, rich textures, commercial wall art quality, no people, no text, no watermark`,
@@ -167,7 +167,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Steampunk batch 1 complete',
+    message: 'Steampunk batch 2 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
