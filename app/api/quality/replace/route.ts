@@ -5,29 +5,25 @@ import { prisma } from '@/lib/prisma'
 export const dynamic = 'force-dynamic'
 export const maxDuration = 300
 
-const THEME = 'automotive'
+const THEME = 'steampunk'
 const THEME_TAG = `theme:${THEME}`
 const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  // Retry (fixed)
-  ['Urban Night Sedan', 'luxury sedan on wet city street at night, neon reflections, cinematic lighting, empty street'],
-
-  // Final 10
-  ['White Hypercar Reflection', 'white hypercar on glossy black floor, mirror reflections, minimal studio lighting'],
-  ['Stealth Black Track Machine', 'black track-focused car, aggressive aero, dark background, sharp highlights'],
-  ['Sunset Boulevard Cruiser', 'sleek coupe driving along palm-lined boulevard, warm sunset glow'],
-  ['Luxury Limousine Presence', 'long luxury limousine, dark elegant setting, soft ambient lighting'],
-  ['Neon Tunnel Speed Car', 'sports car speeding through neon tunnel, streaking lights, high contrast'],
-  ['Off Road Jungle Truck', 'rugged off-road truck in dense jungle, mud splashes, green atmosphere'],
-  ['Classic Garage Restoration', 'vintage car in workshop garage, warm lighting, tools and textures'],
-  ['Ice Road Performance Car', 'sports car on frozen road, icy reflections, cold blue lighting'],
-  ['Future Autonomous Vehicle', 'futuristic autonomous vehicle, clean white environment, glowing accents'],
-  ['Midnight Drift Machine', 'drift car sliding on dark road, smoke clouds, red taillight streaks'],
+  ['Clockwork Airship Above City', 'giant brass airship floating above a Victorian industrial city, smoky sunset sky'],
+  ['Steampunk Train Station', 'ornate steam train station, brass machinery, glowing lamps, cinematic atmosphere'],
+  ['Mechanical Owl Portrait', 'clockwork owl made of brass gears and copper plates, dark elegant background'],
+  ['Victorian Engineer Workshop', 'empty workshop filled with brass tools, gears, steam pipes, warm lamp light'],
+  ['Steam Powered Street', 'cobblestone street with steam machines, copper pipes, glowing windows, misty night'],
+  ['Clock Tower Machinery', 'massive exposed clock tower gears, brass and steel, dramatic golden lighting'],
+  ['Steampunk Submarine Interior', 'retro submarine control room, brass dials, pressure gauges, green glass lights'],
+  ['Airship Dock at Dawn', 'airship dock with gantries and steam vents, copper sunrise, cinematic clouds'],
+  ['Mechanical Dragon Engine', 'dragon-shaped brass machine with gears and steam vents, dark industrial backdrop'],
+  ['Copper Observatory Telescope', 'Victorian observatory with giant brass telescope, starry sky, warm interior glow'],
 ].map(([name, description]) => ({
-  title: `${name} - Automotive Theme`,
-  prompt: `ultra high-end automotive photography, ${description}, cinematic luxury style, dramatic lighting, glossy reflections, premium composition, showroom quality, 8k detail, no logos, no brand badges, no license plates, no text, no watermark`,
+  title: `${name} - Steampunk Theme`,
+  prompt: `premium steampunk digital artwork, ${description}, brass copper gears pipes steam Victorian industrial design, cinematic lighting, high-end poster composition, rich textures, commercial wall art quality, no people, no text, no watermark`,
 }))
 
 function safeFilePart(value: string) {
@@ -97,11 +93,12 @@ async function uploadGeneratedImageToBlob(openAiUrl: string, title: string) {
 async function upsertArtwork(item: (typeof ITEMS)[number], imageUrl: string) {
   const tags = [
     THEME_TAG,
-    'automotive',
-    'cars',
-    'luxury',
+    'theme',
+    'steampunk',
+    'clockwork',
+    'victorian',
+    'industrial',
     'wall-art',
-    'performance',
   ]
 
   const existing = await prisma.artwork.findFirst({
@@ -170,7 +167,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Automotive final batch complete',
+    message: 'Steampunk batch 1 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
