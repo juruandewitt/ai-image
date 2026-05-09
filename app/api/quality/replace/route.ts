@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Dragon Over Mountain Kingdom', 'massive dragon flying above a medieval mountain kingdom, glowing sky'],
-  ['Enchanted Forest Portal', 'mystical forest with glowing portal, ancient trees, magical light'],
-  ['Floating Castle in the Sky', 'giant castle floating among clouds, waterfalls falling into sky, golden light'],
-  ['Dark Sorcerer Tower', 'ominous tower on cliff, lightning sky, glowing windows, cinematic darkness'],
-  ['Crystal Cavern Realm', 'underground cavern filled with glowing crystals, reflections, magical atmosphere'],
-  ['Ancient Ruins Awakening', 'forgotten ruins covered in vines, glowing runes, sunlight beams'],
-  ['Golden Kingdom at Sunrise', 'epic fantasy city with towers and walls, warm sunrise glow'],
-  ['Mystic Waterfall Temple', 'hidden temple behind waterfall, mist, glowing magical energy'],
-  ['Dragon Egg Chamber', 'ancient chamber with glowing dragon eggs, firelight, stone textures'],
-  ['Moonlit Elven City', 'elegant elven city under moonlight, white stone architecture, glowing trees'],
+  ['Phoenix Over Ancient Ruins', 'giant phoenix made of golden fire flying above ancient stone ruins, glowing sunrise'],
+  ['Enchanted Moon Lake', 'magical lake under moonlight, glowing lilies, mist, distant mountains'],
+  ['Giant Tree Kingdom', 'massive ancient tree with glowing windows and bridges, magical forest city'],
+  ['Crystal Dragon Cave', 'dragon silhouette inside glowing crystal cave, blue and violet magical light'],
+  ['Moon Gate Temple', 'ancient circular moon gate temple, glowing portal, misty mountain background'],
+  ['Sky Bridge City', 'fantasy city connected by bridges high above clouds, golden towers, vast sky'],
+  ['Fire Mountain Fortress', 'dark fortress built into volcanic mountain, lava glow, smoky sky'],
+  ['Magical Library of Stars', 'vast enchanted library with floating books, glowing star ceiling, warm lanterns'],
+  ['Ancient Portal Stones', 'ring of ancient standing stones glowing with blue magic, stormy twilight sky'],
+  ['Floating Island Waterfall', 'floating island with waterfalls falling into clouds, lush greenery, sunrise light'],
 ].map(([name, description]) => ({
   title: `${name} - Fantasy Theme`,
   prompt: `epic fantasy artwork, ${description}, cinematic lighting, ultra detailed, magical atmosphere, high-end poster composition, 8k detail, rich colors, no people, no text, no watermark`,
@@ -64,7 +64,7 @@ async function generateOpenAiImageUrl(prompt: string) {
 
   const data = await response.json()
   const imageUrl = data?.data?.[0]?.url
-  if (!imageUrl) throw new Error('No image URL returned')
+  if (!imageUrl || typeof imageUrl !== 'string') throw new Error('No image URL returned')
 
   return imageUrl
 }
@@ -166,7 +166,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Fantasy batch 1 complete',
+    message: 'Fantasy batch 2 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
