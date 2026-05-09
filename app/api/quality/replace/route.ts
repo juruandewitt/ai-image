@@ -5,25 +5,25 @@ import { prisma } from '@/lib/prisma'
 export const dynamic = 'force-dynamic'
 export const maxDuration = 300
 
-const THEME = 'steampunk'
+const THEME = 'fantasy'
 const THEME_TAG = `theme:${THEME}`
 const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Clockwork Compass Artifact', 'ornate brass compass with exposed gears, copper engravings, dark velvet background'],
-  ['Brass Underground Station', 'Victorian underground station with brass tunnels, steam vents, glowing platform lamps'],
-  ['Steam Greenhouse Conservatory', 'glass greenhouse filled with brass irrigation pipes, copper machinery, warm mist'],
-  ['Copper Lunar Train', 'steam-powered train crossing a lunar landscape, brass engine, starry sky, copper moonlight'],
-  ['Mechanical Sea Turtle', 'sea turtle made of brass plates and glass gears, underwater steampunk atmosphere'],
-  ['Victorian Skyline at Night', 'Victorian industrial skyline at night, copper rooftops, steam chimneys, amber windows'],
-  ['Gearwork Throne Room', 'grand empty throne room filled with giant gears, brass pillars, dramatic golden light'],
-  ['Steam Powered Lighthouse', 'lighthouse powered by steam engines, copper pipes, stormy sea, glowing beacon'],
-  ['Brass Automaton Fox', 'fox-shaped brass automaton, clockwork joints, polished copper body, dark elegant background'],
-  ['Clockwork Universe Map', 'vast mechanical star map with brass orbit rings, gears, glowing planets, cinematic darkness'],
+  ['Dragon Over Mountain Kingdom', 'massive dragon flying above a medieval mountain kingdom, glowing sky'],
+  ['Enchanted Forest Portal', 'mystical forest with glowing portal, ancient trees, magical light'],
+  ['Floating Castle in the Sky', 'giant castle floating among clouds, waterfalls falling into sky, golden light'],
+  ['Dark Sorcerer Tower', 'ominous tower on cliff, lightning sky, glowing windows, cinematic darkness'],
+  ['Crystal Cavern Realm', 'underground cavern filled with glowing crystals, reflections, magical atmosphere'],
+  ['Ancient Ruins Awakening', 'forgotten ruins covered in vines, glowing runes, sunlight beams'],
+  ['Golden Kingdom at Sunrise', 'epic fantasy city with towers and walls, warm sunrise glow'],
+  ['Mystic Waterfall Temple', 'hidden temple behind waterfall, mist, glowing magical energy'],
+  ['Dragon Egg Chamber', 'ancient chamber with glowing dragon eggs, firelight, stone textures'],
+  ['Moonlit Elven City', 'elegant elven city under moonlight, white stone architecture, glowing trees'],
 ].map(([name, description]) => ({
-  title: `${name} - Steampunk Theme`,
-  prompt: `premium steampunk digital artwork, ${description}, brass copper gears pipes steam Victorian industrial design, cinematic lighting, high-end poster composition, rich textures, commercial wall art quality, no people, no text, no watermark`,
+  title: `${name} - Fantasy Theme`,
+  prompt: `epic fantasy artwork, ${description}, cinematic lighting, ultra detailed, magical atmosphere, high-end poster composition, 8k detail, rich colors, no people, no text, no watermark`,
 }))
 
 function safeFilePart(value: string) {
@@ -64,7 +64,7 @@ async function generateOpenAiImageUrl(prompt: string) {
 
   const data = await response.json()
   const imageUrl = data?.data?.[0]?.url
-  if (!imageUrl || typeof imageUrl !== 'string') throw new Error('No image URL returned')
+  if (!imageUrl) throw new Error('No image URL returned')
 
   return imageUrl
 }
@@ -93,11 +93,10 @@ async function uploadGeneratedImageToBlob(openAiUrl: string, title: string) {
 async function upsertArtwork(item: (typeof ITEMS)[number], imageUrl: string) {
   const tags = [
     THEME_TAG,
-    'theme',
-    'steampunk',
-    'clockwork',
-    'victorian',
-    'industrial',
+    'fantasy',
+    'magic',
+    'dragons',
+    'epic',
     'wall-art',
   ]
 
@@ -167,7 +166,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Steampunk final batch complete',
+    message: 'Fantasy batch 1 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
