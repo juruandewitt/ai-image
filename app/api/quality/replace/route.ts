@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Ice Kingdom Citadel', 'frozen fantasy kingdom made of ice, towering structures, blue glow, snowstorm atmosphere'],
-  ['Lava Dragon Valley', 'massive dragon flying above lava-filled valley, volcanic mountains, fiery glow'],
-  ['Enchanted Sword Altar', 'ancient sword embedded in glowing stone altar, magical energy, forest clearing'],
-  ['Glowing Mushroom Forest', 'fantasy forest filled with giant bioluminescent mushrooms, neon colors, mist'],
-  ['Celestial Castle Above Clouds', 'radiant castle floating above clouds, golden light beams, heavenly atmosphere'],
-  ['Forgotten Giant Statue', 'massive ancient stone statue covered in vines, broken ruins, cinematic sunlight'],
-  ['Magical River Canyon', 'deep canyon with glowing river, waterfalls, magical blue light, epic scale'],
-  ['Shadow Fortress Stronghold', 'dark fortress surrounded by fog and shadows, dramatic sky, ominous lighting'],
-  ['Crystal Bridge Over Void', 'shimmering crystal bridge suspended over endless void, glowing edges, surreal'],
-  ['Ancient Dragon Skull Desert', 'colossal dragon skull half-buried in desert, sandstorm, dramatic lighting'],
+  ['Storm Dragon Cliffs', 'dragon flying through storm clouds above jagged cliffs, lightning, epic scale'],
+  ['Enchanted Desert Palace', 'fantasy palace rising from golden desert dunes, glowing domes, sunset haze'],
+  ['Silver Moon Forest', 'ancient silver forest under full moon, glowing leaves, magical mist'],
+  ['Ancient Sky Temple', 'floating ancient temple high above clouds, broken stone bridges, golden sky'],
+  ['Glowing Crystal Lake', 'still lake filled with glowing crystals, violet reflections, distant mountains'],
+  ['Fantasy Volcano Gate', 'massive stone gate beside volcanic lava flows, fiery sky, dark rock'],
+  ['Ruined Crown Hall', 'abandoned royal hall with broken crown throne, vines, shafts of sunlight'],
+  ['Dragon Waterfall Valley', 'dragon perched above giant waterfall valley, rainbow mist, lush cliffs'],
+  ['Mystical Island Shrine', 'small shrine on floating island surrounded by clouds and magical blue light'],
+  ['Golden Forest Kingdom', 'forest kingdom with golden trees, glowing paths, elegant fantasy architecture'],
 ].map(([name, description]) => ({
   title: `${name} - Fantasy Theme`,
   prompt: `epic fantasy artwork, ${description}, cinematic lighting, ultra detailed, magical atmosphere, high-end poster composition, 8k detail, rich colors, no people, no text, no watermark`,
@@ -166,7 +166,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Fantasy batch 3 complete',
+    message: 'Fantasy batch 4 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
