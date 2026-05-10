@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Storm Dragon Cliffs', 'dragon flying through storm clouds above jagged cliffs, lightning, epic scale'],
-  ['Enchanted Desert Palace', 'fantasy palace rising from golden desert dunes, glowing domes, sunset haze'],
-  ['Silver Moon Forest', 'ancient silver forest under full moon, glowing leaves, magical mist'],
-  ['Ancient Sky Temple', 'floating ancient temple high above clouds, broken stone bridges, golden sky'],
-  ['Glowing Crystal Lake', 'still lake filled with glowing crystals, violet reflections, distant mountains'],
-  ['Fantasy Volcano Gate', 'massive stone gate beside volcanic lava flows, fiery sky, dark rock'],
-  ['Ruined Crown Hall', 'abandoned royal hall with broken crown throne, vines, shafts of sunlight'],
-  ['Dragon Waterfall Valley', 'dragon perched above giant waterfall valley, rainbow mist, lush cliffs'],
-  ['Mystical Island Shrine', 'small shrine on floating island surrounded by clouds and magical blue light'],
-  ['Golden Forest Kingdom', 'forest kingdom with golden trees, glowing paths, elegant fantasy architecture'],
+  ['Starlight Wizard Tower', 'towering magical observatory on a cliff, glowing stars, swirling blue aurora'],
+  ['Dragonbone Valley', 'valley filled with ancient dragon bones, golden mist, distant mountains'],
+  ['Emerald Fairy Grove', 'enchanted emerald forest grove with glowing flowers, soft magical light'],
+  ['Sunken Fantasy Palace', 'ancient palace beneath crystal-clear water, glowing ruins, blue-green atmosphere'],
+  ['Obsidian Castle Gate', 'black obsidian castle gate with red magical glow, dramatic storm clouds'],
+  ['Golden Griffin Peak', 'majestic griffin perched on mountain peak, sunrise clouds, epic fantasy light'],
+  ['Mystic Rune Waterfall', 'waterfall flowing over ancient glowing rune stones, misty forest setting'],
+  ['Celestial Dragon Temple', 'floating temple surrounded by stars and a luminous dragon silhouette'],
+  ['Enchanted Crystal Desert', 'desert filled with giant glowing crystals, purple sunset sky'],
+  ['Lost Kingdom Under the Sea', 'fantasy underwater kingdom with glowing towers, coral, blue light rays'],
 ].map(([name, description]) => ({
   title: `${name} - Fantasy Theme`,
   prompt: `epic fantasy artwork, ${description}, cinematic lighting, ultra detailed, magical atmosphere, high-end poster composition, 8k detail, rich colors, no people, no text, no watermark`,
@@ -166,7 +166,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Fantasy batch 4 complete',
+    message: 'Fantasy final batch complete',
     theme: THEME,
     count: ITEMS.length,
     results,
