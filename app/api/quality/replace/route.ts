@@ -5,25 +5,25 @@ import { prisma } from '@/lib/prisma'
 export const dynamic = 'force-dynamic'
 export const maxDuration = 300
 
-const THEME = 'cyberpunk'
+const THEME = 'abstract'
 const THEME_TAG = `theme:${THEME}`
 const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Neon Monorail Station', 'elevated neon monorail station, wet platforms, cyan and pink lights, futuristic city depth'],
-  ['Cyberpunk Rain Garden', 'futuristic indoor rain garden, glowing plants, glass ceiling, neon reflections'],
-  ['Purple Neon Skyline', 'vast purple neon skyline, futuristic towers, rainy atmosphere, deep night city'],
-  ['Cyberpunk Docking Bay', 'futuristic docking bay with glowing landing pads, mist, chrome architecture'],
-  ['Red Data Core Chamber', 'massive red glowing data core chamber, dark metallic walls, cinematic sci-fi light'],
-  ['Neon Street Underpass', 'futuristic underpass with glowing signs, wet asphalt, blue and magenta reflections'],
-  ['Cyberpunk Glass Atrium', 'huge glass atrium inside megacity tower, holographic light, reflective floor'],
-  ['Electric Night Highway', 'empty futuristic highway at night, neon lane lights, rain, city skyline'],
-  ['Cyan Tower Rainfall', 'tall cyan-lit skyscraper during rainfall, dark clouds, reflective surrounding buildings'],
-  ['Final Neon Megacity Vista', 'wide panoramic cyberpunk megacity vista, layered towers, neon haze, cinematic night'],
+  ['Gold Marble Flow', 'luxury abstract marble flow, white stone, gold veins, soft shadows'],
+  ['Midnight Blue Geometry', 'deep navy abstract geometric shapes, metallic highlights, elegant balance'],
+  ['Soft Neutral Layers', 'minimal abstract beige cream taupe layers, calm interior design palette'],
+  ['Crimson Energy Field', 'bold crimson and black abstract motion, energetic brush textures, dramatic contrast'],
+  ['Emerald Glass Forms', 'emerald green translucent abstract glass shapes, soft reflections, premium look'],
+  ['Violet Smoke Waves', 'purple violet smoke-like abstract waves, dark background, glowing edges'],
+  ['Black and Gold Texture', 'black textured surface with flowing gold accents, luxury wall art composition'],
+  ['Pastel Dream Gradient', 'soft pastel abstract gradient, pink, lavender, mint, airy modern feel'],
+  ['Copper Liquid Motion', 'liquid copper abstract flow, dark bronze background, glossy highlights'],
+  ['Arctic Minimal Forms', 'cool white and ice blue abstract minimal forms, clean modern composition'],
 ].map(([name, description]) => ({
-  title: `${name} - Cyberpunk Theme`,
-  prompt: `premium cyberpunk digital artwork, ${description}, neon lighting, rain reflections, futuristic architecture, cinematic atmosphere, high-end poster composition, ultra detailed, commercial wall art quality, no people, no readable text, no logos, no watermark`,
+  title: `${name} - Abstract Theme`,
+  prompt: `premium abstract digital artwork, ${description}, high-end wall art, refined composition, rich texture, modern interior design aesthetic, commercial poster quality, no objects, no people, no readable text, no logos, no watermark`,
 }))
 
 function safeFilePart(value: string) {
@@ -94,11 +94,11 @@ async function upsertArtwork(item: (typeof ITEMS)[number], imageUrl: string) {
   const tags = [
     THEME_TAG,
     'theme',
-    'cyberpunk',
-    'neon',
-    'sci-fi',
-    'futuristic',
+    'abstract',
+    'modern',
+    'decor',
     'wall-art',
+    'interior-design',
   ]
 
   const existing = await prisma.artwork.findFirst({
@@ -167,7 +167,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Cyberpunk final batch complete',
+    message: 'Abstract batch 1 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
