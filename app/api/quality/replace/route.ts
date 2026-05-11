@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Neon Megacity Skyline', 'towering futuristic city skyline, neon pink and blue lights, rainy atmosphere'],
-  ['Cyberpunk Alley Market', 'narrow neon alley market, holographic signs, wet pavement, glowing reflections'],
-  ['Futuristic Motorcycle Street', 'sleek futuristic motorcycle parked on neon city street, rain reflections'],
-  ['High Rise Neon Apartment', 'cyberpunk high-rise apartment windows, glowing signs, night city depth'],
-  ['Hologram City Crossing', 'busy futuristic crossing without people, giant hologram lights, reflective road'],
-  ['Cyberpunk Rooftop View', 'rooftop overlooking neon megacity, glowing billboards, purple night sky'],
-  ['Rainy Neon Train Station', 'futuristic train station, wet floor, neon rails, blue and magenta lighting'],
-  ['AI Core Control Room', 'futuristic AI control room, glowing servers, holographic panels, dark atmosphere'],
-  ['Cyberpunk Street Racer', 'futuristic car under neon lights, wet street, cinematic city reflections'],
-  ['Neon Harbor District', 'futuristic harbor with glowing towers, mist, rain, cyberpunk boats'],
+  ['Neon Subway Tunnel', 'futuristic subway tunnel with glowing magenta rails, wet reflective floor, blue neon walls'],
+  ['Cyberpunk Skyline Sunset', 'neon megacity skyline at sunset, orange horizon, purple towers, glowing windows'],
+  ['Robotic City District', 'futuristic robotic city district, chrome structures, neon signs, rain reflections'],
+  ['Glowing Data Center', 'massive futuristic data center, glowing server towers, blue holographic light, dark atmosphere'],
+  ['Flying Car Avenue', 'elevated city avenue with flying cars, neon traffic streams, rainy night skyline'],
+  ['Neon Rooftop Garden', 'futuristic rooftop garden with glowing plants, glass towers, pink and cyan night light'],
+  ['Futuristic Arcade Street', 'cyberpunk arcade street, bright neon storefronts, wet pavement, electric atmosphere'],
+  ['Blue Hologram Tower', 'towering skyscraper wrapped in blue holographic projection, dark rainy megacity'],
+  ['Rain Soaked Neon Bridge', 'long futuristic bridge in heavy rain, red and blue neon reflections, city beyond'],
+  ['Cyberpunk Industrial Zone', 'futuristic industrial zone, pipes, steam, neon warning lights, dark metallic structures'],
 ].map(([name, description]) => ({
   title: `${name} - Cyberpunk Theme`,
   prompt: `premium cyberpunk digital artwork, ${description}, neon lighting, rain reflections, futuristic architecture, cinematic atmosphere, high-end poster composition, ultra detailed, commercial wall art quality, no people, no readable text, no logos, no watermark`,
@@ -167,7 +167,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Cyberpunk batch 1 complete',
+    message: 'Cyberpunk batch 2 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
