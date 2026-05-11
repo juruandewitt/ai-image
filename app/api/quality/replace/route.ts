@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Neon City Canal', 'futuristic city canal with glowing boats, neon reflections, rainy night atmosphere'],
-  ['Quantum Server Temple', 'massive futuristic server hall designed like a temple, glowing cyan cores, dark architecture'],
-  ['Cyberpunk Skyline Storm', 'megacity skyline during electric storm, lightning, neon towers, rain clouds'],
-  ['Magenta Street Tunnel', 'long city tunnel filled with magenta neon lights, wet reflective road, futuristic depth'],
-  ['Futuristic Drone Port', 'rooftop drone port with glowing landing pads, neon skyline, misty night air'],
-  ['Glowing Rooftop Pool', 'luxury rooftop pool glowing cyan, neon city towers around it, rain reflections'],
-  ['Neon Highway Interchange', 'futuristic elevated highway interchange, light trails, neon signs, dark city below'],
-  ['Underground Tech Bazaar', 'underground cyberpunk marketplace, glowing tech stalls, neon reflections, industrial ceiling'],
-  ['Cyberpunk Power Grid', 'vast futuristic power grid with glowing pylons, neon energy cables, stormy sky'],
-  ['Synthetic Rain City', 'dense cyberpunk city under artificial rain, pink and blue neon glow, reflective streets'],
+  ['Neon Desert Outpost', 'futuristic desert outpost glowing with cyan and orange neon, sandstorm haze, dark sky'],
+  ['Cyberpunk Sky Train', 'elevated sky train moving between neon towers, rain reflections, magenta and blue light'],
+  ['Holographic Temple City', 'ancient-inspired futuristic temple city with holographic light columns, neon mist'],
+  ['Red Neon Alley', 'narrow cyberpunk alley flooded with red neon, wet pavement, dark futuristic buildings'],
+  ['Futuristic Rain Plaza', 'wide futuristic city plaza under heavy rain, glowing floor panels, neon towers'],
+  ['Chrome Tower District', 'district of chrome skyscrapers, blue holograms, reflective glass, night rain'],
+  ['Neon Ocean City', 'futuristic city rising from dark ocean, glowing piers, neon reflections on water'],
+  ['Cyberpunk Solar Farm', 'futuristic solar farm outside megacity, glowing panels, purple sunset, sci-fi skyline'],
+  ['Midnight Data Skyline', 'dark megacity skyline with streams of glowing data light, blue and violet atmosphere'],
+  ['Electric Billboard Canyon', 'urban canyon of giant electric billboards, wet roads, neon pink and cyan glow'],
 ].map(([name, description]) => ({
   title: `${name} - Cyberpunk Theme`,
   prompt: `premium cyberpunk digital artwork, ${description}, neon lighting, rain reflections, futuristic architecture, cinematic atmosphere, high-end poster composition, ultra detailed, commercial wall art quality, no people, no readable text, no logos, no watermark`,
@@ -167,7 +167,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Cyberpunk batch 3 complete',
+    message: 'Cyberpunk batch 4 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
