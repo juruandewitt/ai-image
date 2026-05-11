@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Gold Marble Flow', 'luxury abstract marble flow, white stone, gold veins, soft shadows'],
-  ['Midnight Blue Geometry', 'deep navy abstract geometric shapes, metallic highlights, elegant balance'],
-  ['Soft Neutral Layers', 'minimal abstract beige cream taupe layers, calm interior design palette'],
-  ['Crimson Energy Field', 'bold crimson and black abstract motion, energetic brush textures, dramatic contrast'],
-  ['Emerald Glass Forms', 'emerald green translucent abstract glass shapes, soft reflections, premium look'],
-  ['Violet Smoke Waves', 'purple violet smoke-like abstract waves, dark background, glowing edges'],
-  ['Black and Gold Texture', 'black textured surface with flowing gold accents, luxury wall art composition'],
-  ['Pastel Dream Gradient', 'soft pastel abstract gradient, pink, lavender, mint, airy modern feel'],
-  ['Copper Liquid Motion', 'liquid copper abstract flow, dark bronze background, glossy highlights'],
-  ['Arctic Minimal Forms', 'cool white and ice blue abstract minimal forms, clean modern composition'],
+  ['Monochrome Ink Flow', 'black and white ink flow abstraction, elegant fluid movement, soft paper texture'],
+  ['Rose Gold Waves', 'rose gold metallic waves, blush pink shadows, luxury flowing composition'],
+  ['Cobalt Fractured Glass', 'cobalt blue fractured glass forms, sharp translucent layers, bright highlights'],
+  ['Earth Tone Organic Layers', 'terracotta, clay, sand and olive organic abstract layers, warm natural texture'],
+  ['Liquid Silver Motion', 'liquid silver abstract motion, dark graphite background, glossy reflections'],
+  ['Neon Motion Ribbons', 'neon cyan magenta and violet ribbons, dark background, energetic light trails'],
+  ['Sand Texture Minimalism', 'minimal sand texture abstraction, beige dunes, soft shadows, calm composition'],
+  ['Bold Primary Geometry', 'bold red blue and yellow geometric abstraction, clean modern balance'],
+  ['Pearl Cloud Abstraction', 'soft pearl white cloud-like abstract forms, subtle lavender and silver tones'],
+  ['Dark Emerald Luxury Texture', 'dark emerald abstract texture, gold flecks, deep shadows, premium wall art'],
 ].map(([name, description]) => ({
   title: `${name} - Abstract Theme`,
   prompt: `premium abstract digital artwork, ${description}, high-end wall art, refined composition, rich texture, modern interior design aesthetic, commercial poster quality, no objects, no people, no readable text, no logos, no watermark`,
@@ -167,7 +167,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Abstract batch 1 complete',
+    message: 'Abstract batch 2 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
