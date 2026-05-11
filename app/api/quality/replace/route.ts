@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Neon Desert Outpost', 'futuristic desert outpost glowing with cyan and orange neon, sandstorm haze, dark sky'],
-  ['Cyberpunk Sky Train', 'elevated sky train moving between neon towers, rain reflections, magenta and blue light'],
-  ['Holographic Temple City', 'ancient-inspired futuristic temple city with holographic light columns, neon mist'],
-  ['Red Neon Alley', 'narrow cyberpunk alley flooded with red neon, wet pavement, dark futuristic buildings'],
-  ['Futuristic Rain Plaza', 'wide futuristic city plaza under heavy rain, glowing floor panels, neon towers'],
-  ['Chrome Tower District', 'district of chrome skyscrapers, blue holograms, reflective glass, night rain'],
-  ['Neon Ocean City', 'futuristic city rising from dark ocean, glowing piers, neon reflections on water'],
-  ['Cyberpunk Solar Farm', 'futuristic solar farm outside megacity, glowing panels, purple sunset, sci-fi skyline'],
-  ['Midnight Data Skyline', 'dark megacity skyline with streams of glowing data light, blue and violet atmosphere'],
-  ['Electric Billboard Canyon', 'urban canyon of giant electric billboards, wet roads, neon pink and cyan glow'],
+  ['Neon Monorail Station', 'elevated neon monorail station, wet platforms, cyan and pink lights, futuristic city depth'],
+  ['Cyberpunk Rain Garden', 'futuristic indoor rain garden, glowing plants, glass ceiling, neon reflections'],
+  ['Purple Neon Skyline', 'vast purple neon skyline, futuristic towers, rainy atmosphere, deep night city'],
+  ['Cyberpunk Docking Bay', 'futuristic docking bay with glowing landing pads, mist, chrome architecture'],
+  ['Red Data Core Chamber', 'massive red glowing data core chamber, dark metallic walls, cinematic sci-fi light'],
+  ['Neon Street Underpass', 'futuristic underpass with glowing signs, wet asphalt, blue and magenta reflections'],
+  ['Cyberpunk Glass Atrium', 'huge glass atrium inside megacity tower, holographic light, reflective floor'],
+  ['Electric Night Highway', 'empty futuristic highway at night, neon lane lights, rain, city skyline'],
+  ['Cyan Tower Rainfall', 'tall cyan-lit skyscraper during rainfall, dark clouds, reflective surrounding buildings'],
+  ['Final Neon Megacity Vista', 'wide panoramic cyberpunk megacity vista, layered towers, neon haze, cinematic night'],
 ].map(([name, description]) => ({
   title: `${name} - Cyberpunk Theme`,
   prompt: `premium cyberpunk digital artwork, ${description}, neon lighting, rain reflections, futuristic architecture, cinematic atmosphere, high-end poster composition, ultra detailed, commercial wall art quality, no people, no readable text, no logos, no watermark`,
@@ -167,7 +167,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Cyberpunk batch 4 complete',
+    message: 'Cyberpunk final batch complete',
     theme: THEME,
     count: ITEMS.length,
     results,
