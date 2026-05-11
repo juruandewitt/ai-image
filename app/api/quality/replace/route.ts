@@ -5,25 +5,25 @@ import { prisma } from '@/lib/prisma'
 export const dynamic = 'force-dynamic'
 export const maxDuration = 300
 
-const THEME = 'fantasy'
+const THEME = 'cyberpunk'
 const THEME_TAG = `theme:${THEME}`
 const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Starlight Wizard Tower', 'towering magical observatory on a cliff, glowing stars, swirling blue aurora'],
-  ['Dragonbone Valley', 'valley filled with ancient dragon bones, golden mist, distant mountains'],
-  ['Emerald Fairy Grove', 'enchanted emerald forest grove with glowing flowers, soft magical light'],
-  ['Sunken Fantasy Palace', 'ancient palace beneath crystal-clear water, glowing ruins, blue-green atmosphere'],
-  ['Obsidian Castle Gate', 'black obsidian castle gate with red magical glow, dramatic storm clouds'],
-  ['Golden Griffin Peak', 'majestic griffin perched on mountain peak, sunrise clouds, epic fantasy light'],
-  ['Mystic Rune Waterfall', 'waterfall flowing over ancient glowing rune stones, misty forest setting'],
-  ['Celestial Dragon Temple', 'floating temple surrounded by stars and a luminous dragon silhouette'],
-  ['Enchanted Crystal Desert', 'desert filled with giant glowing crystals, purple sunset sky'],
-  ['Lost Kingdom Under the Sea', 'fantasy underwater kingdom with glowing towers, coral, blue light rays'],
+  ['Neon Megacity Skyline', 'towering futuristic city skyline, neon pink and blue lights, rainy atmosphere'],
+  ['Cyberpunk Alley Market', 'narrow neon alley market, holographic signs, wet pavement, glowing reflections'],
+  ['Futuristic Motorcycle Street', 'sleek futuristic motorcycle parked on neon city street, rain reflections'],
+  ['High Rise Neon Apartment', 'cyberpunk high-rise apartment windows, glowing signs, night city depth'],
+  ['Hologram City Crossing', 'busy futuristic crossing without people, giant hologram lights, reflective road'],
+  ['Cyberpunk Rooftop View', 'rooftop overlooking neon megacity, glowing billboards, purple night sky'],
+  ['Rainy Neon Train Station', 'futuristic train station, wet floor, neon rails, blue and magenta lighting'],
+  ['AI Core Control Room', 'futuristic AI control room, glowing servers, holographic panels, dark atmosphere'],
+  ['Cyberpunk Street Racer', 'futuristic car under neon lights, wet street, cinematic city reflections'],
+  ['Neon Harbor District', 'futuristic harbor with glowing towers, mist, rain, cyberpunk boats'],
 ].map(([name, description]) => ({
-  title: `${name} - Fantasy Theme`,
-  prompt: `epic fantasy artwork, ${description}, cinematic lighting, ultra detailed, magical atmosphere, high-end poster composition, 8k detail, rich colors, no people, no text, no watermark`,
+  title: `${name} - Cyberpunk Theme`,
+  prompt: `premium cyberpunk digital artwork, ${description}, neon lighting, rain reflections, futuristic architecture, cinematic atmosphere, high-end poster composition, ultra detailed, commercial wall art quality, no people, no readable text, no logos, no watermark`,
 }))
 
 function safeFilePart(value: string) {
@@ -93,10 +93,11 @@ async function uploadGeneratedImageToBlob(openAiUrl: string, title: string) {
 async function upsertArtwork(item: (typeof ITEMS)[number], imageUrl: string) {
   const tags = [
     THEME_TAG,
-    'fantasy',
-    'magic',
-    'dragons',
-    'epic',
+    'theme',
+    'cyberpunk',
+    'neon',
+    'sci-fi',
+    'futuristic',
     'wall-art',
   ]
 
@@ -166,7 +167,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Fantasy final batch complete',
+    message: 'Cyberpunk batch 1 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
