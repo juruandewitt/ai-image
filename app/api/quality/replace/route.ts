@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Monochrome Ink Flow', 'black and white ink flow abstraction, elegant fluid movement, soft paper texture'],
-  ['Rose Gold Waves', 'rose gold metallic waves, blush pink shadows, luxury flowing composition'],
-  ['Cobalt Fractured Glass', 'cobalt blue fractured glass forms, sharp translucent layers, bright highlights'],
-  ['Earth Tone Organic Layers', 'terracotta, clay, sand and olive organic abstract layers, warm natural texture'],
-  ['Liquid Silver Motion', 'liquid silver abstract motion, dark graphite background, glossy reflections'],
-  ['Neon Motion Ribbons', 'neon cyan magenta and violet ribbons, dark background, energetic light trails'],
-  ['Sand Texture Minimalism', 'minimal sand texture abstraction, beige dunes, soft shadows, calm composition'],
-  ['Bold Primary Geometry', 'bold red blue and yellow geometric abstraction, clean modern balance'],
-  ['Pearl Cloud Abstraction', 'soft pearl white cloud-like abstract forms, subtle lavender and silver tones'],
-  ['Dark Emerald Luxury Texture', 'dark emerald abstract texture, gold flecks, deep shadows, premium wall art'],
+  ['Ocean Glass Abstraction', 'transparent ocean blue glass forms, aqua gradients, soft light refractions'],
+  ['Warm Clay Geometry', 'terracotta clay geometric planes, warm beige shadows, organic modern composition'],
+  ['Smoky Black Luxury', 'smoky black abstract texture, charcoal gradients, subtle gold shimmer'],
+  ['Iridescent Pearl Flow', 'iridescent pearl liquid flow, soft rainbow highlights, creamy white background'],
+  ['Green Mineral Layers', 'malachite green mineral layers, dark emerald veins, natural stone texture'],
+  ['Red Silk Motion', 'deep red silk-like abstract motion, flowing folds, dramatic shadows'],
+  ['Blue Chrome Ribbons', 'chrome blue metallic ribbons, glossy reflections, dark modern background'],
+  ['Desert Sunset Abstraction', 'abstract desert sunset palette, burnt orange, mauve, sand, soft gradients'],
+  ['White Sculptural Minimalism', 'white sculptural abstract forms, clean shadows, gallery-style minimalism'],
+  ['Ultraviolet Liquid Light', 'ultraviolet liquid light abstraction, purple glow, electric blue highlights'],
 ].map(([name, description]) => ({
   title: `${name} - Abstract Theme`,
   prompt: `premium abstract digital artwork, ${description}, high-end wall art, refined composition, rich texture, modern interior design aesthetic, commercial poster quality, no objects, no people, no readable text, no logos, no watermark`,
@@ -167,7 +167,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Abstract batch 2 complete',
+    message: 'Abstract batch 3 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
