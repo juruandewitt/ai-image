@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Neon Subway Tunnel', 'futuristic subway tunnel with glowing magenta rails, wet reflective floor, blue neon walls'],
-  ['Cyberpunk Skyline Sunset', 'neon megacity skyline at sunset, orange horizon, purple towers, glowing windows'],
-  ['Robotic City District', 'futuristic robotic city district, chrome structures, neon signs, rain reflections'],
-  ['Glowing Data Center', 'massive futuristic data center, glowing server towers, blue holographic light, dark atmosphere'],
-  ['Flying Car Avenue', 'elevated city avenue with flying cars, neon traffic streams, rainy night skyline'],
-  ['Neon Rooftop Garden', 'futuristic rooftop garden with glowing plants, glass towers, pink and cyan night light'],
-  ['Futuristic Arcade Street', 'cyberpunk arcade street, bright neon storefronts, wet pavement, electric atmosphere'],
-  ['Blue Hologram Tower', 'towering skyscraper wrapped in blue holographic projection, dark rainy megacity'],
-  ['Rain Soaked Neon Bridge', 'long futuristic bridge in heavy rain, red and blue neon reflections, city beyond'],
-  ['Cyberpunk Industrial Zone', 'futuristic industrial zone, pipes, steam, neon warning lights, dark metallic structures'],
+  ['Neon City Canal', 'futuristic city canal with glowing boats, neon reflections, rainy night atmosphere'],
+  ['Quantum Server Temple', 'massive futuristic server hall designed like a temple, glowing cyan cores, dark architecture'],
+  ['Cyberpunk Skyline Storm', 'megacity skyline during electric storm, lightning, neon towers, rain clouds'],
+  ['Magenta Street Tunnel', 'long city tunnel filled with magenta neon lights, wet reflective road, futuristic depth'],
+  ['Futuristic Drone Port', 'rooftop drone port with glowing landing pads, neon skyline, misty night air'],
+  ['Glowing Rooftop Pool', 'luxury rooftop pool glowing cyan, neon city towers around it, rain reflections'],
+  ['Neon Highway Interchange', 'futuristic elevated highway interchange, light trails, neon signs, dark city below'],
+  ['Underground Tech Bazaar', 'underground cyberpunk marketplace, glowing tech stalls, neon reflections, industrial ceiling'],
+  ['Cyberpunk Power Grid', 'vast futuristic power grid with glowing pylons, neon energy cables, stormy sky'],
+  ['Synthetic Rain City', 'dense cyberpunk city under artificial rain, pink and blue neon glow, reflective streets'],
 ].map(([name, description]) => ({
   title: `${name} - Cyberpunk Theme`,
   prompt: `premium cyberpunk digital artwork, ${description}, neon lighting, rain reflections, futuristic architecture, cinematic atmosphere, high-end poster composition, ultra detailed, commercial wall art quality, no people, no readable text, no logos, no watermark`,
@@ -167,7 +167,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Cyberpunk batch 2 complete',
+    message: 'Cyberpunk batch 3 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
