@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Champagne Liquid Texture', 'champagne gold liquid texture, soft bubbles, elegant flowing highlights'],
-  ['Black Marble Geometry', 'black marble slabs with gold veins, sharp geometric composition'],
-  ['Turquoise Ink Bloom', 'turquoise ink blooming in water, fluid organic motion, soft gradients'],
-  ['Bronze Sand Waves', 'bronze metallic sand dunes, smooth flowing wave patterns, warm tones'],
-  ['Pink Glass Prism', 'pink translucent glass prism shapes, light refractions, glossy surfaces'],
-  ['Smoky Blue Field', 'deep smoky blue abstract field, soft fog textures, subtle light gradients'],
-  ['Golden Circular Forms', 'floating golden circles, layered composition, luxury abstract minimalism'],
-  ['Muted Linen Layers', 'soft linen fabric abstraction, beige and neutral layered textures'],
-  ['Crimson Chrome Flow', 'crimson red chrome liquid flow, reflective metallic highlights'],
-  ['Calm Gray Minimalism', 'calm gray minimal abstract forms, soft shadows, ultra clean composition'],
+  ['Opal Fluid Geometry', 'opal fluid geometry, pearl tones, soft rainbow edges, elegant layered shapes'],
+  ['Midnight Gold Horizon', 'deep midnight blue abstract horizon with gold light band and subtle texture'],
+  ['Soft Clay Minimal Forms', 'soft clay and cream minimal forms, rounded shapes, warm interior palette'],
+  ['Electric Cyan Pulse', 'electric cyan pulse waves, black background, energetic luminous movement'],
+  ['Dusty Rose Stone Layers', 'dusty rose stone-like abstract layers, muted pink, beige, soft shadows'],
+  ['Liquid Onyx and Amber', 'liquid onyx black with amber metallic flow, glossy luxury texture'],
+  ['Sage Green Calm Field', 'sage green calm abstract field, soft linen texture, minimal modern composition'],
+  ['Purple Gold Nebula Abstract', 'purple and gold nebula-like abstraction, cosmic softness, elegant glow'],
+  ['White Gold Architectural Lines', 'white background with gold architectural linework, refined geometric balance'],
+  ['Deep Teal Motion Texture', 'deep teal abstract motion texture, layered brush movement, subtle silver highlights'],
 ].map(([name, description]) => ({
   title: `${name} - Abstract Theme`,
   prompt: `premium abstract digital artwork, ${description}, high-end wall art, refined composition, rich texture, modern interior design aesthetic, commercial poster quality, no objects, no people, no readable text, no logos, no watermark`,
@@ -167,7 +167,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Abstract batch 4 complete',
+    message: 'Abstract final batch complete',
     theme: THEME,
     count: ITEMS.length,
     results,
