@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Desert Glass Hotel', 'luxury glass hotel in desert landscape, warm dunes, sunset reflections, minimal architecture'],
-  ['Curved Concrete Library', 'modern curved concrete library, soft skylight, clean geometric interior'],
-  ['Luxury Spa Interior', 'high-end spa interior, stone walls, warm indirect lighting, water reflections'],
-  ['Futuristic City Tower', 'tall futuristic city tower, glass and steel, dramatic skyline lighting'],
-  ['Coastal Stone Villa', 'stone villa on coastal cliff, sea view, warm Mediterranean light'],
-  ['Black Glass Office Tower', 'black glass office tower, sharp reflections, dramatic urban skyline'],
-  ['Modern Museum Stairs', 'minimal museum staircase, white walls, soft shadows, elegant symmetry'],
-  ['Warm Timber Atrium', 'large timber atrium, wooden beams, skylight, calm architectural interior'],
-  ['White Courtyard Residence', 'white courtyard residence, clean walls, olive tree, sunlight and shadows'],
-  ['Golden Train Station Hall', 'grand train station hall, golden light, arched ceiling, polished floor reflections'],
+  ['Minimal Lake House', 'minimal modern lake house with glass walls, calm water reflections, soft sunrise'],
+  ['Futuristic Museum Exterior', 'futuristic museum exterior with sweeping white curves, clean plaza, blue sky'],
+  ['Luxury Desert Courtyard', 'luxury desert courtyard residence, stone walls, water feature, warm golden light'],
+  ['Glass Ocean Restaurant', 'glass restaurant over ocean water, sunset reflections, elegant modern design'],
+  ['Concrete Spiral Staircase', 'minimal concrete spiral staircase, strong shadows, sculptural architectural form'],
+  ['Modern Forest Retreat', 'modern forest retreat with timber and glass, warm interior glow, misty trees'],
+  ['Marble Gallery Corridor', 'long marble gallery corridor, arches, soft natural light, elegant symmetry'],
+  ['Futuristic Dome City', 'futuristic dome city architecture, glass domes, clean white structures, soft sky'],
+  ['Luxury Penthouse Interior', 'luxury penthouse living room, city skyline view, warm modern interior design'],
+  ['Stone Arch Monastery', 'ancient stone arch monastery courtyard, warm sunlight, quiet architectural beauty'],
 ].map(([name, description]) => ({
   title: `${name} - Architecture Theme`,
   prompt: `premium architectural photography and design artwork, ${description}, refined composition, high-end real estate and interior design aesthetic, cinematic lighting, ultra detailed, commercial wall art quality, no people, no readable text, no logos, no watermark`,
@@ -167,7 +167,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Architecture batch 4 complete',
+    message: 'Architecture final batch complete',
     theme: THEME,
     count: ITEMS.length,
     results,
