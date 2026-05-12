@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Ocean Glass Abstraction', 'transparent ocean blue glass forms, aqua gradients, soft light refractions'],
-  ['Warm Clay Geometry', 'terracotta clay geometric planes, warm beige shadows, organic modern composition'],
-  ['Smoky Black Luxury', 'smoky black abstract texture, charcoal gradients, subtle gold shimmer'],
-  ['Iridescent Pearl Flow', 'iridescent pearl liquid flow, soft rainbow highlights, creamy white background'],
-  ['Green Mineral Layers', 'malachite green mineral layers, dark emerald veins, natural stone texture'],
-  ['Red Silk Motion', 'deep red silk-like abstract motion, flowing folds, dramatic shadows'],
-  ['Blue Chrome Ribbons', 'chrome blue metallic ribbons, glossy reflections, dark modern background'],
-  ['Desert Sunset Abstraction', 'abstract desert sunset palette, burnt orange, mauve, sand, soft gradients'],
-  ['White Sculptural Minimalism', 'white sculptural abstract forms, clean shadows, gallery-style minimalism'],
-  ['Ultraviolet Liquid Light', 'ultraviolet liquid light abstraction, purple glow, electric blue highlights'],
+  ['Champagne Liquid Texture', 'champagne gold liquid texture, soft bubbles, elegant flowing highlights'],
+  ['Black Marble Geometry', 'black marble slabs with gold veins, sharp geometric composition'],
+  ['Turquoise Ink Bloom', 'turquoise ink blooming in water, fluid organic motion, soft gradients'],
+  ['Bronze Sand Waves', 'bronze metallic sand dunes, smooth flowing wave patterns, warm tones'],
+  ['Pink Glass Prism', 'pink translucent glass prism shapes, light refractions, glossy surfaces'],
+  ['Smoky Blue Field', 'deep smoky blue abstract field, soft fog textures, subtle light gradients'],
+  ['Golden Circular Forms', 'floating golden circles, layered composition, luxury abstract minimalism'],
+  ['Muted Linen Layers', 'soft linen fabric abstraction, beige and neutral layered textures'],
+  ['Crimson Chrome Flow', 'crimson red chrome liquid flow, reflective metallic highlights'],
+  ['Calm Gray Minimalism', 'calm gray minimal abstract forms, soft shadows, ultra clean composition'],
 ].map(([name, description]) => ({
   title: `${name} - Abstract Theme`,
   prompt: `premium abstract digital artwork, ${description}, high-end wall art, refined composition, rich texture, modern interior design aesthetic, commercial poster quality, no objects, no people, no readable text, no logos, no watermark`,
@@ -167,7 +167,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Abstract batch 3 complete',
+    message: 'Abstract batch 4 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
