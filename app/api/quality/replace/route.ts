@@ -5,25 +5,25 @@ import { prisma } from '@/lib/prisma'
 export const dynamic = 'force-dynamic'
 export const maxDuration = 300
 
-const THEME = 'architecture'
+const THEME = 'luxury-interior'
 const THEME_TAG = `theme:${THEME}`
 const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Minimal Lake House', 'minimal modern lake house with glass walls, calm water reflections, soft sunrise'],
-  ['Futuristic Museum Exterior', 'futuristic museum exterior with sweeping white curves, clean plaza, blue sky'],
-  ['Luxury Desert Courtyard', 'luxury desert courtyard residence, stone walls, water feature, warm golden light'],
-  ['Glass Ocean Restaurant', 'glass restaurant over ocean water, sunset reflections, elegant modern design'],
-  ['Concrete Spiral Staircase', 'minimal concrete spiral staircase, strong shadows, sculptural architectural form'],
-  ['Modern Forest Retreat', 'modern forest retreat with timber and glass, warm interior glow, misty trees'],
-  ['Marble Gallery Corridor', 'long marble gallery corridor, arches, soft natural light, elegant symmetry'],
-  ['Futuristic Dome City', 'futuristic dome city architecture, glass domes, clean white structures, soft sky'],
-  ['Luxury Penthouse Interior', 'luxury penthouse living room, city skyline view, warm modern interior design'],
-  ['Stone Arch Monastery', 'ancient stone arch monastery courtyard, warm sunlight, quiet architectural beauty'],
+  ['Luxury Marble Living Room', 'high-end marble living room, beige tones, soft sunlight, modern furniture'],
+  ['Minimal Beige Bedroom', 'minimal luxury bedroom, soft neutral tones, linen textures, warm lighting'],
+  ['Modern Kitchen Stone Island', 'luxury kitchen with stone island, warm wood cabinetry, soft lighting'],
+  ['Luxury Bathroom Spa Style', 'spa-like luxury bathroom, stone textures, warm ambient lighting'],
+  ['Black and Gold Lounge', 'black and gold luxury lounge, velvet textures, dramatic lighting'],
+  ['Warm Wood Dining Room', 'luxury dining room with warm wood, pendant lights, elegant table setting'],
+  ['Penthouse Glass Living Space', 'glass penthouse living room, skyline view, modern furniture'],
+  ['Minimal Japandi Interior', 'japandi style interior, wood, soft beige palette, calm composition'],
+  ['Luxury Walk In Closet', 'high-end walk-in closet, warm lighting, wood and glass shelves'],
+  ['Modern Fireplace Lounge', 'luxury living room with modern fireplace, soft textures, warm glow'],
 ].map(([name, description]) => ({
-  title: `${name} - Architecture Theme`,
-  prompt: `premium architectural photography and design artwork, ${description}, refined composition, high-end real estate and interior design aesthetic, cinematic lighting, ultra detailed, commercial wall art quality, no people, no readable text, no logos, no watermark`,
+  title: `${name} - Luxury Interior Theme`,
+  prompt: `ultra high-end interior design photography, ${description}, luxury home aesthetic, minimalist styling, soft natural light, editorial quality, clean composition, premium wall art, no people, no text, no logos, no watermark`,
 }))
 
 function safeFilePart(value: string) {
@@ -94,10 +94,10 @@ async function upsertArtwork(item: (typeof ITEMS)[number], imageUrl: string) {
   const tags = [
     THEME_TAG,
     'theme',
-    'architecture',
-    'interior-design',
-    'real-estate',
-    'modern',
+    'luxury',
+    'interior',
+    'home-decor',
+    'minimal',
     'wall-art',
   ]
 
@@ -167,7 +167,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Architecture final batch complete',
+    message: 'Luxury Interior batch 1 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
