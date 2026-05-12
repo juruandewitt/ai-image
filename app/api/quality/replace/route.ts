@@ -5,25 +5,25 @@ import { prisma } from '@/lib/prisma'
 export const dynamic = 'force-dynamic'
 export const maxDuration = 300
 
-const THEME = 'abstract'
+const THEME = 'architecture'
 const THEME_TAG = `theme:${THEME}`
 const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Opal Fluid Geometry', 'opal fluid geometry, pearl tones, soft rainbow edges, elegant layered shapes'],
-  ['Midnight Gold Horizon', 'deep midnight blue abstract horizon with gold light band and subtle texture'],
-  ['Soft Clay Minimal Forms', 'soft clay and cream minimal forms, rounded shapes, warm interior palette'],
-  ['Electric Cyan Pulse', 'electric cyan pulse waves, black background, energetic luminous movement'],
-  ['Dusty Rose Stone Layers', 'dusty rose stone-like abstract layers, muted pink, beige, soft shadows'],
-  ['Liquid Onyx and Amber', 'liquid onyx black with amber metallic flow, glossy luxury texture'],
-  ['Sage Green Calm Field', 'sage green calm abstract field, soft linen texture, minimal modern composition'],
-  ['Purple Gold Nebula Abstract', 'purple and gold nebula-like abstraction, cosmic softness, elegant glow'],
-  ['White Gold Architectural Lines', 'white background with gold architectural linework, refined geometric balance'],
-  ['Deep Teal Motion Texture', 'deep teal abstract motion texture, layered brush movement, subtle silver highlights'],
+  ['Glass Skyscraper at Sunrise', 'modern glass skyscraper reflecting sunrise, clean city skyline, premium architectural photography'],
+  ['Minimal Desert Villa', 'minimal luxury villa in desert landscape, warm stone, long shadows, calm modern design'],
+  ['Brutalist Concrete Museum', 'bold brutalist concrete museum, dramatic shadows, geometric forms, overcast sky'],
+  ['Futuristic White Pavilion', 'futuristic white architectural pavilion, flowing curves, clean plaza, soft daylight'],
+  ['Luxury Mountain Retreat', 'modern mountain retreat with glass walls, snow peaks, warm interior glow'],
+  ['Classical Dome Interior', 'grand classical dome interior, marble columns, soft golden light, symmetrical composition'],
+  ['Black Modern House', 'black modern house with sharp lines, forest setting, moody evening light'],
+  ['Urban Glass Atrium', 'large urban glass atrium, steel structure, reflections, bright architectural space'],
+  ['Floating Concept Architecture', 'surreal floating architectural structure above water, futuristic minimal design'],
+  ['Mediterranean Stone Courtyard', 'stone courtyard with arches, warm sunlight, elegant Mediterranean architecture'],
 ].map(([name, description]) => ({
-  title: `${name} - Abstract Theme`,
-  prompt: `premium abstract digital artwork, ${description}, high-end wall art, refined composition, rich texture, modern interior design aesthetic, commercial poster quality, no objects, no people, no readable text, no logos, no watermark`,
+  title: `${name} - Architecture Theme`,
+  prompt: `premium architectural photography and design artwork, ${description}, refined composition, high-end real estate and interior design aesthetic, cinematic lighting, ultra detailed, commercial wall art quality, no people, no readable text, no logos, no watermark`,
 }))
 
 function safeFilePart(value: string) {
@@ -94,11 +94,11 @@ async function upsertArtwork(item: (typeof ITEMS)[number], imageUrl: string) {
   const tags = [
     THEME_TAG,
     'theme',
-    'abstract',
-    'modern',
-    'decor',
-    'wall-art',
+    'architecture',
     'interior-design',
+    'real-estate',
+    'modern',
+    'wall-art',
   ]
 
   const existing = await prisma.artwork.findFirst({
@@ -167,7 +167,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Abstract final batch complete',
+    message: 'Architecture batch 1 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
