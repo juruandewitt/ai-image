@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Art Deco Tower Lobby', 'grand Art Deco tower lobby, polished stone, brass details, warm symmetrical lighting'],
-  ['Desert Concrete Chapel', 'minimal concrete chapel in desert, simple geometric form, warm sunset shadows'],
-  ['Futuristic Library Atrium', 'futuristic library atrium with sweeping shelves, glass roof, soft daylight'],
-  ['Glass Bridge House', 'modern glass house connected by transparent bridge, forest setting, clean reflections'],
-  ['Marble Hotel Lobby', 'luxury marble hotel lobby, high ceiling, warm ambient light, elegant interior design'],
-  ['Geometric Apartment Facade', 'modern apartment facade with geometric balconies, crisp shadows, urban design'],
-  ['Mountain Glass Cabin', 'small glass cabin in mountain landscape, warm interior glow, cinematic dusk'],
-  ['Museum Courtyard Shadows', 'modern museum courtyard with stone walls, long shadows, minimal architectural forms'],
-  ['Tropical Concrete Villa', 'modern concrete villa in tropical setting, open-air design, lush greenery'],
-  ['Golden Opera Hall', 'grand opera hall interior, gold detailing, curved balconies, dramatic warm lighting'],
+  ['Desert Glass Hotel', 'luxury glass hotel in desert landscape, warm dunes, sunset reflections, minimal architecture'],
+  ['Curved Concrete Library', 'modern curved concrete library, soft skylight, clean geometric interior'],
+  ['Luxury Spa Interior', 'high-end spa interior, stone walls, warm indirect lighting, water reflections'],
+  ['Futuristic City Tower', 'tall futuristic city tower, glass and steel, dramatic skyline lighting'],
+  ['Coastal Stone Villa', 'stone villa on coastal cliff, sea view, warm Mediterranean light'],
+  ['Black Glass Office Tower', 'black glass office tower, sharp reflections, dramatic urban skyline'],
+  ['Modern Museum Stairs', 'minimal museum staircase, white walls, soft shadows, elegant symmetry'],
+  ['Warm Timber Atrium', 'large timber atrium, wooden beams, skylight, calm architectural interior'],
+  ['White Courtyard Residence', 'white courtyard residence, clean walls, olive tree, sunlight and shadows'],
+  ['Golden Train Station Hall', 'grand train station hall, golden light, arched ceiling, polished floor reflections'],
 ].map(([name, description]) => ({
   title: `${name} - Architecture Theme`,
   prompt: `premium architectural photography and design artwork, ${description}, refined composition, high-end real estate and interior design aesthetic, cinematic lighting, ultra detailed, commercial wall art quality, no people, no readable text, no logos, no watermark`,
@@ -167,7 +167,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Architecture batch 3 complete',
+    message: 'Architecture batch 4 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
