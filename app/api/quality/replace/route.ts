@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Glass Skyscraper at Sunrise', 'modern glass skyscraper reflecting sunrise, clean city skyline, premium architectural photography'],
-  ['Minimal Desert Villa', 'minimal luxury villa in desert landscape, warm stone, long shadows, calm modern design'],
-  ['Brutalist Concrete Museum', 'bold brutalist concrete museum, dramatic shadows, geometric forms, overcast sky'],
-  ['Futuristic White Pavilion', 'futuristic white architectural pavilion, flowing curves, clean plaza, soft daylight'],
-  ['Luxury Mountain Retreat', 'modern mountain retreat with glass walls, snow peaks, warm interior glow'],
-  ['Classical Dome Interior', 'grand classical dome interior, marble columns, soft golden light, symmetrical composition'],
-  ['Black Modern House', 'black modern house with sharp lines, forest setting, moody evening light'],
-  ['Urban Glass Atrium', 'large urban glass atrium, steel structure, reflections, bright architectural space'],
-  ['Floating Concept Architecture', 'surreal floating architectural structure above water, futuristic minimal design'],
-  ['Mediterranean Stone Courtyard', 'stone courtyard with arches, warm sunlight, elegant Mediterranean architecture'],
+  ['Glass Desert Gallery', 'modern glass gallery in desert landscape, reflections, clean minimal architecture'],
+  ['Japanese Timber House', 'traditional Japanese timber house, clean lines, natural wood, serene setting'],
+  ['Luxury Indoor Pool Villa', 'luxury indoor pool villa, marble floors, warm lighting, high-end design'],
+  ['Grand Cathedral Staircase', 'dramatic cathedral staircase, ornate stone, soft light beams, symmetrical view'],
+  ['Modern Cliffside House', 'modern house built on cliff edge, ocean view, glass walls, cinematic light'],
+  ['Concrete Courtyard Residence', 'minimal concrete house with inner courtyard, shadows, modern architecture'],
+  ['Futuristic Airport Terminal', 'futuristic airport terminal interior, sweeping curves, bright open space'],
+  ['Tropical Resort Lobby', 'luxury tropical resort lobby, open air design, wood and stone, lush greenery'],
+  ['White Spiral Museum', 'white spiral museum interior, smooth curves, minimal modern architecture'],
+  ['City Rooftop Penthouse', 'luxury rooftop penthouse terrace, skyline view, sunset lighting'],
 ].map(([name, description]) => ({
   title: `${name} - Architecture Theme`,
   prompt: `premium architectural photography and design artwork, ${description}, refined composition, high-end real estate and interior design aesthetic, cinematic lighting, ultra detailed, commercial wall art quality, no people, no readable text, no logos, no watermark`,
@@ -167,7 +167,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Architecture batch 1 complete',
+    message: 'Architecture batch 2 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
