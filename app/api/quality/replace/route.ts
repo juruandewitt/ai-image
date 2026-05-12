@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Glass Desert Gallery', 'modern glass gallery in desert landscape, reflections, clean minimal architecture'],
-  ['Japanese Timber House', 'traditional Japanese timber house, clean lines, natural wood, serene setting'],
-  ['Luxury Indoor Pool Villa', 'luxury indoor pool villa, marble floors, warm lighting, high-end design'],
-  ['Grand Cathedral Staircase', 'dramatic cathedral staircase, ornate stone, soft light beams, symmetrical view'],
-  ['Modern Cliffside House', 'modern house built on cliff edge, ocean view, glass walls, cinematic light'],
-  ['Concrete Courtyard Residence', 'minimal concrete house with inner courtyard, shadows, modern architecture'],
-  ['Futuristic Airport Terminal', 'futuristic airport terminal interior, sweeping curves, bright open space'],
-  ['Tropical Resort Lobby', 'luxury tropical resort lobby, open air design, wood and stone, lush greenery'],
-  ['White Spiral Museum', 'white spiral museum interior, smooth curves, minimal modern architecture'],
-  ['City Rooftop Penthouse', 'luxury rooftop penthouse terrace, skyline view, sunset lighting'],
+  ['Art Deco Tower Lobby', 'grand Art Deco tower lobby, polished stone, brass details, warm symmetrical lighting'],
+  ['Desert Concrete Chapel', 'minimal concrete chapel in desert, simple geometric form, warm sunset shadows'],
+  ['Futuristic Library Atrium', 'futuristic library atrium with sweeping shelves, glass roof, soft daylight'],
+  ['Glass Bridge House', 'modern glass house connected by transparent bridge, forest setting, clean reflections'],
+  ['Marble Hotel Lobby', 'luxury marble hotel lobby, high ceiling, warm ambient light, elegant interior design'],
+  ['Geometric Apartment Facade', 'modern apartment facade with geometric balconies, crisp shadows, urban design'],
+  ['Mountain Glass Cabin', 'small glass cabin in mountain landscape, warm interior glow, cinematic dusk'],
+  ['Museum Courtyard Shadows', 'modern museum courtyard with stone walls, long shadows, minimal architectural forms'],
+  ['Tropical Concrete Villa', 'modern concrete villa in tropical setting, open-air design, lush greenery'],
+  ['Golden Opera Hall', 'grand opera hall interior, gold detailing, curved balconies, dramatic warm lighting'],
 ].map(([name, description]) => ({
   title: `${name} - Architecture Theme`,
   prompt: `premium architectural photography and design artwork, ${description}, refined composition, high-end real estate and interior design aesthetic, cinematic lighting, ultra detailed, commercial wall art quality, no people, no readable text, no logos, no watermark`,
@@ -167,7 +167,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Architecture batch 2 complete',
+    message: 'Architecture batch 3 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
