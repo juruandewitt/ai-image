@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Luxury Hotel Suite', 'five-star hotel suite, soft beige palette, king bed, warm lighting, elegant curtains'],
-  ['Dark Modern Lounge', 'dark modern lounge, charcoal walls, low lighting, leather textures, luxury mood'],
-  ['Marble Entrance Hall', 'grand marble entrance hall, polished floors, soft sunlight, sculptural staircase'],
-  ['Ocean View Bedroom', 'luxury bedroom with ocean view, glass walls, linen bedding, calm sunrise light'],
-  ['Indoor Garden Lounge', 'luxury lounge with indoor garden, stone flooring, soft greenery, natural daylight'],
-  ['Stone Wine Cellar', 'high-end wine cellar, stone walls, warm lighting, elegant shelving, luxury atmosphere'],
-  ['Minimal Home Office', 'minimal luxury home office, wood desk, beige walls, clean styling, soft window light'],
-  ['Gold Accent Dining Space', 'luxury dining room with gold accents, marble table, warm chandelier lighting'],
-  ['Luxury Staircase Foyer', 'dramatic luxury foyer with curved staircase, marble floor, warm elegant lighting'],
-  ['Spa Pool Relaxation Room', 'private indoor spa pool room, stone textures, soft steam, warm ambient light'],
+  ['Luxury Library Lounge', 'luxury private library lounge, dark wood shelves, leather seating, warm reading lights'],
+  ['Soft Cream Living Room', 'soft cream luxury living room, boucle sofa, linen curtains, natural sunlight'],
+  ['Dark Marble Bathroom', 'dark marble luxury bathroom, black stone walls, gold fixtures, warm ambient lighting'],
+  ['Modern Indoor Courtyard', 'modern indoor courtyard, stone floor, olive tree, skylight, calm luxury atmosphere'],
+  ['Coastal Dining Room', 'luxury coastal dining room, ocean view, pale wood, white linen, soft sunset light'],
+  ['Luxury Cinema Room', 'private luxury cinema room, dark velvet seating, warm wall lighting, premium atmosphere'],
+  ['Sculptural Bedroom Suite', 'luxury bedroom with sculptural headboard, neutral tones, soft indirect lighting'],
+  ['Hotel Lobby Lounge', 'high-end hotel lobby lounge, marble columns, designer seating, warm elegant glow'],
+  ['Minimalist Tea Room', 'minimalist luxury tea room, natural wood, beige walls, peaceful soft lighting'],
+  ['Warm Stone Kitchen', 'luxury kitchen with warm stone counters, brass details, soft under-cabinet lighting'],
 ].map(([name, description]) => ({
   title: `${name} - Luxury Interior Theme`,
   prompt: `ultra high-end interior design photography, ${description}, luxury home aesthetic, minimalist styling, soft natural light, editorial quality, clean composition, premium wall art, no people, no text, no logos, no watermark`,
@@ -163,7 +163,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Luxury Interior batch 2 complete',
+    message: 'Luxury Interior batch 3 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
