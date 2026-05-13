@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Luxury Library Lounge', 'luxury private library lounge, dark wood shelves, leather seating, warm reading lights'],
-  ['Soft Cream Living Room', 'soft cream luxury living room, boucle sofa, linen curtains, natural sunlight'],
-  ['Dark Marble Bathroom', 'dark marble luxury bathroom, black stone walls, gold fixtures, warm ambient lighting'],
-  ['Modern Indoor Courtyard', 'modern indoor courtyard, stone floor, olive tree, skylight, calm luxury atmosphere'],
-  ['Coastal Dining Room', 'luxury coastal dining room, ocean view, pale wood, white linen, soft sunset light'],
-  ['Luxury Cinema Room', 'private luxury cinema room, dark velvet seating, warm wall lighting, premium atmosphere'],
-  ['Sculptural Bedroom Suite', 'luxury bedroom with sculptural headboard, neutral tones, soft indirect lighting'],
-  ['Hotel Lobby Lounge', 'high-end hotel lobby lounge, marble columns, designer seating, warm elegant glow'],
-  ['Minimalist Tea Room', 'minimalist luxury tea room, natural wood, beige walls, peaceful soft lighting'],
-  ['Warm Stone Kitchen', 'luxury kitchen with warm stone counters, brass details, soft under-cabinet lighting'],
+  ['Champagne Lounge', 'champagne-toned luxury lounge, curved sofa, marble accents, soft gold lighting'],
+  ['Luxury Nursery Room', 'luxury nursery room, soft cream palette, elegant crib, natural textures, calm daylight'],
+  ['Modern Art Hallway', 'modern luxury hallway with abstract wall art, stone flooring, gallery lighting'],
+  ['Dark Stone Kitchen', 'dark stone luxury kitchen, black marble island, warm brass details, moody lighting'],
+  ['Warm Desert Bedroom', 'luxury desert-inspired bedroom, clay tones, linen bedding, soft sunset light'],
+  ['Glass Sauna Room', 'luxury glass sauna room, warm wood, soft steam, spa-like calm atmosphere'],
+  ['Designer Powder Room', 'designer powder room, marble sink, dramatic mirror lighting, refined finishes'],
+  ['Luxury Apartment Balcony', 'luxury apartment balcony, skyline view, elegant outdoor seating, sunset glow'],
+  ['Soft Neutral Sitting Room', 'soft neutral luxury sitting room, textured fabrics, beige palette, warm daylight'],
+  ['Sculptural Dining Hall', 'luxury dining hall, sculptural chandelier, marble table, elegant warm lighting'],
 ].map(([name, description]) => ({
   title: `${name} - Luxury Interior Theme`,
   prompt: `ultra high-end interior design photography, ${description}, luxury home aesthetic, minimalist styling, soft natural light, editorial quality, clean composition, premium wall art, no people, no text, no logos, no watermark`,
@@ -163,7 +163,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Luxury Interior batch 3 complete',
+    message: 'Luxury Interior batch 4 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
