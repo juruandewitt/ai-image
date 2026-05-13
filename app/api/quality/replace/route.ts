@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Luxury Marble Living Room', 'high-end marble living room, beige tones, soft sunlight, modern furniture'],
-  ['Minimal Beige Bedroom', 'minimal luxury bedroom, soft neutral tones, linen textures, warm lighting'],
-  ['Modern Kitchen Stone Island', 'luxury kitchen with stone island, warm wood cabinetry, soft lighting'],
-  ['Luxury Bathroom Spa Style', 'spa-like luxury bathroom, stone textures, warm ambient lighting'],
-  ['Black and Gold Lounge', 'black and gold luxury lounge, velvet textures, dramatic lighting'],
-  ['Warm Wood Dining Room', 'luxury dining room with warm wood, pendant lights, elegant table setting'],
-  ['Penthouse Glass Living Space', 'glass penthouse living room, skyline view, modern furniture'],
-  ['Minimal Japandi Interior', 'japandi style interior, wood, soft beige palette, calm composition'],
-  ['Luxury Walk In Closet', 'high-end walk-in closet, warm lighting, wood and glass shelves'],
-  ['Modern Fireplace Lounge', 'luxury living room with modern fireplace, soft textures, warm glow'],
+  ['Luxury Hotel Suite', 'five-star hotel suite, soft beige palette, king bed, warm lighting, elegant curtains'],
+  ['Dark Modern Lounge', 'dark modern lounge, charcoal walls, low lighting, leather textures, luxury mood'],
+  ['Marble Entrance Hall', 'grand marble entrance hall, polished floors, soft sunlight, sculptural staircase'],
+  ['Ocean View Bedroom', 'luxury bedroom with ocean view, glass walls, linen bedding, calm sunrise light'],
+  ['Indoor Garden Lounge', 'luxury lounge with indoor garden, stone flooring, soft greenery, natural daylight'],
+  ['Stone Wine Cellar', 'high-end wine cellar, stone walls, warm lighting, elegant shelving, luxury atmosphere'],
+  ['Minimal Home Office', 'minimal luxury home office, wood desk, beige walls, clean styling, soft window light'],
+  ['Gold Accent Dining Space', 'luxury dining room with gold accents, marble table, warm chandelier lighting'],
+  ['Luxury Staircase Foyer', 'dramatic luxury foyer with curved staircase, marble floor, warm elegant lighting'],
+  ['Spa Pool Relaxation Room', 'private indoor spa pool room, stone textures, soft steam, warm ambient light'],
 ].map(([name, description]) => ({
   title: `${name} - Luxury Interior Theme`,
   prompt: `ultra high-end interior design photography, ${description}, luxury home aesthetic, minimalist styling, soft natural light, editorial quality, clean composition, premium wall art, no people, no text, no logos, no watermark`,
@@ -167,7 +167,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Luxury Interior batch 1 complete',
+    message: 'Luxury Interior batch 2 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
