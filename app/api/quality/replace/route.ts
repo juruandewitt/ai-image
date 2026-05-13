@@ -36,7 +36,7 @@ function safeFilePart(value: string) {
     .slice(0, 90)
 }
 
-async function generateOpenAiImageUrl(prompt: string) {
+async function generateOpenAiImageBuffer(prompt: string) {
   const apiKey = process.env.OPENAI_API_KEY
   if (!apiKey) throw new Error('Missing OPENAI_API_KEY')
 
@@ -47,11 +47,10 @@ async function generateOpenAiImageUrl(prompt: string) {
       Authorization: `Bearer ${apiKey}`,
     },
     body: JSON.stringify({
-      model: 'dall-e-3',
+      model: 'gpt-image-1',
       prompt,
       size: '1024x1024',
-      quality: 'standard',
-      response_format: 'url',
+      quality: 'medium',
       n: 1,
     }),
     cache: 'no-store',
@@ -63,26 +62,23 @@ async function generateOpenAiImageUrl(prompt: string) {
   }
 
   const data = await response.json()
-  const imageUrl = data?.data?.[0]?.url
-  if (!imageUrl || typeof imageUrl !== 'string') throw new Error('No image URL returned')
+  const base64 = data?.data?.[0]?.b64_json
 
-  return imageUrl
+  if (!base64 || typeof base64 !== 'string') {
+    throw new Error('No base64 image returned from OpenAI')
+  }
+
+  return Buffer.from(base64, 'base64')
 }
 
-async function uploadGeneratedImageToBlob(openAiUrl: string, title: string) {
-  const imageResponse = await fetch(openAiUrl, { cache: 'no-store' })
-  if (!imageResponse.ok) throw new Error(`Failed to download image: ${imageResponse.status}`)
-
-  const contentType = imageResponse.headers.get('content-type') || 'image/png'
-  const buffer = await imageResponse.arrayBuffer()
-
+async function uploadGeneratedImageToBlob(imageBuffer: Buffer, title: string) {
   const blob = await put(
     `artworks/themes/${THEME}/${safeFilePart(title)}.png`,
-    buffer,
+    imageBuffer,
     {
       access: 'public',
       addRandomSuffix: true,
-      contentType,
+      contentType: 'image/png',
     }
   )
 
@@ -134,7 +130,7 @@ async function upsertArtwork(item: (typeof ITEMS)[number], imageUrl: string) {
     data: {
       artworkId: artwork.id,
       originalUrl: imageUrl,
-      provider: 'theme-ai-generated',
+      provider: 'openai-gpt-image-1',
       prompt: item.prompt,
     },
   })
@@ -147,8 +143,8 @@ export async function GET() {
 
   for (const item of ITEMS) {
     try {
-      const aiUrl = await generateOpenAiImageUrl(item.prompt)
-      const blobUrl = await uploadGeneratedImageToBlob(aiUrl, item.title)
+      const imageBuffer = await generateOpenAiImageBuffer(item.prompt)
+      const blobUrl = await uploadGeneratedImageToBlob(imageBuffer, item.title)
       const artworkId = await upsertArtwork(item, blobUrl)
 
       results.push({
