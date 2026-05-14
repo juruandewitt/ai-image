@@ -5,25 +5,25 @@ import { prisma } from '@/lib/prisma'
 export const dynamic = 'force-dynamic'
 export const maxDuration = 300
 
-const THEME = 'luxury-interior'
+const THEME = 'fashion-editorial'
 const THEME_TAG = `theme:${THEME}`
 const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Luxury Dressing Room', 'luxury dressing room, soft lighting, custom wardrobes, marble island, elegant textures'],
-  ['Warm Minimal Living Space', 'warm minimal living space, beige sofa, stone coffee table, natural daylight'],
-  ['Luxury Bathroom Garden View', 'luxury bathroom with garden view, freestanding tub, stone floor, soft greenery'],
-  ['Dark Velvet Sitting Room', 'dark velvet sitting room, deep charcoal palette, brass accents, warm lamp glow'],
-  ['Modern Wine Lounge', 'modern wine lounge, dark wood shelves, leather chairs, low warm lighting'],
-  ['Neutral Penthouse Bedroom', 'neutral penthouse bedroom, skyline view, linen bedding, soft sunrise glow'],
-  ['Designer Entryway Console', 'designer entryway with console table, sculptural decor, stone wall, elegant lighting'],
-  ['Luxury Indoor Outdoor Lounge', 'luxury indoor outdoor lounge, sliding glass doors, pool view, sunset lighting'],
-  ['Calm Stone Meditation Room', 'calm stone meditation room, minimal seating, warm indirect light, peaceful design'],
-  ['Grand Luxury Living Hall', 'grand luxury living hall, high ceiling, marble floor, designer furniture, golden light'],
+  ['High Fashion Studio Portrait', 'high fashion editorial portrait, studio lighting, couture styling, dramatic shadows'],
+  ['Minimalist Fashion Shoot', 'minimalist fashion editorial, neutral tones, clean background, modern styling'],
+  ['Streetwear Editorial Look', 'urban streetwear editorial, bold outfit, city backdrop, fashion magazine style'],
+  ['Luxury Fashion Close Up', 'luxury fashion close-up, designer fabric detail, soft lighting, editorial quality'],
+  ['Runway Inspired Scene', 'runway fashion inspired editorial, dramatic lighting, couture garment, elegant pose'],
+  ['Black and White Fashion', 'black and white fashion editorial, high contrast lighting, timeless style'],
+  ['Outdoor Fashion Editorial', 'fashion editorial outdoors, natural light, wind movement, cinematic styling'],
+  ['Editorial Fashion Silhouette', 'fashion silhouette editorial, backlit subject, dramatic composition'],
+  ['High End Magazine Cover Style', 'fashion magazine cover style, bold pose, premium lighting, editorial look'],
+  ['Elegant Evening Couture', 'evening couture fashion editorial, flowing fabric, luxury styling, soft lighting'],
 ].map(([name, description]) => ({
-  title: `${name} - Luxury Interior Theme`,
-  prompt: `ultra high-end interior design photography, ${description}, luxury home aesthetic, minimalist styling, soft natural light, editorial quality, clean composition, premium wall art, no people, no text, no logos, no watermark`,
+  title: `${name} - Fashion Editorial Theme`,
+  prompt: `high-end fashion editorial photography, ${description}, professional model, ultra realistic, magazine quality, cinematic lighting, sharp focus, premium styling, no text, no logos, no watermark`,
 }))
 
 function safeFilePart(value: string) {
@@ -50,7 +50,7 @@ async function generateOpenAiImageBuffer(prompt: string) {
       model: 'gpt-image-1',
       prompt,
       size: '1024x1024',
-      quality: 'medium',
+      quality: 'high',
       n: 1,
     }),
     cache: 'no-store',
@@ -90,10 +90,10 @@ async function upsertArtwork(item: (typeof ITEMS)[number], imageUrl: string) {
   const tags = [
     THEME_TAG,
     'theme',
+    'fashion',
+    'editorial',
+    'style',
     'luxury',
-    'interior',
-    'home-decor',
-    'minimal',
     'wall-art',
   ]
 
@@ -163,7 +163,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Luxury Interior final batch complete',
+    message: 'Fashion Editorial batch 1 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
