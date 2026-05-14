@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Champagne Lounge', 'champagne-toned luxury lounge, curved sofa, marble accents, soft gold lighting'],
-  ['Luxury Nursery Room', 'luxury nursery room, soft cream palette, elegant crib, natural textures, calm daylight'],
-  ['Modern Art Hallway', 'modern luxury hallway with abstract wall art, stone flooring, gallery lighting'],
-  ['Dark Stone Kitchen', 'dark stone luxury kitchen, black marble island, warm brass details, moody lighting'],
-  ['Warm Desert Bedroom', 'luxury desert-inspired bedroom, clay tones, linen bedding, soft sunset light'],
-  ['Glass Sauna Room', 'luxury glass sauna room, warm wood, soft steam, spa-like calm atmosphere'],
-  ['Designer Powder Room', 'designer powder room, marble sink, dramatic mirror lighting, refined finishes'],
-  ['Luxury Apartment Balcony', 'luxury apartment balcony, skyline view, elegant outdoor seating, sunset glow'],
-  ['Soft Neutral Sitting Room', 'soft neutral luxury sitting room, textured fabrics, beige palette, warm daylight'],
-  ['Sculptural Dining Hall', 'luxury dining hall, sculptural chandelier, marble table, elegant warm lighting'],
+  ['Luxury Dressing Room', 'luxury dressing room, soft lighting, custom wardrobes, marble island, elegant textures'],
+  ['Warm Minimal Living Space', 'warm minimal living space, beige sofa, stone coffee table, natural daylight'],
+  ['Luxury Bathroom Garden View', 'luxury bathroom with garden view, freestanding tub, stone floor, soft greenery'],
+  ['Dark Velvet Sitting Room', 'dark velvet sitting room, deep charcoal palette, brass accents, warm lamp glow'],
+  ['Modern Wine Lounge', 'modern wine lounge, dark wood shelves, leather chairs, low warm lighting'],
+  ['Neutral Penthouse Bedroom', 'neutral penthouse bedroom, skyline view, linen bedding, soft sunrise glow'],
+  ['Designer Entryway Console', 'designer entryway with console table, sculptural decor, stone wall, elegant lighting'],
+  ['Luxury Indoor Outdoor Lounge', 'luxury indoor outdoor lounge, sliding glass doors, pool view, sunset lighting'],
+  ['Calm Stone Meditation Room', 'calm stone meditation room, minimal seating, warm indirect light, peaceful design'],
+  ['Grand Luxury Living Hall', 'grand luxury living hall, high ceiling, marble floor, designer furniture, golden light'],
 ].map(([name, description]) => ({
   title: `${name} - Luxury Interior Theme`,
   prompt: `ultra high-end interior design photography, ${description}, luxury home aesthetic, minimalist styling, soft natural light, editorial quality, clean composition, premium wall art, no people, no text, no logos, no watermark`,
@@ -163,7 +163,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Luxury Interior batch 4 complete',
+    message: 'Luxury Interior final batch complete',
     theme: THEME,
     count: ITEMS.length,
     results,
