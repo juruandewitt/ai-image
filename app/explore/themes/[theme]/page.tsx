@@ -15,7 +15,7 @@ const THEMES: Record<string, string> = {
   abstract: 'Abstract',
   architecture: 'Architecture',
   'ocean-marine': 'Ocean & Marine',
-  'luxury-interiors': 'Luxury Interiors',
+  'luxury-interior': 'Luxury / Interior Decor',
   cyberpunk: 'Cyberpunk',
   'nature-botanical': 'Nature & Botanical',
 }
@@ -93,7 +93,9 @@ export default async function ThemeDetailPage({
                 className="aspect-square w-full object-cover"
               />
               <div className="p-3">
-                <div className="line-clamp-2 text-sm text-slate-100">{art.title}</div>
+                <div className="line-clamp-2 text-sm text-slate-100">
+                  {art.title}
+                </div>
               </div>
             </Link>
           ))}
