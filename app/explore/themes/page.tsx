@@ -1,41 +1,39 @@
+export const dynamic = 'force-dynamic'
+
 import Link from 'next/link'
 
 const THEMES = [
-  { name: 'Landscapes', slug: 'landscapes' },
-  { name: 'Space & Universe', slug: 'space-universe' },
-  { name: 'Wildlife', slug: 'wildlife' },
-  { name: 'Automotive', slug: 'automotive' },
-  { name: 'Steampunk', slug: 'steampunk' },
-  { name: 'Fantasy', slug: 'fantasy' },
-  { name: 'Abstract', slug: 'abstract' },
-  { name: 'Architecture', slug: 'architecture' },
-  { name: 'Ocean & Marine', slug: 'ocean-marine' },
-  { name: 'Luxury Interiors', slug: 'luxury-interiors' },
-  { name: 'Cyberpunk', slug: 'cyberpunk' },
-  { name: 'Nature & Botanical', slug: 'nature-botanical' },
+  { slug: 'landscapes', title: 'Landscapes' },
+  { slug: 'space-universe', title: 'Space & Universe' },
+  { slug: 'wildlife', title: 'Wildlife' },
+  { slug: 'automotive', title: 'Automotive' },
+  { slug: 'steampunk', title: 'Steampunk' },
+  { slug: 'fantasy', title: 'Fantasy' },
+  { slug: 'abstract', title: 'Abstract' },
+  { slug: 'architecture', title: 'Architecture' },
+  { slug: 'ocean-marine', title: 'Ocean & Marine' },
+  { slug: 'luxury-interior', title: 'Luxury Interiors' }, // ✅ FIXED
+  { slug: 'cyberpunk', title: 'Cyberpunk' },
+  { slug: 'nature-botanical', title: 'Nature & Botanical' },
 ]
 
 export default function ThemesPage() {
   return (
-    <main className="space-y-8">
-      <div>
-        <h1 className="text-4xl font-semibold">Themes</h1>
-        <p className="mt-3 text-slate-400">
-          Browse commercial-ready AI artwork by popular download categories.
-        </p>
-      </div>
+    <main className="min-h-screen bg-black px-6 py-10 text-white">
+      <div className="mx-auto max-w-7xl">
+        <h1 className="mb-8 text-4xl font-semibold">Explore Themes</h1>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {THEMES.map((theme) => (
-          <Link
-            key={theme.slug}
-            href={`/explore/themes/${theme.slug}`}
-            className="rounded-2xl border border-slate-800 bg-slate-900/50 p-6 transition hover:border-amber-400"
-          >
-            <div className="text-xl font-semibold">{theme.name}</div>
-            <div className="mt-2 text-sm text-slate-400">Explore collection →</div>
-          </Link>
-        ))}
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+          {THEMES.map((theme) => (
+            <Link
+              key={theme.slug}
+              href={`/explore/themes/${theme.slug}`}
+              className="rounded-2xl border border-white/10 bg-white/5 p-6 text-center transition hover:border-white/30 hover:bg-white/10"
+            >
+              <span className="text-sm font-medium">{theme.title}</span>
+            </Link>
+          ))}
+        </div>
       </div>
     </main>
   )
