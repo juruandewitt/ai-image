@@ -84,10 +84,6 @@ export default async function ThemePage({ params }: PageProps) {
                   <h2 className="line-clamp-2 text-sm font-medium text-white">
                     {artwork.title}
                   </h2>
-
-                  <p className="mt-2 text-sm text-white/50">
-                    ${artwork.price?.toFixed(2) ?? '9.99'}
-                  </p>
                 </div>
               </Link>
             ))}
