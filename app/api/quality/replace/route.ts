@@ -23,7 +23,7 @@ const ITEMS = [
   ['Elegant Evening Couture', 'evening couture fashion editorial, flowing fabric, luxury styling, soft lighting'],
 ].map(([name, description]) => ({
   title: `${name} - Fashion Editorial Theme`,
-  prompt: `high-end fashion editorial photography, ${description}, professional model, ultra realistic, magazine quality, cinematic lighting, sharp focus, premium styling, no text, no logos, no watermark`,
+  prompt: `high-end fashion editorial photography, ${description}, professional adult model, ultra realistic, magazine quality, cinematic lighting, sharp focus, premium styling, elegant fashion pose, no minors, no nudity, no text, no logos, no watermark`,
 }))
 
 function safeFilePart(value: string) {
@@ -50,7 +50,7 @@ async function generateOpenAiImageBuffer(prompt: string) {
       model: 'gpt-image-1',
       prompt,
       size: '1024x1024',
-      quality: 'high',
+      quality: 'medium',
       n: 1,
     }),
     cache: 'no-store',
