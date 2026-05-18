@@ -5,25 +5,25 @@ import { prisma } from '@/lib/prisma'
 export const dynamic = 'force-dynamic'
 export const maxDuration = 300
 
-const THEME = 'fashion-editorial'
+const THEME = 'ocean-marine'
 const THEME_TAG = `theme:${THEME}`
 const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Luxury Bridal Couture', 'luxury bridal couture editorial, elegant white gown, soft lighting, high-end magazine style'],
-  ['Avant Garde Metallic Dress', 'avant garde metallic dress editorial, futuristic fashion, bold sculptural silhouette'],
-  ['Elegant Black Tie Portrait', 'black tie fashion editorial portrait, tuxedo styling, refined elegance, studio lighting'],
-  ['High Fashion Wind Effect', 'fashion editorial with wind blowing fabric, dynamic movement, cinematic styling'],
-  ['Luxury Fur Fashion Scene', 'luxury fur fashion editorial, winter elegance, soft lighting, premium styling'],
-  ['Minimal White Fashion Studio', 'minimal white fashion studio editorial, clean aesthetic, modern couture styling'],
-  ['Bold Color Block Fashion', 'fashion editorial with bold color blocking, vibrant outfit, modern composition'],
-  ['Luxury Jewelry Editorial', 'high-end jewelry fashion editorial, close-up detail, diamonds and gold, elegant lighting'],
-  ['Runway Backstage Moment', 'fashion runway backstage editorial, candid luxury styling, soft cinematic lighting'],
-  ['Editorial Fashion Duo', 'two adult models in fashion editorial, coordinated couture styling, magazine quality shoot'],
+  ['Crystal Blue Coral Reef', 'crystal clear coral reef, turquoise water, colorful coral, sun rays through the ocean'],
+  ['Deep Ocean Whale Light', 'majestic whale underwater, deep blue ocean, soft light rays, peaceful cinematic scale'],
+  ['Tropical Lagoon Aerial', 'tropical lagoon aerial view, bright turquoise water, white sand, reef patterns'],
+  ['Stormy Ocean Wave', 'powerful ocean wave during storm, dramatic clouds, sea spray, cinematic lighting'],
+  ['Sea Turtle Reef Journey', 'sea turtle swimming above coral reef, warm sunlight, clear blue water'],
+  ['Moonlit Ocean Horizon', 'calm ocean horizon under full moon, silver reflections, peaceful night atmosphere'],
+  ['Underwater Cave Glow', 'underwater sea cave with glowing blue light, rock textures, mysterious atmosphere'],
+  ['Sailing Yacht at Sunset', 'luxury sailing yacht on calm ocean, sunset glow, elegant marine composition'],
+  ['Dolphins in Sunlit Water', 'dolphins swimming through sunlit ocean water, clear blue sea, joyful motion'],
+  ['Arctic Ice Ocean', 'arctic ocean with floating ice, cold blue tones, misty horizon, cinematic calm'],
 ].map(([name, description]) => ({
-  title: `${name} - Fashion Editorial Theme`,
-  prompt: `high-end fashion editorial photography, ${description}, professional adult model, ultra realistic, magazine quality, cinematic lighting, sharp focus, premium styling, elegant fashion pose, no minors, no nudity, no text, no logos, no watermark`,
+  title: `${name} - Ocean Marine Theme`,
+  prompt: `premium ocean and marine digital artwork, ${description}, cinematic lighting, ultra detailed, commercial wall art quality, rich natural color, peaceful luxury aesthetic, no people, no boats with logos, no text, no watermark`,
 }))
 
 function safeFilePart(value: string) {
@@ -90,10 +90,10 @@ async function upsertArtwork(item: (typeof ITEMS)[number], imageUrl: string) {
   const tags = [
     THEME_TAG,
     'theme',
-    'fashion',
-    'editorial',
-    'style',
-    'luxury',
+    'ocean',
+    'marine',
+    'sea',
+    'underwater',
     'wall-art',
   ]
 
@@ -163,7 +163,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Fashion Editorial final batch complete',
+    message: 'Ocean Marine batch 1 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
