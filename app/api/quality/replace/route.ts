@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['High Fashion Studio Portrait', 'high fashion editorial portrait, studio lighting, couture styling, dramatic shadows'],
-  ['Minimalist Fashion Shoot', 'minimalist fashion editorial, neutral tones, clean background, modern styling'],
-  ['Streetwear Editorial Look', 'urban streetwear editorial, bold outfit, city backdrop, fashion magazine style'],
-  ['Luxury Fashion Close Up', 'luxury fashion close-up, designer fabric detail, soft lighting, editorial quality'],
-  ['Runway Inspired Scene', 'runway fashion inspired editorial, dramatic lighting, couture garment, elegant pose'],
-  ['Black and White Fashion', 'black and white fashion editorial, high contrast lighting, timeless style'],
-  ['Outdoor Fashion Editorial', 'fashion editorial outdoors, natural light, wind movement, cinematic styling'],
-  ['Editorial Fashion Silhouette', 'fashion silhouette editorial, backlit subject, dramatic composition'],
-  ['High End Magazine Cover Style', 'fashion magazine cover style, bold pose, premium lighting, editorial look'],
-  ['Elegant Evening Couture', 'evening couture fashion editorial, flowing fabric, luxury styling, soft lighting'],
+  ['Luxury Desert Editorial', 'luxury fashion editorial in desert landscape, flowing neutral outfit, golden hour light, cinematic dunes'],
+  ['Avant Garde Studio Look', 'avant-garde fashion editorial in studio, sculptural outfit, dramatic shadows, premium styling'],
+  ['Monochrome Couture Portrait', 'monochrome couture fashion portrait, black and white styling, elegant high contrast lighting'],
+  ['Futuristic Fashion Shoot', 'futuristic fashion editorial, metallic fabric, clean sci-fi studio, cool blue lighting'],
+  ['Golden Hour Editorial', 'high-fashion editorial at golden hour, warm sunlight, elegant outfit, soft natural glow'],
+  ['High Fashion Street Scene', 'high-fashion street editorial, bold outfit, urban architecture backdrop, cinematic lighting'],
+  ['Silk Fabric Movement', 'fashion editorial focused on flowing silk fabric movement, soft light, elegant composition'],
+  ['Luxury Accessories Close Up', 'luxury fashion accessories close-up, elegant gloves, jewelry-like details, premium fabric texture'],
+  ['Dramatic Runway Lighting', 'fashion editorial with dramatic runway lighting, bold couture silhouette, deep shadows'],
+  ['Sculptural Couture Pose', 'sculptural couture editorial pose, architectural garment, refined studio lighting, luxury fashion mood'],
 ].map(([name, description]) => ({
   title: `${name} - Fashion Editorial Theme`,
   prompt: `high-end fashion editorial photography, ${description}, professional adult model, ultra realistic, magazine quality, cinematic lighting, sharp focus, premium styling, elegant fashion pose, no minors, no nudity, no text, no logos, no watermark`,
@@ -163,7 +163,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Fashion Editorial batch 1 complete',
+    message: 'Fashion Editorial batch 2 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
