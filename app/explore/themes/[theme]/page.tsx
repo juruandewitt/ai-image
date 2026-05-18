@@ -1,9 +1,20 @@
 export const dynamic = 'force-dynamic'
 
 import Link from 'next/link'
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import SafeImg from '@/components/safe-img'
+
+const THEME_ALIASES: Record<string, string> = {
+  'luxury-interiors': 'luxury-interior',
+  'interior-decor': 'luxury-interior',
+  interiors: 'luxury-interior',
+  space: 'space-universe',
+  universe: 'space-universe',
+  cars: 'automotive',
+  auto: 'automotive',
+  cyber: 'cyberpunk',
+}
 
 const THEMES: Record<string, string> = {
   landscapes: 'Landscapes',
@@ -12,11 +23,12 @@ const THEMES: Record<string, string> = {
   automotive: 'Automotive',
   steampunk: 'Steampunk',
   fantasy: 'Fantasy',
+  cyberpunk: 'Cyberpunk',
   abstract: 'Abstract',
   architecture: 'Architecture',
-  'ocean-marine': 'Ocean & Marine',
   'luxury-interior': 'Luxury / Interior Decor',
-  cyberpunk: 'Cyberpunk',
+  'fashion-editorial': 'Fashion / Editorial',
+  'ocean-marine': 'Ocean & Marine',
   'nature-botanical': 'Nature & Botanical',
 }
 
@@ -37,10 +49,20 @@ export default async function ThemeDetailPage({
 }: {
   params: { theme: string }
 }) {
-  const themeName = THEMES[params.theme]
-  if (!themeName) notFound()
+  const requestedTheme = params.theme
+  const canonicalTheme = THEME_ALIASES[requestedTheme] ?? requestedTheme
 
-  const tag = `theme:${params.theme}`
+  if (canonicalTheme !== requestedTheme) {
+    redirect(`/explore/themes/${canonicalTheme}`)
+  }
+
+  const themeName = THEMES[canonicalTheme]
+
+  if (!themeName) {
+    notFound()
+  }
+
+  const tag = `theme:${canonicalTheme}`
 
   const artworks = await prisma.artwork.findMany({
     where: {
@@ -65,7 +87,9 @@ export default async function ThemeDetailPage({
         <Link href="/explore/themes" className="text-sm text-amber-400 hover:underline">
           ← Back to Themes
         </Link>
+
         <h1 className="text-4xl font-semibold">{themeName}</h1>
+
         <p className="text-slate-400">
           {artworks.length} published artworks in this theme.
         </p>
@@ -92,6 +116,7 @@ export default async function ThemeDetailPage({
                 alt={art.title}
                 className="aspect-square w-full object-cover"
               />
+
               <div className="p-3">
                 <div className="line-clamp-2 text-sm text-slate-100">
                   {art.title}
