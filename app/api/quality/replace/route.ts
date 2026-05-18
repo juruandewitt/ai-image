@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Editorial Raincoat Scene', 'fashion editorial with luxury raincoat, wet city backdrop, cinematic reflections, moody lighting'],
-  ['Luxury Black Dress Studio', 'luxury black dress editorial in studio, elegant silhouette, dramatic spotlight, refined pose'],
-  ['Pastel Fashion Portrait', 'pastel fashion editorial portrait, soft pink and cream palette, gentle studio lighting'],
-  ['Architectural Fashion Pose', 'fashion editorial pose against modern architecture, sculptural styling, strong clean lines'],
-  ['Desert Silk Editorial', 'fashion editorial in desert, flowing silk fabric, warm dunes, golden cinematic sunlight'],
-  ['Modern Denim Editorial', 'modern denim fashion editorial, clean studio background, premium casual styling'],
-  ['Silver Couture Lighting', 'silver couture editorial, metallic fabric, cool studio lighting, futuristic luxury mood'],
-  ['Luxury Handbag Close Up', 'luxury handbag and fashion accessory close-up, leather texture, elegant styling, premium lighting'],
-  ['Dramatic Red Fashion', 'dramatic red fashion editorial, bold couture outfit, dark studio, cinematic contrast'],
-  ['Soft Beige Couture', 'soft beige couture editorial, neutral palette, elegant fabric layers, warm natural light'],
+  ['Luxury Winter Coat Editorial', 'luxury winter coat editorial, dramatic wool texture, cool studio lighting, elegant adult model'],
+  ['Modern White Suit Portrait', 'modern white suit fashion portrait, clean studio backdrop, sharp tailoring, refined pose'],
+  ['Black Leather Fashion Scene', 'black leather fashion editorial, dark cinematic lighting, confident luxury styling, urban mood'],
+  ['Champagne Couture Studio', 'champagne couture studio editorial, soft gold tones, flowing fabric, premium magazine lighting'],
+  ['Architectural Hat Editorial', 'fashion editorial with sculptural hat, minimalist studio, artistic silhouette, high-fashion styling'],
+  ['Soft Natural Linen Fashion', 'soft natural linen fashion editorial, beige palette, warm daylight, relaxed luxury styling'],
+  ['Urban Night Fashion', 'urban night fashion editorial, city lights, wet street reflections, bold modern outfit'],
+  ['Metallic Runway Pose', 'metallic runway fashion editorial, silver fabric, dramatic spotlight, futuristic luxury mood'],
+  ['Luxury Eyewear Close Up', 'luxury eyewear fashion close-up, elegant styling, premium skin lighting, glossy detail'],
+  ['Flowing Cape Editorial', 'flowing cape fashion editorial, dramatic fabric movement, cinematic studio lighting, elegant pose'],
 ].map(([name, description]) => ({
   title: `${name} - Fashion Editorial Theme`,
   prompt: `high-end fashion editorial photography, ${description}, professional adult model, ultra realistic, magazine quality, cinematic lighting, sharp focus, premium styling, elegant fashion pose, no minors, no nudity, no text, no logos, no watermark`,
@@ -163,7 +163,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Fashion Editorial batch 3 complete',
+    message: 'Fashion Editorial batch 4 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
