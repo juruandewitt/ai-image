@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Crystal Blue Coral Reef', 'crystal clear coral reef, turquoise water, colorful coral, sun rays through the ocean'],
-  ['Deep Ocean Whale Light', 'majestic whale underwater, deep blue ocean, soft light rays, peaceful cinematic scale'],
-  ['Tropical Lagoon Aerial', 'tropical lagoon aerial view, bright turquoise water, white sand, reef patterns'],
-  ['Stormy Ocean Wave', 'powerful ocean wave during storm, dramatic clouds, sea spray, cinematic lighting'],
-  ['Sea Turtle Reef Journey', 'sea turtle swimming above coral reef, warm sunlight, clear blue water'],
-  ['Moonlit Ocean Horizon', 'calm ocean horizon under full moon, silver reflections, peaceful night atmosphere'],
-  ['Underwater Cave Glow', 'underwater sea cave with glowing blue light, rock textures, mysterious atmosphere'],
-  ['Sailing Yacht at Sunset', 'luxury sailing yacht on calm ocean, sunset glow, elegant marine composition'],
-  ['Dolphins in Sunlit Water', 'dolphins swimming through sunlit ocean water, clear blue sea, joyful motion'],
-  ['Arctic Ice Ocean', 'arctic ocean with floating ice, cold blue tones, misty horizon, cinematic calm'],
+  ['Bioluminescent Reef', 'bioluminescent coral reef glowing in deep blue water, neon sea life, magical underwater light'],
+  ['Manta Ray Blue Depths', 'manta ray gliding through deep blue ocean, soft light beams, peaceful cinematic composition'],
+  ['Tropical Island Cove', 'hidden tropical island cove, turquoise water, white sand, lush cliffs, luxury travel feeling'],
+  ['Deep Sea Jellyfish', 'glowing jellyfish floating in dark deep ocean, soft blue light, elegant underwater atmosphere'],
+  ['Coral Garden Lagoon', 'bright coral garden in shallow lagoon, colorful reef, clear water, sunlight patterns'],
+  ['Storm Lighthouse Sea', 'lighthouse facing stormy ocean, crashing waves, dramatic clouds, cinematic marine scene'],
+  ['Underwater Shipwreck', 'ancient shipwreck underwater, coral growth, blue light rays, mysterious ocean depth'],
+  ['Blue Whale Surface', 'blue whale surfacing in calm ocean, mist, sunrise horizon, majestic scale'],
+  ['Crystal Wave Tunnel', 'perfect translucent ocean wave tunnel, turquoise water, sunlight reflections, high detail'],
+  ['Pearl Shell Seascape', 'giant pearl shell on shallow seafloor, soft aqua water, elegant fantasy marine glow'],
 ].map(([name, description]) => ({
   title: `${name} - Ocean Marine Theme`,
   prompt: `premium ocean and marine digital artwork, ${description}, cinematic lighting, ultra detailed, commercial wall art quality, rich natural color, peaceful luxury aesthetic, no people, no boats with logos, no text, no watermark`,
@@ -163,7 +163,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Ocean Marine batch 1 complete',
+    message: 'Ocean Marine batch 2 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
