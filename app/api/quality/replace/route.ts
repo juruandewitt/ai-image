@@ -5,25 +5,25 @@ import { prisma } from '@/lib/prisma'
 export const dynamic = 'force-dynamic'
 export const maxDuration = 300
 
-const THEME = 'ocean-marine'
+const THEME = 'nature-botanical'
 const THEME_TAG = `theme:${THEME}`
 const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Emerald Wave Curl', 'emerald green ocean wave curling perfectly, sunlight passing through translucent water'],
-  ['Secluded Island Paradise', 'tiny secluded island surrounded by crystal clear turquoise ocean, aerial luxury travel view'],
-  ['Underwater Coral Cathedral', 'massive coral formations resembling a cathedral, beams of light filtering through water'],
-  ['Golden Horizon Ocean Calm', 'endless calm ocean at golden hour, soft horizon glow, minimalist peaceful composition'],
-  ['Storm Breaker Wave', 'massive ocean wave crashing with explosive energy, dramatic sky, cinematic detail'],
-  ['Tropical Sandbar Escape', 'white sandbar in shallow turquoise ocean, aerial view, luxury escape aesthetic'],
-  ['Deep Sea Light Beams', 'deep blue ocean with powerful light beams cutting through darkness, abstract marine beauty'],
-  ['Rocky Coastline Waves', 'waves crashing against rugged rocky coastline, natural textures, moody lighting'],
-  ['Sunlit Coral Garden', 'vibrant coral garden illuminated by sunlight, colorful fish, clear warm water'],
-  ['Midnight Ocean Reflection', 'calm ocean at midnight reflecting stars and moonlight, deep blue serene atmosphere'],
+  ['Emerald Rainforest Canopy', 'lush emerald rainforest canopy, misty light, layered leaves, tropical atmosphere'],
+  ['Wildflower Meadow Sunrise', 'wildflower meadow at sunrise, soft golden light, colorful flowers, peaceful landscape'],
+  ['Botanical Greenhouse Interior', 'luxury botanical greenhouse interior, glass ceiling, tropical plants, soft daylight'],
+  ['Ancient Olive Tree', 'ancient olive tree in warm countryside light, sculptural branches, peaceful natural mood'],
+  ['Cherry Blossom Path', 'cherry blossom path in spring, pink petals, soft sunlight, dreamy botanical atmosphere'],
+  ['Fern Forest Floor', 'close-up fern forest floor, deep green textures, morning dew, natural macro detail'],
+  ['Lavender Field Evening', 'lavender field at evening, purple rows, warm sunset sky, calming botanical scene'],
+  ['Tropical Palm Garden', 'tropical palm garden, layered green leaves, sunlight shadows, luxury resort feeling'],
+  ['Golden Autumn Leaves', 'golden autumn leaves in forest, warm sunlight, rich natural color, peaceful mood'],
+  ['Lotus Pond Serenity', 'serene lotus pond, soft pink lotus flowers, calm water reflections, gentle morning light'],
 ].map(([name, description]) => ({
-  title: `${name} - Ocean Marine Theme`,
-  prompt: `premium ocean and marine digital artwork, ${description}, cinematic lighting, ultra detailed, commercial wall art quality, rich natural color, peaceful luxury aesthetic, no people, no boats with logos, no text, no watermark`,
+  title: `${name} - Nature Botanical Theme`,
+  prompt: `premium nature and botanical digital artwork, ${description}, cinematic natural lighting, ultra detailed, commercial wall art quality, rich organic texture, peaceful luxury aesthetic, no people, no text, no logos, no watermark`,
 }))
 
 function safeFilePart(value: string) {
@@ -90,10 +90,10 @@ async function upsertArtwork(item: (typeof ITEMS)[number], imageUrl: string) {
   const tags = [
     THEME_TAG,
     'theme',
-    'ocean',
-    'marine',
-    'sea',
-    'underwater',
+    'nature',
+    'botanical',
+    'plants',
+    'flowers',
     'wall-art',
   ]
 
@@ -163,7 +163,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Ocean Marine final batch complete',
+    message: 'Nature Botanical batch 1 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
