@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Sunset Reef Lagoon', 'shallow reef lagoon at sunset, warm golden sky, turquoise water, coral shapes below the surface'],
-  ['Deep Ocean Trench', 'deep ocean trench, mysterious blue darkness, distant glowing marine life, cinematic depth'],
-  ['Tropical Wave Sunrise', 'perfect tropical wave at sunrise, orange light, clear water, elegant ocean motion'],
-  ['Glowing Sea Cave', 'coastal sea cave glowing with aqua blue light, ocean reflections, dramatic rock textures'],
-  ['Whale Shark Blue Water', 'whale shark swimming through clear blue water, sun rays, peaceful majestic composition'],
-  ['Coral Reef Canyon', 'underwater coral reef canyon, colorful coral walls, fish silhouettes, bright sunbeams'],
-  ['Moonlit Sailboat Sea', 'small sailboat on calm moonlit sea, silver reflections, peaceful night horizon'],
-  ['Crystal Clear Shallows', 'crystal clear shallow ocean water, white sand ripples, soft turquoise gradients'],
-  ['Ocean Storm Cliffs', 'dramatic ocean cliffs during storm, crashing waves, dark clouds, cinematic sea spray'],
-  ['Underwater Rays of Light', 'sun rays piercing underwater blue ocean, soft particles, peaceful abstract marine atmosphere'],
+  ['Golden Beach Tide', 'golden beach tide rolling over wet sand, warm sunset reflections, peaceful luxury coastal mood'],
+  ['Deep Blue Octopus', 'octopus moving through deep blue ocean, elegant tentacles, soft light beams, mysterious marine atmosphere'],
+  ['Tropical Reef Arch', 'natural coral reef arch underwater, turquoise water, colorful coral, bright sun rays'],
+  ['Sunset Sailing Regatta', 'distant sailing regatta at sunset, calm ocean, golden sky, elegant marine composition'],
+  ['Underwater Kelp Forest', 'underwater kelp forest, green-gold light, swaying kelp, peaceful ocean depth'],
+  ['Glowing Plankton Shore', 'night shoreline glowing with bioluminescent plankton, deep blue water, magical coastal light'],
+  ['Dramatic Black Sand Beach', 'dramatic black sand beach, powerful waves, volcanic cliffs, moody cinematic sky'],
+  ['Coral Reef Turtle Family', 'sea turtles swimming through coral reef, clear blue water, warm sunlight, peaceful marine life'],
+  ['Ocean Cave Waterfall', 'hidden ocean cave with waterfall falling into turquoise sea, glowing rock walls, cinematic light'],
+  ['Sapphire Lagoon Cliffs', 'sapphire blue lagoon beneath tall tropical cliffs, clear water, soft sunlight, luxury travel aesthetic'],
 ].map(([name, description]) => ({
   title: `${name} - Ocean Marine Theme`,
   prompt: `premium ocean and marine digital artwork, ${description}, cinematic lighting, ultra detailed, commercial wall art quality, rich natural color, peaceful luxury aesthetic, no people, no boats with logos, no text, no watermark`,
@@ -163,7 +163,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Ocean Marine batch 3 complete',
+    message: 'Ocean Marine batch 4 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
