@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Golden Beach Tide', 'golden beach tide rolling over wet sand, warm sunset reflections, peaceful luxury coastal mood'],
-  ['Deep Blue Octopus', 'octopus moving through deep blue ocean, elegant tentacles, soft light beams, mysterious marine atmosphere'],
-  ['Tropical Reef Arch', 'natural coral reef arch underwater, turquoise water, colorful coral, bright sun rays'],
-  ['Sunset Sailing Regatta', 'distant sailing regatta at sunset, calm ocean, golden sky, elegant marine composition'],
-  ['Underwater Kelp Forest', 'underwater kelp forest, green-gold light, swaying kelp, peaceful ocean depth'],
-  ['Glowing Plankton Shore', 'night shoreline glowing with bioluminescent plankton, deep blue water, magical coastal light'],
-  ['Dramatic Black Sand Beach', 'dramatic black sand beach, powerful waves, volcanic cliffs, moody cinematic sky'],
-  ['Coral Reef Turtle Family', 'sea turtles swimming through coral reef, clear blue water, warm sunlight, peaceful marine life'],
-  ['Ocean Cave Waterfall', 'hidden ocean cave with waterfall falling into turquoise sea, glowing rock walls, cinematic light'],
-  ['Sapphire Lagoon Cliffs', 'sapphire blue lagoon beneath tall tropical cliffs, clear water, soft sunlight, luxury travel aesthetic'],
+  ['Emerald Wave Curl', 'emerald green ocean wave curling perfectly, sunlight passing through translucent water'],
+  ['Secluded Island Paradise', 'tiny secluded island surrounded by crystal clear turquoise ocean, aerial luxury travel view'],
+  ['Underwater Coral Cathedral', 'massive coral formations resembling a cathedral, beams of light filtering through water'],
+  ['Golden Horizon Ocean Calm', 'endless calm ocean at golden hour, soft horizon glow, minimalist peaceful composition'],
+  ['Storm Breaker Wave', 'massive ocean wave crashing with explosive energy, dramatic sky, cinematic detail'],
+  ['Tropical Sandbar Escape', 'white sandbar in shallow turquoise ocean, aerial view, luxury escape aesthetic'],
+  ['Deep Sea Light Beams', 'deep blue ocean with powerful light beams cutting through darkness, abstract marine beauty'],
+  ['Rocky Coastline Waves', 'waves crashing against rugged rocky coastline, natural textures, moody lighting'],
+  ['Sunlit Coral Garden', 'vibrant coral garden illuminated by sunlight, colorful fish, clear warm water'],
+  ['Midnight Ocean Reflection', 'calm ocean at midnight reflecting stars and moonlight, deep blue serene atmosphere'],
 ].map(([name, description]) => ({
   title: `${name} - Ocean Marine Theme`,
   prompt: `premium ocean and marine digital artwork, ${description}, cinematic lighting, ultra detailed, commercial wall art quality, rich natural color, peaceful luxury aesthetic, no people, no boats with logos, no text, no watermark`,
@@ -163,7 +163,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Ocean Marine batch 4 complete',
+    message: 'Ocean Marine final batch complete',
     theme: THEME,
     count: ITEMS.length,
     results,
