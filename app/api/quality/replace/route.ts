@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Orchid Macro Study', 'close-up orchid petals, soft natural light, delicate botanical detail, elegant luxury composition'],
-  ['Misty Bamboo Forest', 'misty bamboo forest, tall green stalks, soft fog, peaceful natural atmosphere'],
-  ['Rose Garden Morning', 'rose garden in early morning light, dew on petals, soft pink and cream tones'],
-  ['Tropical Monstera Leaves', 'large tropical monstera leaves, deep green layers, sunlight and shadow patterns'],
-  ['Mossy Woodland Stones', 'moss-covered woodland stones, ferns, soft forest light, rich green texture'],
-  ['Desert Cactus Bloom', 'desert cactus with blooming flowers, warm sunset light, sandy natural palette'],
-  ['Eucalyptus Grove Light', 'eucalyptus grove with silver-green leaves, soft sunlight, calm natural mood'],
-  ['Botanical Wall Garden', 'vertical botanical wall garden, layered plants, lush green textures, modern natural design'],
-  ['Sunflower Field Glow', 'sunflower field glowing in golden sunlight, warm summer atmosphere, rich yellow tones'],
-  ['Rainforest Waterfall Plants', 'rainforest waterfall surrounded by tropical plants, mist, emerald leaves, cinematic nature'],
+  ['White Peony Close Up', 'white peony flower close-up, soft petals, delicate shadows, elegant botanical macro detail'],
+  ['Misty Pine Forest', 'misty pine forest, tall trees, soft fog, cool green tones, peaceful natural atmosphere'],
+  ['Tropical Orchid Greenhouse', 'tropical orchid greenhouse, glass roof, lush plants, soft filtered daylight'],
+  ['Ivy Covered Garden Wall', 'ivy-covered garden wall, rich green leaves, old stone texture, natural elegance'],
+  ['Golden Grass Field', 'golden grass field at sunset, warm light, soft movement, peaceful countryside mood'],
+  ['Water Lily Reflections', 'water lilies floating on calm pond, soft reflections, gentle morning light'],
+  ['Japanese Maple Leaves', 'Japanese maple leaves in red and orange tones, soft sunlight, elegant botanical detail'],
+  ['Rainforest Leaf Macro', 'rainforest leaf macro, deep green veins, water droplets, rich organic texture'],
+  ['Desert Aloe Garden', 'desert aloe garden, sculptural succulents, warm sand tones, modern natural composition'],
+  ['Botanical Glass Dome', 'large botanical glass dome filled with tropical plants, sunlight, luxury greenhouse atmosphere'],
 ].map(([name, description]) => ({
   title: `${name} - Nature Botanical Theme`,
   prompt: `premium nature and botanical digital artwork, ${description}, cinematic natural lighting, ultra detailed, commercial wall art quality, rich organic texture, peaceful luxury aesthetic, no people, no text, no logos, no watermark`,
@@ -163,7 +163,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Nature Botanical batch 2 complete',
+    message: 'Nature Botanical batch 3 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
