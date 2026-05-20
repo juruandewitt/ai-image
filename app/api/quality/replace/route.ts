@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Emerald Rainforest Canopy', 'lush emerald rainforest canopy, misty light, layered leaves, tropical atmosphere'],
-  ['Wildflower Meadow Sunrise', 'wildflower meadow at sunrise, soft golden light, colorful flowers, peaceful landscape'],
-  ['Botanical Greenhouse Interior', 'luxury botanical greenhouse interior, glass ceiling, tropical plants, soft daylight'],
-  ['Ancient Olive Tree', 'ancient olive tree in warm countryside light, sculptural branches, peaceful natural mood'],
-  ['Cherry Blossom Path', 'cherry blossom path in spring, pink petals, soft sunlight, dreamy botanical atmosphere'],
-  ['Fern Forest Floor', 'close-up fern forest floor, deep green textures, morning dew, natural macro detail'],
-  ['Lavender Field Evening', 'lavender field at evening, purple rows, warm sunset sky, calming botanical scene'],
-  ['Tropical Palm Garden', 'tropical palm garden, layered green leaves, sunlight shadows, luxury resort feeling'],
-  ['Golden Autumn Leaves', 'golden autumn leaves in forest, warm sunlight, rich natural color, peaceful mood'],
-  ['Lotus Pond Serenity', 'serene lotus pond, soft pink lotus flowers, calm water reflections, gentle morning light'],
+  ['Orchid Macro Study', 'close-up orchid petals, soft natural light, delicate botanical detail, elegant luxury composition'],
+  ['Misty Bamboo Forest', 'misty bamboo forest, tall green stalks, soft fog, peaceful natural atmosphere'],
+  ['Rose Garden Morning', 'rose garden in early morning light, dew on petals, soft pink and cream tones'],
+  ['Tropical Monstera Leaves', 'large tropical monstera leaves, deep green layers, sunlight and shadow patterns'],
+  ['Mossy Woodland Stones', 'moss-covered woodland stones, ferns, soft forest light, rich green texture'],
+  ['Desert Cactus Bloom', 'desert cactus with blooming flowers, warm sunset light, sandy natural palette'],
+  ['Eucalyptus Grove Light', 'eucalyptus grove with silver-green leaves, soft sunlight, calm natural mood'],
+  ['Botanical Wall Garden', 'vertical botanical wall garden, layered plants, lush green textures, modern natural design'],
+  ['Sunflower Field Glow', 'sunflower field glowing in golden sunlight, warm summer atmosphere, rich yellow tones'],
+  ['Rainforest Waterfall Plants', 'rainforest waterfall surrounded by tropical plants, mist, emerald leaves, cinematic nature'],
 ].map(([name, description]) => ({
   title: `${name} - Nature Botanical Theme`,
   prompt: `premium nature and botanical digital artwork, ${description}, cinematic natural lighting, ultra detailed, commercial wall art quality, rich organic texture, peaceful luxury aesthetic, no people, no text, no logos, no watermark`,
@@ -163,7 +163,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Nature Botanical batch 1 complete',
+    message: 'Nature Botanical batch 2 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
