@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Gourmet Pasta Plate', 'gourmet pasta plate with rich sauce, fresh herbs, elegant restaurant plating, warm light'],
-  ['Luxury Sushi Selection', 'luxury sushi selection on dark ceramic plate, refined presentation, soft studio lighting'],
-  ['Artisan Bread Still Life', 'artisan bread still life, rustic linen, flour dust, warm bakery atmosphere'],
-  ['Fine Dining Dessert', 'fine dining dessert, chocolate and berries, elegant plating, luxury restaurant mood'],
-  ['Mediterranean Table Spread', 'Mediterranean table spread, olives, fresh bread, tomatoes, herbs, warm sunlight'],
-  ['Gourmet Burger Close Up', 'gourmet burger close-up, premium ingredients, melted cheese, cinematic food photography'],
-  ['Fresh Fruit Market Display', 'fresh fruit market display, vibrant colors, citrus, berries, tropical fruit, natural light'],
-  ['Elegant Wine and Cheese', 'elegant wine and cheese still life, grapes, wood board, warm evening light'],
-  ['Luxury Coffee Moment', 'luxury coffee cup with latte art, marble table, soft morning light, premium cafe mood'],
-  ['Modern Breakfast Plate', 'modern breakfast plate, eggs, avocado, toast, fresh greens, clean editorial composition'],
+  ['Luxury Steak Plate', 'luxury steak plate, perfectly seared steak, herb butter, elegant restaurant plating, warm light'],
+  ['Colorful Ramen Bowl', 'colorful ramen bowl, rich broth, noodles, egg, vegetables, cinematic food styling'],
+  ['Artisan Pizza Oven', 'artisan pizza coming from wood-fired oven, melted cheese, basil, warm rustic atmosphere'],
+  ['Gourmet Seafood Platter', 'gourmet seafood platter, prawns, oysters, lemon, ice, elegant coastal restaurant mood'],
+  ['Elegant Cake Slice', 'elegant cake slice with cream layers and berries, soft dessert lighting, refined plating'],
+  ['Rustic Farm Table', 'rustic farm table with fresh bread, vegetables, herbs, linen, warm countryside light'],
+  ['Fresh Salad Editorial', 'fresh gourmet salad editorial, greens, citrus, avocado, seeds, clean modern composition'],
+  ['Chocolate Truffle Close Up', 'luxury chocolate truffle close-up, cocoa dust, dark background, rich texture'],
+  ['Chef Style Plated Fish', 'chef-style plated fish, delicate sauce, herbs, fine dining restaurant presentation'],
+  ['Tropical Smoothie Bowl', 'tropical smoothie bowl with fruit, coconut, berries, bright fresh editorial styling'],
 ].map(([name, description]) => ({
   title: `${name} - Food Culinary Theme`,
   prompt: `premium food and culinary photography, ${description}, ultra realistic, editorial restaurant quality, rich texture, appetizing composition, cinematic lighting, commercial wall art quality, no people, no text, no logos, no watermark`,
@@ -163,7 +163,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Food Culinary batch 1 complete',
+    message: 'Food Culinary batch 2 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
