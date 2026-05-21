@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['White Peony Close Up', 'white peony flower close-up, soft petals, delicate shadows, elegant botanical macro detail'],
-  ['Misty Pine Forest', 'misty pine forest, tall trees, soft fog, cool green tones, peaceful natural atmosphere'],
-  ['Tropical Orchid Greenhouse', 'tropical orchid greenhouse, glass roof, lush plants, soft filtered daylight'],
-  ['Ivy Covered Garden Wall', 'ivy-covered garden wall, rich green leaves, old stone texture, natural elegance'],
-  ['Golden Grass Field', 'golden grass field at sunset, warm light, soft movement, peaceful countryside mood'],
-  ['Water Lily Reflections', 'water lilies floating on calm pond, soft reflections, gentle morning light'],
-  ['Japanese Maple Leaves', 'Japanese maple leaves in red and orange tones, soft sunlight, elegant botanical detail'],
-  ['Rainforest Leaf Macro', 'rainforest leaf macro, deep green veins, water droplets, rich organic texture'],
-  ['Desert Aloe Garden', 'desert aloe garden, sculptural succulents, warm sand tones, modern natural composition'],
-  ['Botanical Glass Dome', 'large botanical glass dome filled with tropical plants, sunlight, luxury greenhouse atmosphere'],
+  ['Magnolia Blossom Branch', 'magnolia blossom branch, soft white petals, pale pink tones, elegant spring light'],
+  ['Tropical Fern Valley', 'lush tropical fern valley, layered green foliage, misty morning atmosphere'],
+  ['Soft Meadow Grasses', 'soft meadow grasses moving in warm sunlight, natural beige and green palette'],
+  ['Orchid Wall Garden', 'luxury orchid wall garden, layered flowers, deep green leaves, soft studio-like light'],
+  ['Mossy Rainforest Path', 'mossy rainforest path, emerald plants, wet stones, soft filtered sunlight'],
+  ['Golden Wheat Field', 'golden wheat field at sunset, warm tones, soft wind movement, peaceful countryside'],
+  ['Pink Lotus Close Up', 'pink lotus flower close-up, calm water background, delicate petals, serene mood'],
+  ['Green Botanical Shadows', 'green botanical leaves casting elegant shadows, modern natural composition'],
+  ['Desert Succulent Pattern', 'desert succulent pattern, sculptural leaves, dusty green and sandy tones'],
+  ['Spring Garden Arch', 'spring garden arch covered in flowers and vines, soft sunlight, romantic botanical scene'],
 ].map(([name, description]) => ({
   title: `${name} - Nature Botanical Theme`,
   prompt: `premium nature and botanical digital artwork, ${description}, cinematic natural lighting, ultra detailed, commercial wall art quality, rich organic texture, peaceful luxury aesthetic, no people, no text, no logos, no watermark`,
@@ -163,7 +163,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Nature Botanical batch 3 complete',
+    message: 'Nature Botanical batch 4 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
