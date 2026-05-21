@@ -5,25 +5,25 @@ import { prisma } from '@/lib/prisma'
 export const dynamic = 'force-dynamic'
 export const maxDuration = 300
 
-const THEME = 'nature-botanical'
+const THEME = 'food-culinary'
 const THEME_TAG = `theme:${THEME}`
 const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['White Rose Garden', 'white rose garden in soft morning light, elegant petals, romantic botanical atmosphere'],
-  ['Autumn Forest Path', 'autumn forest path covered in leaves, golden light, peaceful natural scenery'],
-  ['Tropical Banana Leaves', 'large tropical banana leaves, vibrant green tones, bold natural composition'],
-  ['Wild Jungle Waterfall', 'lush jungle waterfall surrounded by dense plants, misty atmosphere, vibrant greens'],
-  ['Peony Bouquet Still Life', 'luxury peony bouquet still life, soft shadows, elegant floral composition'],
-  ['Moss Covered Tree Roots', 'ancient tree roots covered in moss, rich textures, forest floor detail'],
-  ['Sunlit Garden Roses', 'garden roses glowing in warm sunlight, soft petals, romantic tone'],
-  ['Dense Fern Undergrowth', 'dense fern undergrowth, layered green textures, rainforest floor detail'],
-  ['Botanical Sketch Style Leaves', 'botanical leaves composition with artistic layout, soft neutral background'],
-  ['Blooming Spring Garden', 'full blooming spring garden, colorful flowers, bright natural daylight'],
+  ['Gourmet Pasta Plate', 'gourmet pasta plate with rich sauce, fresh herbs, elegant restaurant plating, warm light'],
+  ['Luxury Sushi Selection', 'luxury sushi selection on dark ceramic plate, refined presentation, soft studio lighting'],
+  ['Artisan Bread Still Life', 'artisan bread still life, rustic linen, flour dust, warm bakery atmosphere'],
+  ['Fine Dining Dessert', 'fine dining dessert, chocolate and berries, elegant plating, luxury restaurant mood'],
+  ['Mediterranean Table Spread', 'Mediterranean table spread, olives, fresh bread, tomatoes, herbs, warm sunlight'],
+  ['Gourmet Burger Close Up', 'gourmet burger close-up, premium ingredients, melted cheese, cinematic food photography'],
+  ['Fresh Fruit Market Display', 'fresh fruit market display, vibrant colors, citrus, berries, tropical fruit, natural light'],
+  ['Elegant Wine and Cheese', 'elegant wine and cheese still life, grapes, wood board, warm evening light'],
+  ['Luxury Coffee Moment', 'luxury coffee cup with latte art, marble table, soft morning light, premium cafe mood'],
+  ['Modern Breakfast Plate', 'modern breakfast plate, eggs, avocado, toast, fresh greens, clean editorial composition'],
 ].map(([name, description]) => ({
-  title: `${name} - Nature Botanical Theme`,
-  prompt: `premium nature and botanical digital artwork, ${description}, cinematic natural lighting, ultra detailed, commercial wall art quality, rich organic texture, peaceful luxury aesthetic, no people, no text, no logos, no watermark`,
+  title: `${name} - Food Culinary Theme`,
+  prompt: `premium food and culinary photography, ${description}, ultra realistic, editorial restaurant quality, rich texture, appetizing composition, cinematic lighting, commercial wall art quality, no people, no text, no logos, no watermark`,
 }))
 
 function safeFilePart(value: string) {
@@ -90,10 +90,10 @@ async function upsertArtwork(item: (typeof ITEMS)[number], imageUrl: string) {
   const tags = [
     THEME_TAG,
     'theme',
-    'nature',
-    'botanical',
-    'plants',
-    'flowers',
+    'food',
+    'culinary',
+    'restaurant',
+    'gourmet',
     'wall-art',
   ]
 
@@ -163,7 +163,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Nature Botanical final batch complete',
+    message: 'Food Culinary batch 1 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
