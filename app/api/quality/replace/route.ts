@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Magnolia Blossom Branch', 'magnolia blossom branch, soft white petals, pale pink tones, elegant spring light'],
-  ['Tropical Fern Valley', 'lush tropical fern valley, layered green foliage, misty morning atmosphere'],
-  ['Soft Meadow Grasses', 'soft meadow grasses moving in warm sunlight, natural beige and green palette'],
-  ['Orchid Wall Garden', 'luxury orchid wall garden, layered flowers, deep green leaves, soft studio-like light'],
-  ['Mossy Rainforest Path', 'mossy rainforest path, emerald plants, wet stones, soft filtered sunlight'],
-  ['Golden Wheat Field', 'golden wheat field at sunset, warm tones, soft wind movement, peaceful countryside'],
-  ['Pink Lotus Close Up', 'pink lotus flower close-up, calm water background, delicate petals, serene mood'],
-  ['Green Botanical Shadows', 'green botanical leaves casting elegant shadows, modern natural composition'],
-  ['Desert Succulent Pattern', 'desert succulent pattern, sculptural leaves, dusty green and sandy tones'],
-  ['Spring Garden Arch', 'spring garden arch covered in flowers and vines, soft sunlight, romantic botanical scene'],
+  ['White Rose Garden', 'white rose garden in soft morning light, elegant petals, romantic botanical atmosphere'],
+  ['Autumn Forest Path', 'autumn forest path covered in leaves, golden light, peaceful natural scenery'],
+  ['Tropical Banana Leaves', 'large tropical banana leaves, vibrant green tones, bold natural composition'],
+  ['Wild Jungle Waterfall', 'lush jungle waterfall surrounded by dense plants, misty atmosphere, vibrant greens'],
+  ['Peony Bouquet Still Life', 'luxury peony bouquet still life, soft shadows, elegant floral composition'],
+  ['Moss Covered Tree Roots', 'ancient tree roots covered in moss, rich textures, forest floor detail'],
+  ['Sunlit Garden Roses', 'garden roses glowing in warm sunlight, soft petals, romantic tone'],
+  ['Dense Fern Undergrowth', 'dense fern undergrowth, layered green textures, rainforest floor detail'],
+  ['Botanical Sketch Style Leaves', 'botanical leaves composition with artistic layout, soft neutral background'],
+  ['Blooming Spring Garden', 'full blooming spring garden, colorful flowers, bright natural daylight'],
 ].map(([name, description]) => ({
   title: `${name} - Nature Botanical Theme`,
   prompt: `premium nature and botanical digital artwork, ${description}, cinematic natural lighting, ultra detailed, commercial wall art quality, rich organic texture, peaceful luxury aesthetic, no people, no text, no logos, no watermark`,
@@ -163,7 +163,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Nature Botanical batch 4 complete',
+    message: 'Nature Botanical final batch complete',
     theme: THEME,
     count: ITEMS.length,
     results,
