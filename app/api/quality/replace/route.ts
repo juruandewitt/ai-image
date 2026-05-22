@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Luxury Steak Plate', 'luxury steak plate, perfectly seared steak, herb butter, elegant restaurant plating, warm light'],
-  ['Colorful Ramen Bowl', 'colorful ramen bowl, rich broth, noodles, egg, vegetables, cinematic food styling'],
-  ['Artisan Pizza Oven', 'artisan pizza coming from wood-fired oven, melted cheese, basil, warm rustic atmosphere'],
-  ['Gourmet Seafood Platter', 'gourmet seafood platter, prawns, oysters, lemon, ice, elegant coastal restaurant mood'],
-  ['Elegant Cake Slice', 'elegant cake slice with cream layers and berries, soft dessert lighting, refined plating'],
-  ['Rustic Farm Table', 'rustic farm table with fresh bread, vegetables, herbs, linen, warm countryside light'],
-  ['Fresh Salad Editorial', 'fresh gourmet salad editorial, greens, citrus, avocado, seeds, clean modern composition'],
-  ['Chocolate Truffle Close Up', 'luxury chocolate truffle close-up, cocoa dust, dark background, rich texture'],
-  ['Chef Style Plated Fish', 'chef-style plated fish, delicate sauce, herbs, fine dining restaurant presentation'],
-  ['Tropical Smoothie Bowl', 'tropical smoothie bowl with fruit, coconut, berries, bright fresh editorial styling'],
+  ['Luxury Charcuterie Board', 'luxury charcuterie board, cured meats, cheeses, figs, grapes, rustic wood styling'],
+  ['Handmade Chocolate Tart', 'handmade chocolate tart, glossy ganache, berries, elegant dessert plating'],
+  ['Gourmet Taco Plate', 'gourmet taco plate, fresh toppings, colorful salsa, refined restaurant presentation'],
+  ['Elegant Seafood Pasta', 'elegant seafood pasta, prawns, herbs, white plate, warm fine dining lighting'],
+  ['Bakery Croissant Display', 'bakery croissant display, golden flaky pastry, linen, warm morning bakery light'],
+  ['Fine Dining Soup Bowl', 'fine dining soup bowl, creamy texture, garnish, elegant ceramic bowl, refined plating'],
+  ['Colorful Spice Market', 'colorful spice market display, bowls of spices, rich textures, warm natural light'],
+  ['Fresh Berry Tart', 'fresh berry tart, glossy berries, pastry crust, soft dessert lighting, elegant composition'],
+  ['Gourmet Cheese Platter', 'gourmet cheese platter, artisan cheese, crackers, fruit, warm rustic styling'],
+  ['Elegant Matcha Dessert', 'elegant matcha dessert, green tea mousse, cream, refined modern plating'],
 ].map(([name, description]) => ({
   title: `${name} - Food Culinary Theme`,
   prompt: `premium food and culinary photography, ${description}, ultra realistic, editorial restaurant quality, rich texture, appetizing composition, cinematic lighting, commercial wall art quality, no people, no text, no logos, no watermark`,
@@ -163,7 +163,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Food Culinary batch 2 complete',
+    message: 'Food Culinary batch 3 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
