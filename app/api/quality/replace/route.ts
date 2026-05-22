@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Stadium Sprint Finish', 'athlete sprinting toward finish line in a dramatic stadium, motion blur, floodlights, powerful action'],
-  ['Basketball Dunk Moment', 'basketball player mid-air dunk, dramatic arena lighting, explosive movement, cinematic sports energy'],
-  ['Soccer Goal Strike', 'soccer player striking ball toward goal, stadium lights, grass particles, intense action moment'],
-  ['Tennis Power Serve', 'tennis player serving with explosive motion, bright court lighting, athletic precision'],
-  ['Boxing Ring Impact', 'boxing athlete training in ring, dramatic shadows, sweat particles, powerful cinematic energy'],
-  ['Mountain Bike Descent', 'mountain biker descending rocky trail, dust, sunlight, fast action, rugged outdoor scene'],
-  ['Surfer Giant Wave', 'surfer riding a giant ocean wave, spray, golden sunlight, extreme sports power'],
-  ['Formula Race Speed', 'formula race car at high speed on track, motion blur, dramatic lighting, aerodynamic energy'],
-  ['Gymnastics Balance Pose', 'gymnast performing elegant balance pose, studio lighting, strength and precision'],
-  ['Skateboard Urban Jump', 'skateboarder jumping over urban steps, sunset city backdrop, dynamic street sport action'],
+  ['Night Stadium Football', 'football player running under night stadium lights, rain mist, dramatic action energy'],
+  ['Motocross Dirt Jump', 'motocross rider jumping over dirt track, dust cloud, sunset backlight, extreme sports motion'],
+  ['Swimmer Race Lane', 'competitive swimmer powering through race lane, splashing water, intense athletic focus'],
+  ['Snowboarding Powder Jump', 'snowboarder jumping through fresh powder snow, mountain backdrop, crisp winter light'],
+  ['Martial Arts Training', 'martial arts athlete training in dramatic studio light, motion blur, disciplined power'],
+  ['Baseball Bat Swing', 'baseball player swinging bat, dust and stadium light, frozen action moment'],
+  ['Rugby Power Run', 'rugby athlete charging forward through mud and rain, intense athletic motion'],
+  ['Golf Sunset Drive', 'golfer driving ball at sunset, elegant course, golden light, refined sports atmosphere'],
+  ['Ice Hockey Speed', 'ice hockey player skating fast, ice spray, arena lights, high-energy movement'],
+  ['Rock Climbing Cliff', 'rock climber scaling dramatic cliff face, golden mountain light, adventurous action'],
 ].map(([name, description]) => ({
   title: `${name} - Sports Action Theme`,
   prompt: `premium sports and action digital artwork, ${description}, ultra realistic, cinematic lighting, high energy movement, commercial wall art quality, no readable text, no logos, no watermark, adult athlete where applicable`,
@@ -163,7 +163,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Sports Action batch 1 complete',
+    message: 'Sports Action batch 2 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
