@@ -5,25 +5,25 @@ import { prisma } from '@/lib/prisma'
 export const dynamic = 'force-dynamic'
 export const maxDuration = 300
 
-const THEME = 'food-culinary'
+const THEME = 'sports-action'
 const THEME_TAG = `theme:${THEME}`
 const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Luxury Seafood Tower', 'luxury seafood tower, oysters, prawns, crab, lemon, ice, elegant restaurant presentation'],
-  ['Gourmet Pasta Twirl', 'gourmet pasta twirl close-up, parmesan, herbs, silky sauce, warm fine dining lighting'],
-  ['Elegant Chocolate Cake', 'elegant chocolate cake slice, glossy ganache, berries, soft dessert lighting'],
-  ['Fine Dining Lamb Plate', 'fine dining lamb plate, herb crust, sauce, vegetables, luxury restaurant plating'],
-  ['Fresh Bakery Morning', 'fresh bakery morning display, croissants, pastries, warm sunlight, rustic linen'],
-  ['Luxury Fruit Still Life', 'luxury fruit still life, figs, grapes, citrus, dark background, editorial composition'],
-  ['Modern Vegan Bowl', 'modern vegan bowl, colorful vegetables, grains, avocado, clean premium styling'],
-  ['Gourmet Ice Cream Dessert', 'gourmet ice cream dessert, caramel drizzle, nuts, elegant plated presentation'],
-  ['Elegant Tea Service', 'elegant tea service with pastries, porcelain cup, soft afternoon light, luxury cafe mood'],
-  ['Chef Tasting Menu Plate', 'chef tasting menu plate, artistic fine dining presentation, delicate garnish, cinematic light'],
+  ['Stadium Sprint Finish', 'athlete sprinting toward finish line in a dramatic stadium, motion blur, floodlights, powerful action'],
+  ['Basketball Dunk Moment', 'basketball player mid-air dunk, dramatic arena lighting, explosive movement, cinematic sports energy'],
+  ['Soccer Goal Strike', 'soccer player striking ball toward goal, stadium lights, grass particles, intense action moment'],
+  ['Tennis Power Serve', 'tennis player serving with explosive motion, bright court lighting, athletic precision'],
+  ['Boxing Ring Impact', 'boxing athlete training in ring, dramatic shadows, sweat particles, powerful cinematic energy'],
+  ['Mountain Bike Descent', 'mountain biker descending rocky trail, dust, sunlight, fast action, rugged outdoor scene'],
+  ['Surfer Giant Wave', 'surfer riding a giant ocean wave, spray, golden sunlight, extreme sports power'],
+  ['Formula Race Speed', 'formula race car at high speed on track, motion blur, dramatic lighting, aerodynamic energy'],
+  ['Gymnastics Balance Pose', 'gymnast performing elegant balance pose, studio lighting, strength and precision'],
+  ['Skateboard Urban Jump', 'skateboarder jumping over urban steps, sunset city backdrop, dynamic street sport action'],
 ].map(([name, description]) => ({
-  title: `${name} - Food Culinary Theme`,
-  prompt: `premium food and culinary photography, ${description}, ultra realistic, editorial restaurant quality, rich texture, appetizing composition, cinematic lighting, commercial wall art quality, no people, no text, no logos, no watermark`,
+  title: `${name} - Sports Action Theme`,
+  prompt: `premium sports and action digital artwork, ${description}, ultra realistic, cinematic lighting, high energy movement, commercial wall art quality, no readable text, no logos, no watermark, adult athlete where applicable`,
 }))
 
 function safeFilePart(value: string) {
@@ -90,10 +90,10 @@ async function upsertArtwork(item: (typeof ITEMS)[number], imageUrl: string) {
   const tags = [
     THEME_TAG,
     'theme',
-    'food',
-    'culinary',
-    'restaurant',
-    'gourmet',
+    'sports',
+    'action',
+    'athletics',
+    'motion',
     'wall-art',
   ]
 
@@ -163,7 +163,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Food Culinary final batch complete',
+    message: 'Sports Action batch 1 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
