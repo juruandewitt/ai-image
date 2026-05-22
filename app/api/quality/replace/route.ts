@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Luxury Charcuterie Board', 'luxury charcuterie board, cured meats, cheeses, figs, grapes, rustic wood styling'],
-  ['Handmade Chocolate Tart', 'handmade chocolate tart, glossy ganache, berries, elegant dessert plating'],
-  ['Gourmet Taco Plate', 'gourmet taco plate, fresh toppings, colorful salsa, refined restaurant presentation'],
-  ['Elegant Seafood Pasta', 'elegant seafood pasta, prawns, herbs, white plate, warm fine dining lighting'],
-  ['Bakery Croissant Display', 'bakery croissant display, golden flaky pastry, linen, warm morning bakery light'],
-  ['Fine Dining Soup Bowl', 'fine dining soup bowl, creamy texture, garnish, elegant ceramic bowl, refined plating'],
-  ['Colorful Spice Market', 'colorful spice market display, bowls of spices, rich textures, warm natural light'],
-  ['Fresh Berry Tart', 'fresh berry tart, glossy berries, pastry crust, soft dessert lighting, elegant composition'],
-  ['Gourmet Cheese Platter', 'gourmet cheese platter, artisan cheese, crackers, fruit, warm rustic styling'],
-  ['Elegant Matcha Dessert', 'elegant matcha dessert, green tea mousse, cream, refined modern plating'],
+  ['Luxury Pancake Stack', 'luxury pancake stack with berries, maple syrup, butter, soft morning light, elegant breakfast styling'],
+  ['Gourmet Risotto Plate', 'gourmet risotto plate, parmesan, herbs, creamy texture, refined restaurant plating'],
+  ['Elegant Fruit Tartlet', 'elegant fruit tartlet, glossy berries, pastry cream, delicate dessert presentation'],
+  ['Fine Dining Scallops', 'fine dining scallops, golden sear, delicate sauce, herbs, luxury restaurant plating'],
+  ['Rustic Italian Table', 'rustic Italian table, pasta, tomatoes, basil, olive oil, warm countryside dining atmosphere'],
+  ['Colorful Poke Bowl', 'colorful poke bowl, fresh fish, rice, avocado, vegetables, clean modern food styling'],
+  ['Artisan Chocolate Box', 'artisan chocolate box, assorted luxury chocolates, dark background, premium texture'],
+  ['Premium Coffee Beans', 'premium coffee beans close-up, rich brown tones, rustic scoop, warm cafe lighting'],
+  ['Grilled Vegetable Platter', 'grilled vegetable platter, colorful vegetables, herbs, olive oil, elegant rustic plating'],
+  ['Luxury Macaron Display', 'luxury macaron display, pastel colors, elegant patisserie styling, soft dessert light'],
 ].map(([name, description]) => ({
   title: `${name} - Food Culinary Theme`,
   prompt: `premium food and culinary photography, ${description}, ultra realistic, editorial restaurant quality, rich texture, appetizing composition, cinematic lighting, commercial wall art quality, no people, no text, no logos, no watermark`,
@@ -163,7 +163,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Food Culinary batch 3 complete',
+    message: 'Food Culinary batch 4 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
