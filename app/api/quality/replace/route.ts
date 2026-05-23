@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Concert Stage Lights', 'live concert stage with dramatic lighting, crowd silhouettes, high energy performance'],
-  ['Rock Guitar Solo', 'electric guitarist performing solo, stage lights, motion blur, powerful expression'],
-  ['Piano Performance Spotlight', 'grand piano performance under spotlight, elegant atmosphere, dark stage'],
-  ['DJ Nightclub Set', 'dj performing in nightclub, neon lights, crowd energy, futuristic vibe'],
-  ['Orchestra Symphony Scene', 'full orchestra performing in concert hall, cinematic lighting, classical music'],
-  ['Jazz Club Session', 'jazz band in intimate club, warm lighting, saxophone focus, moody ambiance'],
-  ['Singer Microphone Close Up', 'vocalist singing into microphone, emotional performance, stage lighting'],
-  ['Festival Crowd Energy', 'music festival crowd jumping, lights and smoke, energetic atmosphere'],
-  ['Violin Solo Performance', 'violinist performing solo on stage, elegant lighting, classical mood'],
-  ['Drummer Action Shot', 'drummer mid performance, drum kit motion, dynamic lighting, high energy'],
+  ['Opera Singer Spotlight', 'opera singer performing under dramatic spotlight, grand stage, emotional expression'],
+  ['Electric Bass Performance', 'bass guitarist performing on stage, deep lighting, concert atmosphere'],
+  ['Cello Solo Stage', 'cellist performing solo on stage, elegant lighting, classical music mood'],
+  ['Neon Synthwave Concert', 'futuristic synthwave concert, neon lights, electronic music stage'],
+  ['Acoustic Guitar Session', 'acoustic guitarist performing intimate session, warm lighting, soft mood'],
+  ['Gospel Choir Hall', 'large gospel choir singing in grand hall, powerful voices, spiritual atmosphere'],
+  ['Saxophone Blue Light', 'saxophonist performing under blue lighting, jazz mood, smoky ambiance'],
+  ['Concert Smoke Lasers', 'concert stage with lasers and smoke effects, crowd silhouettes, high energy'],
+  ['Flamenco Dance Performance', 'flamenco dancer performing with guitarist, dramatic lighting, Spanish stage'],
+  ['Grand Theater Orchestra', 'full orchestra in grand theater, cinematic lighting, luxury performance'],
 ].map(([name, description]) => ({
   title: `${name} - Music Performance Theme`,
   prompt: `premium music performance artwork, ${description}, ultra realistic, cinematic lighting, high detail, professional stage photography style, no text, no watermark`,
@@ -151,7 +151,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Music Performance batch 1 complete',
+    message: 'Music Performance batch 2 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
