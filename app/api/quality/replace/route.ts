@@ -5,25 +5,25 @@ import { prisma } from '@/lib/prisma'
 export const dynamic = 'force-dynamic'
 export const maxDuration = 300
 
-const THEME = 'sports-action'
+const THEME = 'music-performance'
 const THEME_TAG = `theme:${THEME}`
 const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Triathlon Finish Sprint', 'triathlon athlete sprinting to finish, wet pavement, sunset light, endurance sports energy'],
-  ['Fencing Duel Moment', 'fencing athletes mid duel, sharp motion, dramatic spotlight, elegant action'],
-  ['Cricket Bat Strike', 'cricket player striking ball, stadium crowd blur, dust particles, dynamic motion'],
-  ['Table Tennis Smash', 'table tennis player smashing ball, motion blur, indoor lighting, fast reaction moment'],
-  ['Handball Goal Jump', 'handball athlete jumping toward goal, arena lights, powerful movement'],
-  ['Badminton Jump Smash', 'badminton player mid-air smash, shuttlecock motion, indoor court lighting'],
-  ['Wrestling Grapple Moment', 'wrestlers grappling on mat, intense physical strength, dramatic shadows'],
-  ['Surf Paddle Out', 'surfer paddling through waves, sunrise ocean, calm before action'],
-  ['Snowboard Halfpipe Trick', 'snowboarder performing trick in halfpipe, winter light, dynamic aerial motion'],
-  ['Cliff Diving Splash', 'cliff diver entering water, splash explosion, tropical setting, high adrenaline'],
+  ['Concert Stage Lights', 'live concert stage with dramatic lighting, crowd silhouettes, high energy performance'],
+  ['Rock Guitar Solo', 'electric guitarist performing solo, stage lights, motion blur, powerful expression'],
+  ['Piano Performance Spotlight', 'grand piano performance under spotlight, elegant atmosphere, dark stage'],
+  ['DJ Nightclub Set', 'dj performing in nightclub, neon lights, crowd energy, futuristic vibe'],
+  ['Orchestra Symphony Scene', 'full orchestra performing in concert hall, cinematic lighting, classical music'],
+  ['Jazz Club Session', 'jazz band in intimate club, warm lighting, saxophone focus, moody ambiance'],
+  ['Singer Microphone Close Up', 'vocalist singing into microphone, emotional performance, stage lighting'],
+  ['Festival Crowd Energy', 'music festival crowd jumping, lights and smoke, energetic atmosphere'],
+  ['Violin Solo Performance', 'violinist performing solo on stage, elegant lighting, classical mood'],
+  ['Drummer Action Shot', 'drummer mid performance, drum kit motion, dynamic lighting, high energy'],
 ].map(([name, description]) => ({
-  title: `${name} - Sports Action Theme`,
-  prompt: `premium sports and action digital artwork, ${description}, ultra realistic, cinematic lighting, high energy movement, commercial wall art quality, no readable text, no logos, no watermark, adult athlete where applicable`,
+  title: `${name} - Music Performance Theme`,
+  prompt: `premium music performance artwork, ${description}, ultra realistic, cinematic lighting, high detail, professional stage photography style, no text, no watermark`,
 }))
 
 function safeFilePart(value: string) {
@@ -64,17 +64,14 @@ async function generateOpenAiImageBuffer(prompt: string) {
   const data = await response.json()
   const base64 = data?.data?.[0]?.b64_json
 
-  if (!base64 || typeof base64 !== 'string') {
-    throw new Error('No base64 image returned from OpenAI')
-  }
-
+  if (!base64) throw new Error('No image returned')
   return Buffer.from(base64, 'base64')
 }
 
-async function uploadGeneratedImageToBlob(imageBuffer: Buffer, title: string) {
+async function uploadGeneratedImageToBlob(buffer: Buffer, title: string) {
   const blob = await put(
     `artworks/themes/${THEME}/${safeFilePart(title)}.png`,
-    imageBuffer,
+    buffer,
     {
       access: 'public',
       addRandomSuffix: true,
@@ -82,20 +79,12 @@ async function uploadGeneratedImageToBlob(imageBuffer: Buffer, title: string) {
     }
   )
 
-  if (!blob.url) throw new Error('Blob upload failed')
+  if (!blob.url) throw new Error('Upload failed')
   return blob.url
 }
 
 async function upsertArtwork(item: (typeof ITEMS)[number], imageUrl: string) {
-  const tags = [
-    THEME_TAG,
-    'theme',
-    'sports',
-    'action',
-    'athletics',
-    'motion',
-    'wall-art',
-  ]
+  const tags = [THEME_TAG, 'theme', 'music', 'performance', 'concert', 'wall-art']
 
   const existing = await prisma.artwork.findFirst({
     where: { title: item.title },
@@ -106,7 +95,6 @@ async function upsertArtwork(item: (typeof ITEMS)[number], imageUrl: string) {
     ? await prisma.artwork.update({
         where: { id: existing.id },
         data: {
-          artist: ARTIST,
           thumbnail: imageUrl,
           tags,
           status: 'PUBLISHED' as any,
@@ -130,7 +118,7 @@ async function upsertArtwork(item: (typeof ITEMS)[number], imageUrl: string) {
     data: {
       artworkId: artwork.id,
       originalUrl: imageUrl,
-      provider: 'openai-gpt-image-1',
+      provider: 'openai',
       prompt: item.prompt,
     },
   })
@@ -143,15 +131,15 @@ export async function GET() {
 
   for (const item of ITEMS) {
     try {
-      const imageBuffer = await generateOpenAiImageBuffer(item.prompt)
-      const blobUrl = await uploadGeneratedImageToBlob(imageBuffer, item.title)
-      const artworkId = await upsertArtwork(item, blobUrl)
+      const buffer = await generateOpenAiImageBuffer(item.prompt)
+      const url = await uploadGeneratedImageToBlob(buffer, item.title)
+      const id = await upsertArtwork(item, url)
 
       results.push({
         title: item.title,
         success: true,
-        artworkId,
-        imageUrl: blobUrl,
+        artworkId: id,
+        imageUrl: url,
       })
     } catch (err) {
       results.push({
@@ -163,7 +151,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Sports Action final batch complete',
+    message: 'Music Performance batch 1 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
