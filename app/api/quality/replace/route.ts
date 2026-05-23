@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Boxing Training Close Up', 'boxing athlete close-up during training, wrapped hands, sweat, dramatic gym lighting, powerful focus'],
-  ['Cyclist Road Race', 'road cyclist racing through mountain road, motion blur, sunlight, aerodynamic speed'],
-  ['Basketball Arena Jump Shot', 'basketball player taking jump shot in arena, dramatic lights, powerful athletic form'],
-  ['Soccer Stadium Celebration', 'soccer athlete celebrating goal in stadium, lights, grass particles, emotional action moment'],
-  ['Trail Runner Mountain Path', 'trail runner on mountain path, dust, sunrise light, endurance sports energy'],
-  ['Surfer Sunset Barrel', 'surfer inside ocean barrel wave at sunset, golden spray, cinematic extreme sports moment'],
-  ['Skier Alpine Descent', 'skier descending alpine slope, powder snow, mountain backdrop, high-speed winter action'],
-  ['Volleyball Beach Dive', 'beach volleyball athlete diving for ball, sand flying, ocean sunset background'],
-  ['Rowing Team Sunrise', 'rowing team on calm water at sunrise, synchronized motion, mist, athletic discipline'],
-  ['Sprinter Starting Blocks', 'sprinter launching from starting blocks, track texture, stadium lights, explosive motion'],
+  ['Stadium Cycling Sprint', 'track cyclist sprinting in stadium, motion blur, intense speed, arena lighting'],
+  ['MMA Cage Training', 'mma fighter training inside cage, dramatic shadows, sweat, powerful stance'],
+  ['Marathon City Finish', 'marathon runner crossing city finish line, crowd blur, emotional endurance moment'],
+  ['Kayaking Whitewater', 'kayaker navigating intense whitewater rapids, splashes, fast movement'],
+  ['Basketball Court Crossover', 'basketball player performing crossover move, indoor court, dynamic motion'],
+  ['Soccer Rain Tackle', 'soccer player sliding tackle in rain, mud splash, dramatic stadium lighting'],
+  ['Tennis Clay Court Slide', 'tennis player sliding on clay court, dust particles, intense action moment'],
+  ['Parkour Rooftop Jump', 'parkour athlete jumping between rooftops at sunset, urban skyline, high energy'],
+  ['Horse Racing Finish', 'horse racing final sprint, dust, motion blur, intense competition'],
+  ['Weightlifting Power Moment', 'weightlifter lifting heavy barbell, chalk dust, dramatic gym lighting'],
 ].map(([name, description]) => ({
   title: `${name} - Sports Action Theme`,
   prompt: `premium sports and action digital artwork, ${description}, ultra realistic, cinematic lighting, high energy movement, commercial wall art quality, no readable text, no logos, no watermark, adult athlete where applicable`,
@@ -163,7 +163,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Sports Action batch 3 complete',
+    message: 'Sports Action batch 4 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
