@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Opera Singer Spotlight', 'opera singer performing under dramatic spotlight, grand stage, emotional expression'],
-  ['Electric Bass Performance', 'bass guitarist performing on stage, deep lighting, concert atmosphere'],
-  ['Cello Solo Stage', 'cellist performing solo on stage, elegant lighting, classical music mood'],
-  ['Neon Synthwave Concert', 'futuristic synthwave concert, neon lights, electronic music stage'],
-  ['Acoustic Guitar Session', 'acoustic guitarist performing intimate session, warm lighting, soft mood'],
-  ['Gospel Choir Hall', 'large gospel choir singing in grand hall, powerful voices, spiritual atmosphere'],
-  ['Saxophone Blue Light', 'saxophonist performing under blue lighting, jazz mood, smoky ambiance'],
-  ['Concert Smoke Lasers', 'concert stage with lasers and smoke effects, crowd silhouettes, high energy'],
-  ['Flamenco Dance Performance', 'flamenco dancer performing with guitarist, dramatic lighting, Spanish stage'],
-  ['Grand Theater Orchestra', 'full orchestra in grand theater, cinematic lighting, luxury performance'],
+  ['Luxury Concert Piano Hall', 'grand piano performance in luxury concert hall, warm golden lighting, elegant atmosphere'],
+  ['Electric Violin Performance', 'electric violinist performing under neon stage lights, dramatic pose, cinematic music energy'],
+  ['Rock Band Stage Energy', 'rock band performing on stage, smoke, lights, guitars, powerful crowd energy'],
+  ['Choir Cathedral Performance', 'large choir performing inside grand cathedral, warm light beams, spiritual atmosphere'],
+  ['Neon DJ Festival', 'dj performing at massive neon festival stage, lasers, smoke, crowd silhouettes, electric energy'],
+  ['Acoustic Singer Songwriter', 'acoustic singer songwriter performing on intimate stage, warm spotlight, emotional mood'],
+  ['Percussion Drum Circle', 'percussion drum circle performance, hands on drums, rhythmic motion, warm firelit atmosphere'],
+  ['Ballet Orchestra Stage', 'ballet dancer performing with orchestra stage backdrop, elegant lighting, graceful movement'],
+  ['Blues Guitar Club', 'blues guitarist performing in smoky club, blue stage light, vintage music atmosphere'],
+  ['Stadium Concert Finale', 'massive stadium concert finale, fireworks, stage lights, crowd silhouettes, epic scale'],
 ].map(([name, description]) => ({
   title: `${name} - Music Performance Theme`,
   prompt: `premium music performance artwork, ${description}, ultra realistic, cinematic lighting, high detail, professional stage photography style, no text, no watermark`,
@@ -64,14 +64,17 @@ async function generateOpenAiImageBuffer(prompt: string) {
   const data = await response.json()
   const base64 = data?.data?.[0]?.b64_json
 
-  if (!base64) throw new Error('No image returned')
+  if (!base64 || typeof base64 !== 'string') {
+    throw new Error('No base64 image returned from OpenAI')
+  }
+
   return Buffer.from(base64, 'base64')
 }
 
-async function uploadGeneratedImageToBlob(buffer: Buffer, title: string) {
+async function uploadGeneratedImageToBlob(imageBuffer: Buffer, title: string) {
   const blob = await put(
     `artworks/themes/${THEME}/${safeFilePart(title)}.png`,
-    buffer,
+    imageBuffer,
     {
       access: 'public',
       addRandomSuffix: true,
@@ -79,12 +82,20 @@ async function uploadGeneratedImageToBlob(buffer: Buffer, title: string) {
     }
   )
 
-  if (!blob.url) throw new Error('Upload failed')
+  if (!blob.url) throw new Error('Blob upload failed')
   return blob.url
 }
 
 async function upsertArtwork(item: (typeof ITEMS)[number], imageUrl: string) {
-  const tags = [THEME_TAG, 'theme', 'music', 'performance', 'concert', 'wall-art']
+  const tags = [
+    THEME_TAG,
+    'theme',
+    'music',
+    'performance',
+    'concert',
+    'stage',
+    'wall-art',
+  ]
 
   const existing = await prisma.artwork.findFirst({
     where: { title: item.title },
@@ -95,6 +106,7 @@ async function upsertArtwork(item: (typeof ITEMS)[number], imageUrl: string) {
     ? await prisma.artwork.update({
         where: { id: existing.id },
         data: {
+          artist: ARTIST,
           thumbnail: imageUrl,
           tags,
           status: 'PUBLISHED' as any,
@@ -118,7 +130,7 @@ async function upsertArtwork(item: (typeof ITEMS)[number], imageUrl: string) {
     data: {
       artworkId: artwork.id,
       originalUrl: imageUrl,
-      provider: 'openai',
+      provider: 'openai-gpt-image-1',
       prompt: item.prompt,
     },
   })
@@ -131,15 +143,15 @@ export async function GET() {
 
   for (const item of ITEMS) {
     try {
-      const buffer = await generateOpenAiImageBuffer(item.prompt)
-      const url = await uploadGeneratedImageToBlob(buffer, item.title)
-      const id = await upsertArtwork(item, url)
+      const imageBuffer = await generateOpenAiImageBuffer(item.prompt)
+      const blobUrl = await uploadGeneratedImageToBlob(imageBuffer, item.title)
+      const artworkId = await upsertArtwork(item, blobUrl)
 
       results.push({
         title: item.title,
         success: true,
-        artworkId: id,
-        imageUrl: url,
+        artworkId,
+        imageUrl: blobUrl,
       })
     } catch (err) {
       results.push({
@@ -151,7 +163,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Music Performance batch 2 complete',
+    message: 'Music Performance batch 3 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
