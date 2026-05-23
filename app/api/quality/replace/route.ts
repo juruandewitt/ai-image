@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Stadium Cycling Sprint', 'track cyclist sprinting in stadium, motion blur, intense speed, arena lighting'],
-  ['MMA Cage Training', 'mma fighter training inside cage, dramatic shadows, sweat, powerful stance'],
-  ['Marathon City Finish', 'marathon runner crossing city finish line, crowd blur, emotional endurance moment'],
-  ['Kayaking Whitewater', 'kayaker navigating intense whitewater rapids, splashes, fast movement'],
-  ['Basketball Court Crossover', 'basketball player performing crossover move, indoor court, dynamic motion'],
-  ['Soccer Rain Tackle', 'soccer player sliding tackle in rain, mud splash, dramatic stadium lighting'],
-  ['Tennis Clay Court Slide', 'tennis player sliding on clay court, dust particles, intense action moment'],
-  ['Parkour Rooftop Jump', 'parkour athlete jumping between rooftops at sunset, urban skyline, high energy'],
-  ['Horse Racing Finish', 'horse racing final sprint, dust, motion blur, intense competition'],
-  ['Weightlifting Power Moment', 'weightlifter lifting heavy barbell, chalk dust, dramatic gym lighting'],
+  ['Triathlon Finish Sprint', 'triathlon athlete sprinting to finish, wet pavement, sunset light, endurance sports energy'],
+  ['Fencing Duel Moment', 'fencing athletes mid duel, sharp motion, dramatic spotlight, elegant action'],
+  ['Cricket Bat Strike', 'cricket player striking ball, stadium crowd blur, dust particles, dynamic motion'],
+  ['Table Tennis Smash', 'table tennis player smashing ball, motion blur, indoor lighting, fast reaction moment'],
+  ['Handball Goal Jump', 'handball athlete jumping toward goal, arena lights, powerful movement'],
+  ['Badminton Jump Smash', 'badminton player mid-air smash, shuttlecock motion, indoor court lighting'],
+  ['Wrestling Grapple Moment', 'wrestlers grappling on mat, intense physical strength, dramatic shadows'],
+  ['Surf Paddle Out', 'surfer paddling through waves, sunrise ocean, calm before action'],
+  ['Snowboard Halfpipe Trick', 'snowboarder performing trick in halfpipe, winter light, dynamic aerial motion'],
+  ['Cliff Diving Splash', 'cliff diver entering water, splash explosion, tropical setting, high adrenaline'],
 ].map(([name, description]) => ({
   title: `${name} - Sports Action Theme`,
   prompt: `premium sports and action digital artwork, ${description}, ultra realistic, cinematic lighting, high energy movement, commercial wall art quality, no readable text, no logos, no watermark, adult athlete where applicable`,
@@ -163,7 +163,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Sports Action batch 4 complete',
+    message: 'Sports Action final batch complete',
     theme: THEME,
     count: ITEMS.length,
     results,
