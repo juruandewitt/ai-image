@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Night Stadium Football', 'football player running under night stadium lights, rain mist, dramatic action energy'],
-  ['Motocross Dirt Jump', 'motocross rider jumping over dirt track, dust cloud, sunset backlight, extreme sports motion'],
-  ['Swimmer Race Lane', 'competitive swimmer powering through race lane, splashing water, intense athletic focus'],
-  ['Snowboarding Powder Jump', 'snowboarder jumping through fresh powder snow, mountain backdrop, crisp winter light'],
-  ['Martial Arts Training', 'martial arts athlete training in dramatic studio light, motion blur, disciplined power'],
-  ['Baseball Bat Swing', 'baseball player swinging bat, dust and stadium light, frozen action moment'],
-  ['Rugby Power Run', 'rugby athlete charging forward through mud and rain, intense athletic motion'],
-  ['Golf Sunset Drive', 'golfer driving ball at sunset, elegant course, golden light, refined sports atmosphere'],
-  ['Ice Hockey Speed', 'ice hockey player skating fast, ice spray, arena lights, high-energy movement'],
-  ['Rock Climbing Cliff', 'rock climber scaling dramatic cliff face, golden mountain light, adventurous action'],
+  ['Boxing Training Close Up', 'boxing athlete close-up during training, wrapped hands, sweat, dramatic gym lighting, powerful focus'],
+  ['Cyclist Road Race', 'road cyclist racing through mountain road, motion blur, sunlight, aerodynamic speed'],
+  ['Basketball Arena Jump Shot', 'basketball player taking jump shot in arena, dramatic lights, powerful athletic form'],
+  ['Soccer Stadium Celebration', 'soccer athlete celebrating goal in stadium, lights, grass particles, emotional action moment'],
+  ['Trail Runner Mountain Path', 'trail runner on mountain path, dust, sunrise light, endurance sports energy'],
+  ['Surfer Sunset Barrel', 'surfer inside ocean barrel wave at sunset, golden spray, cinematic extreme sports moment'],
+  ['Skier Alpine Descent', 'skier descending alpine slope, powder snow, mountain backdrop, high-speed winter action'],
+  ['Volleyball Beach Dive', 'beach volleyball athlete diving for ball, sand flying, ocean sunset background'],
+  ['Rowing Team Sunrise', 'rowing team on calm water at sunrise, synchronized motion, mist, athletic discipline'],
+  ['Sprinter Starting Blocks', 'sprinter launching from starting blocks, track texture, stadium lights, explosive motion'],
 ].map(([name, description]) => ({
   title: `${name} - Sports Action Theme`,
   prompt: `premium sports and action digital artwork, ${description}, ultra realistic, cinematic lighting, high energy movement, commercial wall art quality, no readable text, no logos, no watermark, adult athlete where applicable`,
@@ -163,7 +163,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Sports Action batch 2 complete',
+    message: 'Sports Action batch 3 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
