@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Luxury Concert Piano Hall', 'grand piano performance in luxury concert hall, warm golden lighting, elegant atmosphere'],
-  ['Electric Violin Performance', 'electric violinist performing under neon stage lights, dramatic pose, cinematic music energy'],
-  ['Rock Band Stage Energy', 'rock band performing on stage, smoke, lights, guitars, powerful crowd energy'],
-  ['Choir Cathedral Performance', 'large choir performing inside grand cathedral, warm light beams, spiritual atmosphere'],
-  ['Neon DJ Festival', 'dj performing at massive neon festival stage, lasers, smoke, crowd silhouettes, electric energy'],
-  ['Acoustic Singer Songwriter', 'acoustic singer songwriter performing on intimate stage, warm spotlight, emotional mood'],
-  ['Percussion Drum Circle', 'percussion drum circle performance, hands on drums, rhythmic motion, warm firelit atmosphere'],
-  ['Ballet Orchestra Stage', 'ballet dancer performing with orchestra stage backdrop, elegant lighting, graceful movement'],
-  ['Blues Guitar Club', 'blues guitarist performing in smoky club, blue stage light, vintage music atmosphere'],
-  ['Stadium Concert Finale', 'massive stadium concert finale, fireworks, stage lights, crowd silhouettes, epic scale'],
+  ['Luxury Harp Performance', 'harpist performing on elegant stage, golden lighting, classical luxury atmosphere'],
+  ['Cinematic Drum Solo', 'drummer performing powerful solo, dramatic lighting, cinematic energy, motion blur'],
+  ['Opera House Orchestra', 'full orchestra performing inside grand opera house, rich lighting, classical scene'],
+  ['Electronic Keyboard Stage', 'keyboard performer on modern stage, neon lights, electronic music vibe'],
+  ['Gospel Stage Lights', 'gospel singers on stage with dramatic lighting beams, emotional performance'],
+  ['Violin Rain Performance', 'violinist performing in rain under spotlight, cinematic dramatic atmosphere'],
+  ['Jazz Trumpet Spotlight', 'trumpet player under spotlight in jazz club, warm tones, smoky mood'],
+  ['Rock Concert Crowd', 'massive rock concert crowd cheering, stage lights, high energy scene'],
+  ['Classical Ballet Music Hall', 'ballet dancer with orchestra in grand music hall, elegant lighting'],
+  ['Nightclub Vocalist', 'female vocalist performing in nightclub, neon lights, modern music scene'],
 ].map(([name, description]) => ({
   title: `${name} - Music Performance Theme`,
   prompt: `premium music performance artwork, ${description}, ultra realistic, cinematic lighting, high detail, professional stage photography style, no text, no watermark`,
@@ -163,7 +163,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Music Performance batch 3 complete',
+    message: 'Music Performance batch 4 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
