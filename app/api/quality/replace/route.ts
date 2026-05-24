@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Luxury Harp Performance', 'harpist performing on elegant stage, golden lighting, classical luxury atmosphere'],
-  ['Cinematic Drum Solo', 'drummer performing powerful solo, dramatic lighting, cinematic energy, motion blur'],
-  ['Opera House Orchestra', 'full orchestra performing inside grand opera house, rich lighting, classical scene'],
-  ['Electronic Keyboard Stage', 'keyboard performer on modern stage, neon lights, electronic music vibe'],
-  ['Gospel Stage Lights', 'gospel singers on stage with dramatic lighting beams, emotional performance'],
-  ['Violin Rain Performance', 'violinist performing in rain under spotlight, cinematic dramatic atmosphere'],
-  ['Jazz Trumpet Spotlight', 'trumpet player under spotlight in jazz club, warm tones, smoky mood'],
-  ['Rock Concert Crowd', 'massive rock concert crowd cheering, stage lights, high energy scene'],
-  ['Classical Ballet Music Hall', 'ballet dancer with orchestra in grand music hall, elegant lighting'],
-  ['Nightclub Vocalist', 'female vocalist performing in nightclub, neon lights, modern music scene'],
+  ['Grand Finale Concert Lights', 'massive concert finale with bright stage lights, smoke, silhouettes, epic performance energy'],
+  ['Luxury Opera Duet', 'two opera singers performing duet on elegant stage, warm spotlight, grand theater atmosphere'],
+  ['Electric Guitar Fire Stage', 'electric guitarist performing on fiery concert stage, dramatic lights, powerful rock energy'],
+  ['Classical Piano Hands Close Up', 'close-up of pianist hands on grand piano keys, elegant lighting, refined classical mood'],
+  ['Jazz Quartet Nightclub', 'jazz quartet performing in intimate nightclub, warm amber light, saxophone and piano atmosphere'],
+  ['DJ Laser Dome', 'dj performing inside laser-filled dome stage, neon color, futuristic electronic music energy'],
+  ['Cello and Violin Duo', 'cello and violin duo performing under soft stage light, elegant classical composition'],
+  ['Festival Main Stage', 'large festival main stage at night, crowd silhouettes, colored lights, smoke and atmosphere'],
+  ['Acoustic Candlelight Performance', 'acoustic performance by candlelight, guitar, warm intimate stage, emotional mood'],
+  ['Symphony Hall Finale', 'orchestra finale in luxury symphony hall, conductor silhouette, golden lighting, cinematic scale'],
 ].map(([name, description]) => ({
   title: `${name} - Music Performance Theme`,
   prompt: `premium music performance artwork, ${description}, ultra realistic, cinematic lighting, high detail, professional stage photography style, no text, no watermark`,
@@ -163,7 +163,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Music Performance batch 4 complete',
+    message: 'Music Performance final batch complete',
     theme: THEME,
     count: ITEMS.length,
     results,
