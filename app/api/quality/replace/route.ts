@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Luxury Beach Cabana', 'luxury beach cabana, white curtains, turquoise ocean, soft sunlight, premium resort atmosphere'],
-  ['Marble Watch Display', 'luxury watch displayed on marble surface, gold accents, dramatic premium lighting'],
-  ['Champagne Bath Suite', 'champagne beside luxury bath suite, marble walls, candlelight, elegant spa mood'],
-  ['Designer Handbag Still Life', 'designer handbag still life, leather texture, soft shadows, premium fashion editorial style'],
-  ['Private Island Villa', 'private island villa, infinity pool, tropical ocean view, sunset luxury escape'],
-  ['Luxury Airport Lounge', 'luxury airport lounge, leather seating, soft lighting, premium travel atmosphere'],
-  ['Rooftop Infinity Pool', 'rooftop infinity pool overlooking city skyline, evening lights, high-end lifestyle mood'],
-  ['Elegant Perfume Display', 'elegant perfume bottle display, glass reflections, marble surface, luxury product lighting'],
-  ['Luxury Mountain Chalet', 'luxury mountain chalet interior, fireplace, snow view, warm wood textures, premium winter mood'],
-  ['Black Tie Dinner Table', 'black tie dinner table setting, crystal glasses, candles, elegant formal luxury atmosphere'],
+  ['Luxury Cigar Lounge', 'luxury cigar lounge, leather chairs, dark wood, warm amber light, premium private club atmosphere'],
+  ['Gold Jewelry Display', 'gold jewelry display on black velvet, dramatic highlights, premium luxury product photography'],
+  ['Private Cinema Room', 'private luxury cinema room, plush seating, soft wall lighting, elegant entertainment space'],
+  ['Luxury Watch Collection', 'luxury watch collection displayed in glass case, polished metal, refined lighting'],
+  ['Coastal Villa Breakfast', 'coastal villa breakfast table, ocean view, fresh fruit, white linen, soft morning light'],
+  ['Penthouse Wardrobe', 'penthouse wardrobe with designer clothing, warm lighting, marble and wood finishes, premium mood'],
+  ['Spa Stone Massage Room', 'spa stone massage room, candles, towels, natural stone, soft peaceful luxury light'],
+  ['Champagne On Yacht', 'champagne glasses on yacht table, ocean sunset, elegant deck details, premium lifestyle scene'],
+  ['Designer Shoe Display', 'designer shoe display, polished floor, soft spotlight, elegant fashion retail mood'],
+  ['Luxury Fireplace Lounge', 'luxury fireplace lounge, velvet seating, marble fireplace, warm sophisticated evening atmosphere'],
 ].map(([name, description]) => ({
   title: `${name} - Luxury Lifestyle Theme`,
   prompt: `premium luxury lifestyle digital artwork, ${description}, ultra realistic, cinematic lighting, high-end editorial photography style, commercial wall art quality, rich detail, no readable text, no logos, no watermark, no people`,
@@ -163,7 +163,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Luxury Lifestyle batch 2 complete',
+    message: 'Luxury Lifestyle batch 3 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
