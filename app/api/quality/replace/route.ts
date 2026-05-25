@@ -11,17 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Santorini Sunset View', 'Santorini cliffside village at sunset, white buildings, blue domes, golden sea horizon'],
-  ['Paris Evening Street', 'romantic Paris street at evening, warm cafe lights, historic architecture, elegant travel mood'],
-  ['Bali Jungle Villa', 'luxury Bali jungle villa, infinity pool, tropical greenery, misty morning atmosphere'],
-  ['Tokyo Neon Crossing', 'Tokyo neon city crossing at night, rain reflections, vibrant signs, cinematic urban travel'],
-  ['Maldives Overwater Villas', 'Maldives overwater villas, crystal turquoise ocean, white sand, luxury tropical escape'],
-  ['Swiss Alpine Village', 'Swiss alpine village, snow peaks, wooden chalets, clear mountain light, peaceful scenery',
-  ],
-  ['Moroccan Desert Camp', 'luxury Moroccan desert camp, golden dunes, lanterns, sunset sky, cinematic travel mood'],
-  ['New York Skyline Night', 'New York skyline at night, glowing skyscrapers, river reflections, dramatic city view'],
-  ['Greek Island Harbor', 'Greek island harbor, fishing boats, turquoise water, whitewashed houses, summer travel feeling'],
-  ['Venice Canal Morning', 'Venice canal in soft morning light, historic buildings, reflections, elegant European atmosphere'],
+  ['Dubai Luxury Skyline', 'Dubai luxury skyline at sunset, modern skyscrapers, golden reflections, futuristic city atmosphere'],
+  ['Kyoto Temple Garden', 'Kyoto temple garden in autumn, red maple leaves, wooden architecture, peaceful Japanese atmosphere'],
+  ['Iceland Waterfall Road', 'Iceland road leading to dramatic waterfall, black volcanic landscape, misty cinematic sky'],
+  ['Amalfi Coast Cliff Town', 'Amalfi coast cliff town, colorful houses, Mediterranean sea, warm summer sunlight'],
+  ['African Safari Lodge', 'luxury African safari lodge at sunset, savanna landscape, acacia trees, warm golden horizon'],
+  ['Canadian Lake Mountains', 'Canadian mountain lake, turquoise water, pine forest, snow peaks, clear alpine light'],
+  ['Singapore Garden Skyline', 'Singapore garden skyline, futuristic towers, lush greenery, evening city glow'],
+  ['Cappadocia Balloon Sunrise', 'Cappadocia hot air balloons at sunrise, rocky valleys, soft pastel sky, magical travel view'],
+  ['Bora Bora Lagoon', 'Bora Bora lagoon, turquoise water, overwater bungalows, tropical mountain backdrop'],
+  ['London Rainy Street', 'London rainy street at night, historic architecture, reflections, warm city lights'],
 ].map(([name, description]) => ({
   title: `${name} - Travel Destinations Theme`,
   prompt: `premium travel and destination digital artwork, ${description}, ultra realistic, cinematic lighting, luxury travel photography style, commercial wall art quality, rich detail, no people, no readable text, no logos, no watermark`,
@@ -164,7 +163,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Travel Destinations batch 1 complete',
+    message: 'Travel Destinations batch 2 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
