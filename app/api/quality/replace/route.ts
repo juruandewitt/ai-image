@@ -5,25 +5,26 @@ import { prisma } from '@/lib/prisma'
 export const dynamic = 'force-dynamic'
 export const maxDuration = 300
 
-const THEME = 'music-performance'
+const THEME = 'travel-destinations'
 const THEME_TAG = `theme:${THEME}`
 const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Grand Finale Concert Lights', 'massive concert finale with bright stage lights, smoke, silhouettes, epic performance energy'],
-  ['Luxury Opera Duet', 'two opera singers performing duet on elegant stage, warm spotlight, grand theater atmosphere'],
-  ['Electric Guitar Fire Stage', 'electric guitarist performing on fiery concert stage, dramatic lights, powerful rock energy'],
-  ['Classical Piano Hands Close Up', 'close-up of pianist hands on grand piano keys, elegant lighting, refined classical mood'],
-  ['Jazz Quartet Nightclub', 'jazz quartet performing in intimate nightclub, warm amber light, saxophone and piano atmosphere'],
-  ['DJ Laser Dome', 'dj performing inside laser-filled dome stage, neon color, futuristic electronic music energy'],
-  ['Cello and Violin Duo', 'cello and violin duo performing under soft stage light, elegant classical composition'],
-  ['Festival Main Stage', 'large festival main stage at night, crowd silhouettes, colored lights, smoke and atmosphere'],
-  ['Acoustic Candlelight Performance', 'acoustic performance by candlelight, guitar, warm intimate stage, emotional mood'],
-  ['Symphony Hall Finale', 'orchestra finale in luxury symphony hall, conductor silhouette, golden lighting, cinematic scale'],
+  ['Santorini Sunset View', 'Santorini cliffside village at sunset, white buildings, blue domes, golden sea horizon'],
+  ['Paris Evening Street', 'romantic Paris street at evening, warm cafe lights, historic architecture, elegant travel mood'],
+  ['Bali Jungle Villa', 'luxury Bali jungle villa, infinity pool, tropical greenery, misty morning atmosphere'],
+  ['Tokyo Neon Crossing', 'Tokyo neon city crossing at night, rain reflections, vibrant signs, cinematic urban travel'],
+  ['Maldives Overwater Villas', 'Maldives overwater villas, crystal turquoise ocean, white sand, luxury tropical escape'],
+  ['Swiss Alpine Village', 'Swiss alpine village, snow peaks, wooden chalets, clear mountain light, peaceful scenery',
+  ],
+  ['Moroccan Desert Camp', 'luxury Moroccan desert camp, golden dunes, lanterns, sunset sky, cinematic travel mood'],
+  ['New York Skyline Night', 'New York skyline at night, glowing skyscrapers, river reflections, dramatic city view'],
+  ['Greek Island Harbor', 'Greek island harbor, fishing boats, turquoise water, whitewashed houses, summer travel feeling'],
+  ['Venice Canal Morning', 'Venice canal in soft morning light, historic buildings, reflections, elegant European atmosphere'],
 ].map(([name, description]) => ({
-  title: `${name} - Music Performance Theme`,
-  prompt: `premium music performance artwork, ${description}, ultra realistic, cinematic lighting, high detail, professional stage photography style, no text, no watermark`,
+  title: `${name} - Travel Destinations Theme`,
+  prompt: `premium travel and destination digital artwork, ${description}, ultra realistic, cinematic lighting, luxury travel photography style, commercial wall art quality, rich detail, no people, no readable text, no logos, no watermark`,
 }))
 
 function safeFilePart(value: string) {
@@ -90,10 +91,10 @@ async function upsertArtwork(item: (typeof ITEMS)[number], imageUrl: string) {
   const tags = [
     THEME_TAG,
     'theme',
-    'music',
-    'performance',
-    'concert',
-    'stage',
+    'travel',
+    'destinations',
+    'cities',
+    'landmarks',
     'wall-art',
   ]
 
@@ -163,7 +164,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Music Performance final batch complete',
+    message: 'Travel Destinations batch 1 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
