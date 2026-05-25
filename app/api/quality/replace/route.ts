@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Dubai Luxury Skyline', 'Dubai luxury skyline at sunset, modern skyscrapers, golden reflections, futuristic city atmosphere'],
-  ['Kyoto Temple Garden', 'Kyoto temple garden in autumn, red maple leaves, wooden architecture, peaceful Japanese atmosphere'],
-  ['Iceland Waterfall Road', 'Iceland road leading to dramatic waterfall, black volcanic landscape, misty cinematic sky'],
-  ['Amalfi Coast Cliff Town', 'Amalfi coast cliff town, colorful houses, Mediterranean sea, warm summer sunlight'],
-  ['African Safari Lodge', 'luxury African safari lodge at sunset, savanna landscape, acacia trees, warm golden horizon'],
-  ['Canadian Lake Mountains', 'Canadian mountain lake, turquoise water, pine forest, snow peaks, clear alpine light'],
-  ['Singapore Garden Skyline', 'Singapore garden skyline, futuristic towers, lush greenery, evening city glow'],
-  ['Cappadocia Balloon Sunrise', 'Cappadocia hot air balloons at sunrise, rocky valleys, soft pastel sky, magical travel view'],
-  ['Bora Bora Lagoon', 'Bora Bora lagoon, turquoise water, overwater bungalows, tropical mountain backdrop'],
-  ['London Rainy Street', 'London rainy street at night, historic architecture, reflections, warm city lights'],
+  ['Rome Golden Ruins', 'Rome ancient ruins at golden hour, warm stone architecture, historic city atmosphere, cinematic light'],
+  ['Seychelles Beach Rocks', 'Seychelles beach with granite rocks, turquoise water, white sand, tropical luxury mood'],
+  ['Prague Old Town Sunrise', 'Prague old town at sunrise, historic rooftops, soft mist, golden European travel atmosphere'],
+  ['Namibia Desert Dunes', 'Namibia desert dunes, sweeping orange sand, dramatic shadows, luxury adventure travel mood'],
+  ['Hong Kong Harbor Night', 'Hong Kong harbor at night, glowing skyline, water reflections, cinematic urban travel scene'],
+  ['Tuscany Vineyard Villa', 'Tuscany vineyard villa, rolling hills, cypress trees, warm sunset light, Italian countryside'],
+  ['Norwegian Fjord Village', 'Norwegian fjord village, steep mountains, calm water, colorful houses, crisp northern light'],
+  ['Marrakech Market Lights', 'Marrakech market lights, lanterns, warm colors, Moroccan architecture, luxury travel atmosphere'],
+  ['Thailand Island Cliffs', 'Thailand island cliffs, turquoise lagoon, limestone rocks, tropical sunlight, luxury escape'],
+  ['California Coastal Highway', 'California coastal highway, ocean cliffs, sunset road curve, cinematic travel photography'],
 ].map(([name, description]) => ({
   title: `${name} - Travel Destinations Theme`,
   prompt: `premium travel and destination digital artwork, ${description}, ultra realistic, cinematic lighting, luxury travel photography style, commercial wall art quality, rich detail, no people, no readable text, no logos, no watermark`,
@@ -163,7 +163,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Travel Destinations batch 2 complete',
+    message: 'Travel Destinations batch 3 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
