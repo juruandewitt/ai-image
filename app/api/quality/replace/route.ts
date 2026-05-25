@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Rome Golden Ruins', 'Rome ancient ruins at golden hour, warm stone architecture, historic city atmosphere, cinematic light'],
-  ['Seychelles Beach Rocks', 'Seychelles beach with granite rocks, turquoise water, white sand, tropical luxury mood'],
-  ['Prague Old Town Sunrise', 'Prague old town at sunrise, historic rooftops, soft mist, golden European travel atmosphere'],
-  ['Namibia Desert Dunes', 'Namibia desert dunes, sweeping orange sand, dramatic shadows, luxury adventure travel mood'],
-  ['Hong Kong Harbor Night', 'Hong Kong harbor at night, glowing skyline, water reflections, cinematic urban travel scene'],
-  ['Tuscany Vineyard Villa', 'Tuscany vineyard villa, rolling hills, cypress trees, warm sunset light, Italian countryside'],
-  ['Norwegian Fjord Village', 'Norwegian fjord village, steep mountains, calm water, colorful houses, crisp northern light'],
-  ['Marrakech Market Lights', 'Marrakech market lights, lanterns, warm colors, Moroccan architecture, luxury travel atmosphere'],
-  ['Thailand Island Cliffs', 'Thailand island cliffs, turquoise lagoon, limestone rocks, tropical sunlight, luxury escape'],
-  ['California Coastal Highway', 'California coastal highway, ocean cliffs, sunset road curve, cinematic travel photography'],
+  ['Egypt Pyramid Sunset', 'Egypt pyramids at sunset, golden desert light, dramatic sky, ancient landmark travel mood'],
+  ['Barcelona Gothic Street', 'Barcelona gothic street, historic stone architecture, warm evening light, European travel atmosphere'],
+  ['Australia Ocean Road', 'Australia coastal ocean road, cliffs, blue sea, sunset highway curve, cinematic travel view'],
+  ['Peru Mountain Ruins', 'Peru mountain ruins, ancient stone terraces, misty Andes peaks, dramatic travel scene'],
+  ['Mexico Beach Resort', 'Mexico beach resort, turquoise water, palm trees, luxury pool, warm tropical sunlight'],
+  ['Istanbul Mosque Skyline', 'Istanbul mosque skyline at sunset, domes, minarets, golden water reflections'],
+  ['Japan Snow Village', 'Japan snow village, traditional houses, soft snowfall, warm lantern glow, peaceful winter travel'],
+  ['South African Wine Valley', 'South African wine valley, vineyards, mountains, warm sunset light, luxury countryside travel'],
+  ['Alaska Glacier Bay', 'Alaska glacier bay, icy blue water, towering glacier, misty mountains, cinematic wilderness'],
+  ['Maldives Sunset Pier', 'Maldives sunset pier, overwater walkway, turquoise lagoon, glowing tropical horizon'],
 ].map(([name, description]) => ({
   title: `${name} - Travel Destinations Theme`,
   prompt: `premium travel and destination digital artwork, ${description}, ultra realistic, cinematic lighting, luxury travel photography style, commercial wall art quality, rich detail, no people, no readable text, no logos, no watermark`,
@@ -163,7 +163,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Travel Destinations batch 3 complete',
+    message: 'Travel Destinations batch 4 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
