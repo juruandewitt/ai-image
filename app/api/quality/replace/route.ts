@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Luxury Yacht Deck', 'luxury yacht deck at sunset, ocean view, elegant seating, golden light, premium lifestyle mood'],
-  ['Private Jet Interior', 'private jet interior, cream leather seats, soft cabin lighting, refined luxury travel atmosphere'],
-  ['Penthouse Champagne View', 'penthouse terrace with champagne glasses, city skyline, evening lights, luxury lifestyle scene'],
-  ['Designer Watch Close Up', 'designer watch close-up on marble surface, premium metal detail, dramatic luxury lighting'],
-  ['Luxury Poolside Lounge', 'luxury poolside lounge, modern villa, calm blue water, sunlit resort atmosphere'],
-  ['High End Shopping Street', 'high-end shopping street, elegant storefronts, warm evening lights, premium urban mood'],
-  ['Luxury Sports Car Arrival', 'luxury sports car outside modern villa, cinematic lighting, aspirational lifestyle scene'],
-  ['Elegant Hotel Lobby', 'elegant luxury hotel lobby, marble floors, chandeliers, warm sophisticated atmosphere'],
-  ['Premium Spa Relaxation', 'premium spa relaxation room, candles, stone textures, soft warm light, peaceful luxury mood'],
-  ['Luxury Rooftop Dinner', 'luxury rooftop dinner setup, city lights, elegant table setting, romantic evening atmosphere'],
+  ['Luxury Beach Cabana', 'luxury beach cabana, white curtains, turquoise ocean, soft sunlight, premium resort atmosphere'],
+  ['Marble Watch Display', 'luxury watch displayed on marble surface, gold accents, dramatic premium lighting'],
+  ['Champagne Bath Suite', 'champagne beside luxury bath suite, marble walls, candlelight, elegant spa mood'],
+  ['Designer Handbag Still Life', 'designer handbag still life, leather texture, soft shadows, premium fashion editorial style'],
+  ['Private Island Villa', 'private island villa, infinity pool, tropical ocean view, sunset luxury escape'],
+  ['Luxury Airport Lounge', 'luxury airport lounge, leather seating, soft lighting, premium travel atmosphere'],
+  ['Rooftop Infinity Pool', 'rooftop infinity pool overlooking city skyline, evening lights, high-end lifestyle mood'],
+  ['Elegant Perfume Display', 'elegant perfume bottle display, glass reflections, marble surface, luxury product lighting'],
+  ['Luxury Mountain Chalet', 'luxury mountain chalet interior, fireplace, snow view, warm wood textures, premium winter mood'],
+  ['Black Tie Dinner Table', 'black tie dinner table setting, crystal glasses, candles, elegant formal luxury atmosphere'],
 ].map(([name, description]) => ({
   title: `${name} - Luxury Lifestyle Theme`,
   prompt: `premium luxury lifestyle digital artwork, ${description}, ultra realistic, cinematic lighting, high-end editorial photography style, commercial wall art quality, rich detail, no readable text, no logos, no watermark, no people`,
@@ -163,7 +163,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Luxury Lifestyle batch 1 complete',
+    message: 'Luxury Lifestyle batch 2 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
