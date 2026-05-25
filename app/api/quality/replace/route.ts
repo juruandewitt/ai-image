@@ -5,25 +5,25 @@ import { prisma } from '@/lib/prisma'
 export const dynamic = 'force-dynamic'
 export const maxDuration = 300
 
-const THEME = 'travel-destinations'
+const THEME = 'luxury-lifestyle'
 const THEME_TAG = `theme:${THEME}`
 const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Antarctica Ice Landscape', 'Antarctica ice landscape, massive glaciers, frozen ocean, crisp blue tones, extreme travel scene'],
-  ['Rio De Janeiro Coast', 'Rio de Janeiro coastline, mountains, ocean bay, warm sunlight, vibrant travel destination'],
-  ['Dubai Desert Safari', 'Dubai desert safari, golden dunes, luxury off-road tracks, sunset horizon, cinematic travel mood'],
-  ['Scottish Highlands Valley', 'Scottish Highlands valley, rolling green hills, mist, dramatic sky, moody cinematic atmosphere'],
-  ['Hawaiian Volcano Coast', 'Hawaiian volcanic coast, lava rock, ocean waves, glowing sunset sky, dramatic nature travel'],
-  ['Amsterdam Canal Evening', 'Amsterdam canal evening, historic buildings, warm lights reflecting on water, European charm'],
-  ['Patagonia Mountain Peaks', 'Patagonia mountain peaks, sharp ridges, cold blue sky, dramatic wilderness travel'],
-  ['Dubai Marina Night', 'Dubai marina at night, luxury yachts, skyscrapers, reflections, vibrant nightlife travel scene'],
-  ['Banff Lake Sunrise', 'Banff lake at sunrise, mirror reflections, pine forest, snow peaks, serene alpine beauty'],
-  ['Zanzibar Beach Escape', 'Zanzibar beach escape, turquoise water, white sand, palm trees, tropical luxury atmosphere'],
+  ['Luxury Yacht Deck', 'luxury yacht deck at sunset, ocean view, elegant seating, golden light, premium lifestyle mood'],
+  ['Private Jet Interior', 'private jet interior, cream leather seats, soft cabin lighting, refined luxury travel atmosphere'],
+  ['Penthouse Champagne View', 'penthouse terrace with champagne glasses, city skyline, evening lights, luxury lifestyle scene'],
+  ['Designer Watch Close Up', 'designer watch close-up on marble surface, premium metal detail, dramatic luxury lighting'],
+  ['Luxury Poolside Lounge', 'luxury poolside lounge, modern villa, calm blue water, sunlit resort atmosphere'],
+  ['High End Shopping Street', 'high-end shopping street, elegant storefronts, warm evening lights, premium urban mood'],
+  ['Luxury Sports Car Arrival', 'luxury sports car outside modern villa, cinematic lighting, aspirational lifestyle scene'],
+  ['Elegant Hotel Lobby', 'elegant luxury hotel lobby, marble floors, chandeliers, warm sophisticated atmosphere'],
+  ['Premium Spa Relaxation', 'premium spa relaxation room, candles, stone textures, soft warm light, peaceful luxury mood'],
+  ['Luxury Rooftop Dinner', 'luxury rooftop dinner setup, city lights, elegant table setting, romantic evening atmosphere'],
 ].map(([name, description]) => ({
-  title: `${name} - Travel Destinations Theme`,
-  prompt: `premium travel and destination digital artwork, ${description}, ultra realistic, cinematic lighting, luxury travel photography style, commercial wall art quality, rich detail, no people, no readable text, no logos, no watermark`,
+  title: `${name} - Luxury Lifestyle Theme`,
+  prompt: `premium luxury lifestyle digital artwork, ${description}, ultra realistic, cinematic lighting, high-end editorial photography style, commercial wall art quality, rich detail, no readable text, no logos, no watermark, no people`,
 }))
 
 function safeFilePart(value: string) {
@@ -90,10 +90,10 @@ async function upsertArtwork(item: (typeof ITEMS)[number], imageUrl: string) {
   const tags = [
     THEME_TAG,
     'theme',
-    'travel',
-    'destinations',
-    'cities',
-    'landmarks',
+    'luxury',
+    'lifestyle',
+    'premium',
+    'editorial',
     'wall-art',
   ]
 
@@ -163,7 +163,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Travel Destinations final batch complete',
+    message: 'Luxury Lifestyle batch 1 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
