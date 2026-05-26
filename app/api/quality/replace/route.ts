@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Luxury Wine Cellar', 'luxury wine cellar, wooden racks, ambient lighting, premium collection atmosphere'],
-  ['Designer Sunglasses Display', 'designer sunglasses display, glass reflections, minimal luxury retail setup'],
-  ['Private Rooftop Lounge', 'private rooftop lounge, city skyline sunset, soft seating, premium evening vibe'],
-  ['Luxury Marble Bathroom', 'luxury marble bathroom, gold fixtures, natural light, spa-like elegance'],
-  ['Premium Leather Briefcase', 'premium leather briefcase, rich texture, dark backdrop, high-end product photography'],
-  ['Elegant Resort Breakfast', 'elegant resort breakfast table, ocean view, fresh pastries, luxury morning light'],
-  ['High-End Fragrance Shelf', 'high-end fragrance shelf, glass bottles, warm spotlight, premium retail mood'],
-  ['Luxury Car Interior', 'luxury car interior, leather seats, ambient lighting, modern premium design'],
-  ['Golden Lounge Bar', 'golden lounge bar, soft lighting, reflective surfaces, upscale nightlife atmosphere'],
-  ['Private Villa Sunset', 'private villa at sunset, infinity pool, warm glow, ultra luxury vacation mood'],
+  ['Luxury Helicopter View', 'luxury helicopter aerial view over coastline, cinematic perspective, elite travel experience'],
+  ['Diamond Jewelry Close Up', 'diamond jewelry close up, sparkling reflections, black background, ultra luxury product lighting'],
+  ['Exclusive Members Club', 'exclusive members club interior, velvet seating, dim lighting, private elite atmosphere'],
+  ['Luxury Fashion Runway', 'luxury fashion runway show, dramatic lighting, high-end couture presentation'],
+  ['Private Chef Kitchen', 'private chef kitchen, plated gourmet dish, modern luxury interior, editorial food styling'],
+  ['Supercar Garage Display', 'supercar garage display, exotic cars, polished floor reflections, premium lighting'],
+  ['Luxury Home Office', 'luxury home office, marble desk, city skyline view, elegant modern workspace'],
+  ['Infinity Pool Night Lights', 'infinity pool at night, glowing water, city lights, ultra luxury ambiance'],
+  ['Luxury Jewelry Safe', 'luxury jewelry safe open display, gold and diamonds, dramatic shadows, premium feel'],
+  ['Royal Palace Interior', 'royal palace interior, chandeliers, gold details, grand luxury architecture'],
 ].map(([name, description]) => ({
   title: `${name} - Luxury Lifestyle Theme`,
   prompt: `premium luxury lifestyle digital artwork, ${description}, ultra realistic, cinematic lighting, high-end editorial photography style, commercial wall art quality, rich detail, no readable text, no logos, no watermark, no people`,
@@ -163,7 +163,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Luxury Lifestyle batch 4 complete',
+    message: 'Luxury Lifestyle final batch complete',
     theme: THEME,
     count: ITEMS.length,
     results,
