@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Luxury Cigar Lounge', 'luxury cigar lounge, leather chairs, dark wood, warm amber light, premium private club atmosphere'],
-  ['Gold Jewelry Display', 'gold jewelry display on black velvet, dramatic highlights, premium luxury product photography'],
-  ['Private Cinema Room', 'private luxury cinema room, plush seating, soft wall lighting, elegant entertainment space'],
-  ['Luxury Watch Collection', 'luxury watch collection displayed in glass case, polished metal, refined lighting'],
-  ['Coastal Villa Breakfast', 'coastal villa breakfast table, ocean view, fresh fruit, white linen, soft morning light'],
-  ['Penthouse Wardrobe', 'penthouse wardrobe with designer clothing, warm lighting, marble and wood finishes, premium mood'],
-  ['Spa Stone Massage Room', 'spa stone massage room, candles, towels, natural stone, soft peaceful luxury light'],
-  ['Champagne On Yacht', 'champagne glasses on yacht table, ocean sunset, elegant deck details, premium lifestyle scene'],
-  ['Designer Shoe Display', 'designer shoe display, polished floor, soft spotlight, elegant fashion retail mood'],
-  ['Luxury Fireplace Lounge', 'luxury fireplace lounge, velvet seating, marble fireplace, warm sophisticated evening atmosphere'],
+  ['Luxury Wine Cellar', 'luxury wine cellar, wooden racks, ambient lighting, premium collection atmosphere'],
+  ['Designer Sunglasses Display', 'designer sunglasses display, glass reflections, minimal luxury retail setup'],
+  ['Private Rooftop Lounge', 'private rooftop lounge, city skyline sunset, soft seating, premium evening vibe'],
+  ['Luxury Marble Bathroom', 'luxury marble bathroom, gold fixtures, natural light, spa-like elegance'],
+  ['Premium Leather Briefcase', 'premium leather briefcase, rich texture, dark backdrop, high-end product photography'],
+  ['Elegant Resort Breakfast', 'elegant resort breakfast table, ocean view, fresh pastries, luxury morning light'],
+  ['High-End Fragrance Shelf', 'high-end fragrance shelf, glass bottles, warm spotlight, premium retail mood'],
+  ['Luxury Car Interior', 'luxury car interior, leather seats, ambient lighting, modern premium design'],
+  ['Golden Lounge Bar', 'golden lounge bar, soft lighting, reflective surfaces, upscale nightlife atmosphere'],
+  ['Private Villa Sunset', 'private villa at sunset, infinity pool, warm glow, ultra luxury vacation mood'],
 ].map(([name, description]) => ({
   title: `${name} - Luxury Lifestyle Theme`,
   prompt: `premium luxury lifestyle digital artwork, ${description}, ultra realistic, cinematic lighting, high-end editorial photography style, commercial wall art quality, rich detail, no readable text, no logos, no watermark, no people`,
@@ -163,7 +163,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Luxury Lifestyle batch 3 complete',
+    message: 'Luxury Lifestyle batch 4 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
