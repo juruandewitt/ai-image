@@ -5,25 +5,25 @@ import { prisma } from '@/lib/prisma'
 export const dynamic = 'force-dynamic'
 export const maxDuration = 300
 
-const THEME = 'luxury-lifestyle'
+const THEME = 'health-wellness'
 const THEME_TAG = `theme:${THEME}`
 const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Luxury Helicopter View', 'luxury helicopter aerial view over coastline, cinematic perspective, elite travel experience'],
-  ['Diamond Jewelry Close Up', 'diamond jewelry close up, sparkling reflections, black background, ultra luxury product lighting'],
-  ['Exclusive Members Club', 'exclusive members club interior, velvet seating, dim lighting, private elite atmosphere'],
-  ['Luxury Fashion Runway', 'luxury fashion runway show, dramatic lighting, high-end couture presentation'],
-  ['Private Chef Kitchen', 'private chef kitchen, plated gourmet dish, modern luxury interior, editorial food styling'],
-  ['Supercar Garage Display', 'supercar garage display, exotic cars, polished floor reflections, premium lighting'],
-  ['Luxury Home Office', 'luxury home office, marble desk, city skyline view, elegant modern workspace'],
-  ['Infinity Pool Night Lights', 'infinity pool at night, glowing water, city lights, ultra luxury ambiance'],
-  ['Luxury Jewelry Safe', 'luxury jewelry safe open display, gold and diamonds, dramatic shadows, premium feel'],
-  ['Royal Palace Interior', 'royal palace interior, chandeliers, gold details, grand luxury architecture'],
+  ['Luxury Yoga Studio', 'luxury yoga studio, calm morning light, wood floors, soft neutral tones, peaceful wellness atmosphere'],
+  ['Meditation Room Serenity', 'serene meditation room, floor cushions, candles, natural textures, warm calming light'],
+  ['Spa Stones And Towels', 'spa stones and folded towels, soft steam, natural stone surface, premium wellness mood'],
+  ['Wellness Retreat Pool', 'wellness retreat pool, mountain view, calm water, sunrise light, peaceful luxury escape'],
+  ['Healthy Smoothie Bowl', 'healthy smoothie bowl, berries, seeds, fresh fruit, clean bright wellness styling'],
+  ['Pilates Studio Light', 'modern pilates studio, soft daylight, minimal equipment, calm luxury fitness space'],
+  ['Herbal Tea Ritual', 'herbal tea cup with fresh herbs, warm natural light, peaceful self-care moment'],
+  ['Zen Garden Path', 'zen garden path, raked sand, smooth stones, bamboo, tranquil natural atmosphere'],
+  ['Luxury Sauna Interior', 'luxury sauna interior, warm wood, soft steam, peaceful spa lighting'],
+  ['Calm Bedroom Wellness', 'calm wellness bedroom, linen bedding, morning light, plants, peaceful minimalist mood'],
 ].map(([name, description]) => ({
-  title: `${name} - Luxury Lifestyle Theme`,
-  prompt: `premium luxury lifestyle digital artwork, ${description}, ultra realistic, cinematic lighting, high-end editorial photography style, commercial wall art quality, rich detail, no readable text, no logos, no watermark, no people`,
+  title: `${name} - Health Wellness Theme`,
+  prompt: `premium health and wellness digital artwork, ${description}, ultra realistic, cinematic natural lighting, peaceful luxury lifestyle photography style, commercial wall art quality, rich detail, no readable text, no logos, no watermark, no people`,
 }))
 
 function safeFilePart(value: string) {
@@ -90,10 +90,11 @@ async function upsertArtwork(item: (typeof ITEMS)[number], imageUrl: string) {
   const tags = [
     THEME_TAG,
     'theme',
-    'luxury',
-    'lifestyle',
-    'premium',
-    'editorial',
+    'health',
+    'wellness',
+    'spa',
+    'fitness',
+    'mindfulness',
     'wall-art',
   ]
 
@@ -163,7 +164,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Luxury Lifestyle final batch complete',
+    message: 'Health Wellness batch 1 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
