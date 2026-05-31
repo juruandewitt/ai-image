@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Luxury Yoga Studio', 'luxury yoga studio, calm morning light, wood floors, soft neutral tones, peaceful wellness atmosphere'],
-  ['Meditation Room Serenity', 'serene meditation room, floor cushions, candles, natural textures, warm calming light'],
-  ['Spa Stones And Towels', 'spa stones and folded towels, soft steam, natural stone surface, premium wellness mood'],
-  ['Wellness Retreat Pool', 'wellness retreat pool, mountain view, calm water, sunrise light, peaceful luxury escape'],
-  ['Healthy Smoothie Bowl', 'healthy smoothie bowl, berries, seeds, fresh fruit, clean bright wellness styling'],
-  ['Pilates Studio Light', 'modern pilates studio, soft daylight, minimal equipment, calm luxury fitness space'],
-  ['Herbal Tea Ritual', 'herbal tea cup with fresh herbs, warm natural light, peaceful self-care moment'],
-  ['Zen Garden Path', 'zen garden path, raked sand, smooth stones, bamboo, tranquil natural atmosphere'],
-  ['Luxury Sauna Interior', 'luxury sauna interior, warm wood, soft steam, peaceful spa lighting'],
-  ['Calm Bedroom Wellness', 'calm wellness bedroom, linen bedding, morning light, plants, peaceful minimalist mood'],
+  ['Luxury Massage Room', 'luxury massage room, soft towels, warm candles, natural stone textures, peaceful spa atmosphere'],
+  ['Morning Wellness Kitchen', 'morning wellness kitchen, fresh fruit, herbal tea, natural light, calm healthy lifestyle mood'],
+  ['Calm Breathing Space', 'calm breathing space, floor cushions, soft curtains, warm sunlight, peaceful mindfulness setting'],
+  ['Spa Pool Sanctuary', 'spa pool sanctuary, warm water, soft steam, stone walls, luxury wellness retreat atmosphere'],
+  ['Herbal Apothecary Shelf', 'herbal apothecary shelf, glass jars, dried herbs, warm natural light, holistic wellness mood'],
+  ['Minimalist Fitness Room', 'minimalist fitness room, yoga mats, soft daylight, clean neutral tones, premium wellness space'],
+  ['Wellness Garden Patio', 'wellness garden patio, lounge chairs, plants, natural textures, peaceful outdoor retreat'],
+  ['Aromatherapy Candles', 'aromatherapy candles, essential oil bottles, soft glow, spa stones, relaxing self-care scene'],
+  ['Healthy Breakfast Tray', 'healthy breakfast tray, fruit, tea, oats, linen bedding, soft morning wellness light'],
+  ['Peaceful Bath Ritual', 'peaceful bath ritual, luxury bathtub, candles, flowers, soft steam, calm spa mood'],
 ].map(([name, description]) => ({
   title: `${name} - Health Wellness Theme`,
   prompt: `premium health and wellness digital artwork, ${description}, ultra realistic, cinematic natural lighting, peaceful luxury lifestyle photography style, commercial wall art quality, rich detail, no readable text, no logos, no watermark, no people`,
@@ -164,7 +164,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Health Wellness batch 1 complete',
+    message: 'Health Wellness batch 2 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
