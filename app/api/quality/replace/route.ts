@@ -5,25 +5,25 @@ import { prisma } from '@/lib/prisma'
 export const dynamic = 'force-dynamic'
 export const maxDuration = 300
 
-const THEME = 'health-wellness'
+const THEME = 'business-finance'
 const THEME_TAG = `theme:${THEME}`
 const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Luxury Wellness Lounge', 'luxury wellness lounge with soft lighting, neutral tones, plants, calm relaxing atmosphere'],
-  ['Oceanfront Meditation Deck', 'oceanfront meditation deck at sunrise, wooden platform, soft golden light, peaceful mood'],
-  ['Holistic Healing Room', 'holistic healing room with candles, crystals, natural textures, soft warm lighting'],
-  ['Wellness Spa Reception', 'luxury wellness spa reception area, marble desk, soft lighting, premium calm interior'],
-  ['Healthy Lifestyle Flatlay', 'healthy lifestyle flatlay with fruits, yoga mat, water bottle, clean wellness aesthetic'],
-  ['Natural Skincare Ritual', 'natural skincare ritual with oils, towels, plants, soft daylight, spa composition'],
-  ['Serene Forest Bathing', 'serene forest bathing scene, sunlight through trees, calm nature wellness experience'],
-  ['Luxury Detox Juice Setup', 'luxury detox juice setup with fresh ingredients, glass bottles, minimal clean styling'],
-  ['Peaceful Sunset Stretch', 'peaceful sunset stretching scene, silhouette, warm tones, calm wellness mood'],
-  ['Wellness Retreat Infinity Pool', 'wellness retreat infinity pool overlooking nature, soft light, tranquil luxury atmosphere'],
+  ['Luxury Office Skyline View', 'luxury office interior with floor to ceiling windows overlooking city skyline, modern executive workspace'],
+  ['Corporate Boardroom Meeting', 'corporate boardroom meeting table, glass walls, city view, high-end business environment'],
+  ['Stock Market Trading Setup', 'stock market trading desk with multiple monitors, charts, modern finance workspace'],
+  ['Executive Desk Workspace', 'executive desk workspace, leather chair, laptop, documents, minimal luxury office aesthetic'],
+  ['Financial Data Screens', 'financial data screens with charts and graphs, dark trading room, cinematic lighting'],
+  ['Startup Office Collaboration', 'modern startup office collaboration space, open plan desks, natural light, clean business design'],
+  ['Wealth Management Concept', 'wealth management concept with luxury desk, documents, calculator, premium finance aesthetic'],
+  ['Corporate Skyscraper Exterior', 'modern corporate skyscraper exterior, glass architecture, financial district, daylight'],
+  ['Business Laptop Flatlay', 'business laptop flatlay with notebook, coffee, smartphone, clean productivity setup'],
+  ['Global Finance Concept', 'global finance concept with world map, digital data overlays, modern financial technology style'],
 ].map(([name, description]) => ({
-  title: `${name} - Health Wellness Theme`,
-  prompt: `premium health and wellness digital artwork, ${description}, ultra realistic, cinematic natural lighting, peaceful luxury lifestyle photography style, commercial wall art quality, rich detail, no readable text, no logos, no watermark, no people`,
+  title: `${name} - Business Finance Theme`,
+  prompt: `premium business and finance digital artwork, ${description}, ultra realistic, cinematic lighting, corporate luxury aesthetic, professional photography style, commercial wall art quality, rich detail, no readable text, no logos, no watermark, no people`,
 }))
 
 function safeFilePart(value: string) {
@@ -90,11 +90,11 @@ async function upsertArtwork(item: (typeof ITEMS)[number], imageUrl: string) {
   const tags = [
     THEME_TAG,
     'theme',
-    'health',
-    'wellness',
-    'spa',
-    'fitness',
-    'mindfulness',
+    'business',
+    'finance',
+    'corporate',
+    'economy',
+    'professional',
     'wall-art',
   ]
 
@@ -164,7 +164,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Health Wellness final batch complete',
+    message: 'Business Finance batch 1 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
