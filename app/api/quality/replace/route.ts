@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Sunrise Yoga Terrace', 'sunrise yoga terrace overlooking ocean, soft golden light, minimal luxury wellness aesthetic, peaceful atmosphere'],
-  ['Luxury Hydrotherapy Pool', 'luxury hydrotherapy pool with steam and natural stone, calm spa atmosphere, cinematic lighting'],
-  ['Minimalist Meditation Corner', 'minimalist meditation corner with floor cushions, neutral tones, soft sunlight, peaceful wellness interior'],
-  ['Organic Skincare Still Life', 'organic skincare still life with glass bottles, natural textures, soft shadows, premium wellness aesthetic'],
-  ['Wellness Journaling Scene', 'calm wellness journaling scene, linen textures, tea cup, morning light, mindfulness concept'],
-  ['Herbal Bath Salts Ritual', 'herbal bath salts and flowers in ceramic bowl, spa composition, soft lighting, luxury wellness style'],
-  ['Fitness Recovery Room', 'modern fitness recovery room with foam rollers and stretch area, clean minimal design, natural lighting'],
-  ['Wellness Tea Garden', 'wellness tea garden with lush greenery and wooden table, tranquil atmosphere, cinematic depth'],
-  ['Soft Spa Bedroom', 'soft spa bedroom with neutral palette, linen bedding, diffused sunlight, calm luxury wellness interior'],
-  ['Zen Water Fountain', 'zen water fountain with stones and bamboo, peaceful garden setting, calm wellness atmosphere'],
+  ['Luxury Wellness Retreat', 'luxury wellness retreat lounge, mountain view, natural wood, soft morning light, peaceful atmosphere'],
+  ['Calm Spa Treatment Room', 'calm spa treatment room, massage table, candles, folded towels, warm natural lighting'],
+  ['Healthy Green Juice Bar', 'healthy green juice bar, fresh vegetables, glass bottles, clean modern wellness styling'],
+  ['Meditation Garden Sunrise', 'meditation garden at sunrise, smooth stones, bamboo, soft golden light, tranquil mood'],
+  ['Luxury Steam Room', 'luxury steam room, warm stone walls, soft mist, glowing ambient light, spa atmosphere'],
+  ['Mindful Reading Corner', 'mindful reading corner, linen chair, tea cup, plants, calm wellness interior'],
+  ['Wellness Retreat Bedroom', 'wellness retreat bedroom, neutral linen bedding, natural textures, soft daylight'],
+  ['Organic Herb Table', 'organic herb table, fresh herbs, ceramic bowls, natural wood, peaceful holistic wellness style'],
+  ['Spa Flower Bath', 'spa flower bath, floating petals, candles, marble tub, soft warm light, luxury self-care mood'],
+  ['Minimal Yoga Mat Scene', 'minimal yoga mat scene, natural floor, sunlight shadows, calm neutral wellness aesthetic'],
 ].map(([name, description]) => ({
   title: `${name} - Health Wellness Theme`,
   prompt: `premium health and wellness digital artwork, ${description}, ultra realistic, cinematic natural lighting, peaceful luxury lifestyle photography style, commercial wall art quality, rich detail, no readable text, no logos, no watermark, no people`,
@@ -164,7 +164,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Health Wellness batch 3 complete',
+    message: 'Health Wellness batch 4 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
