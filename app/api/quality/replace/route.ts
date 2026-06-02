@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Executive Financial Planning', 'executive financial planning desk, charts, tablet, documents, premium office lighting'],
-  ['Corporate Merger Concept', 'corporate merger concept, two modern office towers, glass reflections, cinematic business mood'],
-  ['Luxury Conference Room', 'luxury conference room with long table, leather chairs, city view, polished corporate interior'],
-  ['Digital Banking Screens', 'digital banking screens with abstract dashboards, clean fintech workspace, modern finance aesthetic'],
-  ['Investment Strategy Wall', 'investment strategy wall with charts and planning notes, premium business environment'],
-  ['Modern Finance Office', 'modern finance office, trading screens, clean desks, city skyline, professional atmosphere'],
-  ['Executive Briefcase Flatlay', 'executive briefcase flatlay, documents, pen, watch, laptop, premium business styling'],
-  ['Corporate Tower Lobby', 'corporate tower lobby, marble floor, glass walls, refined financial district atmosphere'],
-  ['Wealth Advisory Desk', 'wealth advisory desk, portfolio documents, calculator, tablet, soft luxury office light'],
-  ['Global Business Network', 'global business network concept, glowing world map, data lines, modern corporate technology'],
+  ['Executive Corner Office', 'executive corner office, skyline view, premium desk, leather chair, cinematic corporate lighting'],
+  ['Financial Report Desk', 'financial report desk, charts, calculator, pen, laptop, clean professional finance workspace'],
+  ['Luxury Stock Trading Room', 'luxury stock trading room, multiple screens, dark glass interior, financial market energy'],
+  ['Corporate Strategy Board', 'corporate strategy board with abstract charts, planning documents, modern business interior'],
+  ['Private Banking Suite', 'private banking suite, marble table, warm lighting, premium wealth management atmosphere'],
+  ['Modern Business Lounge', 'modern business lounge, elegant seating, city skyline, corporate luxury interior design'],
+  ['Fintech Server Room', 'fintech server room, glowing data systems, modern digital finance technology atmosphere'],
+  ['Executive Contract Signing', 'executive contract signing setup, pen, documents, polished desk, premium corporate mood'],
+  ['Global Markets Display', 'global markets display, abstract financial charts, world map, high-end trading environment'],
+  ['Luxury Corporate Elevator Lobby', 'luxury corporate elevator lobby, polished marble, glass walls, premium office tower mood'],
 ].map(([name, description]) => ({
   title: `${name} - Business Finance Theme`,
   prompt: `premium business and finance digital artwork, ${description}, ultra realistic, cinematic lighting, corporate luxury aesthetic, professional photography style, commercial wall art quality, rich detail, no readable text, no logos, no watermark, no people`,
@@ -164,7 +164,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Business Finance batch 3 complete',
+    message: 'Business Finance batch 4 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
