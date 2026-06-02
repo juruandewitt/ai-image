@@ -5,25 +5,25 @@ import { prisma } from '@/lib/prisma'
 export const dynamic = 'force-dynamic'
 export const maxDuration = 300
 
-const THEME = 'business-finance'
+const THEME = 'vintage-retro'
 const THEME_TAG = `theme:${THEME}`
 const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Luxury Investment Office', 'luxury investment office with city skyline, polished desk, financial documents, warm executive lighting'],
-  ['Corporate Finance Dashboard', 'corporate finance dashboard on large screens, clean charts, modern business intelligence atmosphere'],
-  ['Executive Wealth Desk', 'executive wealth desk, portfolio folders, gold pen, leather accessories, premium finance mood'],
-  ['Financial District Night', 'financial district at night, glowing glass towers, reflections, cinematic corporate skyline'],
-  ['Business Growth Concept', 'business growth concept with elegant charts, laptop, notebook, premium strategy workspace'],
-  ['Private Equity Boardroom', 'private equity boardroom, dark wood table, leather chairs, city lights, powerful corporate mood'],
-  ['Modern Bank Vault', 'modern bank vault interior, polished metal, secure luxury finance atmosphere, dramatic lighting'],
-  ['Global Trade Workspace', 'global trade workspace, world map screens, financial charts, modern international business setting'],
-  ['Corporate Legal Finance Desk', 'corporate legal finance desk, contracts, calculator, laptop, refined professional setup'],
-  ['Luxury Financial Headquarters', 'luxury financial headquarters exterior, glass architecture, dramatic sky, premium corporate identity'],
+  ['Retro Diner Interior', 'retro 1950s diner interior, chrome stools, red booths, neon glow, nostalgic cinematic atmosphere'],
+  ['Vintage Record Player', 'vintage record player on wooden table, warm lamp light, vinyl records, nostalgic music mood'],
+  ['Classic Film Camera', 'classic film camera close-up, leather texture, soft shadows, timeless photography aesthetic'],
+  ['Old Hollywood Theater', 'old Hollywood theater interior, velvet seats, golden lights, grand vintage cinema atmosphere'],
+  ['Retro Motel Sign', 'retro roadside motel sign at dusk, neon lighting, desert highway mood, nostalgic travel scene'],
+  ['Vintage Typewriter Desk', 'vintage typewriter on wooden desk, paper, coffee cup, warm writer studio light'],
+  ['Classic Car Tail Lights', 'classic car tail lights at night, chrome reflections, retro street atmosphere'],
+  ['Retro Arcade Corner', 'retro arcade corner, glowing machines, neon colors, nostalgic entertainment mood'],
+  ['Vintage Radio Still Life', 'vintage radio still life, wood grain, warm light, antique home atmosphere'],
+  ['Retro Kitchen Morning', 'retro kitchen morning scene, pastel appliances, checkered floor, soft sunlight'],
 ].map(([name, description]) => ({
-  title: `${name} - Business Finance Theme`,
-  prompt: `premium business and finance digital artwork, ${description}, ultra realistic, cinematic lighting, corporate luxury aesthetic, professional photography style, commercial wall art quality, rich detail, no readable text, no logos, no watermark, no people`,
+  title: `${name} - Vintage Retro Theme`,
+  prompt: `premium vintage and retro digital artwork, ${description}, ultra realistic, cinematic lighting, nostalgic aesthetic, professional photography style, commercial wall art quality, rich detail, no readable text, no logos, no watermark, no people`,
 }))
 
 function safeFilePart(value: string) {
@@ -90,11 +90,10 @@ async function upsertArtwork(item: (typeof ITEMS)[number], imageUrl: string) {
   const tags = [
     THEME_TAG,
     'theme',
-    'business',
-    'finance',
-    'corporate',
-    'economy',
-    'professional',
+    'vintage',
+    'retro',
+    'nostalgia',
+    'classic',
     'wall-art',
   ]
 
@@ -164,7 +163,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Business Finance final batch complete',
+    message: 'Vintage Retro batch 1 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
