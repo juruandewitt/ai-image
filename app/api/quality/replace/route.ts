@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Executive Boardroom Night', 'executive boardroom at night, city skyline view, polished table, dramatic corporate lighting'],
-  ['Financial District Skyline', 'financial district skyline, glass towers, evening lights, premium corporate atmosphere'],
-  ['Luxury Banking Interior', 'luxury banking interior, marble counters, warm lighting, elegant finance environment'],
-  ['Fintech Dashboard Concept', 'fintech dashboard concept, modern screens, data charts, sleek digital finance workspace'],
-  ['Stock Exchange Floor', 'stock exchange floor, trading screens, financial energy, cinematic corporate atmosphere'],
-  ['Business Strategy Desk', 'business strategy desk, documents, laptop, charts, notebook, premium executive workspace'],
-  ['Corporate Glass Atrium', 'corporate glass atrium, modern architecture, sunlight, polished business environment'],
-  ['Investment Portfolio Flatlay', 'investment portfolio flatlay, laptop, financial reports, pen, premium desk setup'],
-  ['Startup Pitch Room', 'startup pitch room, modern presentation space, projector screen, clean business interior'],
-  ['Modern Accounting Workspace', 'modern accounting workspace, calculator, laptop, spreadsheets, clean professional desk'],
+  ['Executive Financial Planning', 'executive financial planning desk, charts, tablet, documents, premium office lighting'],
+  ['Corporate Merger Concept', 'corporate merger concept, two modern office towers, glass reflections, cinematic business mood'],
+  ['Luxury Conference Room', 'luxury conference room with long table, leather chairs, city view, polished corporate interior'],
+  ['Digital Banking Screens', 'digital banking screens with abstract dashboards, clean fintech workspace, modern finance aesthetic'],
+  ['Investment Strategy Wall', 'investment strategy wall with charts and planning notes, premium business environment'],
+  ['Modern Finance Office', 'modern finance office, trading screens, clean desks, city skyline, professional atmosphere'],
+  ['Executive Briefcase Flatlay', 'executive briefcase flatlay, documents, pen, watch, laptop, premium business styling'],
+  ['Corporate Tower Lobby', 'corporate tower lobby, marble floor, glass walls, refined financial district atmosphere'],
+  ['Wealth Advisory Desk', 'wealth advisory desk, portfolio documents, calculator, tablet, soft luxury office light'],
+  ['Global Business Network', 'global business network concept, glowing world map, data lines, modern corporate technology'],
 ].map(([name, description]) => ({
   title: `${name} - Business Finance Theme`,
   prompt: `premium business and finance digital artwork, ${description}, ultra realistic, cinematic lighting, corporate luxury aesthetic, professional photography style, commercial wall art quality, rich detail, no readable text, no logos, no watermark, no people`,
@@ -164,7 +164,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Business Finance batch 2 complete',
+    message: 'Business Finance batch 3 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
