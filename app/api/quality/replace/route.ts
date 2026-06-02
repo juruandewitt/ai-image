@@ -1,74 +1,172 @@
-import { NextResponse } from "next/server";
-import OpenAI from "openai";
-import { put } from "@vercel/blob";
+import { NextResponse } from 'next/server'
+import { put } from '@vercel/blob'
+import { prisma } from '@/lib/prisma'
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY!,
-});
+export const dynamic = 'force-dynamic'
+export const maxDuration = 300
+
+const THEME = 'business-finance'
+const THEME_TAG = `theme:${THEME}`
+const ARTIST = 'AI Image'
+const STYLE = 'POLLOCK'
+
+const ITEMS = [
+  ['Executive Boardroom Night', 'executive boardroom at night, city skyline view, polished table, dramatic corporate lighting'],
+  ['Financial District Skyline', 'financial district skyline, glass towers, evening lights, premium corporate atmosphere'],
+  ['Luxury Banking Interior', 'luxury banking interior, marble counters, warm lighting, elegant finance environment'],
+  ['Fintech Dashboard Concept', 'fintech dashboard concept, modern screens, data charts, sleek digital finance workspace'],
+  ['Stock Exchange Floor', 'stock exchange floor, trading screens, financial energy, cinematic corporate atmosphere'],
+  ['Business Strategy Desk', 'business strategy desk, documents, laptop, charts, notebook, premium executive workspace'],
+  ['Corporate Glass Atrium', 'corporate glass atrium, modern architecture, sunlight, polished business environment'],
+  ['Investment Portfolio Flatlay', 'investment portfolio flatlay, laptop, financial reports, pen, premium desk setup'],
+  ['Startup Pitch Room', 'startup pitch room, modern presentation space, projector screen, clean business interior'],
+  ['Modern Accounting Workspace', 'modern accounting workspace, calculator, laptop, spreadsheets, clean professional desk'],
+].map(([name, description]) => ({
+  title: `${name} - Business Finance Theme`,
+  prompt: `premium business and finance digital artwork, ${description}, ultra realistic, cinematic lighting, corporate luxury aesthetic, professional photography style, commercial wall art quality, rich detail, no readable text, no logos, no watermark, no people`,
+}))
+
+function safeFilePart(value: string) {
+  return value
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 90)
+}
+
+async function generateOpenAiImageBuffer(prompt: string) {
+  const apiKey = process.env.OPENAI_API_KEY
+  if (!apiKey) throw new Error('Missing OPENAI_API_KEY')
+
+  const response = await fetch('https://api.openai.com/v1/images/generations', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify({
+      model: 'gpt-image-1',
+      prompt,
+      size: '1024x1024',
+      quality: 'medium',
+      n: 1,
+    }),
+    cache: 'no-store',
+  })
+
+  if (!response.ok) {
+    const text = await response.text()
+    throw new Error(`OpenAI image generation failed (${response.status}): ${text}`)
+  }
+
+  const data = await response.json()
+  const base64 = data?.data?.[0]?.b64_json
+
+  if (!base64 || typeof base64 !== 'string') {
+    throw new Error('No base64 image returned from OpenAI')
+  }
+
+  return Buffer.from(base64, 'base64')
+}
+
+async function uploadGeneratedImageToBlob(imageBuffer: Buffer, title: string) {
+  const blob = await put(
+    `artworks/themes/${THEME}/${safeFilePart(title)}.png`,
+    imageBuffer,
+    {
+      access: 'public',
+      addRandomSuffix: true,
+      contentType: 'image/png',
+    }
+  )
+
+  if (!blob.url) throw new Error('Blob upload failed')
+  return blob.url
+}
+
+async function upsertArtwork(item: (typeof ITEMS)[number], imageUrl: string) {
+  const tags = [
+    THEME_TAG,
+    'theme',
+    'business',
+    'finance',
+    'corporate',
+    'economy',
+    'professional',
+    'wall-art',
+  ]
+
+  const existing = await prisma.artwork.findFirst({
+    where: { title: item.title },
+    select: { id: true },
+  })
+
+  const artwork = existing
+    ? await prisma.artwork.update({
+        where: { id: existing.id },
+        data: {
+          artist: ARTIST,
+          thumbnail: imageUrl,
+          tags,
+          status: 'PUBLISHED' as any,
+        },
+        select: { id: true },
+      })
+    : await prisma.artwork.create({
+        data: {
+          title: item.title,
+          style: STYLE as any,
+          artist: ARTIST,
+          thumbnail: imageUrl,
+          tags,
+          status: 'PUBLISHED' as any,
+          price: 9.99,
+        },
+        select: { id: true },
+      })
+
+  await prisma.asset.create({
+    data: {
+      artworkId: artwork.id,
+      originalUrl: imageUrl,
+      provider: 'openai-gpt-image-1',
+      prompt: item.prompt,
+    },
+  })
+
+  return artwork.id
+}
 
 export async function GET() {
-  const theme = "business-finance";
+  const results = []
 
-  const items = [
-    "Executive Boardroom Night - Business Finance Theme",
-    "Financial District Skyline - Business Finance Theme",
-    "Luxury Banking Interior - Business Finance Theme",
-    "Fintech Dashboard Concept - Business Finance Theme",
-    "Stock Exchange Floor - Business Finance Theme",
-    "Business Strategy Desk - Business Finance Theme",
-    "Corporate Glass Atrium - Business Finance Theme",
-    "Investment Portfolio Flatlay - Business Finance Theme",
-    "Startup Pitch Room - Business Finance Theme",
-    "Modern Accounting Workspace - Business Finance Theme",
-  ];
-
-  const results = [];
-
-  for (const title of items) {
+  for (const item of ITEMS) {
     try {
-      const image = await openai.images.generate({
-        model: "gpt-image-1",
-        prompt: title,
-        size: "1024x1024",
-      });
-
-      const base64 = image.data?.[0]?.b64_json;
-
-      if (!base64) {
-        throw new Error("No image returned");
-      }
-
-      const buffer = Buffer.from(base64, "base64");
-
-      const fileName = `${title
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "-")}.png`;
-
-      const blob = await put(
-        `artworks/themes/${theme}/${fileName}`,
-        buffer,
-        {
-          access: "public",
-        }
-      );
+      const imageBuffer = await generateOpenAiImageBuffer(item.prompt)
+      const blobUrl = await uploadGeneratedImageToBlob(imageBuffer, item.title)
+      const artworkId = await upsertArtwork(item, blobUrl)
 
       results.push({
-        title,
+        title: item.title,
         success: true,
-        imageUrl: blob.url,
-      });
-    } catch (error) {
+        artworkId,
+        imageUrl: blobUrl,
+      })
+    } catch (err) {
       results.push({
-        title,
+        title: item.title,
         success: false,
-      });
+        error: err instanceof Error ? err.message : 'Unknown error',
+      })
     }
   }
 
   return NextResponse.json({
-    message: "Business Finance batch 2 complete",
-    theme,
-    count: results.length,
+    message: 'Business Finance batch 2 complete',
+    theme: THEME,
+    count: ITEMS.length,
     results,
-  });
+  })
 }
