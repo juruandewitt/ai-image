@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Retro Neon Sign Alley', 'retro neon sign alley at night, glowing signage, wet pavement reflections, nostalgic urban mood'],
-  ['Vintage Travel Posters Wall', 'wall of vintage travel posters, warm tones, nostalgic design aesthetic, curated gallery style'],
-  ['Classic Bicycle Street Scene', 'classic bicycle parked on cobblestone street, warm sunset light, nostalgic European vibe'],
-  ['Retro Office Workspace', 'retro office workspace, typewriter, papers, warm desk lamp, vintage productivity atmosphere'],
-  ['Vintage Perfume Vanity', 'vintage perfume bottles on vanity table, mirror reflections, soft lighting, elegant nostalgic mood'],
-  ['Old Cinema Projection Room', 'old cinema projection room, film reels, warm projector light beams, nostalgic film atmosphere'],
-  ['Retro Gas Pump Close Up', 'retro gas pump close-up, chrome details, faded colors, nostalgic roadside aesthetic'],
-  ['Vintage Train Luggage Cart', 'vintage train luggage cart with leather bags, station lighting, nostalgic travel scene'],
-  ['Classic Café Window Scene', 'classic café window scene, warm interior lights, street reflections, nostalgic European charm'],
-  ['Retro Fashion Boutique', 'retro fashion boutique interior, mannequins, vintage clothing textures, warm nostalgic lighting'],
+  ['Vintage Street Market', 'vintage street market scene, stalls, warm lighting, nostalgic old town atmosphere'],
+  ['Retro Cinema Ticket Booth', 'retro cinema ticket booth, glowing lights, classic signage style, nostalgic movie night vibe'],
+  ['Vintage Train Window View', 'view from vintage train window, countryside passing by, warm golden light, nostalgic travel mood'],
+  ['Classic Writing Desk Scene', 'classic writing desk, fountain pen, paper, warm lamp light, timeless vintage workspace'],
+  ['Retro Coffee Shop Interior', 'retro coffee shop interior, wooden tables, warm lighting, nostalgic social atmosphere'],
+  ['Vintage Bicycle Shop', 'vintage bicycle shop interior, classic bikes, warm tones, nostalgic craftsmanship feel'],
+  ['Old Post Office Interior', 'old post office interior, wooden counters, vintage mail slots, nostalgic civic space'],
+  ['Retro Bedroom Scene', 'retro bedroom scene, soft pastel tones, vintage furniture, calm nostalgic atmosphere'],
+  ['Vintage Street Lamp Night', 'vintage street lamp at night, foggy street, warm glow, cinematic nostalgic mood'],
+  ['Classic Harbor Dock', 'classic harbor dock with wooden boats, warm sunset light, nostalgic coastal atmosphere'],
 ].map(([name, description]) => ({
   title: `${name} - Vintage Retro Theme`,
   prompt: `premium vintage and retro digital artwork, ${description}, ultra realistic, cinematic lighting, nostalgic aesthetic, professional photography style, commercial wall art quality, rich detail, no readable text, no logos, no watermark, no people`,
@@ -163,7 +163,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Vintage Retro batch 4 complete',
+    message: 'Vintage Retro final batch complete',
     theme: THEME,
     count: ITEMS.length,
     results,
