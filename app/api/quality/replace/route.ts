@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Retro Diner Interior', 'retro 1950s diner interior, chrome stools, red booths, neon glow, nostalgic cinematic atmosphere'],
-  ['Vintage Record Player', 'vintage record player on wooden table, warm lamp light, vinyl records, nostalgic music mood'],
-  ['Classic Film Camera', 'classic film camera close-up, leather texture, soft shadows, timeless photography aesthetic'],
-  ['Old Hollywood Theater', 'old Hollywood theater interior, velvet seats, golden lights, grand vintage cinema atmosphere'],
-  ['Retro Motel Sign', 'retro roadside motel sign at dusk, neon lighting, desert highway mood, nostalgic travel scene'],
-  ['Vintage Typewriter Desk', 'vintage typewriter on wooden desk, paper, coffee cup, warm writer studio light'],
-  ['Classic Car Tail Lights', 'classic car tail lights at night, chrome reflections, retro street atmosphere'],
-  ['Retro Arcade Corner', 'retro arcade corner, glowing machines, neon colors, nostalgic entertainment mood'],
-  ['Vintage Radio Still Life', 'vintage radio still life, wood grain, warm light, antique home atmosphere'],
-  ['Retro Kitchen Morning', 'retro kitchen morning scene, pastel appliances, checkered floor, soft sunlight'],
+  ['Vintage Gas Station', 'vintage gas station at dusk, old fuel pumps, warm neon glow, roadside nostalgia atmosphere'],
+  ['Retro Television Set', 'retro television set on wooden cabinet, soft lamp light, nostalgic living room mood'],
+  ['Classic Vinyl Store', 'classic vinyl record store interior, album shelves, warm lighting, retro music atmosphere'],
+  ['Vintage Suitcase Stack', 'vintage suitcase stack, leather textures, travel stickers, warm nostalgic studio light'],
+  ['Retro Beach Postcard Scene', 'retro beach postcard style scene, striped umbrellas, pastel tones, nostalgic summer mood'],
+  ['Old Train Station Clock', 'old train station clock, vintage platform, warm lights, timeless travel atmosphere'],
+  ['Classic Barber Shop', 'classic barber shop interior, leather chair, mirrors, warm retro lighting'],
+  ['Vintage Telephone Close Up', 'vintage rotary telephone close-up, dark wood table, soft shadows, nostalgic home mood'],
+  ['Retro Roller Skate Rink', 'retro roller skate rink, colorful lights, polished floor, nostalgic entertainment atmosphere'],
+  ['Old Bookshop Window', 'old bookshop window, vintage books, warm lamps, rainy street reflections, nostalgic charm'],
 ].map(([name, description]) => ({
   title: `${name} - Vintage Retro Theme`,
   prompt: `premium vintage and retro digital artwork, ${description}, ultra realistic, cinematic lighting, nostalgic aesthetic, professional photography style, commercial wall art quality, rich detail, no readable text, no logos, no watermark, no people`,
@@ -163,7 +163,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Vintage Retro batch 1 complete',
+    message: 'Vintage Retro batch 2 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
