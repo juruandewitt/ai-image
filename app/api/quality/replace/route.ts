@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Vintage Jazz Club', 'vintage jazz club interior, smoky atmosphere, warm amber lights, velvet booths, nostalgic nightlife mood'],
-  ['Retro Drive In Theater', 'retro drive-in theater at night, classic cars, glowing screen, nostalgic outdoor cinema atmosphere'],
-  ['Antique Desk Lamp', 'antique desk lamp on wooden writing table, warm light, old papers, timeless vintage mood'],
-  ['Classic Train Interior', 'classic train interior, leather seats, brass details, warm window light, nostalgic travel style'],
-  ['Vintage Camera Shop', 'vintage camera shop shelves, old lenses, film cameras, warm nostalgic photography atmosphere'],
-  ['Retro Cocktail Bar', 'retro cocktail bar, polished wood counter, glassware, neon glow, sophisticated vintage nightlife'],
-  ['Old Library Reading Room', 'old library reading room, leather chairs, wooden shelves, warm lamps, timeless quiet mood'],
-  ['Vintage Sewing Machine', 'vintage sewing machine on wooden table, fabric textures, soft sunlight, nostalgic craft scene'],
-  ['Retro Supermarket Aisle', 'retro supermarket aisle, pastel packaging shapes, tiled floor, nostalgic consumer design mood'],
-  ['Classic Train Platform', 'classic train platform at dusk, warm station lights, luggage, nostalgic travel atmosphere'],
+  ['Retro Neon Sign Alley', 'retro neon sign alley at night, glowing signage, wet pavement reflections, nostalgic urban mood'],
+  ['Vintage Travel Posters Wall', 'wall of vintage travel posters, warm tones, nostalgic design aesthetic, curated gallery style'],
+  ['Classic Bicycle Street Scene', 'classic bicycle parked on cobblestone street, warm sunset light, nostalgic European vibe'],
+  ['Retro Office Workspace', 'retro office workspace, typewriter, papers, warm desk lamp, vintage productivity atmosphere'],
+  ['Vintage Perfume Vanity', 'vintage perfume bottles on vanity table, mirror reflections, soft lighting, elegant nostalgic mood'],
+  ['Old Cinema Projection Room', 'old cinema projection room, film reels, warm projector light beams, nostalgic film atmosphere'],
+  ['Retro Gas Pump Close Up', 'retro gas pump close-up, chrome details, faded colors, nostalgic roadside aesthetic'],
+  ['Vintage Train Luggage Cart', 'vintage train luggage cart with leather bags, station lighting, nostalgic travel scene'],
+  ['Classic Café Window Scene', 'classic café window scene, warm interior lights, street reflections, nostalgic European charm'],
+  ['Retro Fashion Boutique', 'retro fashion boutique interior, mannequins, vintage clothing textures, warm nostalgic lighting'],
 ].map(([name, description]) => ({
   title: `${name} - Vintage Retro Theme`,
   prompt: `premium vintage and retro digital artwork, ${description}, ultra realistic, cinematic lighting, nostalgic aesthetic, professional photography style, commercial wall art quality, rich detail, no readable text, no logos, no watermark, no people`,
@@ -163,7 +163,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Vintage Retro batch 3 complete',
+    message: 'Vintage Retro batch 4 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
