@@ -5,25 +5,25 @@ import { prisma } from '@/lib/prisma'
 export const dynamic = 'force-dynamic'
 export const maxDuration = 300
 
-const THEME = 'vintage-retro'
+const THEME = 'animals-pets'
 const THEME_TAG = `theme:${THEME}`
 const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Vintage Street Market', 'vintage street market scene, stalls, warm lighting, nostalgic old town atmosphere'],
-  ['Retro Cinema Ticket Booth', 'retro cinema ticket booth, glowing lights, classic signage style, nostalgic movie night vibe'],
-  ['Vintage Train Window View', 'view from vintage train window, countryside passing by, warm golden light, nostalgic travel mood'],
-  ['Classic Writing Desk Scene', 'classic writing desk, fountain pen, paper, warm lamp light, timeless vintage workspace'],
-  ['Retro Coffee Shop Interior', 'retro coffee shop interior, wooden tables, warm lighting, nostalgic social atmosphere'],
-  ['Vintage Bicycle Shop', 'vintage bicycle shop interior, classic bikes, warm tones, nostalgic craftsmanship feel'],
-  ['Old Post Office Interior', 'old post office interior, wooden counters, vintage mail slots, nostalgic civic space'],
-  ['Retro Bedroom Scene', 'retro bedroom scene, soft pastel tones, vintage furniture, calm nostalgic atmosphere'],
-  ['Vintage Street Lamp Night', 'vintage street lamp at night, foggy street, warm glow, cinematic nostalgic mood'],
-  ['Classic Harbor Dock', 'classic harbor dock with wooden boats, warm sunset light, nostalgic coastal atmosphere'],
+  ['Golden Retriever Portrait', 'golden retriever portrait, soft studio lighting, expressive eyes, warm premium pet photography mood'],
+  ['Elegant Persian Cat', 'elegant Persian cat on velvet chair, soft shadows, luxury pet portrait atmosphere'],
+  ['Playful Puppy Garden', 'playful puppy in garden, soft sunlight, flowers, joyful animal photography style'],
+  ['Majestic Maine Coon', 'majestic Maine Coon cat, dramatic fur detail, dark background, elegant pet portrait'],
+  ['French Bulldog Studio', 'French bulldog studio portrait, neutral backdrop, soft light, charming modern pet photography'],
+  ['Tabby Cat Window Light', 'tabby cat sitting by window, warm sunlight, cozy home mood, detailed fur texture'],
+  ['Luxury Pet Bed Scene', 'luxury pet bed scene, small dog resting, soft blankets, calm premium interior atmosphere'],
+  ['Black Labrador Water Splash', 'black Labrador running through water splash, action pet photography, bright outdoor light'],
+  ['Siamese Cat Close Up', 'Siamese cat close-up, blue eyes, soft studio lighting, elegant feline portrait'],
+  ['Corgi Happy Meadow', 'happy corgi in green meadow, golden light, playful expression, cheerful pet wall art mood'],
 ].map(([name, description]) => ({
-  title: `${name} - Vintage Retro Theme`,
-  prompt: `premium vintage and retro digital artwork, ${description}, ultra realistic, cinematic lighting, nostalgic aesthetic, professional photography style, commercial wall art quality, rich detail, no readable text, no logos, no watermark, no people`,
+  title: `${name} - Animals Pets Theme`,
+  prompt: `premium animals and pets digital artwork, ${description}, ultra realistic, cinematic lighting, professional pet photography style, commercial wall art quality, rich detail, no readable text, no logos, no watermark, no people`,
 }))
 
 function safeFilePart(value: string) {
@@ -90,10 +90,10 @@ async function upsertArtwork(item: (typeof ITEMS)[number], imageUrl: string) {
   const tags = [
     THEME_TAG,
     'theme',
-    'vintage',
-    'retro',
-    'nostalgia',
-    'classic',
+    'animals',
+    'pets',
+    'dogs',
+    'cats',
     'wall-art',
   ]
 
@@ -163,7 +163,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Vintage Retro final batch complete',
+    message: 'Animals Pets batch 1 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
