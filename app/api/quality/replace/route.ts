@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Golden Retriever Portrait', 'golden retriever portrait, soft studio lighting, expressive eyes, warm premium pet photography mood'],
-  ['Elegant Persian Cat', 'elegant Persian cat on velvet chair, soft shadows, luxury pet portrait atmosphere'],
-  ['Playful Puppy Garden', 'playful puppy in garden, soft sunlight, flowers, joyful animal photography style'],
-  ['Majestic Maine Coon', 'majestic Maine Coon cat, dramatic fur detail, dark background, elegant pet portrait'],
-  ['French Bulldog Studio', 'French bulldog studio portrait, neutral backdrop, soft light, charming modern pet photography'],
-  ['Tabby Cat Window Light', 'tabby cat sitting by window, warm sunlight, cozy home mood, detailed fur texture'],
-  ['Luxury Pet Bed Scene', 'luxury pet bed scene, small dog resting, soft blankets, calm premium interior atmosphere'],
-  ['Black Labrador Water Splash', 'black Labrador running through water splash, action pet photography, bright outdoor light'],
-  ['Siamese Cat Close Up', 'Siamese cat close-up, blue eyes, soft studio lighting, elegant feline portrait'],
-  ['Corgi Happy Meadow', 'happy corgi in green meadow, golden light, playful expression, cheerful pet wall art mood'],
+  ['Beagle Cozy Blanket', 'beagle resting on cozy blanket, warm home light, soft fur detail, peaceful pet portrait mood'],
+  ['Ragdoll Cat Portrait', 'ragdoll cat portrait, blue eyes, fluffy fur, soft studio lighting, elegant feline photography'],
+  ['Dachshund Garden Path', 'dachshund walking on garden path, flowers, golden sunlight, cheerful pet photography'],
+  ['British Shorthair Chair', 'British shorthair cat on elegant chair, soft shadows, luxury pet portrait atmosphere'],
+  ['Husky Snow Portrait', 'Siberian husky in snowy landscape, bright blue eyes, crisp winter light, majestic pet portrait'],
+  ['Poodle Studio Portrait', 'poodle studio portrait, soft curls, neutral background, premium pet photography style'],
+  ['Bengal Cat Close Up', 'Bengal cat close-up, spotted coat detail, dramatic lighting, elegant feline portrait'],
+  ['Puppy Basket Scene', 'small puppy in woven basket, soft blankets, warm daylight, charming cozy pet scene'],
+  ['Orange Cat Sunbeam', 'orange cat lying in sunbeam, cozy home interior, warm light, peaceful animal mood'],
+  ['Border Collie Field Run', 'border collie running through field, motion, golden grass, energetic pet action photography'],
 ].map(([name, description]) => ({
   title: `${name} - Animals Pets Theme`,
   prompt: `premium animals and pets digital artwork, ${description}, ultra realistic, cinematic lighting, professional pet photography style, commercial wall art quality, rich detail, no readable text, no logos, no watermark, no people`,
@@ -163,7 +163,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Animals Pets batch 1 complete',
+    message: 'Animals Pets batch 2 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
