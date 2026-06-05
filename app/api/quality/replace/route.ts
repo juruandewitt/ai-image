@@ -5,25 +5,25 @@ import { prisma } from '@/lib/prisma'
 export const dynamic = 'force-dynamic'
 export const maxDuration = 300
 
-const THEME = 'animals-pets'
+const THEME = 'kids-nursery'
 const THEME_TAG = `theme:${THEME}`
 const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Luxury Cat Portrait Chair', 'luxury cat portrait on elegant chair, soft studio lighting, refined feline photography atmosphere'],
-  ['Golden Retriever Beach', 'golden retriever on beach at sunset, ocean breeze, warm light, joyful premium pet portrait'],
-  ['Sleepy Kitten Close Up', 'sleepy kitten close-up, soft blanket, warm daylight, peaceful cozy pet photography'],
-  ['Elegant Whippet Portrait', 'elegant whippet portrait, sleek form, neutral background, refined dog photography style'],
-  ['Fluffy Cat Sofa Scene', 'fluffy cat resting on luxury sofa, soft cushions, warm home lighting, cozy elegant atmosphere'],
-  ['Puppy Flower Meadow', 'puppy in flower meadow, golden sunlight, playful expression, cheerful premium pet wall art'],
-  ['Black Labrador Portrait', 'black Labrador portrait, glossy coat, soft studio lighting, loyal expressive eyes'],
-  ['Scottish Fold Window Light', 'Scottish Fold cat by window, soft daylight, cozy interior, elegant feline portrait'],
-  ['Luxury Pet Bowl Setup', 'luxury pet bowl setup, marble floor, premium home interior, soft natural light'],
-  ['Happy Dog Forest Path', 'happy dog on forest path, warm sunlight through trees, joyful outdoor pet photography'],
+  ['Soft Nursery Clouds', 'soft nursery room with cloud wall art, pastel tones, gentle daylight, peaceful baby room atmosphere'],
+  ['Woodland Animal Nursery', 'woodland animal nursery, soft forest theme, cute animal decor, warm cozy child room mood'],
+  ['Pastel Rainbow Room', 'pastel rainbow nursery room, soft rugs, wooden toys, calm cheerful interior design'],
+  ['Moon And Stars Nursery', 'moon and stars nursery, gentle night sky decor, soft blue tones, dreamy peaceful atmosphere'],
+  ['Safari Baby Room', 'safari baby room, cute animal wall art, warm neutral tones, soft natural light'],
+  ['Minimal Kids Playroom', 'minimal kids playroom, wooden toys, pastel storage, soft daylight, clean calm design'],
+  ['Teddy Bear Nursery', 'teddy bear nursery, cozy crib, soft blankets, warm light, gentle baby room atmosphere'],
+  ['Floral Baby Room', 'floral baby room, soft pink and cream palette, delicate wall decor, peaceful nursery mood'],
+  ['Scandinavian Nursery Corner', 'Scandinavian nursery corner, neutral tones, wooden crib, soft textures, minimalist baby room'],
+  ['Whimsical Storybook Room', 'whimsical storybook kids room, cozy reading nook, soft magical decor, gentle warm lighting'],
 ].map(([name, description]) => ({
-  title: `${name} - Animals Pets Theme`,
-  prompt: `premium animals and pets digital artwork, ${description}, ultra realistic, cinematic lighting, professional pet photography style, commercial wall art quality, rich detail, no readable text, no logos, no watermark, no people`,
+  title: `${name} - Kids Nursery Theme`,
+  prompt: `premium kids and nursery digital artwork, ${description}, ultra realistic, cinematic soft lighting, high-end interior photography style, commercial wall art quality, rich detail, child-friendly, no readable text, no logos, no watermark, no people`,
 }))
 
 function safeFilePart(value: string) {
@@ -90,10 +90,10 @@ async function upsertArtwork(item: (typeof ITEMS)[number], imageUrl: string) {
   const tags = [
     THEME_TAG,
     'theme',
-    'animals',
-    'pets',
-    'dogs',
-    'cats',
+    'kids',
+    'nursery',
+    'children',
+    'baby-room',
     'wall-art',
   ]
 
@@ -163,7 +163,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Animals Pets final batch complete',
+    message: 'Kids Nursery batch 1 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
