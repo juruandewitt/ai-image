@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Luxury Dog Portrait Chair', 'luxury dog portrait on elegant chair, soft studio lighting, refined pet photography atmosphere'],
-  ['Calico Cat Garden', 'calico cat in garden flowers, soft natural light, detailed fur texture, charming feline portrait'],
-  ['Labrador Golden Hour', 'Labrador sitting in golden hour field, warm sunlight, loyal expression, premium dog portrait'],
-  ['Kitten Window Basket', 'kitten in basket by window, cozy blankets, soft daylight, peaceful pet photography mood'],
-  ['Cavalier King Charles Portrait', 'Cavalier King Charles spaniel portrait, silky ears, soft background, elegant pet photography'],
-  ['Black Cat Moonlight', 'black cat sitting in moonlight, dramatic shadows, glowing eyes, elegant mysterious pet portrait'],
-  ['Pomeranian Fluffy Studio', 'fluffy Pomeranian studio portrait, soft fur, neutral backdrop, charming premium pet mood'],
-  ['Tabby Cat Bookshelf', 'tabby cat resting on bookshelf, warm home lighting, cozy intellectual atmosphere'],
-  ['Puppy Rain Boots Scene', 'puppy beside rain boots, soft hallway light, charming cozy home pet scene'],
-  ['Great Dane Elegant Portrait', 'Great Dane elegant portrait, strong posture, dramatic studio lighting, premium dog photography'],
+  ['Luxury Cat Portrait Chair', 'luxury cat portrait on elegant chair, soft studio lighting, refined feline photography atmosphere'],
+  ['Golden Retriever Beach', 'golden retriever on beach at sunset, ocean breeze, warm light, joyful premium pet portrait'],
+  ['Sleepy Kitten Close Up', 'sleepy kitten close-up, soft blanket, warm daylight, peaceful cozy pet photography'],
+  ['Elegant Whippet Portrait', 'elegant whippet portrait, sleek form, neutral background, refined dog photography style'],
+  ['Fluffy Cat Sofa Scene', 'fluffy cat resting on luxury sofa, soft cushions, warm home lighting, cozy elegant atmosphere'],
+  ['Puppy Flower Meadow', 'puppy in flower meadow, golden sunlight, playful expression, cheerful premium pet wall art'],
+  ['Black Labrador Portrait', 'black Labrador portrait, glossy coat, soft studio lighting, loyal expressive eyes'],
+  ['Scottish Fold Window Light', 'Scottish Fold cat by window, soft daylight, cozy interior, elegant feline portrait'],
+  ['Luxury Pet Bowl Setup', 'luxury pet bowl setup, marble floor, premium home interior, soft natural light'],
+  ['Happy Dog Forest Path', 'happy dog on forest path, warm sunlight through trees, joyful outdoor pet photography'],
 ].map(([name, description]) => ({
   title: `${name} - Animals Pets Theme`,
   prompt: `premium animals and pets digital artwork, ${description}, ultra realistic, cinematic lighting, professional pet photography style, commercial wall art quality, rich detail, no readable text, no logos, no watermark, no people`,
@@ -163,7 +163,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Animals Pets batch 4 complete',
+    message: 'Animals Pets final batch complete',
     theme: THEME,
     count: ITEMS.length,
     results,
