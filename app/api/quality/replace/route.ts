@@ -11,19 +11,19 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Soft Nursery Clouds', 'soft nursery room with cloud wall art, pastel tones, gentle daylight, peaceful baby room atmosphere'],
-  ['Woodland Animal Nursery', 'woodland animal nursery, soft forest theme, cute animal decor, warm cozy child room mood'],
-  ['Pastel Rainbow Room', 'pastel rainbow nursery room, soft rugs, wooden toys, calm cheerful interior design'],
-  ['Moon And Stars Nursery', 'moon and stars nursery, gentle night sky decor, soft blue tones, dreamy peaceful atmosphere'],
-  ['Safari Baby Room', 'safari baby room, cute animal wall art, warm neutral tones, soft natural light'],
-  ['Minimal Kids Playroom', 'minimal kids playroom, wooden toys, pastel storage, soft daylight, clean calm design'],
-  ['Teddy Bear Nursery', 'teddy bear nursery, cozy crib, soft blankets, warm light, gentle baby room atmosphere'],
-  ['Floral Baby Room', 'floral baby room, soft pink and cream palette, delicate wall decor, peaceful nursery mood'],
-  ['Scandinavian Nursery Corner', 'Scandinavian nursery corner, neutral tones, wooden crib, soft textures, minimalist baby room'],
-  ['Whimsical Storybook Room', 'whimsical storybook kids room, cozy reading nook, soft magical decor, gentle warm lighting'],
+  ['Pastel Balloon Nursery', 'pastel balloon themed nursery, soft colors, cozy crib, cheerful child-friendly interior'],
+  ['Woodland Fox Room', 'woodland fox themed nursery, forest decor, warm wood accents, cozy reading corner'],
+  ['Cloud Reading Nook', 'cloud themed reading nook for children, soft cushions, gentle daylight, dreamy atmosphere'],
+  ['Rainbow Play Corner', 'rainbow play corner, pastel toys, bright cheerful nursery design, soft textures'],
+  ['Baby Elephant Nursery', 'baby elephant nursery decor, neutral palette, cute wall art, peaceful room atmosphere'],
+  ['Starry Night Kids Room', 'starry night themed kids room, glowing decor, soft blue tones, magical bedtime mood'],
+  ['Bunny Nursery Scene', 'bunny themed nursery, cozy blankets, pastel colors, charming baby room design'],
+  ['Adventure Explorer Room', 'kids explorer themed room, maps, soft adventure decor, warm family atmosphere'],
+  ['Hot Air Balloon Nursery', 'hot air balloon nursery decor, soft clouds, gentle pastel palette, whimsical child room'],
+  ['Scandinavian Toy Corner', 'Scandinavian toy corner, wooden toys, minimalist nursery styling, soft natural light'],
 ].map(([name, description]) => ({
   title: `${name} - Kids Nursery Theme`,
-  prompt: `premium kids and nursery digital artwork, ${description}, ultra realistic, cinematic soft lighting, high-end interior photography style, commercial wall art quality, rich detail, child-friendly, no readable text, no logos, no watermark, no people`,
+  prompt: `premium kids and nursery digital artwork, ${description}, ultra realistic, cinematic soft lighting, luxury nursery interior photography, commercial wall art quality, rich detail, child-friendly, no readable text, no logos, no watermark, no people`,
 }))
 
 function safeFilePart(value: string) {
@@ -163,7 +163,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Kids Nursery batch 1 complete',
+    message: 'Kids Nursery batch 2 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
