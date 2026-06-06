@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['RGB Gaming Battle Station', 'high-end gaming setup with RGB lighting, multiple monitors, esports atmosphere'],
-  ['Professional Esports Arena', 'professional esports tournament arena, dramatic lighting, competitive gaming environment'],
-  ['Gaming Keyboard Close Up', 'premium mechanical gaming keyboard with RGB illumination, ultra detailed'],
-  ['Streamer Studio Setup', 'modern gaming streamer studio, microphones, RGB lights, content creator environment'],
-  ['Cyber Gaming Room', 'futuristic cyber gaming room, neon lighting, immersive technology atmosphere'],
-  ['Gaming Mouse Desk Setup', 'premium gaming mouse and desk setup, esports accessories, ultra realistic'],
-  ['Competitive Gaming Team Room', 'professional esports team training room, gaming stations, modern design'],
-  ['Ultra Wide Gaming Monitor', 'ultra wide gaming monitor setup, cinematic gaming experience, RGB environment'],
-  ['Gaming Headset Display', 'premium gaming headset display, esports gear showcase, dramatic lighting'],
-  ['Digital Gaming Command Center', 'luxury gaming command center, multiple screens, futuristic esports workspace'],
+  ['Neon Gaming Lounge', 'luxury neon gaming lounge with RGB lighting, premium gaming chairs, futuristic esports atmosphere'],
+  ['Esports Tournament Stage', 'massive esports tournament stage with giant LED screens, dramatic lighting, competitive gaming arena'],
+  ['Mechanical Keyboard RGB', 'premium mechanical gaming keyboard with vibrant RGB illumination, macro detail, futuristic desk setup'],
+  ['Gaming Streaming Command Center', 'professional gaming streamer command center, multiple monitors, microphones, RGB studio lighting'],
+  ['Cyberpunk Gaming Desk', 'cyberpunk inspired gaming desk setup with neon lights, futuristic displays, immersive gaming atmosphere'],
+  ['Gaming Controller Collection', 'premium collection of gaming controllers displayed on illuminated shelves, luxury gamer aesthetic'],
+  ['Esports Team Strategy Room', 'professional esports team strategy room, tactical displays, gaming workstations, competitive environment'],
+  ['RGB Gaming PC Showcase', 'high-end gaming PC with tempered glass case, custom liquid cooling, RGB components glowing'],
+  ['Gaming Chair Elite Setup', 'premium esports gaming chair at elite gaming station, RGB ambient lighting, professional setup'],
+  ['Virtual Reality Gaming Room', 'luxury virtual reality gaming room with advanced VR equipment, immersive futuristic entertainment space'],
 ].map(([name, description]) => ({
   title: `${name} - Gaming Esports Theme`,
   prompt: `premium gaming and esports digital artwork, ${description}, ultra realistic, cinematic lighting, luxury gaming environment, commercial wall art quality, rich detail, futuristic technology, no readable text, no logos, no watermark, no people`,
@@ -163,7 +163,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Gaming Esports batch 1 complete',
+    message: 'Gaming Esports batch 2 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
