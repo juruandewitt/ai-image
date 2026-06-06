@@ -5,26 +5,25 @@ import { prisma } from '@/lib/prisma'
 export const dynamic = 'force-dynamic'
 export const maxDuration = 300
 
-const THEME = 'kids-nursery'
+const THEME = 'gaming-esports'
 const THEME_TAG = `theme:${THEME}`
 const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Underwater Adventure Nursery', 'underwater themed nursery, colorful sea creatures, playful ocean decor, child-friendly design'],
-  ['Dreamy Cloud Nursery', 'soft cloud themed nursery, pastel tones, calming child-friendly atmosphere'],
-  ['Woodland Storybook Corner', 'storybook reading corner with woodland animals, cozy educational environment'],
-  ['Rainbow Adventure Playroom', 'rainbow themed playroom, cheerful colors, imaginative childhood design'],
-  ['Baby Giraffe Nursery', 'baby giraffe themed nursery, safari inspired decor, warm family atmosphere'],
-  ['Little Music Room', 'music themed kids room, playful instruments, inspiring creative environment'],
-  ['Space Adventure Playroom', 'space adventure playroom, planets, rockets, educational decor'],
-  ['Friendly Dinosaur Corner', 'friendly dinosaur themed nursery corner, colorful prehistoric adventure decor'],
-  ['Butterfly Garden Nursery', 'butterfly garden themed nursery, flowers and nature inspired design'],
-  ['Cozy Teddy Bear Room', 'teddy bear themed kids room, warm comforting nursery atmosphere'],
-  ['Adventure Map Playroom', 'adventure map themed playroom, exploration decor, imaginative learning environment'],
+  ['RGB Gaming Battle Station', 'high-end gaming setup with RGB lighting, multiple monitors, esports atmosphere'],
+  ['Professional Esports Arena', 'professional esports tournament arena, dramatic lighting, competitive gaming environment'],
+  ['Gaming Keyboard Close Up', 'premium mechanical gaming keyboard with RGB illumination, ultra detailed'],
+  ['Streamer Studio Setup', 'modern gaming streamer studio, microphones, RGB lights, content creator environment'],
+  ['Cyber Gaming Room', 'futuristic cyber gaming room, neon lighting, immersive technology atmosphere'],
+  ['Gaming Mouse Desk Setup', 'premium gaming mouse and desk setup, esports accessories, ultra realistic'],
+  ['Competitive Gaming Team Room', 'professional esports team training room, gaming stations, modern design'],
+  ['Ultra Wide Gaming Monitor', 'ultra wide gaming monitor setup, cinematic gaming experience, RGB environment'],
+  ['Gaming Headset Display', 'premium gaming headset display, esports gear showcase, dramatic lighting'],
+  ['Digital Gaming Command Center', 'luxury gaming command center, multiple screens, futuristic esports workspace'],
 ].map(([name, description]) => ({
-  title: `${name} - Kids Nursery Theme`,
-  prompt: `premium kids and nursery digital artwork, ${description}, ultra realistic, cinematic soft lighting, luxury nursery interior photography, commercial wall art quality, rich detail, child-friendly, no readable text, no logos, no watermark, no people`,
+  title: `${name} - Gaming Esports Theme`,
+  prompt: `premium gaming and esports digital artwork, ${description}, ultra realistic, cinematic lighting, luxury gaming environment, commercial wall art quality, rich detail, futuristic technology, no readable text, no logos, no watermark, no people`,
 }))
 
 function safeFilePart(value: string) {
@@ -91,10 +90,10 @@ async function upsertArtwork(item: (typeof ITEMS)[number], imageUrl: string) {
   const tags = [
     THEME_TAG,
     'theme',
-    'kids',
-    'nursery',
-    'children',
-    'baby-room',
+    'gaming',
+    'esports',
+    'technology',
+    'rgb',
     'wall-art',
   ]
 
@@ -164,7 +163,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Kids Nursery final batch complete',
+    message: 'Gaming Esports batch 1 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
