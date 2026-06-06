@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Pastel Balloon Nursery', 'pastel balloon themed nursery, soft colors, cozy crib, cheerful child-friendly interior'],
-  ['Woodland Fox Room', 'woodland fox themed nursery, forest decor, warm wood accents, cozy reading corner'],
-  ['Cloud Reading Nook', 'cloud themed reading nook for children, soft cushions, gentle daylight, dreamy atmosphere'],
-  ['Rainbow Play Corner', 'rainbow play corner, pastel toys, bright cheerful nursery design, soft textures'],
-  ['Baby Elephant Nursery', 'baby elephant nursery decor, neutral palette, cute wall art, peaceful room atmosphere'],
-  ['Starry Night Kids Room', 'starry night themed kids room, glowing decor, soft blue tones, magical bedtime mood'],
-  ['Bunny Nursery Scene', 'bunny themed nursery, cozy blankets, pastel colors, charming baby room design'],
-  ['Adventure Explorer Room', 'kids explorer themed room, maps, soft adventure decor, warm family atmosphere'],
-  ['Hot Air Balloon Nursery', 'hot air balloon nursery decor, soft clouds, gentle pastel palette, whimsical child room'],
-  ['Scandinavian Toy Corner', 'Scandinavian toy corner, wooden toys, minimalist nursery styling, soft natural light'],
+  ['Dinosaur Adventure Room', 'friendly dinosaur themed kids room, playful decor, colorful adventure atmosphere'],
+  ['Princess Castle Nursery', 'princess castle nursery, pastel pink tones, magical child-friendly bedroom'],
+  ['Space Explorer Bedroom', 'space explorer themed kids room, planets, stars, educational decor'],
+  ['Jungle Safari Playroom', 'jungle safari playroom, cute animals, tropical colors, fun learning environment'],
+  ['Ocean Adventure Nursery', 'ocean themed nursery, whales, sea creatures, calming blue palette'],
+  ['Airplane Dreams Room', 'airplane themed kids bedroom, clouds, aviation decor, adventurous atmosphere'],
+  ['Fairy Garden Nursery', 'fairy garden themed nursery, flowers, butterflies, magical storybook setting'],
+  ['Construction Truck Room', 'construction truck themed kids room, playful vehicles, bright cheerful design'],
+  ['Little Astronaut Corner', 'astronaut reading corner, planets, stars, inspiring educational decor'],
+  ['Animal Alphabet Nursery', 'animal alphabet nursery wall art theme, educational and colorful child room'],
 ].map(([name, description]) => ({
   title: `${name} - Kids Nursery Theme`,
   prompt: `premium kids and nursery digital artwork, ${description}, ultra realistic, cinematic soft lighting, luxury nursery interior photography, commercial wall art quality, rich detail, child-friendly, no readable text, no logos, no watermark, no people`,
@@ -163,7 +163,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Kids Nursery batch 2 complete',
+    message: 'Kids Nursery batch 3 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
