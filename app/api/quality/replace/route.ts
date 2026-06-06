@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Gaming Racing Simulator', 'professional racing simulator cockpit with triple monitors, luxury gaming environment, immersive esports setup'],
-  ['Esports Practice Facility', 'elite esports practice facility with rows of premium gaming stations, RGB lighting, competitive atmosphere'],
-  ['Gaming Desk RGB Ambience', 'luxury gaming desk with ambient RGB lighting, futuristic peripherals, premium setup, cyber aesthetic'],
-  ['Streaming Microphone Setup', 'professional streaming microphone and content creator setup, RGB lighting, gaming broadcast studio'],
-  ['Gaming Laptop Command Station', 'high-end gaming laptop command station with multiple displays, esports inspired workspace'],
-  ['Futuristic Gaming Lounge', 'futuristic gaming lounge with neon accents, premium gaming stations, luxury esports atmosphere'],
-  ['Competitive Gaming Hub', 'modern competitive gaming hub with advanced gaming equipment, team environment, RGB lighting'],
-  ['Gaming Peripheral Showcase', 'premium gaming peripherals showcase including keyboard, mouse, headset and accessories, luxury presentation'],
-  ['Digital Esports Headquarters', 'digital esports headquarters with giant displays, futuristic architecture, gaming technology center'],
-  ['Next Gen Gaming Room', 'next generation gaming room with cutting edge hardware, immersive lighting, luxury gaming experience'],
+  ['Luxury Gaming Penthouse', 'luxury gaming penthouse overlooking a futuristic city skyline, premium gaming setup, RGB ambience'],
+  ['Esports Championship Trophy', 'prestigious esports championship trophy displayed under dramatic lighting, elite competitive gaming atmosphere'],
+  ['Gaming Content Creator Studio', 'high-end gaming content creator studio with cameras, lighting, streaming equipment and gaming setup'],
+  ['Cyber Arena Control Room', 'futuristic cyber arena control room with holographic displays, esports technology center'],
+  ['Professional Gaming Booth', 'professional esports competition booth with illuminated gaming stations and tournament lighting'],
+  ['Gaming Hardware Showroom', 'luxury gaming hardware showroom featuring premium PCs, monitors and peripherals'],
+  ['Immersive Gaming Theater', 'immersive gaming theater with giant curved displays, luxury seating and futuristic technology'],
+  ['Esports Team Headquarters', 'modern esports team headquarters with premium training stations and RGB lighting'],
+  ['Ultimate RGB Setup', 'ultimate RGB gaming setup with synchronized lighting, premium components and futuristic atmosphere'],
+  ['Digital Gaming Arena', 'massive digital gaming arena with LED displays, esports branding atmosphere and advanced technology'],
 ].map(([name, description]) => ({
   title: `${name} - Gaming Esports Theme`,
   prompt: `premium gaming and esports digital artwork, ${description}, ultra realistic, cinematic lighting, luxury gaming environment, commercial wall art quality, rich detail, futuristic technology, no readable text, no logos, no watermark, no people`,
@@ -163,7 +163,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Gaming Esports batch 3 complete',
+    message: 'Gaming Esports batch 4 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
