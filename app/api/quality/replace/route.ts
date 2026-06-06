@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Dinosaur Adventure Room', 'friendly dinosaur themed kids room, playful decor, colorful adventure atmosphere'],
-  ['Princess Castle Nursery', 'princess castle nursery, pastel pink tones, magical child-friendly bedroom'],
-  ['Space Explorer Bedroom', 'space explorer themed kids room, planets, stars, educational decor'],
-  ['Jungle Safari Playroom', 'jungle safari playroom, cute animals, tropical colors, fun learning environment'],
-  ['Ocean Adventure Nursery', 'ocean themed nursery, whales, sea creatures, calming blue palette'],
-  ['Airplane Dreams Room', 'airplane themed kids bedroom, clouds, aviation decor, adventurous atmosphere'],
-  ['Fairy Garden Nursery', 'fairy garden themed nursery, flowers, butterflies, magical storybook setting'],
-  ['Construction Truck Room', 'construction truck themed kids room, playful vehicles, bright cheerful design'],
-  ['Little Astronaut Corner', 'astronaut reading corner, planets, stars, inspiring educational decor'],
-  ['Animal Alphabet Nursery', 'animal alphabet nursery wall art theme, educational and colorful child room'],
+  ['Pirate Adventure Room', 'pirate themed kids room, treasure maps, playful nautical decor, adventurous atmosphere'],
+  ['Mermaid Dream Nursery', 'mermaid themed nursery, pastel ocean colors, magical underwater inspiration'],
+  ['Mountain Explorer Room', 'mountain explorer themed kids room, cozy adventure decor, woodland atmosphere'],
+  ['Rocket Launch Bedroom', 'rocket launch themed bedroom, colorful space decor, inspiring educational environment'],
+  ['Farm Animal Nursery', 'farm animal nursery, cute countryside decor, cheerful family atmosphere'],
+  ['Circus Playroom Scene', 'circus themed playroom, colorful playful decorations, whimsical child-friendly design'],
+  ['Unicorn Fantasy Room', 'unicorn fantasy themed nursery, pastel rainbow colors, magical dream atmosphere'],
+  ['Little Artist Corner', 'creative artist corner for children, paints, crafts, colorful inspiring play space'],
+  ['Castle Adventure Playroom', 'castle adventure playroom, storybook decor, imaginative childhood environment'],
+  ['Forest Friends Nursery', 'forest friends nursery, cute woodland animals, warm cozy family room'],
 ].map(([name, description]) => ({
   title: `${name} - Kids Nursery Theme`,
   prompt: `premium kids and nursery digital artwork, ${description}, ultra realistic, cinematic soft lighting, luxury nursery interior photography, commercial wall art quality, rich detail, child-friendly, no readable text, no logos, no watermark, no people`,
@@ -163,7 +163,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Kids Nursery batch 3 complete',
+    message: 'Kids Nursery batch 4 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
