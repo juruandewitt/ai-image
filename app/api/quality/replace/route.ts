@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Neon Gaming Lounge', 'luxury neon gaming lounge with RGB lighting, premium gaming chairs, futuristic esports atmosphere'],
-  ['Esports Tournament Stage', 'massive esports tournament stage with giant LED screens, dramatic lighting, competitive gaming arena'],
-  ['Mechanical Keyboard RGB', 'premium mechanical gaming keyboard with vibrant RGB illumination, macro detail, futuristic desk setup'],
-  ['Gaming Streaming Command Center', 'professional gaming streamer command center, multiple monitors, microphones, RGB studio lighting'],
-  ['Cyberpunk Gaming Desk', 'cyberpunk inspired gaming desk setup with neon lights, futuristic displays, immersive gaming atmosphere'],
-  ['Gaming Controller Collection', 'premium collection of gaming controllers displayed on illuminated shelves, luxury gamer aesthetic'],
-  ['Esports Team Strategy Room', 'professional esports team strategy room, tactical displays, gaming workstations, competitive environment'],
-  ['RGB Gaming PC Showcase', 'high-end gaming PC with tempered glass case, custom liquid cooling, RGB components glowing'],
-  ['Gaming Chair Elite Setup', 'premium esports gaming chair at elite gaming station, RGB ambient lighting, professional setup'],
-  ['Virtual Reality Gaming Room', 'luxury virtual reality gaming room with advanced VR equipment, immersive futuristic entertainment space'],
+  ['Gaming Racing Simulator', 'professional racing simulator cockpit with triple monitors, luxury gaming environment, immersive esports setup'],
+  ['Esports Practice Facility', 'elite esports practice facility with rows of premium gaming stations, RGB lighting, competitive atmosphere'],
+  ['Gaming Desk RGB Ambience', 'luxury gaming desk with ambient RGB lighting, futuristic peripherals, premium setup, cyber aesthetic'],
+  ['Streaming Microphone Setup', 'professional streaming microphone and content creator setup, RGB lighting, gaming broadcast studio'],
+  ['Gaming Laptop Command Station', 'high-end gaming laptop command station with multiple displays, esports inspired workspace'],
+  ['Futuristic Gaming Lounge', 'futuristic gaming lounge with neon accents, premium gaming stations, luxury esports atmosphere'],
+  ['Competitive Gaming Hub', 'modern competitive gaming hub with advanced gaming equipment, team environment, RGB lighting'],
+  ['Gaming Peripheral Showcase', 'premium gaming peripherals showcase including keyboard, mouse, headset and accessories, luxury presentation'],
+  ['Digital Esports Headquarters', 'digital esports headquarters with giant displays, futuristic architecture, gaming technology center'],
+  ['Next Gen Gaming Room', 'next generation gaming room with cutting edge hardware, immersive lighting, luxury gaming experience'],
 ].map(([name, description]) => ({
   title: `${name} - Gaming Esports Theme`,
   prompt: `premium gaming and esports digital artwork, ${description}, ultra realistic, cinematic lighting, luxury gaming environment, commercial wall art quality, rich detail, futuristic technology, no readable text, no logos, no watermark, no people`,
@@ -163,7 +163,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Gaming Esports batch 2 complete',
+    message: 'Gaming Esports batch 3 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
