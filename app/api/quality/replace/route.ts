@@ -169,4 +169,3 @@ export async function GET() {
     results,
   })
 }
-```
