@@ -1,3 +1,4 @@
+```ts
 import { NextResponse } from 'next/server'
 import { put } from '@vercel/blob'
 import { prisma } from '@/lib/prisma'
@@ -11,19 +12,19 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Christmas Living Room', 'luxury christmas living room with decorated tree, glowing fireplace and festive atmosphere'],
-  ['Winter Holiday Village', 'snow covered holiday village with warm lights, festive decorations and seasonal charm'],
-  ['Easter Garden Celebration', 'beautiful spring garden decorated for easter with flowers and festive elegance'],
-  ['Halloween Pumpkin Street', 'atmospheric halloween street with carved pumpkins, lanterns and autumn ambiance'],
-  ['New Year Fireworks Skyline', 'city skyline illuminated by spectacular new year fireworks and celebration lights'],
-  ['Autumn Harvest Display', 'seasonal harvest display with pumpkins, leaves and warm autumn colors'],
-  ['Valentines Rose Arrangement', 'luxury valentines display with roses, candles and romantic seasonal styling'],
-  ['Festive Holiday Table', 'elegant holiday dining table prepared for celebration with premium decorations'],
-  ['Snowy Christmas Market', 'traditional christmas market with festive stalls, lights and winter atmosphere'],
-  ['Spring Blossom Festival', 'seasonal spring blossom festival with flowers, color and joyful celebration'],
+  ['Christmas Fireplace Evening', 'luxury christmas fireplace scene with stockings, candles and warm festive ambiance'],
+  ['Holiday Cabin Retreat', 'snow covered holiday cabin retreat surrounded by winter forests and cozy lights'],
+  ['Easter Egg Garden', 'beautiful easter garden filled with colorful decorated eggs and spring flowers'],
+  ['Halloween Haunted Manor', 'elegant haunted manor decorated for halloween with pumpkins and autumn atmosphere'],
+  ['New Year Celebration Hall', 'luxury new year celebration hall with sparkling decorations and festive glamour'],
+  ['Thanksgiving Harvest Table', 'abundant thanksgiving harvest table with seasonal decorations and warm family atmosphere'],
+  ['Valentines Candlelight Dinner', 'romantic valentines candlelight dinner setting with roses and elegant décor'],
+  ['Winter Wonderland Path', 'magical winter wonderland pathway illuminated by festive lights and fresh snow'],
+  ['Festive Holiday Gift Display', 'beautiful holiday gift display with wrapped presents and luxury seasonal styling'],
+  ['Summer Festival Lights', 'vibrant summer festival celebration with colorful lanterns and joyful seasonal atmosphere'],
 ].map(([name, description]) => ({
   title: `${name} - Seasonal Holidays Theme`,
-  prompt: `premium seasonal holiday digital artwork, ${description}, ultra realistic, cinematic lighting, luxury seasonal decor, commercial wall art quality, rich detail, festive atmosphere, beautiful colors, celebration theme, no readable text, no logos, no watermark, no people`,
+  prompt: `premium seasonal holiday digital artwork, ${description}, ultra realistic, cinematic lighting, luxury festive aesthetic, commercial wall art quality, rich detail, vibrant seasonal colors, holiday celebration, no readable text, no logos, no watermark, no people`,
 }))
 
 function safeFilePart(value: string) {
@@ -92,8 +93,8 @@ async function upsertArtwork(item: (typeof ITEMS)[number], imageUrl: string) {
     'theme',
     'seasonal',
     'holidays',
-    'celebration',
     'festive',
+    'celebration',
     'wall-art',
   ]
 
@@ -163,9 +164,10 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Seasonal Holidays batch 1 complete',
+    message: 'Seasonal Holidays batch 2 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
   })
 }
+```
