@@ -11,16 +11,17 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Cozy Winter Fireplace', 'cozy winter fireplace with blankets, candles, warm lights and peaceful seasonal comfort'],
-  ['Luxury Christmas Staircase', 'luxury christmas staircase with garlands, ornaments, warm lights and elegant holiday decor'],
-  ['Spring Easter Table', 'spring easter table setting with flowers, pastel decorations and fresh seasonal elegance'],
-  ['Halloween Candle Display', 'halloween candle display with pumpkins, autumn leaves and atmospheric seasonal lighting'],
-  ['New Year Champagne Scene', 'new year champagne celebration scene with sparkling lights and luxury festive styling'],
   ['Autumn Forest Path', 'beautiful autumn forest path with golden leaves, soft light and peaceful seasonal atmosphere'],
-  ['Valentines Luxury Suite', 'valentines luxury suite with roses, candles and romantic seasonal interior styling'],
-  ['Snowy Winter Lake', 'snowy winter lake surrounded by pine trees, soft morning light and calm seasonal beauty'],
-  ['Holiday Wreath Doorway', 'elegant holiday doorway with festive wreath, warm lights and luxury seasonal charm'],
-  ['Spring Picnic Celebration', 'spring picnic celebration with flowers, soft blankets and joyful seasonal colors'],
+  ['Christmas Tree Ballroom', 'luxury ballroom featuring an enormous decorated christmas tree and festive elegance'],
+  ['Snow Covered Village Street', 'snow covered village street glowing with holiday lights and winter charm'],
+  ['Easter Bunny Meadow', 'spring meadow with easter decorations, flowers and joyful seasonal celebration'],
+  ['Halloween Manor Entrance', 'grand halloween manor entrance with pumpkins, lanterns and autumn ambiance'],
+  ['New Year Rooftop Celebration', 'luxury rooftop celebration overlooking city fireworks and festive new year energy'],
+  ['Harvest Pumpkin Market', 'beautiful harvest market filled with pumpkins, seasonal produce and autumn colors'],
+  ['Valentines Rose Garden', 'romantic rose garden illuminated by soft lights and elegant valentines atmosphere'],
+  ['Winter Cabin Fireplace', 'cozy winter cabin interior with roaring fireplace and luxury seasonal comfort'],
+  ['Spring Flower Festival', 'vibrant spring flower festival filled with blossoms and joyful seasonal color'],
+  ['Holiday Gift Workshop', 'luxury holiday gift workshop filled with wrapped presents and festive decorations'],
 ].map(([name, description]) => ({
   title: `${name} - Seasonal Holidays Theme`,
   prompt: `premium seasonal holiday digital artwork, ${description}, ultra realistic, cinematic lighting, luxury festive aesthetic, commercial wall art quality, rich detail, vibrant seasonal colors, holiday celebration, no readable text, no logos, no watermark, no people`,
@@ -163,7 +164,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Seasonal Holidays batch 3 complete',
+    message: 'Seasonal Holidays batch 4 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
