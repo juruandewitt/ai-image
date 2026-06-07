@@ -11,19 +11,20 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Zen Meditation Temple', 'peaceful zen meditation temple with natural wood architecture, tranquil atmosphere and soft morning light'],
-  ['Buddha Garden Sanctuary', 'serene buddha garden sanctuary with stone paths, bamboo and calming spiritual energy'],
-  ['Mountain Meditation Retreat', 'spiritual mountain meditation retreat surrounded by misty peaks and peaceful nature'],
-  ['Zen Rock Garden', 'minimalist zen rock garden with carefully arranged stones, raked sand patterns and harmony'],
-  ['Sacred Lotus Pond', 'sacred lotus pond with blooming flowers, reflective water and spiritual tranquility'],
-  ['Forest Zen Path', 'peaceful forest zen walking path through ancient trees with calming atmosphere'],
-  ['Spiritual Tea Ceremony', 'traditional spiritual tea ceremony setting with elegant simplicity and mindfulness'],
-  ['Zen Waterfall Sanctuary', 'tranquil waterfall sanctuary surrounded by moss covered stones and meditation spaces'],
-  ['Temple Courtyard Dawn', 'ancient temple courtyard at dawn with golden sunlight and peaceful spiritual ambiance'],
-  ['Mindfulness Meditation Space', 'luxury mindfulness meditation space with natural materials and calming zen aesthetics'],
+  ['Spiritual Tea Ceremony', 'traditional spiritual tea ceremony with elegant simplicity, mindfulness and peaceful zen atmosphere'],
+  ['Sacred Mountain Shrine', 'sacred mountain shrine surrounded by mist, ancient stone pathways and spiritual tranquility'],
+  ['Zen Bamboo Forest', 'peaceful bamboo forest with soft sunlight, meditation pathways and serene zen atmosphere'],
+  ['Temple Reflection Pool', 'ancient temple reflected in a still pool of water with spiritual harmony and calmness'],
+  ['Golden Meditation Hall', 'luxury meditation hall with warm golden light, natural materials and peaceful ambiance'],
+  ['Sacred Stone Lanterns', 'traditional stone lantern garden illuminated at dusk with spiritual serenity'],
+  ['Zen Bridge Crossing', 'elegant wooden bridge crossing a tranquil zen garden stream with harmonious design'],
+  ['Spiritual Mountain Sunrise', 'mountain sunrise over meditation retreat with spiritual energy and breathtaking scenery'],
+  ['Temple Bells Serenity', 'peaceful temple bell courtyard with calming atmosphere and traditional architecture'],
+  ['Lotus Meditation Garden', 'luxury lotus meditation garden with blooming flowers and tranquil reflective waters'],
+  ['Ancient Zen Sanctuary', 'ancient zen sanctuary with timeless architecture, harmony and spiritual mindfulness'],
 ].map(([name, description]) => ({
   title: `${name} - Spiritual Zen Theme`,
-  prompt: `premium spiritual zen digital artwork, ${description}, ultra realistic, cinematic soft lighting, peaceful luxury wellness aesthetic, commercial wall art quality, rich detail, calming colors, meditation, mindfulness, no readable text, no logos, no watermark, no people`,
+  prompt: `premium spiritual zen digital artwork, ${description}, ultra realistic, cinematic lighting, luxury wellness aesthetic, commercial wall art quality, calming colors, rich detail, meditation, mindfulness, spiritual harmony, no readable text, no logos, no watermark, no people`,
 }))
 
 function safeFilePart(value: string) {
@@ -164,7 +165,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Spiritual Zen batch 1 complete',
+    message: 'Spiritual Zen batch 2 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
