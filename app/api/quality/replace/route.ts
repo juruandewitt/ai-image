@@ -8,7 +8,7 @@ export const maxDuration = 300
 const THEME = 'spiritual-zen'
 const THEME_TAG = `theme:${THEME}`
 const ARTIST = 'AI Image'
-const STYLE = 'MINIMALIST'
+const STYLE = 'POLLOCK'
 
 const ITEMS = [
   ['Zen Meditation Temple', 'peaceful zen meditation temple with natural wood architecture, tranquil atmosphere and soft morning light'],
@@ -23,7 +23,7 @@ const ITEMS = [
   ['Mindfulness Meditation Space', 'luxury mindfulness meditation space with natural materials and calming zen aesthetics'],
 ].map(([name, description]) => ({
   title: `${name} - Spiritual Zen Theme`,
-  prompt: `premium spiritual zen artwork, ${description}, ultra realistic, peaceful atmosphere, luxury wellness aesthetic, calming colors, mindfulness, meditation, spiritual harmony, wall art quality, highly detailed, no text, no logos, no watermark, no people`,
+  prompt: `premium spiritual zen digital artwork, ${description}, ultra realistic, cinematic soft lighting, peaceful luxury wellness aesthetic, commercial wall art quality, rich detail, calming colors, meditation, mindfulness, no readable text, no logos, no watermark, no people`,
 }))
 
 function safeFilePart(value: string) {
@@ -64,17 +64,17 @@ async function generateOpenAiImageBuffer(prompt: string) {
   const data = await response.json()
   const base64 = data?.data?.[0]?.b64_json
 
-  if (!base64) {
-    throw new Error('No image returned')
+  if (!base64 || typeof base64 !== 'string') {
+    throw new Error('No base64 image returned from OpenAI')
   }
 
   return Buffer.from(base64, 'base64')
 }
 
-async function uploadGeneratedImageToBlob(buffer: Buffer, title: string) {
+async function uploadGeneratedImageToBlob(imageBuffer: Buffer, title: string) {
   const blob = await put(
     `artworks/themes/${THEME}/${safeFilePart(title)}.png`,
-    buffer,
+    imageBuffer,
     {
       access: 'public',
       addRandomSuffix: true,
@@ -82,10 +82,22 @@ async function uploadGeneratedImageToBlob(buffer: Buffer, title: string) {
     }
   )
 
+  if (!blob.url) throw new Error('Blob upload failed')
   return blob.url
 }
 
 async function upsertArtwork(item: (typeof ITEMS)[number], imageUrl: string) {
+  const tags = [
+    THEME_TAG,
+    'theme',
+    'spiritual',
+    'zen',
+    'meditation',
+    'mindfulness',
+    'wellness',
+    'wall-art',
+  ]
+
   const existing = await prisma.artwork.findFirst({
     where: { title: item.title },
     select: { id: true },
@@ -95,7 +107,9 @@ async function upsertArtwork(item: (typeof ITEMS)[number], imageUrl: string) {
     ? await prisma.artwork.update({
         where: { id: existing.id },
         data: {
+          artist: ARTIST,
           thumbnail: imageUrl,
+          tags,
           status: 'PUBLISHED' as any,
         },
         select: { id: true },
@@ -103,20 +117,12 @@ async function upsertArtwork(item: (typeof ITEMS)[number], imageUrl: string) {
     : await prisma.artwork.create({
         data: {
           title: item.title,
-          artist: ARTIST,
           style: STYLE as any,
+          artist: ARTIST,
           thumbnail: imageUrl,
+          tags,
           status: 'PUBLISHED' as any,
           price: 9.99,
-          tags: [
-            THEME_TAG,
-            'spiritual',
-            'zen',
-            'meditation',
-            'wellness',
-            'mindfulness',
-            'wall-art',
-          ],
         },
         select: { id: true },
       })
@@ -139,20 +145,20 @@ export async function GET() {
   for (const item of ITEMS) {
     try {
       const imageBuffer = await generateOpenAiImageBuffer(item.prompt)
-      const imageUrl = await uploadGeneratedImageToBlob(imageBuffer, item.title)
-      const artworkId = await upsertArtwork(item, imageUrl)
+      const blobUrl = await uploadGeneratedImageToBlob(imageBuffer, item.title)
+      const artworkId = await upsertArtwork(item, blobUrl)
 
       results.push({
         title: item.title,
         success: true,
         artworkId,
-        imageUrl,
+        imageUrl: blobUrl,
       })
-    } catch (error) {
+    } catch (err) {
       results.push({
         title: item.title,
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: err instanceof Error ? err.message : 'Unknown error',
       })
     }
   }
