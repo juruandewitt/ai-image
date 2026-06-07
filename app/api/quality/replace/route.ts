@@ -5,25 +5,25 @@ import { prisma } from '@/lib/prisma'
 export const dynamic = 'force-dynamic'
 export const maxDuration = 300
 
-const THEME = 'spiritual-zen'
+const THEME = 'seasonal-holidays'
 const THEME_TAG = `theme:${THEME}`
 const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Sacred Desert Temple', 'ancient desert temple surrounded by golden dunes, spiritual silence and sacred atmosphere'],
-  ['Zen Moonlit Garden', 'peaceful zen garden illuminated by moonlight, stone paths and tranquil meditation energy'],
-  ['Lotus Lake Sunrise', 'serene lotus lake at sunrise with misty reflections and calming spiritual beauty'],
-  ['Temple Of Inner Peace', 'luxurious temple of inner peace with harmonious architecture and meditation spaces'],
-  ['Sacred Waterfall Retreat', 'hidden spiritual retreat beside a cascading waterfall surrounded by lush greenery'],
-  ['Mountain Prayer Sanctuary', 'mountain prayer sanctuary above the clouds with breathtaking spiritual serenity'],
-  ['Zen Stone Circle', 'minimalist zen stone circle arranged in perfect balance and peaceful mindfulness'],
-  ['Golden Lotus Meditation Hall', 'golden lotus meditation hall with warm light, sacred symbolism and calm atmosphere'],
-  ['Spiritual Garden Of Light', 'spiritual garden filled with glowing lanterns, flowers and peaceful harmony'],
-  ['Eternal Zen Horizon', 'vast zen landscape stretching to the horizon with profound tranquility and spiritual calm'],
+  ['Christmas Living Room', 'luxury christmas living room with decorated tree, glowing fireplace and festive atmosphere'],
+  ['Winter Holiday Village', 'snow covered holiday village with warm lights, festive decorations and seasonal charm'],
+  ['Easter Garden Celebration', 'beautiful spring garden decorated for easter with flowers and festive elegance'],
+  ['Halloween Pumpkin Street', 'atmospheric halloween street with carved pumpkins, lanterns and autumn ambiance'],
+  ['New Year Fireworks Skyline', 'city skyline illuminated by spectacular new year fireworks and celebration lights'],
+  ['Autumn Harvest Display', 'seasonal harvest display with pumpkins, leaves and warm autumn colors'],
+  ['Valentines Rose Arrangement', 'luxury valentines display with roses, candles and romantic seasonal styling'],
+  ['Festive Holiday Table', 'elegant holiday dining table prepared for celebration with premium decorations'],
+  ['Snowy Christmas Market', 'traditional christmas market with festive stalls, lights and winter atmosphere'],
+  ['Spring Blossom Festival', 'seasonal spring blossom festival with flowers, color and joyful celebration'],
 ].map(([name, description]) => ({
-  title: `${name} - Spiritual Zen Theme`,
-  prompt: `premium spiritual zen digital artwork, ${description}, ultra realistic, cinematic soft lighting, luxury wellness aesthetic, commercial wall art quality, rich detail, calming colors, meditation, mindfulness, spiritual harmony, no readable text, no logos, no watermark, no people`,
+  title: `${name} - Seasonal Holidays Theme`,
+  prompt: `premium seasonal holiday digital artwork, ${description}, ultra realistic, cinematic lighting, luxury seasonal decor, commercial wall art quality, rich detail, festive atmosphere, beautiful colors, celebration theme, no readable text, no logos, no watermark, no people`,
 }))
 
 function safeFilePart(value: string) {
@@ -90,11 +90,10 @@ async function upsertArtwork(item: (typeof ITEMS)[number], imageUrl: string) {
   const tags = [
     THEME_TAG,
     'theme',
-    'spiritual',
-    'zen',
-    'meditation',
-    'mindfulness',
-    'wellness',
+    'seasonal',
+    'holidays',
+    'celebration',
+    'festive',
     'wall-art',
   ]
 
@@ -164,7 +163,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Spiritual Zen final batch complete',
+    message: 'Seasonal Holidays batch 1 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
