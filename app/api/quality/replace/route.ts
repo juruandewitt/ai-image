@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Sacred Forest Temple', 'hidden sacred forest temple surrounded by ancient trees, spiritual tranquility and soft sunlight'],
-  ['Zen Mountain Lake', 'peaceful mountain lake reflecting zen temples and misty spiritual landscapes'],
-  ['Meditation Cave Sanctuary', 'serene meditation cave sanctuary illuminated by natural light and calming energy'],
-  ['Lotus Temple Pathway', 'elegant lotus temple pathway with blooming flowers and spiritual harmony'],
-  ['Golden Buddha Hall', 'luxurious golden buddha hall with tranquil architecture and meditation atmosphere'],
-  ['Spiritual River Crossing', 'peaceful river crossing with traditional zen bridge and reflective waters'],
-  ['Temple Lantern Garden', 'spiritual garden illuminated by traditional lanterns and calming evening ambiance'],
-  ['Zen Courtyard Rainfall', 'minimalist zen courtyard during gentle rainfall with peaceful meditation energy'],
-  ['Mountain Monastery Retreat', 'remote mountain monastery retreat surrounded by clouds and spiritual serenity'],
-  ['Sacred Sunrise Meditation', 'meditation platform overlooking sunrise mountains with profound spiritual calm'],
+  ['Crystal Meditation Chamber', 'crystal meditation chamber with soft glowing stones, calm spiritual energy and peaceful luxury atmosphere'],
+  ['Sacred Bamboo Temple', 'sacred bamboo temple surrounded by tall green bamboo, natural light and spiritual serenity'],
+  ['Zen Garden Sunrise', 'zen garden at sunrise with raked sand, smooth stones, soft golden light and peaceful harmony'],
+  ['Ancient Prayer Courtyard', 'ancient prayer courtyard with stone architecture, candles, soft light and sacred stillness'],
+  ['Harmony Stone Path', 'harmony stone path through a tranquil zen garden with moss, water and balanced natural design'],
+  ['Temple Reflection Lake', 'peaceful temple reflected in a calm lake, misty atmosphere and spiritual morning light'],
+  ['Spiritual Mountain Temple', 'spiritual mountain temple on a cliffside, clouds, sunrise and profound zen calm'],
+  ['Zen Cherry Blossom Sanctuary', 'zen cherry blossom sanctuary with soft petals, temple garden and peaceful spring atmosphere'],
+  ['Peaceful Incense Meditation Room', 'peaceful incense meditation room with soft smoke, natural wood, cushions and warm spiritual lighting'],
+  ['Sacred Water Garden', 'sacred water garden with lotus flowers, stone paths, reflective pools and calming spiritual energy'],
 ].map(([name, description]) => ({
   title: `${name} - Spiritual Zen Theme`,
   prompt: `premium spiritual zen digital artwork, ${description}, ultra realistic, cinematic soft lighting, luxury wellness aesthetic, commercial wall art quality, rich detail, calming colors, meditation, mindfulness, spiritual harmony, no readable text, no logos, no watermark, no people`,
@@ -164,7 +164,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Spiritual Zen batch 3 complete',
+    message: 'Spiritual Zen batch 4 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
