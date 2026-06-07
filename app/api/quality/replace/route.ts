@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Crystal Meditation Chamber', 'crystal meditation chamber with soft glowing stones, calm spiritual energy and peaceful luxury atmosphere'],
-  ['Sacred Bamboo Temple', 'sacred bamboo temple surrounded by tall green bamboo, natural light and spiritual serenity'],
-  ['Zen Garden Sunrise', 'zen garden at sunrise with raked sand, smooth stones, soft golden light and peaceful harmony'],
-  ['Ancient Prayer Courtyard', 'ancient prayer courtyard with stone architecture, candles, soft light and sacred stillness'],
-  ['Harmony Stone Path', 'harmony stone path through a tranquil zen garden with moss, water and balanced natural design'],
-  ['Temple Reflection Lake', 'peaceful temple reflected in a calm lake, misty atmosphere and spiritual morning light'],
-  ['Spiritual Mountain Temple', 'spiritual mountain temple on a cliffside, clouds, sunrise and profound zen calm'],
-  ['Zen Cherry Blossom Sanctuary', 'zen cherry blossom sanctuary with soft petals, temple garden and peaceful spring atmosphere'],
-  ['Peaceful Incense Meditation Room', 'peaceful incense meditation room with soft smoke, natural wood, cushions and warm spiritual lighting'],
-  ['Sacred Water Garden', 'sacred water garden with lotus flowers, stone paths, reflective pools and calming spiritual energy'],
+  ['Sacred Desert Temple', 'ancient desert temple surrounded by golden dunes, spiritual silence and sacred atmosphere'],
+  ['Zen Moonlit Garden', 'peaceful zen garden illuminated by moonlight, stone paths and tranquil meditation energy'],
+  ['Lotus Lake Sunrise', 'serene lotus lake at sunrise with misty reflections and calming spiritual beauty'],
+  ['Temple Of Inner Peace', 'luxurious temple of inner peace with harmonious architecture and meditation spaces'],
+  ['Sacred Waterfall Retreat', 'hidden spiritual retreat beside a cascading waterfall surrounded by lush greenery'],
+  ['Mountain Prayer Sanctuary', 'mountain prayer sanctuary above the clouds with breathtaking spiritual serenity'],
+  ['Zen Stone Circle', 'minimalist zen stone circle arranged in perfect balance and peaceful mindfulness'],
+  ['Golden Lotus Meditation Hall', 'golden lotus meditation hall with warm light, sacred symbolism and calm atmosphere'],
+  ['Spiritual Garden Of Light', 'spiritual garden filled with glowing lanterns, flowers and peaceful harmony'],
+  ['Eternal Zen Horizon', 'vast zen landscape stretching to the horizon with profound tranquility and spiritual calm'],
 ].map(([name, description]) => ({
   title: `${name} - Spiritual Zen Theme`,
   prompt: `premium spiritual zen digital artwork, ${description}, ultra realistic, cinematic soft lighting, luxury wellness aesthetic, commercial wall art quality, rich detail, calming colors, meditation, mindfulness, spiritual harmony, no readable text, no logos, no watermark, no people`,
@@ -164,7 +164,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Spiritual Zen batch 4 complete',
+    message: 'Spiritual Zen final batch complete',
     theme: THEME,
     count: ITEMS.length,
     results,
