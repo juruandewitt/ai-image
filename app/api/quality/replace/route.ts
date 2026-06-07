@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Christmas Fireplace Evening', 'luxury christmas fireplace scene with stockings, candles and warm festive ambiance'],
-  ['Holiday Cabin Retreat', 'snow covered holiday cabin retreat surrounded by winter forests and cozy lights'],
-  ['Easter Egg Garden', 'beautiful easter garden filled with colorful decorated eggs and spring flowers'],
-  ['Halloween Haunted Manor', 'elegant haunted manor decorated for halloween with pumpkins and autumn atmosphere'],
-  ['New Year Celebration Hall', 'luxury new year celebration hall with sparkling decorations and festive glamour'],
-  ['Thanksgiving Harvest Table', 'abundant thanksgiving harvest table with seasonal decorations and warm family atmosphere'],
-  ['Valentines Candlelight Dinner', 'romantic valentines candlelight dinner setting with roses and elegant décor'],
-  ['Winter Wonderland Path', 'magical winter wonderland pathway illuminated by festive lights and fresh snow'],
-  ['Festive Holiday Gift Display', 'beautiful holiday gift display with wrapped presents and luxury seasonal styling'],
-  ['Summer Festival Lights', 'vibrant summer festival celebration with colorful lanterns and joyful seasonal atmosphere'],
+  ['Cozy Winter Fireplace', 'cozy winter fireplace with blankets, candles, warm lights and peaceful seasonal comfort'],
+  ['Luxury Christmas Staircase', 'luxury christmas staircase with garlands, ornaments, warm lights and elegant holiday decor'],
+  ['Spring Easter Table', 'spring easter table setting with flowers, pastel decorations and fresh seasonal elegance'],
+  ['Halloween Candle Display', 'halloween candle display with pumpkins, autumn leaves and atmospheric seasonal lighting'],
+  ['New Year Champagne Scene', 'new year champagne celebration scene with sparkling lights and luxury festive styling'],
+  ['Autumn Forest Path', 'beautiful autumn forest path with golden leaves, soft light and peaceful seasonal atmosphere'],
+  ['Valentines Luxury Suite', 'valentines luxury suite with roses, candles and romantic seasonal interior styling'],
+  ['Snowy Winter Lake', 'snowy winter lake surrounded by pine trees, soft morning light and calm seasonal beauty'],
+  ['Holiday Wreath Doorway', 'elegant holiday doorway with festive wreath, warm lights and luxury seasonal charm'],
+  ['Spring Picnic Celebration', 'spring picnic celebration with flowers, soft blankets and joyful seasonal colors'],
 ].map(([name, description]) => ({
   title: `${name} - Seasonal Holidays Theme`,
   prompt: `premium seasonal holiday digital artwork, ${description}, ultra realistic, cinematic lighting, luxury festive aesthetic, commercial wall art quality, rich detail, vibrant seasonal colors, holiday celebration, no readable text, no logos, no watermark, no people`,
@@ -163,7 +163,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Seasonal Holidays batch 2 complete',
+    message: 'Seasonal Holidays batch 3 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
