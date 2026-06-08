@@ -5,26 +5,25 @@ import { prisma } from '@/lib/prisma'
 export const dynamic = 'force-dynamic'
 export const maxDuration = 300
 
-const THEME = 'seasonal-holidays'
+const THEME = 'cars-automotive'
 const THEME_TAG = `theme:${THEME}`
 const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Valentines Rose Garden', 'romantic rose garden illuminated by soft lights and elegant valentines atmosphere'],
-  ['Christmas Cathedral Interior', 'magnificent christmas cathedral interior decorated with festive lights and seasonal elegance'],
-  ['Winter Mountain Resort', 'luxury winter mountain resort surrounded by snow and seasonal holiday charm'],
-  ['Easter Spring Meadow', 'beautiful spring meadow with easter decorations, flowers and joyful seasonal energy'],
-  ['Halloween Pumpkin Festival', 'grand halloween pumpkin festival with lanterns and festive autumn atmosphere'],
-  ['New Year Luxury Ballroom', 'luxury ballroom celebration with fireworks, chandeliers and new year glamour'],
-  ['Harvest Cornfield Sunset', 'golden harvest cornfield at sunset with rich autumn colors and seasonal beauty'],
-  ['Holiday Snow Globe Scene', 'magical holiday snow globe scene with festive decorations and winter wonder'],
-  ['Spring Garden Party', 'elegant spring garden party with flowers, decorations and seasonal celebration'],
-  ['Festive Holiday Lights Avenue', 'avenue filled with festive holiday lights and luxury seasonal ambiance'],
-  ['Seasonal Celebration Collection', 'luxury collection of all seasonal holiday themes displayed in elegant artistic composition'],
+  ['Luxury Sports Car Showroom', 'luxury sports car showroom with polished floors, dramatic lighting and premium automotive atmosphere'],
+  ['Classic Muscle Car Garage', 'classic muscle car garage with vintage tools, warm lighting and powerful automotive character'],
+  ['Exotic Supercar Sunset Drive', 'exotic supercar on a coastal road at sunset, cinematic reflections and high-end lifestyle mood'],
+  ['Vintage Car Restoration Workshop', 'vintage car restoration workshop with classic vehicle details, tools and warm garage lighting'],
+  ['Luxury SUV Mountain Road', 'luxury SUV on a winding mountain road, dramatic landscape and premium adventure atmosphere'],
+  ['Performance Car Detail Studio', 'performance car detail studio with glossy paint reflections and professional automotive lighting'],
+  ['Modern Automotive Dealership', 'modern automotive dealership with luxury vehicles, glass architecture and elegant showroom design'],
+  ['Classic Convertible Coastal Drive', 'classic convertible driving along a scenic coastal road with golden sunlight and nostalgic luxury'],
+  ['Hypercar City Nightscape', 'hypercar parked in a futuristic city nightscape with neon reflections and luxury automotive energy'],
+  ['Premium Car Collection Hall', 'premium private car collection hall with rare vehicles, polished floors and dramatic gallery lighting'],
 ].map(([name, description]) => ({
-  title: `${name} - Seasonal Holidays Theme`,
-  prompt: `premium seasonal holiday digital artwork, ${description}, ultra realistic, cinematic lighting, luxury festive aesthetic, commercial wall art quality, rich detail, vibrant seasonal colors, holiday celebration, no readable text, no logos, no watermark, no people`,
+  title: `${name} - Cars Automotive Theme`,
+  prompt: `premium automotive digital artwork, ${description}, ultra realistic, cinematic lighting, luxury automotive photography aesthetic, commercial wall art quality, rich detail, premium vehicles, high end lifestyle, no readable text, no logos, no watermark, no people`,
 }))
 
 function safeFilePart(value: string) {
@@ -91,10 +90,11 @@ async function upsertArtwork(item: (typeof ITEMS)[number], imageUrl: string) {
   const tags = [
     THEME_TAG,
     'theme',
-    'seasonal',
-    'holidays',
-    'festive',
-    'celebration',
+    'cars',
+    'automotive',
+    'luxury',
+    'vehicles',
+    'transportation',
     'wall-art',
   ]
 
@@ -164,7 +164,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Seasonal Holidays final batch complete',
+    message: 'Cars Automotive batch 1 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
