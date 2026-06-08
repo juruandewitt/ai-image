@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Luxury Executive Garage', 'luxury executive garage featuring premium vehicles, architectural lighting and sophisticated automotive design'],
-  ['Supercar Tunnel Run', 'exotic supercar speeding through an illuminated tunnel with cinematic reflections and dramatic atmosphere'],
-  ['Classic Car Museum Hall', 'classic car museum hall displaying iconic automobiles under elegant gallery lighting'],
-  ['Luxury Coupe Coastal Highway', 'luxury coupe driving along a scenic coastal highway with ocean views and golden sunlight'],
-  ['Hypercar Private Collection', 'exclusive hypercar private collection featuring rare vehicles in a luxury display environment'],
-  ['Performance Track Day', 'high performance sports cars on a professional racing circuit with dynamic motion and premium motorsport energy'],
-  ['Luxury SUV Winter Resort', 'luxury SUV parked at an upscale winter resort surrounded by snow and mountain scenery'],
-  ['Automotive Design Studio', 'modern automotive design studio showcasing concept vehicles and futuristic luxury styling'],
-  ['Vintage Grand Touring Car', 'vintage grand touring automobile in an elegant European setting with timeless luxury atmosphere'],
-  ['Nighttime Hypercar Boulevard', 'hypercar parked on a luxury city boulevard at night with dramatic lighting and reflections'],
+  ['Luxury Car Penthouse Garage', 'luxury car penthouse garage overlooking a city skyline with exotic vehicles and architectural lighting'],
+  ['Supercar Dealership Showroom', 'premium supercar dealership showroom filled with exotic automobiles and luxury atmosphere'],
+  ['Classic Muscle Car Collection', 'private collection of classic muscle cars displayed under dramatic showroom lighting'],
+  ['Hypercar Coastal Mansion', 'exclusive hypercar parked outside a luxury coastal mansion during golden hour'],
+  ['Performance Car Engineering Lab', 'advanced performance car engineering lab showcasing innovation and luxury automotive technology'],
+  ['Luxury Convertible Boulevard', 'luxury convertible cruising along a prestigious boulevard lined with elegant architecture'],
+  ['Electric Vehicle Experience Center', 'modern electric vehicle experience center with futuristic design and premium automotive presentation'],
+  ['Automotive Heritage Gallery', 'automotive heritage gallery displaying iconic luxury vehicles through history'],
+  ['Supercar Desert Highway', 'exotic supercar driving across a dramatic desert highway with cinematic scenery'],
+  ['Luxury Motorsports Lounge', 'exclusive luxury motorsports lounge featuring premium vehicles, racing heritage and sophisticated design'],
 ].map(([name, description]) => ({
   title: `${name} - Cars Automotive Theme`,
   prompt: `premium automotive digital artwork, ${description}, ultra realistic, cinematic lighting, luxury automotive photography aesthetic, commercial wall art quality, rich detail, premium vehicles, high end lifestyle, no readable text, no logos, no watermark, no people`,
@@ -164,7 +164,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Cars Automotive batch 3 complete',
+    message: 'Cars Automotive batch 4 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
