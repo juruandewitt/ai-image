@@ -11,19 +11,49 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Luxury Car Penthouse Garage', 'luxury car penthouse garage overlooking a city skyline with exotic vehicles and architectural lighting'],
-  ['Supercar Dealership Showroom', 'premium supercar dealership showroom filled with exotic automobiles and luxury atmosphere'],
-  ['Classic Muscle Car Collection', 'private collection of classic muscle cars displayed under dramatic showroom lighting'],
-  ['Hypercar Coastal Mansion', 'exclusive hypercar parked outside a luxury coastal mansion during golden hour'],
-  ['Performance Car Engineering Lab', 'advanced performance car engineering lab showcasing innovation and luxury automotive technology'],
-  ['Luxury Convertible Boulevard', 'luxury convertible cruising along a prestigious boulevard lined with elegant architecture'],
-  ['Electric Vehicle Experience Center', 'modern electric vehicle experience center with futuristic design and premium automotive presentation'],
-  ['Automotive Heritage Gallery', 'automotive heritage gallery displaying iconic luxury vehicles through history'],
-  ['Supercar Desert Highway', 'exotic supercar driving across a dramatic desert highway with cinematic scenery'],
-  ['Luxury Motorsports Lounge', 'exclusive luxury motorsports lounge featuring premium vehicles, racing heritage and sophisticated design'],
+  [
+    'Luxury Hypercar Collection',
+    'private collection of luxury hypercars displayed in an architectural glass showroom with dramatic lighting',
+  ],
+  [
+    'Classic Automotive Museum',
+    'world class automotive museum featuring iconic classic vehicles and elegant exhibition spaces',
+  ],
+  [
+    'Supercar Mountain Resort',
+    'exotic supercars parked at an exclusive mountain resort surrounded by alpine scenery',
+  ],
+  [
+    'Luxury EV Innovation Center',
+    'futuristic electric vehicle innovation center with cutting edge automotive technology displays',
+  ],
+  [
+    'Performance Racing Headquarters',
+    'professional motorsport headquarters with race cars engineering workspaces and championship atmosphere',
+  ],
+  [
+    'Executive Car Collection Estate',
+    'luxury estate garage featuring an executive collection of premium vehicles and refined architecture',
+  ],
+  [
+    'Hypercar Marina District',
+    'ultra luxury hypercars parked beside an exclusive marina with yachts and waterfront views',
+  ],
+  [
+    'Automotive Design Pavilion',
+    'award winning automotive design pavilion showcasing concept cars and modern design excellence',
+  ],
+  [
+    'Grand Touring Mountain Escape',
+    'luxury grand touring vehicles driving through scenic mountain landscapes during golden hour',
+  ],
+  [
+    'Ultimate Automotive Lifestyle',
+    'luxury automotive lifestyle scene combining supercars architecture and premium living experiences',
+  ],
 ].map(([name, description]) => ({
   title: `${name} - Cars Automotive Theme`,
-  prompt: `premium automotive digital artwork, ${description}, ultra realistic, cinematic lighting, luxury automotive photography aesthetic, commercial wall art quality, rich detail, premium vehicles, high end lifestyle, no readable text, no logos, no watermark, no people`,
+  prompt: `premium automotive artwork, ${description}, ultra realistic, luxury vehicle photography, cinematic lighting, highly detailed, commercial wall art quality, premium automotive lifestyle, showroom quality, luxury transportation aesthetic, rich reflections, award winning composition, no readable text, no logos, no watermark, no people`,
 }))
 
 function safeFilePart(value: string) {
@@ -38,40 +68,52 @@ function safeFilePart(value: string) {
 
 async function generateOpenAiImageBuffer(prompt: string) {
   const apiKey = process.env.OPENAI_API_KEY
-  if (!apiKey) throw new Error('Missing OPENAI_API_KEY')
 
-  const response = await fetch('https://api.openai.com/v1/images/generations', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${apiKey}`,
-    },
-    body: JSON.stringify({
-      model: 'gpt-image-1',
-      prompt,
-      size: '1024x1024',
-      quality: 'medium',
-      n: 1,
-    }),
-    cache: 'no-store',
-  })
+  if (!apiKey) {
+    throw new Error('Missing OPENAI_API_KEY')
+  }
+
+  const response = await fetch(
+    'https://api.openai.com/v1/images/generations',
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: 'gpt-image-1',
+        prompt,
+        size: '1024x1024',
+        quality: 'medium',
+        n: 1,
+      }),
+      cache: 'no-store',
+    }
+  )
 
   if (!response.ok) {
     const text = await response.text()
-    throw new Error(`OpenAI image generation failed (${response.status}): ${text}`)
+    throw new Error(
+      `OpenAI image generation failed (${response.status}): ${text}`
+    )
   }
 
   const data = await response.json()
+
   const base64 = data?.data?.[0]?.b64_json
 
-  if (!base64 || typeof base64 !== 'string') {
-    throw new Error('No base64 image returned from OpenAI')
+  if (!base64) {
+    throw new Error('No image returned from OpenAI')
   }
 
   return Buffer.from(base64, 'base64')
 }
 
-async function uploadGeneratedImageToBlob(imageBuffer: Buffer, title: string) {
+async function uploadGeneratedImageToBlob(
+  imageBuffer: Buffer,
+  title: string
+) {
   const blob = await put(
     `artworks/themes/${THEME}/${safeFilePart(title)}.png`,
     imageBuffer,
@@ -82,14 +124,15 @@ async function uploadGeneratedImageToBlob(imageBuffer: Buffer, title: string) {
     }
   )
 
-  if (!blob.url) throw new Error('Blob upload failed')
   return blob.url
 }
 
-async function upsertArtwork(item: (typeof ITEMS)[number], imageUrl: string) {
+async function upsertArtwork(
+  item: (typeof ITEMS)[number],
+  imageUrl: string
+) {
   const tags = [
     THEME_TAG,
-    'theme',
     'cars',
     'automotive',
     'luxury',
@@ -99,20 +142,28 @@ async function upsertArtwork(item: (typeof ITEMS)[number], imageUrl: string) {
   ]
 
   const existing = await prisma.artwork.findFirst({
-    where: { title: item.title },
-    select: { id: true },
+    where: {
+      title: item.title,
+    },
+    select: {
+      id: true,
+    },
   })
 
   const artwork = existing
     ? await prisma.artwork.update({
-        where: { id: existing.id },
+        where: {
+          id: existing.id,
+        },
         data: {
-          artist: ARTIST,
           thumbnail: imageUrl,
+          artist: ARTIST,
           tags,
           status: 'PUBLISHED' as any,
         },
-        select: { id: true },
+        select: {
+          id: true,
+        },
       })
     : await prisma.artwork.create({
         data: {
@@ -124,7 +175,9 @@ async function upsertArtwork(item: (typeof ITEMS)[number], imageUrl: string) {
           status: 'PUBLISHED' as any,
           price: 9.99,
         },
-        select: { id: true },
+        select: {
+          id: true,
+        },
       })
 
   await prisma.asset.create({
@@ -145,8 +198,16 @@ export async function GET() {
   for (const item of ITEMS) {
     try {
       const imageBuffer = await generateOpenAiImageBuffer(item.prompt)
-      const blobUrl = await uploadGeneratedImageToBlob(imageBuffer, item.title)
-      const artworkId = await upsertArtwork(item, blobUrl)
+
+      const blobUrl = await uploadGeneratedImageToBlob(
+        imageBuffer,
+        item.title
+      )
+
+      const artworkId = await upsertArtwork(
+        item,
+        blobUrl
+      )
 
       results.push({
         title: item.title,
@@ -158,13 +219,16 @@ export async function GET() {
       results.push({
         title: item.title,
         success: false,
-        error: err instanceof Error ? err.message : 'Unknown error',
+        error:
+          err instanceof Error
+            ? err.message
+            : 'Unknown error',
       })
     }
   }
 
   return NextResponse.json({
-    message: 'Cars Automotive batch 4 complete',
+    message: 'Cars Automotive final batch complete',
     theme: THEME,
     count: ITEMS.length,
     results,
