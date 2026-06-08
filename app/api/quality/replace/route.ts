@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Luxury Sports Car Showroom', 'luxury sports car showroom with polished floors, dramatic lighting and premium automotive atmosphere'],
-  ['Classic Muscle Car Garage', 'classic muscle car garage with vintage tools, warm lighting and powerful automotive character'],
-  ['Exotic Supercar Sunset Drive', 'exotic supercar on a coastal road at sunset, cinematic reflections and high-end lifestyle mood'],
-  ['Vintage Car Restoration Workshop', 'vintage car restoration workshop with classic vehicle details, tools and warm garage lighting'],
-  ['Luxury SUV Mountain Road', 'luxury SUV on a winding mountain road, dramatic landscape and premium adventure atmosphere'],
-  ['Performance Car Detail Studio', 'performance car detail studio with glossy paint reflections and professional automotive lighting'],
-  ['Modern Automotive Dealership', 'modern automotive dealership with luxury vehicles, glass architecture and elegant showroom design'],
-  ['Classic Convertible Coastal Drive', 'classic convertible driving along a scenic coastal road with golden sunlight and nostalgic luxury'],
-  ['Hypercar City Nightscape', 'hypercar parked in a futuristic city nightscape with neon reflections and luxury automotive energy'],
-  ['Premium Car Collection Hall', 'premium private car collection hall with rare vehicles, polished floors and dramatic gallery lighting'],
+  ['Luxury Hypercar Showroom', 'luxury hypercar showroom featuring exotic vehicles, polished floors and dramatic premium lighting'],
+  ['Classic European Sports Car', 'classic european sports car parked in an elegant historic setting with luxury automotive atmosphere'],
+  ['Supercar Mountain Pass', 'exotic supercar driving through a winding mountain pass with cinematic scenery and premium lifestyle mood'],
+  ['Luxury Sedan Night Drive', 'luxury sedan cruising through a modern city at night with reflections and sophisticated ambiance'],
+  ['Collector Car Warehouse', 'exclusive collector car warehouse filled with rare vehicles and luxury automotive displays'],
+  ['Performance Garage Interior', 'high end performance garage with premium vehicles, tools and professional detailing environment'],
+  ['Luxury SUV Desert Adventure', 'luxury SUV crossing scenic desert landscapes with premium adventure lifestyle atmosphere'],
+  ['Vintage Roadster Sunset', 'vintage roadster parked beside a scenic coastal sunset with timeless automotive elegance'],
+  ['Futuristic Electric Hypercar', 'futuristic electric hypercar with advanced design, luxury technology and dramatic lighting'],
+  ['Automotive Photography Studio', 'professional automotive photography studio showcasing luxury vehicles with cinematic lighting'],
 ].map(([name, description]) => ({
   title: `${name} - Cars Automotive Theme`,
   prompt: `premium automotive digital artwork, ${description}, ultra realistic, cinematic lighting, luxury automotive photography aesthetic, commercial wall art quality, rich detail, premium vehicles, high end lifestyle, no readable text, no logos, no watermark, no people`,
@@ -164,7 +164,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Cars Automotive batch 1 complete',
+    message: 'Cars Automotive batch 2 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
