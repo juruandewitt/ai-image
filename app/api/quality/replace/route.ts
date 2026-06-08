@@ -11,16 +11,16 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Cosmic Crystal Planet', 'massive crystal planet glowing with cosmic energy and surrounded by colorful nebulae'],
-  ['Interstellar Trade Hub', 'advanced interstellar trade hub filled with futuristic spacecraft and galactic commerce'],
-  ['Nebula Crown Galaxy', 'magnificent spiral galaxy surrounded by glowing nebula formations resembling a celestial crown'],
-  ['Celestial Spaceport', 'luxury spaceport orbiting a distant planet with elegant futuristic architecture'],
-  ['Quantum Star Bridge', 'enormous bridge of quantum energy connecting distant regions of the galaxy'],
-  ['Aurora Planet Rings', 'beautiful ringed planet illuminated by cosmic auroras and vibrant celestial light'],
-  ['Deep Cosmos Observatory', 'advanced observatory positioned deep in space studying distant galaxies'],
-  ['Galactic Capital World', 'vast futuristic capital world bustling with advanced civilization and cosmic grandeur'],
-  ['Stellar Navigation Array', 'massive navigation array guiding spacecraft through deep interstellar routes'],
-  ['Infinite Nebula Horizon', 'epic horizon filled with endless nebula clouds stars and cosmic light'],
+  ['Galactic Crystal City', 'magnificent crystal city floating among stars with futuristic cosmic architecture'],
+  ['Supernova Observation Platform', 'luxury observation platform overlooking a spectacular supernova explosion'],
+  ['Interstellar Ocean World', 'beautiful ocean planet illuminated by distant galaxies and celestial light'],
+  ['Cosmic Energy Nexus', 'massive nexus of cosmic energy connecting galaxies through radiant power streams'],
+  ['Orbital Garden Paradise', 'luxury orbital habitat filled with exotic gardens overlooking deep space'],
+  ['Nebula Crown Observatory', 'advanced observatory surrounded by glowing nebula formations and cosmic wonders'],
+  ['Celestial Ring Metropolis', 'vast futuristic metropolis built upon enormous planetary rings'],
+  ['Starforge Engineering Complex', 'advanced engineering complex constructing interstellar vessels among the stars'],
+  ['Quantum Galaxy Corridor', 'brilliant corridor of quantum energy stretching across distant galaxies'],
+  ['Infinite Cosmic Expanse', 'epic panoramic view of endless cosmic structures galaxies and celestial light'],
 ].map(([name, description]) => ({
   title: `${name} - Space Galaxy Theme`,
   prompt: `premium space galaxy digital artwork, ${description}, ultra realistic, cinematic lighting, luxury sci fi aesthetic, highly detailed, commercial wall art quality, deep space atmosphere, vibrant cosmic colors, breathtaking celestial scenery, no readable text, no logos, no watermark, no people`,
@@ -164,7 +164,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Space Galaxy batch 3 complete',
+    message: 'Space Galaxy batch 4 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
