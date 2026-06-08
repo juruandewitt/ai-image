@@ -11,19 +11,19 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Cosmic Nebula Cathedral', 'massive celestial cathedral formed within glowing nebula clouds and cosmic light'],
-  ['Twin Planet Horizon', 'spectacular horizon featuring twin planets rising above a distant alien landscape'],
-  ['Galactic Research Station', 'advanced research station floating among stars studying deep space phenomena'],
-  ['Starlight Observation Deck', 'luxury observation deck overlooking billions of stars and colorful galaxies'],
-  ['Cosmic Rift Gateway', 'enormous energy gateway opening through a brilliant cosmic rift in deep space'],
-  ['Orbital Luxury Colony', 'luxury orbital colony suspended above a beautiful blue planet'],
-  ['Asteroid Belt Expedition', 'futuristic spacecraft navigating through a dramatic asteroid belt filled with light'],
-  ['Galaxy Reflection Vista', 'stunning cosmic vista with galaxies reflected across a crystalline alien surface'],
-  ['Deep Space Command Center', 'high technology command center monitoring interstellar travel routes'],
-  ['Infinite Universe Panorama', 'epic panoramic view of endless galaxies nebulae stars and cosmic wonders'],
+  ['Cosmic Crystal Planet', 'massive crystal planet glowing with cosmic energy and surrounded by colorful nebulae'],
+  ['Interstellar Trade Hub', 'advanced interstellar trade hub filled with futuristic spacecraft and galactic commerce'],
+  ['Nebula Crown Galaxy', 'magnificent spiral galaxy surrounded by glowing nebula formations resembling a celestial crown'],
+  ['Celestial Spaceport', 'luxury spaceport orbiting a distant planet with elegant futuristic architecture'],
+  ['Quantum Star Bridge', 'enormous bridge of quantum energy connecting distant regions of the galaxy'],
+  ['Aurora Planet Rings', 'beautiful ringed planet illuminated by cosmic auroras and vibrant celestial light'],
+  ['Deep Cosmos Observatory', 'advanced observatory positioned deep in space studying distant galaxies'],
+  ['Galactic Capital World', 'vast futuristic capital world bustling with advanced civilization and cosmic grandeur'],
+  ['Stellar Navigation Array', 'massive navigation array guiding spacecraft through deep interstellar routes'],
+  ['Infinite Nebula Horizon', 'epic horizon filled with endless nebula clouds stars and cosmic light'],
 ].map(([name, description]) => ({
   title: `${name} - Space Galaxy Theme`,
-  prompt: `premium space galaxy digital artwork, ${description}, ultra realistic, cinematic lighting, deep space atmosphere, highly detailed, luxury sci fi aesthetic, commercial wall art quality, breathtaking cosmic scenery, vibrant colors, no readable text, no logos, no watermark, no people`,
+  prompt: `premium space galaxy digital artwork, ${description}, ultra realistic, cinematic lighting, luxury sci fi aesthetic, highly detailed, commercial wall art quality, deep space atmosphere, vibrant cosmic colors, breathtaking celestial scenery, no readable text, no logos, no watermark, no people`,
 }))
 
 function safeFilePart(value: string) {
@@ -164,7 +164,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Space Galaxy batch 2 complete',
+    message: 'Space Galaxy batch 3 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
