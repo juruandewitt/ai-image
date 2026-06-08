@@ -11,19 +11,19 @@ const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Galactic Crystal City', 'magnificent crystal city floating among stars with futuristic cosmic architecture'],
-  ['Supernova Observation Platform', 'luxury observation platform overlooking a spectacular supernova explosion'],
-  ['Interstellar Ocean World', 'beautiful ocean planet illuminated by distant galaxies and celestial light'],
-  ['Cosmic Energy Nexus', 'massive nexus of cosmic energy connecting galaxies through radiant power streams'],
-  ['Orbital Garden Paradise', 'luxury orbital habitat filled with exotic gardens overlooking deep space'],
-  ['Nebula Crown Observatory', 'advanced observatory surrounded by glowing nebula formations and cosmic wonders'],
-  ['Celestial Ring Metropolis', 'vast futuristic metropolis built upon enormous planetary rings'],
-  ['Starforge Engineering Complex', 'advanced engineering complex constructing interstellar vessels among the stars'],
-  ['Quantum Galaxy Corridor', 'brilliant corridor of quantum energy stretching across distant galaxies'],
-  ['Infinite Cosmic Expanse', 'epic panoramic view of endless cosmic structures galaxies and celestial light'],
+  ['Celestial Throne World', 'magnificent celestial capital world serving as the center of a vast galactic civilization'],
+  ['Infinity Star Harbor', 'enormous luxury star harbor filled with advanced spacecraft and cosmic architecture'],
+  ['Galactic Aurora Fields', 'spectacular cosmic landscape illuminated by colorful galactic auroras and starlight'],
+  ['Nebula Crystal Kingdom', 'vast kingdom of crystal structures floating within vibrant glowing nebula clouds'],
+  ['Interstellar Discovery Center', 'advanced discovery center exploring the mysteries of deep space and distant galaxies'],
+  ['Cosmic Garden Of Eternity', 'beautiful cosmic garden suspended among the stars with celestial light and tranquility'],
+  ['Stellar Crown Citadel', 'majestic citadel positioned above the galaxy surrounded by radiant stellar energy'],
+  ['Astral Gateway Nexus', 'massive network of interstellar gateways connecting civilizations across the universe'],
+  ['Universal Horizon Vista', 'epic panoramic view of galaxies nebulae planets and infinite cosmic beauty'],
+  ['The Infinite Galaxy', 'ultimate cosmic masterpiece showcasing the grandeur and endless scale of the universe'],
 ].map(([name, description]) => ({
   title: `${name} - Space Galaxy Theme`,
-  prompt: `premium space galaxy digital artwork, ${description}, ultra realistic, cinematic lighting, luxury sci fi aesthetic, highly detailed, commercial wall art quality, deep space atmosphere, vibrant cosmic colors, breathtaking celestial scenery, no readable text, no logos, no watermark, no people`,
+  prompt: `premium space galaxy digital artwork, ${description}, ultra realistic, cinematic lighting, luxury sci fi aesthetic, highly detailed, commercial wall art quality, deep space atmosphere, vibrant cosmic colors, breathtaking celestial scenery, award winning composition, no readable text, no logos, no watermark, no people`,
 }))
 
 function safeFilePart(value: string) {
@@ -164,7 +164,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Space Galaxy batch 4 complete',
+    message: 'Space Galaxy final batch complete',
     theme: THEME,
     count: ITEMS.length,
     results,
