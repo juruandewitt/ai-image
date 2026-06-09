@@ -12,44 +12,44 @@ const STYLE = 'POLLOCK'
 
 const ITEMS = [
   [
-    'Ancient Chinese Imperial City',
-    'magnificent ancient chinese imperial city with golden palaces, ceremonial courtyards and dynastic grandeur',
+    'Ancient Troy Citadel',
+    'legendary ancient city of troy with towering walls, royal palaces and epic bronze age architecture',
   ],
   [
-    'Terracotta Army Legacy',
-    'vast terracotta army standing guard beneath dramatic skies, symbol of ancient chinese civilization',
+    'Minoan Palace Of Knossos',
+    'magnificent minoan palace of knossos with colorful frescoes, courtyards and advanced ancient design',
   ],
   [
-    'Ancient Indian Temple Complex',
-    'ornate ancient indian temple complex with intricate carvings, sacred architecture and spiritual atmosphere',
+    'Ancient Khmer Temple City',
+    'vast khmer temple city surrounded by jungle, intricate stone carvings and sacred architecture',
   ],
   [
-    'Petra Desert Kingdom',
-    'legendary city of petra carved into red sandstone cliffs illuminated by golden desert sunlight',
+    'Persian Imperial Capital',
+    'grand persian imperial capital with monumental halls, columns and royal ceremonial grounds',
   ],
   [
-    'Mesopotamian Ziggurat',
-    'towering mesopotamian ziggurat rising above an ancient city, cradle of civilization',
+    'Ancient Nabataean Kingdom',
+    'prosperous nabataean desert kingdom carved into sandstone cliffs with rich architectural detail',
   ],
   [
-    'Phoenician Coastal Port',
-    'wealthy phoenician trading port with ancient ships, stone architecture and mediterranean waters',
+    'Roman Imperial Palace',
+    'luxurious roman imperial palace with marble courtyards, fountains and imperial grandeur',
   ],
   [
-    'Inca Mountain Kingdom',
-    'remote inca mountain kingdom surrounded by dramatic peaks, terraces and clouds',
+    'Ancient Celtic Fortress',
+    'mighty celtic hill fortress overlooking green valleys and rugged ancient landscapes',
   ],
   [
-    'Ancient Sumerian Capital',
-    'grand sumerian capital city with temples, canals and monumental early civilization architecture',
+    'Byzantine Golden Capital',
+    'wealthy byzantine capital city featuring domes, palaces and magnificent imperial architecture',
   ],
   [
-    'Carthaginian Harbor Empire',
-    'powerful carthaginian harbor city filled with merchant vessels and ancient prosperity',
+    'Ancient Temple Of Zeus',
+    'majestic temple of zeus with towering columns and classical greek architectural perfection',
   ],
   [
-    'Oracle Of Delphi Sanctuary',
-    'sacred sanctuary of delphi perched on mountain slopes with classical greek elegance',
+    'Indus Valley Metropolis',
+    'advanced indus valley civilization city with sophisticated urban planning and ancient engineering',
   ],
 ].map(([name, description]) => ({
   title: `${name} - Ancient Civilizations Theme`,
@@ -195,12 +195,16 @@ export async function GET() {
   for (const item of ITEMS) {
     try {
       const imageBuffer = await generateOpenAiImageBuffer(item.prompt)
+
       const imageUrl = await uploadGeneratedImageToBlob(
         imageBuffer,
         item.title
       )
 
-      const artworkId = await upsertArtwork(item, imageUrl)
+      const artworkId = await upsertArtwork(
+        item,
+        imageUrl
+      )
 
       results.push({
         title: item.title,
@@ -213,13 +217,15 @@ export async function GET() {
         title: item.title,
         success: false,
         error:
-          error instanceof Error ? error.message : 'Unknown error',
+          error instanceof Error
+            ? error.message
+            : 'Unknown error',
       })
     }
   }
 
   return NextResponse.json({
-    message: 'Ancient Civilizations batch 3 complete',
+    message: 'Ancient Civilizations batch 4 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
