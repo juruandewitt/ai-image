@@ -5,25 +5,55 @@ import { prisma } from '@/lib/prisma'
 export const dynamic = 'force-dynamic'
 export const maxDuration = 300
 
-const THEME = 'space-galaxy'
+const THEME = 'ancient-civilizations'
 const THEME_TAG = `theme:${THEME}`
 const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
-  ['Celestial Throne World', 'magnificent celestial capital world serving as the center of a vast galactic civilization'],
-  ['Infinity Star Harbor', 'enormous luxury star harbor filled with advanced spacecraft and cosmic architecture'],
-  ['Galactic Aurora Fields', 'spectacular cosmic landscape illuminated by colorful galactic auroras and starlight'],
-  ['Nebula Crystal Kingdom', 'vast kingdom of crystal structures floating within vibrant glowing nebula clouds'],
-  ['Interstellar Discovery Center', 'advanced discovery center exploring the mysteries of deep space and distant galaxies'],
-  ['Cosmic Garden Of Eternity', 'beautiful cosmic garden suspended among the stars with celestial light and tranquility'],
-  ['Stellar Crown Citadel', 'majestic citadel positioned above the galaxy surrounded by radiant stellar energy'],
-  ['Astral Gateway Nexus', 'massive network of interstellar gateways connecting civilizations across the universe'],
-  ['Universal Horizon Vista', 'epic panoramic view of galaxies nebulae planets and infinite cosmic beauty'],
-  ['The Infinite Galaxy', 'ultimate cosmic masterpiece showcasing the grandeur and endless scale of the universe'],
+  [
+    'Great Pyramid Of Giza',
+    'majestic great pyramid of giza at golden sunrise, ancient egyptian civilization, monumental architecture and desert atmosphere',
+  ],
+  [
+    'Ancient Roman Forum',
+    'grand ancient roman forum filled with marble columns, statues and imperial architecture',
+  ],
+  [
+    'Greek Acropolis Sunset',
+    'ancient greek acropolis overlooking the city at sunset, classical architecture and timeless beauty',
+  ],
+  [
+    'Hanging Gardens Of Babylon',
+    'legendary hanging gardens of babylon overflowing with lush greenery and ancient engineering marvels',
+  ],
+  [
+    'Lost City Of Atlantis',
+    'mythical lost city of atlantis with magnificent temples and advanced ancient architecture',
+  ],
+  [
+    'Mayan Pyramid Kingdom',
+    'ancient mayan pyramid city rising above dense jungle landscape and tropical mist',
+  ],
+  [
+    'Persian Royal Palace',
+    'luxurious ancient persian royal palace with intricate stone carvings and grand courtyards',
+  ],
+  [
+    'Ancient Egyptian Temple',
+    'massive egyptian temple lined with towering columns, hieroglyphics and sacred atmosphere',
+  ],
+  [
+    'Roman Colosseum Glory',
+    'magnificent roman colosseum during the height of the empire, detailed stone architecture',
+  ],
+  [
+    'Aztec Sacred Capital',
+    'grand aztec capital city with temples, canals and vibrant ancient civilization energy',
+  ],
 ].map(([name, description]) => ({
-  title: `${name} - Space Galaxy Theme`,
-  prompt: `premium space galaxy digital artwork, ${description}, ultra realistic, cinematic lighting, luxury sci fi aesthetic, highly detailed, commercial wall art quality, deep space atmosphere, vibrant cosmic colors, breathtaking celestial scenery, award winning composition, no readable text, no logos, no watermark, no people`,
+  title: `${name} - Ancient Civilizations Theme`,
+  prompt: `premium ancient civilizations digital artwork, ${description}, ultra realistic, cinematic lighting, luxury historical aesthetic, museum quality, highly detailed architecture, epic scale, rich textures, masterpiece composition, commercial wall art quality, no readable text, no logos, no watermark, no people`,
 }))
 
 function safeFilePart(value: string) {
@@ -40,38 +70,47 @@ async function generateOpenAiImageBuffer(prompt: string) {
   const apiKey = process.env.OPENAI_API_KEY
   if (!apiKey) throw new Error('Missing OPENAI_API_KEY')
 
-  const response = await fetch('https://api.openai.com/v1/images/generations', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${apiKey}`,
-    },
-    body: JSON.stringify({
-      model: 'gpt-image-1',
-      prompt,
-      size: '1024x1024',
-      quality: 'medium',
-      n: 1,
-    }),
-    cache: 'no-store',
-  })
+  const response = await fetch(
+    'https://api.openai.com/v1/images/generations',
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: 'gpt-image-1',
+        prompt,
+        size: '1024x1024',
+        quality: 'medium',
+        n: 1,
+      }),
+      cache: 'no-store',
+    }
+  )
 
   if (!response.ok) {
     const text = await response.text()
-    throw new Error(`OpenAI image generation failed (${response.status}): ${text}`)
+    throw new Error(
+      `OpenAI image generation failed (${response.status}): ${text}`
+    )
   }
 
   const data = await response.json()
+
   const base64 = data?.data?.[0]?.b64_json
 
-  if (!base64 || typeof base64 !== 'string') {
-    throw new Error('No base64 image returned from OpenAI')
+  if (!base64) {
+    throw new Error('No image returned from OpenAI')
   }
 
   return Buffer.from(base64, 'base64')
 }
 
-async function uploadGeneratedImageToBlob(imageBuffer: Buffer, title: string) {
+async function uploadGeneratedImageToBlob(
+  imageBuffer: Buffer,
+  title: string
+) {
   const blob = await put(
     `artworks/themes/${THEME}/${safeFilePart(title)}.png`,
     imageBuffer,
@@ -82,49 +121,60 @@ async function uploadGeneratedImageToBlob(imageBuffer: Buffer, title: string) {
     }
   )
 
-  if (!blob.url) throw new Error('Blob upload failed')
   return blob.url
 }
 
-async function upsertArtwork(item: (typeof ITEMS)[number], imageUrl: string) {
+async function upsertArtwork(
+  item: (typeof ITEMS)[number],
+  imageUrl: string
+) {
   const tags = [
     THEME_TAG,
-    'theme',
-    'space',
-    'galaxy',
-    'cosmos',
-    'astronomy',
-    'sci-fi',
+    'ancient',
+    'civilization',
+    'history',
+    'historical',
+    'architecture',
     'wall-art',
   ]
 
   const existing = await prisma.artwork.findFirst({
-    where: { title: item.title },
-    select: { id: true },
+    where: {
+      title: item.title,
+    },
+    select: {
+      id: true,
+    },
   })
 
   const artwork = existing
     ? await prisma.artwork.update({
-        where: { id: existing.id },
+        where: {
+          id: existing.id,
+        },
         data: {
-          artist: ARTIST,
           thumbnail: imageUrl,
+          artist: ARTIST,
           tags,
           status: 'PUBLISHED' as any,
         },
-        select: { id: true },
+        select: {
+          id: true,
+        },
       })
     : await prisma.artwork.create({
         data: {
           title: item.title,
-          style: STYLE as any,
           artist: ARTIST,
+          style: STYLE as any,
           thumbnail: imageUrl,
           tags,
           status: 'PUBLISHED' as any,
           price: 9.99,
         },
-        select: { id: true },
+        select: {
+          id: true,
+        },
       })
 
   await prisma.asset.create({
@@ -145,26 +195,31 @@ export async function GET() {
   for (const item of ITEMS) {
     try {
       const imageBuffer = await generateOpenAiImageBuffer(item.prompt)
-      const blobUrl = await uploadGeneratedImageToBlob(imageBuffer, item.title)
-      const artworkId = await upsertArtwork(item, blobUrl)
+      const imageUrl = await uploadGeneratedImageToBlob(
+        imageBuffer,
+        item.title
+      )
+
+      const artworkId = await upsertArtwork(item, imageUrl)
 
       results.push({
         title: item.title,
         success: true,
         artworkId,
-        imageUrl: blobUrl,
+        imageUrl,
       })
-    } catch (err) {
+    } catch (error) {
       results.push({
         title: item.title,
         success: false,
-        error: err instanceof Error ? err.message : 'Unknown error',
+        error:
+          error instanceof Error ? error.message : 'Unknown error',
       })
     }
   }
 
   return NextResponse.json({
-    message: 'Space Galaxy final batch complete',
+    message: 'Ancient Civilizations batch 1 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
