@@ -12,44 +12,44 @@ const STYLE = 'POLLOCK'
 
 const ITEMS = [
   [
-    'Great Pyramid Of Giza',
-    'majestic great pyramid of giza at golden sunrise, ancient egyptian civilization, monumental architecture and desert atmosphere',
+    'Temple Of Karnak',
+    'massive temple of karnak illuminated by golden sunlight, ancient egyptian grandeur and monumental columns',
   ],
   [
-    'Ancient Roman Forum',
-    'grand ancient roman forum filled with marble columns, statues and imperial architecture',
+    'Library Of Alexandria',
+    'legendary library of alexandria filled with scrolls, marble halls and ancient scholarly magnificence',
   ],
   [
-    'Greek Acropolis Sunset',
-    'ancient greek acropolis overlooking the city at sunset, classical architecture and timeless beauty',
+    'Ancient Sparta Stronghold',
+    'fortified spartan stronghold overlooking rugged mountains and ancient greek military power',
   ],
   [
-    'Hanging Gardens Of Babylon',
-    'legendary hanging gardens of babylon overflowing with lush greenery and ancient engineering marvels',
+    'Babylon Royal Gate',
+    'magnificent ishtar gate of babylon decorated with vibrant blue tiles and ancient splendor',
   ],
   [
-    'Lost City Of Atlantis',
-    'mythical lost city of atlantis with magnificent temples and advanced ancient architecture',
+    'Machu Picchu Citadel',
+    'ancient inca citadel of machu picchu surrounded by dramatic mountain peaks and clouds',
   ],
   [
-    'Mayan Pyramid Kingdom',
-    'ancient mayan pyramid city rising above dense jungle landscape and tropical mist',
+    'Persian Garden Palace',
+    'luxurious persian palace surrounded by symmetrical gardens, fountains and royal elegance',
   ],
   [
-    'Persian Royal Palace',
-    'luxurious ancient persian royal palace with intricate stone carvings and grand courtyards',
+    'Roman Aqueduct Valley',
+    'grand roman aqueduct stretching across a vast valley, engineering marvel of the empire',
   ],
   [
-    'Ancient Egyptian Temple',
-    'massive egyptian temple lined with towering columns, hieroglyphics and sacred atmosphere',
+    'Aztec Temple Complex',
+    'sacred aztec temple complex with towering pyramids and ceremonial architecture',
   ],
   [
-    'Roman Colosseum Glory',
-    'magnificent roman colosseum during the height of the empire, detailed stone architecture',
+    'Ancient Greek Harbor',
+    'bustling ancient greek harbor with classical architecture and mediterranean atmosphere',
   ],
   [
-    'Aztec Sacred Capital',
-    'grand aztec capital city with temples, canals and vibrant ancient civilization energy',
+    'Egyptian Nile Kingdom',
+    'ancient egyptian civilization flourishing along the nile river with temples and fertile landscapes',
   ],
 ].map(([name, description]) => ({
   title: `${name} - Ancient Civilizations Theme`,
@@ -97,7 +97,6 @@ async function generateOpenAiImageBuffer(prompt: string) {
   }
 
   const data = await response.json()
-
   const base64 = data?.data?.[0]?.b64_json
 
   if (!base64) {
@@ -219,7 +218,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Ancient Civilizations batch 1 complete',
+    message: 'Ancient Civilizations batch 2 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
