@@ -12,48 +12,48 @@ const STYLE = 'POLLOCK'
 
 const ITEMS = [
   [
-    'Temple Of Karnak',
-    'massive temple of karnak illuminated by golden sunlight, ancient egyptian grandeur and monumental columns',
+    'Ancient Chinese Imperial City',
+    'magnificent ancient chinese imperial city with golden palaces, ceremonial courtyards and dynastic grandeur',
   ],
   [
-    'Library Of Alexandria',
-    'legendary library of alexandria filled with scrolls, marble halls and ancient scholarly magnificence',
+    'Terracotta Army Legacy',
+    'vast terracotta army standing guard beneath dramatic skies, symbol of ancient chinese civilization',
   ],
   [
-    'Ancient Sparta Stronghold',
-    'fortified spartan stronghold overlooking rugged mountains and ancient greek military power',
+    'Ancient Indian Temple Complex',
+    'ornate ancient indian temple complex with intricate carvings, sacred architecture and spiritual atmosphere',
   ],
   [
-    'Babylon Royal Gate',
-    'magnificent ishtar gate of babylon decorated with vibrant blue tiles and ancient splendor',
+    'Petra Desert Kingdom',
+    'legendary city of petra carved into red sandstone cliffs illuminated by golden desert sunlight',
   ],
   [
-    'Machu Picchu Citadel',
-    'ancient inca citadel of machu picchu surrounded by dramatic mountain peaks and clouds',
+    'Mesopotamian Ziggurat',
+    'towering mesopotamian ziggurat rising above an ancient city, cradle of civilization',
   ],
   [
-    'Persian Garden Palace',
-    'luxurious persian palace surrounded by symmetrical gardens, fountains and royal elegance',
+    'Phoenician Coastal Port',
+    'wealthy phoenician trading port with ancient ships, stone architecture and mediterranean waters',
   ],
   [
-    'Roman Aqueduct Valley',
-    'grand roman aqueduct stretching across a vast valley, engineering marvel of the empire',
+    'Inca Mountain Kingdom',
+    'remote inca mountain kingdom surrounded by dramatic peaks, terraces and clouds',
   ],
   [
-    'Aztec Temple Complex',
-    'sacred aztec temple complex with towering pyramids and ceremonial architecture',
+    'Ancient Sumerian Capital',
+    'grand sumerian capital city with temples, canals and monumental early civilization architecture',
   ],
   [
-    'Ancient Greek Harbor',
-    'bustling ancient greek harbor with classical architecture and mediterranean atmosphere',
+    'Carthaginian Harbor Empire',
+    'powerful carthaginian harbor city filled with merchant vessels and ancient prosperity',
   ],
   [
-    'Egyptian Nile Kingdom',
-    'ancient egyptian civilization flourishing along the nile river with temples and fertile landscapes',
+    'Oracle Of Delphi Sanctuary',
+    'sacred sanctuary of delphi perched on mountain slopes with classical greek elegance',
   ],
 ].map(([name, description]) => ({
   title: `${name} - Ancient Civilizations Theme`,
-  prompt: `premium ancient civilizations digital artwork, ${description}, ultra realistic, cinematic lighting, luxury historical aesthetic, museum quality, highly detailed architecture, epic scale, rich textures, masterpiece composition, commercial wall art quality, no readable text, no logos, no watermark, no people`,
+  prompt: `premium ancient civilizations digital artwork, ${description}, ultra realistic, cinematic lighting, luxury historical aesthetic, museum quality, highly detailed architecture, epic scale, rich textures, masterpiece composition, commercial wall art quality, historical realism, no readable text, no logos, no watermark, no people`,
 }))
 
 function safeFilePart(value: string) {
@@ -134,6 +134,7 @@ async function upsertArtwork(
     'history',
     'historical',
     'architecture',
+    'heritage',
     'wall-art',
   ]
 
@@ -218,7 +219,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Ancient Civilizations batch 2 complete',
+    message: 'Ancient Civilizations batch 3 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
