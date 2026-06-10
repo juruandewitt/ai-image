@@ -8,52 +8,52 @@ export const maxDuration = 300
 const THEME = 'fantasy-kingdoms'
 const THEME_TAG = `theme:${THEME}`
 const ARTIST = 'AI Image'
-const STYLE = 'POLLOCK'
+const STYLE = 'FANTASY'
 
 const ITEMS = [
   [
-    'Dragonspire Royal City',
-    'legendary royal city built around an enormous dragonspire tower with magical energy flowing through the kingdom',
+    'Dragonstone Sky Kingdom',
+    'majestic fantasy kingdom built upon floating dragonstone islands above the clouds with golden bridges and royal towers',
   ],
   [
-    'Silver Moon Elven Kingdom',
-    'beautiful elven kingdom illuminated by silver moonlight with elegant towers and enchanted forests',
+    'Moonlit Elven Palace',
+    'elegant elven palace illuminated by moonlight deep within an enchanted silver forest',
   ],
   [
-    'Golden Griffin Citadel',
-    'majestic griffin citadel overlooking vast fantasy lands with noble architecture and magical skies',
+    'Kingdom Of Crystal Dragons',
+    'vast fantasy kingdom protected by magnificent crystal dragons and glittering crystal castles',
   ],
   [
-    'Floating Crystal Kingdom',
-    'spectacular floating kingdom made of crystal islands suspended among glowing clouds',
+    'Emerald Crown Capital',
+    'luxurious emerald fantasy capital city surrounded by magical forests and shining rivers',
   ],
   [
-    'Arcane Wizard Capital',
-    'grand capital city of powerful wizards featuring magical academies and enchanted towers',
+    'Celestial Griffin Fortress',
+    'legendary mountain fortress guarded by celestial griffins beneath radiant heavenly skies',
   ],
   [
-    'Emerald Dragon Valley',
-    'lush fantasy valley protected by emerald dragons with magnificent castles and rivers',
+    'Arcane Sapphire Kingdom',
+    'powerful magical kingdom built from sapphire towers glowing with ancient arcane energy',
   ],
   [
-    'Sunfire Palace Realm',
-    'radiant fantasy palace kingdom glowing with golden sunlight and magical prosperity',
+    'Golden Phoenix Empire',
+    'magnificent fantasy empire inspired by golden phoenixes with ornate palaces and glowing gardens',
   ],
   [
-    'Celestial Sky Fortress',
-    'massive fortress floating high above the clouds with celestial architecture and magical defenses',
+    'Kingdom Above The Clouds',
+    'floating fantasy kingdom suspended high above the clouds with grand castles and endless sky vistas',
   ],
   [
-    'Kingdom Of Enchanted Rivers',
-    'prosperous fantasy kingdom connected by magical rivers and magnificent bridges',
+    'Mystic Dragon Throne Hall',
+    'legendary royal throne hall decorated with ancient dragon statues and magical treasures',
   ],
   [
-    'Crystal Dragon Throne',
-    'epic royal throne city built from crystal and guarded by ancient dragons',
+    'Realm Of Eternal Magic',
+    'ultimate fantasy kingdom overflowing with magical architecture, enchanted landscapes and wonder',
   ],
 ].map(([name, description]) => ({
   title: `${name} - Fantasy Kingdoms Theme`,
-  prompt: `premium fantasy kingdoms digital artwork, ${description}, ultra realistic, cinematic fantasy lighting, epic world building, luxury fantasy architecture, magical atmosphere, highly detailed, masterpiece quality, fantasy wall art, no readable text, no logos, no watermark, no people`,
+  prompt: `premium fantasy kingdoms digital artwork, ${description}, ultra realistic, cinematic lighting, epic fantasy environment, luxury concept art quality, highly detailed architecture, magical atmosphere, masterpiece, fantasy wall art, rich colors, no readable text, no logos, no watermark, no people`,
 }))
 
 function safeFilePart(value: string) {
@@ -132,11 +132,12 @@ async function upsertArtwork(
 ) {
   const tags = [
     THEME_TAG,
+    'theme',
     'fantasy',
     'kingdoms',
+    'dragons',
     'magic',
     'castles',
-    'dragons',
     'wall-art',
   ]
 
@@ -157,9 +158,7 @@ async function upsertArtwork(
         data: {
           thumbnail: imageUrl,
           tags,
-        },
-        select: {
-          id: true,
+          status: 'PUBLISHED' as any,
         },
       })
     : await prisma.artwork.create({
@@ -168,12 +167,9 @@ async function upsertArtwork(
           artist: ARTIST,
           style: STYLE as any,
           thumbnail: imageUrl,
+          tags,
           status: 'PUBLISHED' as any,
           price: 9.99,
-          tags,
-        },
-        select: {
-          id: true,
         },
       })
 
@@ -201,10 +197,7 @@ export async function GET() {
         item.title
       )
 
-      const artworkId = await upsertArtwork(
-        item,
-        imageUrl
-      )
+      const artworkId = await upsertArtwork(item, imageUrl)
 
       results.push({
         title: item.title,
@@ -217,15 +210,13 @@ export async function GET() {
         title: item.title,
         success: false,
         error:
-          error instanceof Error
-            ? error.message
-            : 'Unknown error',
+          error instanceof Error ? error.message : 'Unknown error',
       })
     }
   }
 
   return NextResponse.json({
-    message: 'Fantasy Kingdoms batch 2 complete',
+    message: 'Fantasy Kingdoms batch 3 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
