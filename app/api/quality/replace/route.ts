@@ -1,3 +1,4 @@
+```ts
 import { NextResponse } from 'next/server'
 import { put } from '@vercel/blob'
 import { prisma } from '@/lib/prisma'
@@ -5,55 +6,55 @@ import { prisma } from '@/lib/prisma'
 export const dynamic = 'force-dynamic'
 export const maxDuration = 300
 
-const THEME = 'ancient-civilizations'
+const THEME = 'fantasy-kingdoms'
 const THEME_TAG = `theme:${THEME}`
 const ARTIST = 'AI Image'
 const STYLE = 'POLLOCK'
 
 const ITEMS = [
   [
-    'Ancient Japanese Imperial Court',
-    'magnificent ancient japanese imperial court with traditional architecture royal gardens and cultural grandeur',
+    'Golden Dragon Kingdom',
+    'majestic fantasy kingdom ruled by golden dragons with towering castles and magical mountains',
   ],
   [
-    'Great Wall Kingdom',
-    'vast ancient chinese kingdom overlooking the great wall mountain landscapes and imperial power',
+    'Crystal Crown Citadel',
+    'magnificent crystal citadel shining above a fantasy kingdom filled with magical energy',
   ],
   [
-    'Ancient Assyrian Capital',
-    'grand assyrian capital city with massive gates palaces and ancient mesopotamian architecture',
+    'Sky Kingdom Of Aether',
+    'floating fantasy kingdom among the clouds connected by enchanted bridges and castles',
   ],
   [
-    'Minoan Coastal Palace',
-    'luxurious minoan coastal palace overlooking crystal waters and mediterranean beauty',
+    'Elven Royal Capital',
+    'luxurious elven capital city surrounded by ancient forests and elegant magical architecture',
   ],
   [
-    'Ancient Etruscan City',
-    'prosperous etruscan city with temples marketplaces and classical italian landscapes',
+    'Moonlight Castle Realm',
+    'grand fantasy castle illuminated by moonlight overlooking a prosperous magical kingdom',
   ],
   [
-    'Parthenon Of Athens',
-    'majestic parthenon of athens illuminated by golden sunlight and classical greek glory',
+    'Dragonfire Throne City',
+    'epic royal city with dragon statues blazing towers and powerful fantasy atmosphere',
   ],
   [
-    'Ancient Khmer Royal Palace',
-    'ornate khmer royal palace surrounded by tropical gardens and temple architecture',
+    'Emerald Forest Kingdom',
+    'beautiful forest kingdom hidden among giant trees magical gardens and enchanted rivers',
   ],
   [
-    'Babylonian Observatory',
-    'advanced babylonian observatory studying the stars above an ancient desert kingdom',
+    'Celestial Palace Empire',
+    'heavenly fantasy empire with golden palaces floating towers and celestial architecture',
   ],
   [
-    'Ancient Macedonian Empire',
-    'powerful macedonian imperial capital showcasing military strength and royal prestige',
+    'Mystic Mountain Fortress',
+    'massive fantasy fortress carved into mountains surrounded by magical waterfalls',
   ],
   [
-    'Legacy Of The Ancient World',
-    'epic panorama featuring the greatest ancient civilizations united in one timeless masterpiece',
+    'Kingdom Of Eternal Light',
+    'legendary fantasy kingdom bathed in radiant light with magnificent castles and prosperity',
   ],
 ].map(([name, description]) => ({
-  title: `${name} - Ancient Civilizations Theme`,
-  prompt: `premium ancient civilizations digital artwork, ${description}, ultra realistic, cinematic lighting, historical grandeur, architectural masterpiece, luxury wall art quality, rich detail, epic atmosphere, ancient world heritage, no readable text, no logos, no watermark, no people`,
+  title: `${name} - Fantasy Kingdoms Theme`,
+  prompt: `premium fantasy kingdoms digital artwork, ${description}, ultra realistic, cinematic fantasy lighting, epic world building, luxury fantasy architecture, magical atmosphere, highly detailed, masterpiece quality, fantasy wall art, no readable text, no logos, no watermark, no people`,
 }))
 
 function safeFilePart(value: string) {
@@ -132,11 +133,11 @@ async function upsertArtwork(
 ) {
   const tags = [
     THEME_TAG,
-    'ancient',
-    'civilizations',
-    'history',
-    'architecture',
-    'heritage',
+    'fantasy',
+    'kingdoms',
+    'magic',
+    'castles',
+    'dragons',
     'wall-art',
   ]
 
@@ -225,9 +226,10 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Ancient Civilizations final batch complete',
+    message: 'Fantasy Kingdoms batch 1 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
   })
 }
+```
