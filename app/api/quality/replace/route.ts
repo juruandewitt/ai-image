@@ -1,4 +1,3 @@
-```ts
 import { NextResponse } from 'next/server'
 import { put } from '@vercel/blob'
 import { prisma } from '@/lib/prisma'
@@ -232,4 +231,3 @@ export async function GET() {
     results,
   })
 }
-```
