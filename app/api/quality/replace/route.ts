@@ -12,48 +12,48 @@ const STYLE = 'POLLOCK'
 
 const ITEMS = [
   [
-    'Ancient Troy Citadel',
-    'legendary ancient city of troy with towering walls, royal palaces and epic bronze age architecture',
+    'Ancient Japanese Imperial Court',
+    'magnificent ancient japanese imperial court with traditional architecture royal gardens and cultural grandeur',
   ],
   [
-    'Minoan Palace Of Knossos',
-    'magnificent minoan palace of knossos with colorful frescoes, courtyards and advanced ancient design',
+    'Great Wall Kingdom',
+    'vast ancient chinese kingdom overlooking the great wall mountain landscapes and imperial power',
   ],
   [
-    'Ancient Khmer Temple City',
-    'vast khmer temple city surrounded by jungle, intricate stone carvings and sacred architecture',
+    'Ancient Assyrian Capital',
+    'grand assyrian capital city with massive gates palaces and ancient mesopotamian architecture',
   ],
   [
-    'Persian Imperial Capital',
-    'grand persian imperial capital with monumental halls, columns and royal ceremonial grounds',
+    'Minoan Coastal Palace',
+    'luxurious minoan coastal palace overlooking crystal waters and mediterranean beauty',
   ],
   [
-    'Ancient Nabataean Kingdom',
-    'prosperous nabataean desert kingdom carved into sandstone cliffs with rich architectural detail',
+    'Ancient Etruscan City',
+    'prosperous etruscan city with temples marketplaces and classical italian landscapes',
   ],
   [
-    'Roman Imperial Palace',
-    'luxurious roman imperial palace with marble courtyards, fountains and imperial grandeur',
+    'Parthenon Of Athens',
+    'majestic parthenon of athens illuminated by golden sunlight and classical greek glory',
   ],
   [
-    'Ancient Celtic Fortress',
-    'mighty celtic hill fortress overlooking green valleys and rugged ancient landscapes',
+    'Ancient Khmer Royal Palace',
+    'ornate khmer royal palace surrounded by tropical gardens and temple architecture',
   ],
   [
-    'Byzantine Golden Capital',
-    'wealthy byzantine capital city featuring domes, palaces and magnificent imperial architecture',
+    'Babylonian Observatory',
+    'advanced babylonian observatory studying the stars above an ancient desert kingdom',
   ],
   [
-    'Ancient Temple Of Zeus',
-    'majestic temple of zeus with towering columns and classical greek architectural perfection',
+    'Ancient Macedonian Empire',
+    'powerful macedonian imperial capital showcasing military strength and royal prestige',
   ],
   [
-    'Indus Valley Metropolis',
-    'advanced indus valley civilization city with sophisticated urban planning and ancient engineering',
+    'Legacy Of The Ancient World',
+    'epic panorama featuring the greatest ancient civilizations united in one timeless masterpiece',
   ],
 ].map(([name, description]) => ({
   title: `${name} - Ancient Civilizations Theme`,
-  prompt: `premium ancient civilizations digital artwork, ${description}, ultra realistic, cinematic lighting, luxury historical aesthetic, museum quality, highly detailed architecture, epic scale, rich textures, masterpiece composition, commercial wall art quality, historical realism, no readable text, no logos, no watermark, no people`,
+  prompt: `premium ancient civilizations digital artwork, ${description}, ultra realistic, cinematic lighting, historical grandeur, architectural masterpiece, luxury wall art quality, rich detail, epic atmosphere, ancient world heritage, no readable text, no logos, no watermark, no people`,
 }))
 
 function safeFilePart(value: string) {
@@ -68,7 +68,10 @@ function safeFilePart(value: string) {
 
 async function generateOpenAiImageBuffer(prompt: string) {
   const apiKey = process.env.OPENAI_API_KEY
-  if (!apiKey) throw new Error('Missing OPENAI_API_KEY')
+
+  if (!apiKey) {
+    throw new Error('Missing OPENAI_API_KEY')
+  }
 
   const response = await fetch(
     'https://api.openai.com/v1/images/generations',
@@ -85,7 +88,6 @@ async function generateOpenAiImageBuffer(prompt: string) {
         quality: 'medium',
         n: 1,
       }),
-      cache: 'no-store',
     }
   )
 
@@ -97,6 +99,7 @@ async function generateOpenAiImageBuffer(prompt: string) {
   }
 
   const data = await response.json()
+
   const base64 = data?.data?.[0]?.b64_json
 
   if (!base64) {
@@ -130,9 +133,8 @@ async function upsertArtwork(
   const tags = [
     THEME_TAG,
     'ancient',
-    'civilization',
+    'civilizations',
     'history',
-    'historical',
     'architecture',
     'heritage',
     'wall-art',
@@ -154,9 +156,7 @@ async function upsertArtwork(
         },
         data: {
           thumbnail: imageUrl,
-          artist: ARTIST,
           tags,
-          status: 'PUBLISHED' as any,
         },
         select: {
           id: true,
@@ -168,9 +168,9 @@ async function upsertArtwork(
           artist: ARTIST,
           style: STYLE as any,
           thumbnail: imageUrl,
-          tags,
           status: 'PUBLISHED' as any,
           price: 9.99,
+          tags,
         },
         select: {
           id: true,
@@ -225,7 +225,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Ancient Civilizations batch 4 complete',
+    message: 'Ancient Civilizations final batch complete',
     theme: THEME,
     count: ITEMS.length,
     results,
