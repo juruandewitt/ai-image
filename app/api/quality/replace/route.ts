@@ -1,3 +1,4 @@
+```ts
 import { NextResponse } from 'next/server'
 import { put } from '@vercel/blob'
 import { prisma } from '@/lib/prisma'
@@ -12,44 +13,44 @@ const STYLE = 'POLLOCK'
 
 const ITEMS = [
   [
-    'Golden Dragon Kingdom',
-    'majestic fantasy kingdom ruled by golden dragons with towering castles and magical mountains',
+    'Dragonspire Royal City',
+    'legendary royal city built around an enormous dragonspire tower with magical energy flowing through the kingdom',
   ],
   [
-    'Crystal Crown Citadel',
-    'magnificent crystal citadel shining above a fantasy kingdom filled with magical energy',
+    'Silver Moon Elven Kingdom',
+    'beautiful elven kingdom illuminated by silver moonlight with elegant towers and enchanted forests',
   ],
   [
-    'Sky Kingdom Of Aether',
-    'floating fantasy kingdom among the clouds connected by enchanted bridges and castles',
+    'Golden Griffin Citadel',
+    'majestic griffin citadel overlooking vast fantasy lands with noble architecture and magical skies',
   ],
   [
-    'Elven Royal Capital',
-    'luxurious elven capital city surrounded by ancient forests and elegant magical architecture',
+    'Floating Crystal Kingdom',
+    'spectacular floating kingdom made of crystal islands suspended among glowing clouds',
   ],
   [
-    'Moonlight Castle Realm',
-    'grand fantasy castle illuminated by moonlight overlooking a prosperous magical kingdom',
+    'Arcane Wizard Capital',
+    'grand capital city of powerful wizards featuring magical academies and enchanted towers',
   ],
   [
-    'Dragonfire Throne City',
-    'epic royal city with dragon statues blazing towers and powerful fantasy atmosphere',
+    'Emerald Dragon Valley',
+    'lush fantasy valley protected by emerald dragons with magnificent castles and rivers',
   ],
   [
-    'Emerald Forest Kingdom',
-    'beautiful forest kingdom hidden among giant trees magical gardens and enchanted rivers',
+    'Sunfire Palace Realm',
+    'radiant fantasy palace kingdom glowing with golden sunlight and magical prosperity',
   ],
   [
-    'Celestial Palace Empire',
-    'heavenly fantasy empire with golden palaces floating towers and celestial architecture',
+    'Celestial Sky Fortress',
+    'massive fortress floating high above the clouds with celestial architecture and magical defenses',
   ],
   [
-    'Mystic Mountain Fortress',
-    'massive fantasy fortress carved into mountains surrounded by magical waterfalls',
+    'Kingdom Of Enchanted Rivers',
+    'prosperous fantasy kingdom connected by magical rivers and magnificent bridges',
   ],
   [
-    'Kingdom Of Eternal Light',
-    'legendary fantasy kingdom bathed in radiant light with magnificent castles and prosperity',
+    'Crystal Dragon Throne',
+    'epic royal throne city built from crystal and guarded by ancient dragons',
   ],
 ].map(([name, description]) => ({
   title: `${name} - Fantasy Kingdoms Theme`,
@@ -225,9 +226,10 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Fantasy Kingdoms batch 1 complete',
+    message: 'Fantasy Kingdoms batch 2 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
   })
 }
+```
