@@ -8,7 +8,7 @@ export const maxDuration = 300
 const THEME = 'fantasy-kingdoms'
 const THEME_TAG = `theme:${THEME}`
 const ARTIST = 'AI Image'
-const STYLE = 'FANTASY'
+const STYLE = 'POLLOCK'
 
 const ITEMS = [
   [
@@ -49,7 +49,7 @@ const ITEMS = [
   ],
   [
     'Realm Of Eternal Magic',
-    'ultimate fantasy kingdom overflowing with magical architecture, enchanted landscapes and wonder',
+    'ultimate fantasy kingdom overflowing with magical architecture enchanted landscapes and wonder',
   ],
 ].map(([name, description]) => ({
   title: `${name} - Fantasy Kingdoms Theme`,
@@ -68,51 +68,40 @@ function safeFilePart(value: string) {
 
 async function generateOpenAiImageBuffer(prompt: string) {
   const apiKey = process.env.OPENAI_API_KEY
+  if (!apiKey) throw new Error('Missing OPENAI_API_KEY')
 
-  if (!apiKey) {
-    throw new Error('Missing OPENAI_API_KEY')
-  }
-
-  const response = await fetch(
-    'https://api.openai.com/v1/images/generations',
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        model: 'gpt-image-1',
-        prompt,
-        size: '1024x1024',
-        quality: 'medium',
-        n: 1,
-      }),
-    }
-  )
+  const response = await fetch('https://api.openai.com/v1/images/generations', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify({
+      model: 'gpt-image-1',
+      prompt,
+      size: '1024x1024',
+      quality: 'medium',
+      n: 1,
+    }),
+    cache: 'no-store',
+  })
 
   if (!response.ok) {
     const text = await response.text()
-    throw new Error(
-      `OpenAI image generation failed (${response.status}): ${text}`
-    )
+    throw new Error(`OpenAI image generation failed (${response.status}): ${text}`)
   }
 
   const data = await response.json()
-
   const base64 = data?.data?.[0]?.b64_json
 
-  if (!base64) {
-    throw new Error('No image returned from OpenAI')
+  if (!base64 || typeof base64 !== 'string') {
+    throw new Error('No base64 image returned from OpenAI')
   }
 
   return Buffer.from(base64, 'base64')
 }
 
-async function uploadGeneratedImageToBlob(
-  imageBuffer: Buffer,
-  title: string
-) {
+async function uploadGeneratedImageToBlob(imageBuffer: Buffer, title: string) {
   const blob = await put(
     `artworks/themes/${THEME}/${safeFilePart(title)}.png`,
     imageBuffer,
@@ -123,13 +112,11 @@ async function uploadGeneratedImageToBlob(
     }
   )
 
+  if (!blob.url) throw new Error('Blob upload failed')
   return blob.url
 }
 
-async function upsertArtwork(
-  item: (typeof ITEMS)[number],
-  imageUrl: string
-) {
+async function upsertArtwork(item: (typeof ITEMS)[number], imageUrl: string) {
   const tags = [
     THEME_TAG,
     'theme',
@@ -142,35 +129,32 @@ async function upsertArtwork(
   ]
 
   const existing = await prisma.artwork.findFirst({
-    where: {
-      title: item.title,
-    },
-    select: {
-      id: true,
-    },
+    where: { title: item.title },
+    select: { id: true },
   })
 
   const artwork = existing
     ? await prisma.artwork.update({
-        where: {
-          id: existing.id,
-        },
+        where: { id: existing.id },
         data: {
+          artist: ARTIST,
           thumbnail: imageUrl,
           tags,
           status: 'PUBLISHED' as any,
         },
+        select: { id: true },
       })
     : await prisma.artwork.create({
         data: {
           title: item.title,
-          artist: ARTIST,
           style: STYLE as any,
+          artist: ARTIST,
           thumbnail: imageUrl,
           tags,
           status: 'PUBLISHED' as any,
           price: 9.99,
         },
+        select: { id: true },
       })
 
   await prisma.asset.create({
@@ -191,26 +175,20 @@ export async function GET() {
   for (const item of ITEMS) {
     try {
       const imageBuffer = await generateOpenAiImageBuffer(item.prompt)
-
-      const imageUrl = await uploadGeneratedImageToBlob(
-        imageBuffer,
-        item.title
-      )
-
-      const artworkId = await upsertArtwork(item, imageUrl)
+      const blobUrl = await uploadGeneratedImageToBlob(imageBuffer, item.title)
+      const artworkId = await upsertArtwork(item, blobUrl)
 
       results.push({
         title: item.title,
         success: true,
         artworkId,
-        imageUrl,
+        imageUrl: blobUrl,
       })
-    } catch (error) {
+    } catch (err) {
       results.push({
         title: item.title,
         success: false,
-        error:
-          error instanceof Error ? error.message : 'Unknown error',
+        error: err instanceof Error ? err.message : 'Unknown error',
       })
     }
   }
