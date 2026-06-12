@@ -12,48 +12,48 @@ const STYLE = 'POLLOCK'
 
 const ITEMS = [
   [
-    'Obsidian Dragon Citadel',
-    'massive obsidian fortress kingdom guarded by ancient dragons, volcanic mountains, royal towers and glowing lava rivers',
+    'Kingdom Of The Golden Dragons',
+    'legendary fantasy kingdom ruled by golden dragons, magnificent royal castles, magical mountains and epic landscapes',
   ],
   [
-    'Kingdom Of Silver Stars',
-    'magnificent fantasy kingdom beneath a sky filled with silver stars, elegant palaces and celestial gardens',
+    'Celestial Crystal Empire',
+    'vast fantasy empire constructed from celestial crystals glowing beneath magical skies',
   ],
   [
-    'Crystal Phoenix Sanctuary',
-    'legendary kingdom built around giant crystal phoenix monuments, radiant architecture and magical landscapes',
+    'Eternal Sky Palace',
+    'majestic floating palace kingdom suspended among clouds with radiant towers and magical bridges',
   ],
   [
-    'Floating Isles Empire',
-    'vast fantasy empire spread across floating islands connected by magical bridges above the clouds',
+    'Silver Phoenix Kingdom',
+    'beautiful fantasy realm inspired by silver phoenixes, elegant palaces and enchanted gardens',
   ],
   [
-    'Emerald Throne Kingdom',
-    'royal fantasy kingdom featuring emerald castles, enchanted forests and majestic ceremonial avenues',
+    'Arcane Dragon Fortress',
+    'powerful magical fortress kingdom protected by ancient dragons and arcane defenses',
   ],
   [
-    'Dragon Riders Capital',
-    'epic capital city where dragon riders protect towering castles and magnificent fantasy architecture',
+    'Moonstone Royal Capital',
+    'luxurious fantasy capital city built from moonstone architecture illuminated by celestial light',
   ],
   [
-    'Celestial Moon Kingdom',
-    'beautiful moonlit kingdom with glowing towers, celestial magic and shimmering crystal waterways',
+    'Emerald Griffin Kingdom',
+    'prosperous kingdom guarded by majestic griffins surrounded by enchanted forests and royal fortresses',
   ],
   [
-    'Golden Griffin Realm',
-    'prosperous fantasy realm protected by golden griffins, royal fortresses and luxurious palaces',
+    'Crystal Throne Empire',
+    'epic fantasy empire centered around a magnificent crystal throne and breathtaking royal architecture',
   ],
   [
-    'Arcane Crystal Fortress',
-    'ancient magical fortress kingdom powered by giant crystals and surrounded by enchanted mountains',
+    'Dragon Crown Citadel',
+    'ultimate dragon kingdom featuring towering citadels, magical wonders and legendary royal halls',
   ],
   [
-    'Realm Of Eternal Dragons',
-    'ultimate fantasy kingdom filled with dragon castles, magical wonders, royal cities and epic landscapes',
+    'The Ultimate Fantasy Kingdom',
+    'masterpiece fantasy kingdom combining dragons, castles, floating islands, magical cities and epic fantasy grandeur',
   ],
 ].map(([name, description]) => ({
   title: `${name} - Fantasy Kingdoms Theme`,
-  prompt: `premium fantasy kingdoms digital artwork, ${description}, ultra realistic, cinematic lighting, luxury fantasy concept art, epic kingdom environment, masterpiece quality, highly detailed architecture, magical atmosphere, fantasy wall art, rich colors, no readable text, no logos, no watermark, no people`,
+  prompt: `premium fantasy kingdoms digital artwork, ${description}, ultra realistic, cinematic fantasy lighting, luxury concept art quality, epic magical kingdom environment, masterpiece, highly detailed architecture, fantasy wall art, rich colors, magical atmosphere, no readable text, no logos, no watermark, no people`,
 }))
 
 function safeFilePart(value: string) {
@@ -146,28 +146,20 @@ async function upsertArtwork(
   ]
 
   const existing = await prisma.artwork.findFirst({
-    where: {
-      title: item.title,
-    },
-    select: {
-      id: true,
-    },
+    where: { title: item.title },
+    select: { id: true },
   })
 
   const artwork = existing
     ? await prisma.artwork.update({
-        where: {
-          id: existing.id,
-        },
+        where: { id: existing.id },
         data: {
           artist: ARTIST,
           thumbnail: imageUrl,
           tags,
           status: 'PUBLISHED' as any,
         },
-        select: {
-          id: true,
-        },
+        select: { id: true },
       })
     : await prisma.artwork.create({
         data: {
@@ -179,9 +171,7 @@ async function upsertArtwork(
           status: 'PUBLISHED' as any,
           price: 9.99,
         },
-        select: {
-          id: true,
-        },
+        select: { id: true },
       })
 
   await prisma.asset.create({
@@ -208,10 +198,7 @@ export async function GET() {
         item.title
       )
 
-      const artworkId = await upsertArtwork(
-        item,
-        blobUrl
-      )
+      const artworkId = await upsertArtwork(item, blobUrl)
 
       results.push({
         title: item.title,
@@ -232,7 +219,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    message: 'Fantasy Kingdoms batch 4 complete',
+    message: 'Fantasy Kingdoms final batch complete',
     theme: THEME,
     count: ITEMS.length,
     results,
