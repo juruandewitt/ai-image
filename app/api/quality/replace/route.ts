@@ -12,48 +12,48 @@ const STYLE = 'POLLOCK'
 
 const ITEMS = [
   [
-    'Dragonstone Sky Kingdom',
-    'majestic fantasy kingdom built upon floating dragonstone islands above the clouds with golden bridges and royal towers',
+    'Obsidian Dragon Citadel',
+    'massive obsidian fortress kingdom guarded by ancient dragons, volcanic mountains, royal towers and glowing lava rivers',
   ],
   [
-    'Moonlit Elven Palace',
-    'elegant elven palace illuminated by moonlight deep within an enchanted silver forest',
+    'Kingdom Of Silver Stars',
+    'magnificent fantasy kingdom beneath a sky filled with silver stars, elegant palaces and celestial gardens',
   ],
   [
-    'Kingdom Of Crystal Dragons',
-    'vast fantasy kingdom protected by magnificent crystal dragons and glittering crystal castles',
+    'Crystal Phoenix Sanctuary',
+    'legendary kingdom built around giant crystal phoenix monuments, radiant architecture and magical landscapes',
   ],
   [
-    'Emerald Crown Capital',
-    'luxurious emerald fantasy capital city surrounded by magical forests and shining rivers',
+    'Floating Isles Empire',
+    'vast fantasy empire spread across floating islands connected by magical bridges above the clouds',
   ],
   [
-    'Celestial Griffin Fortress',
-    'legendary mountain fortress guarded by celestial griffins beneath radiant heavenly skies',
+    'Emerald Throne Kingdom',
+    'royal fantasy kingdom featuring emerald castles, enchanted forests and majestic ceremonial avenues',
   ],
   [
-    'Arcane Sapphire Kingdom',
-    'powerful magical kingdom built from sapphire towers glowing with ancient arcane energy',
+    'Dragon Riders Capital',
+    'epic capital city where dragon riders protect towering castles and magnificent fantasy architecture',
   ],
   [
-    'Golden Phoenix Empire',
-    'magnificent fantasy empire inspired by golden phoenixes with ornate palaces and glowing gardens',
+    'Celestial Moon Kingdom',
+    'beautiful moonlit kingdom with glowing towers, celestial magic and shimmering crystal waterways',
   ],
   [
-    'Kingdom Above The Clouds',
-    'floating fantasy kingdom suspended high above the clouds with grand castles and endless sky vistas',
+    'Golden Griffin Realm',
+    'prosperous fantasy realm protected by golden griffins, royal fortresses and luxurious palaces',
   ],
   [
-    'Mystic Dragon Throne Hall',
-    'legendary royal throne hall decorated with ancient dragon statues and magical treasures',
+    'Arcane Crystal Fortress',
+    'ancient magical fortress kingdom powered by giant crystals and surrounded by enchanted mountains',
   ],
   [
-    'Realm Of Eternal Magic',
-    'ultimate fantasy kingdom overflowing with magical architecture enchanted landscapes and wonder',
+    'Realm Of Eternal Dragons',
+    'ultimate fantasy kingdom filled with dragon castles, magical wonders, royal cities and epic landscapes',
   ],
 ].map(([name, description]) => ({
   title: `${name} - Fantasy Kingdoms Theme`,
-  prompt: `premium fantasy kingdoms digital artwork, ${description}, ultra realistic, cinematic lighting, epic fantasy environment, luxury concept art quality, highly detailed architecture, magical atmosphere, masterpiece, fantasy wall art, rich colors, no readable text, no logos, no watermark, no people`,
+  prompt: `premium fantasy kingdoms digital artwork, ${description}, ultra realistic, cinematic lighting, luxury fantasy concept art, epic kingdom environment, masterpiece quality, highly detailed architecture, magical atmosphere, fantasy wall art, rich colors, no readable text, no logos, no watermark, no people`,
 }))
 
 function safeFilePart(value: string) {
@@ -68,27 +68,35 @@ function safeFilePart(value: string) {
 
 async function generateOpenAiImageBuffer(prompt: string) {
   const apiKey = process.env.OPENAI_API_KEY
-  if (!apiKey) throw new Error('Missing OPENAI_API_KEY')
 
-  const response = await fetch('https://api.openai.com/v1/images/generations', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${apiKey}`,
-    },
-    body: JSON.stringify({
-      model: 'gpt-image-1',
-      prompt,
-      size: '1024x1024',
-      quality: 'medium',
-      n: 1,
-    }),
-    cache: 'no-store',
-  })
+  if (!apiKey) {
+    throw new Error('Missing OPENAI_API_KEY')
+  }
+
+  const response = await fetch(
+    'https://api.openai.com/v1/images/generations',
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: 'gpt-image-1',
+        prompt,
+        size: '1024x1024',
+        quality: 'medium',
+        n: 1,
+      }),
+      cache: 'no-store',
+    }
+  )
 
   if (!response.ok) {
     const text = await response.text()
-    throw new Error(`OpenAI image generation failed (${response.status}): ${text}`)
+    throw new Error(
+      `OpenAI image generation failed (${response.status}): ${text}`
+    )
   }
 
   const data = await response.json()
@@ -101,7 +109,10 @@ async function generateOpenAiImageBuffer(prompt: string) {
   return Buffer.from(base64, 'base64')
 }
 
-async function uploadGeneratedImageToBlob(imageBuffer: Buffer, title: string) {
+async function uploadGeneratedImageToBlob(
+  imageBuffer: Buffer,
+  title: string
+) {
   const blob = await put(
     `artworks/themes/${THEME}/${safeFilePart(title)}.png`,
     imageBuffer,
@@ -112,11 +123,17 @@ async function uploadGeneratedImageToBlob(imageBuffer: Buffer, title: string) {
     }
   )
 
-  if (!blob.url) throw new Error('Blob upload failed')
+  if (!blob.url) {
+    throw new Error('Blob upload failed')
+  }
+
   return blob.url
 }
 
-async function upsertArtwork(item: (typeof ITEMS)[number], imageUrl: string) {
+async function upsertArtwork(
+  item: (typeof ITEMS)[number],
+  imageUrl: string
+) {
   const tags = [
     THEME_TAG,
     'theme',
@@ -129,20 +146,28 @@ async function upsertArtwork(item: (typeof ITEMS)[number], imageUrl: string) {
   ]
 
   const existing = await prisma.artwork.findFirst({
-    where: { title: item.title },
-    select: { id: true },
+    where: {
+      title: item.title,
+    },
+    select: {
+      id: true,
+    },
   })
 
   const artwork = existing
     ? await prisma.artwork.update({
-        where: { id: existing.id },
+        where: {
+          id: existing.id,
+        },
         data: {
           artist: ARTIST,
           thumbnail: imageUrl,
           tags,
           status: 'PUBLISHED' as any,
         },
-        select: { id: true },
+        select: {
+          id: true,
+        },
       })
     : await prisma.artwork.create({
         data: {
@@ -154,7 +179,9 @@ async function upsertArtwork(item: (typeof ITEMS)[number], imageUrl: string) {
           status: 'PUBLISHED' as any,
           price: 9.99,
         },
-        select: { id: true },
+        select: {
+          id: true,
+        },
       })
 
   await prisma.asset.create({
@@ -175,8 +202,16 @@ export async function GET() {
   for (const item of ITEMS) {
     try {
       const imageBuffer = await generateOpenAiImageBuffer(item.prompt)
-      const blobUrl = await uploadGeneratedImageToBlob(imageBuffer, item.title)
-      const artworkId = await upsertArtwork(item, blobUrl)
+
+      const blobUrl = await uploadGeneratedImageToBlob(
+        imageBuffer,
+        item.title
+      )
+
+      const artworkId = await upsertArtwork(
+        item,
+        blobUrl
+      )
 
       results.push({
         title: item.title,
@@ -188,13 +223,16 @@ export async function GET() {
       results.push({
         title: item.title,
         success: false,
-        error: err instanceof Error ? err.message : 'Unknown error',
+        error:
+          err instanceof Error
+            ? err.message
+            : 'Unknown error',
       })
     }
   }
 
   return NextResponse.json({
-    message: 'Fantasy Kingdoms batch 3 complete',
+    message: 'Fantasy Kingdoms batch 4 complete',
     theme: THEME,
     count: ITEMS.length,
     results,
