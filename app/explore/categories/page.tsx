@@ -16,25 +16,36 @@ const FALLBACK_DATA_URL =
   )
 
 const CATEGORIES = [
-  { label: 'Fantasy Kingdoms', slug: 'fantasy-kingdoms', image: 'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/themes/fantasy-kingdoms/the-ultimate-fantasy-kingdom-fantasy-kingdoms-theme-sgQDFOoH7tMLgsQKm6zi34WR60XccC.png' },
-  { label: 'Ancient Civilizations', slug: 'ancient-civilizations', image: 'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/themes/ancient-civilizations/legacy-of-the-ancient-world-ancient-civilizations-theme-ummlj5u2ij8gfYovtPFan47pbnlP01.png' },
-  { label: 'Space Galaxy', slug: 'space-galaxy', image: 'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/themes/space-galaxy/the-infinite-galaxy-space-galaxy-theme-QUjjneNZvlQDMFDle1OHIXCyrJ8ZtV.png' },
-  { label: 'Cars Automotive', slug: 'cars-automotive', image: 'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/themes/cars-automotive/luxury-hypercar-collection-cars-automotive-theme-2G493900asVrEB74ak6Lv70mEYpFDU.png' },
-  { label: 'Seasonal Holidays', slug: 'seasonal-holidays', image: 'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/themes/seasonal-holidays/seasonal-celebration-collection-seasonal-holidays-theme-HWapdStZkpx74oxjpBUUaoYO6CXTnY.png' },
-  { label: 'Spiritual Zen', slug: 'spiritual-zen', image: 'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/themes/spiritual-zen/eternal-zen-horizon-spiritual-zen-theme-pRHk2J2NqjTq5Mg4Nfv59WkKjJa4Cm.png' },
-  { label: 'Food Culinary', slug: 'food-culinary', image: '/api/artwork/preview/cmokppri00000vg99j9we8g9v?w=900&v=categories' },
-  { label: 'Landscapes', slug: 'landscapes', image: '/api/artwork/preview/cmnn9t52k000lw3tgopbeunb0?w=900&v=categories' },
-  { label: 'Wildlife', slug: 'wildlife', image: '/api/artwork/preview/cmnn9s9n2000cw3tgg0ummybt?w=900&v=categories' },
-  { label: 'Architecture', slug: 'architecture', image: '/api/artwork/preview/cmnhvi3eo000r841p5ebfk5qp?w=900&v=categories' },
-  { label: 'Ocean Marine', slug: 'ocean-marine', image: '/api/artwork/preview/cmnnh61340019y3h9yy5z7fvr?w=900&v=categories' },
-  { label: 'Luxury Interiors', slug: 'luxury-interiors', image: '/api/artwork/preview/cmolyxwx8000o11ndl93k7rgm?w=900&v=categories' },
-  { label: 'Cyberpunk', slug: 'cyberpunk', image: '/api/artwork/preview/cmokprbvq000fvg99k6vw2721?w=900&v=categories' },
-  { label: 'Abstract', slug: 'abstract', image: '/api/artwork/preview/cmnp0zunq000outfte11v25my?w=900&v=categories' },
-  { label: 'Steampunk', slug: 'steampunk', image: '/api/artwork/preview/cmokpr1q3000cvg99aimlopin?w=900&v=categories' },
-  { label: 'Animals Pets', slug: 'animals-pets', image: '/api/artwork/preview/cmq19yeta000r113qf5p419i5?w=900&v=categories' },
-  { label: 'Kids Nursery', slug: 'kids-nursery', image: '/api/artwork/preview/cmq238mna000u3ad49lbvutue?w=900&v=categories' },
-  { label: 'Gaming Esports', slug: 'gaming-esports', image: '/api/artwork/preview/cmq2ojd3f000rvhpbrn701jsi?w=900&v=categories' },
-  { label: 'Vintage Retro', slug: 'vintage-retro', image: '/api/artwork/preview/cmpy8gcuw000vu6yhe86zzv9c?w=900&v=categories' },
+  { label: 'Abstract', slug: 'abstract', id: 'cmp1lufi8000012ic39smonli' },
+  { label: 'Ancient Civilizations', slug: 'ancient-civilizations', id: 'cmq6d1a57000014kn9c02er4x' },
+  { label: 'Animals / Pets', slug: 'animals-pets', id: 'cmpyeyl3300002zoq2hvd1pio' },
+  { label: 'Architecture', slug: 'architecture', id: 'cmp2yzmsu00006o55vsz0zogg' },
+  { label: 'Automotive', slug: 'automotive', id: 'cmovzquvm000048vyfwatowi2' },
+  { label: 'Business / Finance', slug: 'business-finance', id: 'cmpvovw9p00006qv16mxn90po' },
+  { label: 'Cars / Automotive', slug: 'cars-automotive', id: 'cmq4wthpl0000165iuvclc0xg' },
+  { label: 'Cyberpunk', slug: 'cyberpunk', id: 'cmp121h1e0000yczcn8zcasqi' },
+  { label: 'Fantasy', slug: 'fantasy', id: 'cmoy09hv70000ikqtxprpng05' },
+  { label: 'Fantasy Kingdoms', slug: 'fantasy-kingdoms', id: 'cmq80fdao0000o5blyggzox1h' },
+  { label: 'Fashion / Editorial', slug: 'fashion-editorial', id: 'cmp57k0us0000rrpq1qen3cym' },
+  { label: 'Food / Culinary', slug: 'food-culinary', id: 'cmpfxxocq00005d9waq7ulcng' },
+  { label: 'Gaming / Esports', slug: 'gaming-esports', id: 'cmq23ftj50000vj3vyeco8mh4' },
+  { label: 'Health / Wellness', slug: 'health-wellness', id: 'cmptsat77000048mqbnvpbhgr' },
+  { label: 'Kids / Nursery', slug: 'kids-nursery', id: 'cmq1fjw330000alyeayr7dr1v' },
+  { label: 'Landscapes', slug: 'landscapes', id: 'cmot5ty3v0000u3lypk20e5an' },
+  { label: 'Luxury / Interior Decor', slug: 'luxury-interior', id: 'cmp33ehg70000474namojz2av' },
+  { label: 'Luxury Lifestyle', slug: 'luxury-lifestyle', id: 'cmpllpx7y0000izhrrv1dl9q3' },
+  { label: 'Music / Performance', slug: 'music-performance', id: 'cmpifdraz0000jreqv4ht5hok' },
+  { label: 'Nature / Botanical', slug: 'nature-botanical', id: 'cmpd6gbye0000inxmqaksp6cn' },
+  { label: 'Ocean / Marine', slug: 'ocean-marine', id: 'cmpbn3f0h0000ycb12edq3qk2' },
+  { label: 'Seasonal / Holidays', slug: 'seasonal-holidays', id: 'cmq3u8dd10000k0dafyvhkg9l' },
+  { label: 'Space / Galaxy', slug: 'space-galaxy', id: 'cmq5e2xjx0000308bbd8u2uvd' },
+  { label: 'Space / Universe', slug: 'space-universe', id: 'cmoszx1eb0000s0gi0hsvp25o' },
+  { label: 'Spiritual / Zen', slug: 'spiritual-zen', id: 'cmq3d8uhm0000u3feir9sucgq' },
+  { label: 'Sports / Action', slug: 'sports-action', id: 'cmphfofoe00001bs4drfch79a' },
+  { label: 'Steampunk', slug: 'steampunk', id: 'cmoxb6m9l000010d38wh2nt02' },
+  { label: 'Travel / Destinations', slug: 'travel-destinations', id: 'cmpku0pdu0000wrli6vj5ttbx' },
+  { label: 'Vintage / Retro', slug: 'vintage-retro', id: 'cmpx5aw9j0000oxlq33ww14zi' },
+  { label: 'Wildlife', slug: 'wildlife', id: 'cmouj7uw00000eocoe574f7rg' },
 ]
 
 export default function CategoriesPage() {
@@ -50,7 +61,7 @@ export default function CategoriesPage() {
         </h1>
 
         <p className="mt-4 max-w-3xl text-slate-400">
-          Explore AI Image collections by category. Each collection opens into its own gallery.
+          Explore all 30 curated AI Image collections. Each collection contains 50 published artworks.
         </p>
       </section>
 
@@ -62,14 +73,15 @@ export default function CategoriesPage() {
             className="group overflow-hidden rounded-3xl border border-white/10 bg-white/[0.04] transition hover:-translate-y-1 hover:border-amber-300/60"
           >
             <SafeImg
-              src={item.image}
+              src={`/api/artwork/preview/${item.id}?w=900&v=categories-30`}
               fallbackSrc={FALLBACK_DATA_URL}
               alt={item.label}
               className="aspect-[4/3] w-full object-cover transition duration-700 group-hover:scale-105"
             />
             <div className="p-5">
               <div className="text-xl font-semibold text-white">{item.label}</div>
-              <div className="mt-1 text-sm text-amber-300">Explore collection →</div>
+              <div className="mt-1 text-sm text-slate-400">50 artworks</div>
+              <div className="mt-3 text-sm font-semibold text-amber-300">Explore collection →</div>
             </div>
           </Link>
         ))}
