@@ -34,46 +34,169 @@ const FALLBACK_DATA_URL =
     </svg>`
   )
 
+const PUBLIC_BLOB_PREFIX =
+  'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/'
+
 const MASTER_STYLES = [
-  'DA_VINCI',
   'MICHELANGELO',
   'VAN_GOGH',
   'MONET',
-  'REMBRANDT',
   'CARAVAGGIO',
-  'VERMEER',
+  'PICASSO',
   'MUNCH',
   'POLLOCK',
+  'REMBRANDT',
+  'VERMEER',
   'DALI',
-  'PICASSO',
+  'DA_VINCI',
 ] as const
 
 type MasterStyle = (typeof MASTER_STYLES)[number]
 
 const STYLE_LABELS: Record<MasterStyle, string> = {
-  DA_VINCI: 'Leonardo da Vinci',
   MICHELANGELO: 'Michelangelo',
   VAN_GOGH: 'Vincent van Gogh',
   MONET: 'Claude Monet',
-  REMBRANDT: 'Rembrandt',
   CARAVAGGIO: 'Caravaggio',
-  VERMEER: 'Johannes Vermeer',
+  PICASSO: 'Pablo Picasso',
   MUNCH: 'Edvard Munch',
   POLLOCK: 'Jackson Pollock',
+  REMBRANDT: 'Rembrandt',
+  VERMEER: 'Johannes Vermeer',
   DALI: 'Salvador Dalí',
-  PICASSO: 'Pablo Picasso',
+  DA_VINCI: 'Leonardo da Vinci',
 }
 
 /*
- * These exact titles represent the canonical or original works that should
- * not be included in the Masters Reimagined collection.
+ * These IDs define the preferred display order.
+ *
+ * Recognisable subjects are intentionally placed first.
+ * Any additional valid reimagined works appear afterwards alphabetically.
  */
-const ORIGINAL_TITLES: Record<MasterStyle, string[]> = {
-  DA_VINCI: [
-    'Mona Lisa in Da Vinci Style',
-    'The Last Supper in Da Vinci Style',
+const PRIORITY_IDS: Record<MasterStyle, string[]> = {
+  MICHELANGELO: [
+    'cmnbfkgtb000m76b7fxhnwvcf', // The Scream
+    'cmn7ym0kf000h16ddrrenxjd9', // Mona Lisa
+    'cmn7ymb9l000i16ddkjc1ffq9', // Starry Night
+    'cmnhviorn000x841p3q2wq6uz', // Girl with a Pearl Earring
+    'cmnhviysf0010841p5cbof0l3', // The Night Watch
+    'cmnbflybt000t76b7m18h6rmj', // Persistence of Memory
+    'cmnhw4t01000312bs0kvaj0ue', // Guernica Reimagined
   ],
 
+  VAN_GOGH: [
+    'cmnnbf5dw000u7arey9doysq6', // Mona Lisa
+    'cmnnbgeqa00197are9hbivfeu', // The Scream
+    'cmnnbff89000x7are5ub1qd5r', // Girl with a Pearl Earring
+    'cmnnbg5on00167arehw39q113', // The Night Watch
+    'cmnnbfozw00107are9qpn4qd5', // The Last Supper
+    'cmnnbgndf001c7areup9eimvc', // Persistence of Memory
+  ],
+
+  MONET: [
+    'cmn7yhcwc000516ddv03zxjgc', // Starry Night
+    'cmn7ygwpm000416ddfn08jx6n', // Mona Lisa
+    'cmnbfj0aj000d76b74vyhg5zt', // The Scream
+    'cmnbfic9s000876b7l7e2g0k0', // Girl with a Pearl Earring
+    'cmnnl5wnq0000rnlqqm0t94pi', // The Night Watch
+    'cmnati0sd0008yr8cntvi3ov6', // The Last Supper
+    'cmn7yilj3000916dd5fkazc7w', // Guernica
+  ],
+
+  /*
+   * Caravaggio begins with portraits and dramatic narrative scenes,
+   * which are generally the strongest subjects for chiaroscuro.
+   */
+  CARAVAGGIO: [
+    'cmnox8u470006j89qcsbi57i5', // Girl with a Pearl Earring
+    'cmnox97k70009j89qgs9c4hjg', // The Last Supper
+    'cmnoxa7ky000ij89qg5t0mz1p', // The Night Watch
+    'cmnox8h020003j89qpjoihhtx', // Mona Lisa
+    'cmnozdzl70003z3ol3xw42ove', // The Scream
+    'cmnox9ioq000cj89qrcllzb9g', // Starry Night
+    'cmnoxamga000lj89qxbncnld6', // Persistence of Memory
+  ],
+
+  PICASSO: [
+    'cmnnmse1d001idff13avgm2uq', // Mona Lisa
+    'cmnnn0npw0000lm6a1slfafjr', // The Scream
+    'cmnnmt8tz001rdff10ivzgfyy', // Starry Night
+    'cmnnmsqoy001ldff1odokex1x', // Girl with a Pearl Earring
+    'cmnnmtyr1000331x6h0sync7l', // The Night Watch
+    'cmnnmszsz001odff1yfzv9mfy', // The Last Supper
+    'cmnnmubo6000631x6gzo0uvvh', // Persistence of Memory
+    'cmnnmzl4g001r31x6l00cbuwz', // Impression Sunrise
+  ],
+
+  /*
+   * Munch is explicitly populated here so it cannot disappear because
+   * of title-filter differences.
+   */
+  MUNCH: [
+    'cmnqg2f20000umvtoywjcdusb', // Mona Lisa
+    'cmnqg1jvr000lmvtok0v8cnge', // Starry Night
+    'cmnqg2pj4000xmvtoaxigb6tc', // Girl with a Pearl Earring
+    'cmnqg2yan0010mvtopbk1hgcz', // The Last Supper
+    'cmnqg3f840016mvto3pe9998o', // The Night Watch
+    'cmnqg3po20019mvto3j1qmaky', // Persistence of Memory
+    'cmnqgazmc002ruijqe3g19eyf', // Impression Sunrise
+  ],
+
+  /*
+   * Pollock is also explicitly populated.
+   */
+  POLLOCK: [
+    'cmnp14bje0000mgqegu1s7cdd', // Mona Lisa
+    'cmnp14xs60006mgqe0bbghj0f', // The Scream
+    'cmnp13lht001uutftkc630xal', // Starry Night
+    'cmnp130lt001outftsb0z23na', // Girl with a Pearl Earring
+    'cmnp13ahc001rutfthajeksch', // The Last Supper
+    'cmnp14kqv0003mgqeyz3m4pr4', // The Night Watch
+    'cmnp1574o0009mgqed76g9hxt', // Persistence of Memory
+    'cmnp1a7i2001rmgqe22rvk6o9', // Impression Sunrise
+  ],
+
+  REMBRANDT: [
+    'cmnotu8o900069edqbwdtcy8v', // Mona Lisa
+    'cmnotvyg7000l9edquvi4hr9k', // The Scream
+    'cmnotujms00099edqcjzrc8sn', // Girl with a Pearl Earring
+    'cmnotuyfo000c9edqtkq947db', // The Last Supper
+    'cmnotv825000f9edq9uiqi3ai', // Starry Night
+    'cmnotw7l2000o9edqyqvktxia', // Persistence of Memory
+    'cmnou3ipy000lnc18uwk9k4y7', // Impression Sunrise
+  ],
+
+  VERMEER: [
+    'cmngg02kl000u37jq3sz6jvc0', // Mona Lisa
+    'cmngg1syo001c37jqnqsm9izv', // The Scream
+    'cmngg0dwv000x37jqkrh942f6', // Starry Night
+    'cmngg0o3n001037jql606zr6f', // The Last Supper
+    'cmngg2auf001i37jqp740of4g', // The Night Watch
+    'cmngg17zb001637jqg83rzj4f', // Persistence of Memory
+    'cmngg1i8l001937jqm4ojyyzd', // Guernica
+    'cmngip8p10010da471vobh1wa', // Impression Sunrise
+  ],
+
+  DALI: [
+    'cmnnocpnp001i1wxb4f577qew', // Mona Lisa
+    'cmnnofivz000f10kfcu59ulp1', // The Scream
+    'cmnnoehym000610kfpgeh2r47', // Starry Night
+    'cmnnocxj4001l1wxbl27ga9w4', // Girl with a Pearl Earring
+    'cmnnod5qt001o1wxbs3bf6h26', // The Last Supper
+    'cmnnof5ll000c10kfb66ypmvr', // The Night Watch
+    'cmnnotz2i0009estpojnxdtbc', // Impression Sunrise
+  ],
+
+  DA_VINCI: [
+    'cmnghrohc00168jrsuk5tqcmj', // The Scream
+    'cmnghpvjf000u8jrsx9ft3i4q', // Starry Night
+    'cmnghqa54000x8jrsfvd1sxtt', // Girl with a Pearl Earring
+    'cmnghrxpr00198jrsa45eqvhf', // The Night Watch
+    'cmnghrbng00138jrsw2sbcdgq', // Persistence of Memory
+  ],
+}
+
+const ORIGINAL_TITLES: Record<MasterStyle, string[]> = {
   MICHELANGELO: [
     'The Creation of Adam in Michelangelo Style',
   ],
@@ -87,16 +210,12 @@ const ORIGINAL_TITLES: Record<MasterStyle, string[]> = {
     'Impression Sunrise in Monet Style',
   ],
 
-  REMBRANDT: [
-    'The Night Watch in Rembrandt Style',
-  ],
-
   CARAVAGGIO: [
     'The Calling of Saint Matthew in Caravaggio Style',
   ],
 
-  VERMEER: [
-    'Girl with a Pearl Earring in Vermeer Style',
+  PICASSO: [
+    'Guernica in Picasso Style',
   ],
 
   MUNCH: [
@@ -104,8 +223,16 @@ const ORIGINAL_TITLES: Record<MasterStyle, string[]> = {
   ],
 
   POLLOCK: [
-    'Autumn Rhythm in Pollock Style',
     'Autumn Rhythm',
+    'Autumn Rhythm in Pollock Style',
+  ],
+
+  REMBRANDT: [
+    'The Night Watch in Rembrandt Style',
+  ],
+
+  VERMEER: [
+    'Girl with a Pearl Earring in Vermeer Style',
   ],
 
   DALI: [
@@ -113,20 +240,40 @@ const ORIGINAL_TITLES: Record<MasterStyle, string[]> = {
     'Persistence of Memory in Dali Style',
   ],
 
-  PICASSO: [
-    'Guernica in Picasso Style',
+  DA_VINCI: [
+    'Mona Lisa in Da Vinci Style',
+    'The Last Supper in Da Vinci Style',
   ],
+}
+
+const STYLE_SEARCH_NAMES: Record<MasterStyle, string[]> = {
+  MICHELANGELO: ['michelangelo'],
+  VAN_GOGH: ['van gogh', 'vincent van gogh'],
+  MONET: ['monet', 'claude monet'],
+  CARAVAGGIO: ['caravaggio'],
+  PICASSO: ['picasso', 'pablo picasso'],
+  MUNCH: ['munch', 'edvard munch'],
+  POLLOCK: ['pollock', 'jackson pollock'],
+  REMBRANDT: ['rembrandt'],
+  VERMEER: ['vermeer', 'johannes vermeer'],
+  DALI: ['dali', 'salvador dali'],
+  DA_VINCI: ['da vinci', 'leonardo da vinci'],
 }
 
 function normalizeText(value: string) {
   return value
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
     .toLowerCase()
     .replace(/[’‘]/g, "'")
     .replace(/\s+/g, ' ')
     .trim()
 }
 
-function isOriginalArtwork(style: MasterStyle, title: string) {
+function isOriginalArtwork(
+  style: MasterStyle,
+  title: string
+) {
   const normalizedTitle = normalizeText(title)
 
   return ORIGINAL_TITLES[style].some(
@@ -135,63 +282,65 @@ function isOriginalArtwork(style: MasterStyle, title: string) {
   )
 }
 
-function isReimaginedArtwork(style: MasterStyle, title: string) {
+function isReimaginedArtwork(
+  style: MasterStyle,
+  title: string
+) {
   if (isOriginalArtwork(style, title)) {
     return false
   }
 
   const normalizedTitle = normalizeText(title)
-  const styleLabel = normalizeText(STYLE_LABELS[style])
 
-  const shorterStyleNames: Record<MasterStyle, string[]> = {
-    DA_VINCI: ['da vinci', 'leonardo da vinci'],
-    MICHELANGELO: ['michelangelo'],
-    VAN_GOGH: ['van gogh', 'vincent van gogh'],
-    MONET: ['monet', 'claude monet'],
-    REMBRANDT: ['rembrandt'],
-    CARAVAGGIO: ['caravaggio'],
-    VERMEER: ['vermeer', 'johannes vermeer'],
-    MUNCH: ['munch', 'edvard munch'],
-    POLLOCK: ['pollock', 'jackson pollock'],
-    DALI: ['dali', 'dalí', 'salvador dali', 'salvador dalí'],
-    PICASSO: ['picasso', 'pablo picasso'],
+  if (normalizedTitle.includes('reimagined')) {
+    return true
   }
 
-  const hasReimaginedWord =
-    normalizedTitle.includes('reimagined')
-
-  const hasStylePhrase = shorterStyleNames[style].some(
-    (name) =>
-      normalizedTitle.includes(
-        `in ${normalizeText(name)} style`
-      )
+  return STYLE_SEARCH_NAMES[style].some((name) =>
+    normalizedTitle.includes(
+      `in ${normalizeText(name)} style`
+    )
   )
-
-  const hasFullStylePhrase = normalizedTitle.includes(
-    `in ${styleLabel} style`
-  )
-
-  return hasReimaginedWord || hasStylePhrase || hasFullStylePhrase
 }
 
-function getSelectedStyle(value: string | string[] | undefined) {
-  const rawValue = Array.isArray(value) ? value[0] : value
+function isStablePublicImage(
+  thumbnail: string | null
+) {
+  return Boolean(
+    thumbnail &&
+      thumbnail.startsWith(PUBLIC_BLOB_PREFIX)
+  )
+}
+
+function getSelectedStyle(
+  value: string | string[] | undefined
+) {
+  const rawValue = Array.isArray(value)
+    ? value[0]
+    : value
 
   if (!rawValue) {
     return null
   }
 
-  const normalizedValue = rawValue.toUpperCase()
+  const normalizedValue =
+    rawValue.toUpperCase() as MasterStyle
 
-  if (
-    MASTER_STYLES.includes(
-      normalizedValue as MasterStyle
-    )
-  ) {
-    return normalizedValue as MasterStyle
-  }
+  return MASTER_STYLES.includes(normalizedValue)
+    ? normalizedValue
+    : null
+}
 
-  return null
+function getPriorityIndex(
+  style: MasterStyle,
+  artworkId: string
+) {
+  const index =
+    PRIORITY_IDS[style].indexOf(artworkId)
+
+  return index === -1
+    ? Number.MAX_SAFE_INTEGER
+    : index
 }
 
 export default async function MastersReimaginedPage({
@@ -205,13 +354,6 @@ export default async function MastersReimaginedPage({
     searchParams?.style
   )
 
-  /*
-   * We retrieve all published artworks belonging to the 11 Master styles.
-   *
-   * Filtering the titles happens afterwards in JavaScript. This is more
-   * reliable than Prisma title filtering because the database contains
-   * several different title formats.
-   */
   const artworks = await prisma.artwork.findMany({
     where: {
       status: 'PUBLISHED',
@@ -220,14 +362,9 @@ export default async function MastersReimaginedPage({
       },
     },
 
-    orderBy: [
-      {
-        style: 'asc',
-      },
-      {
-        title: 'asc',
-      },
-    ],
+    orderBy: {
+      title: 'asc',
+    },
 
     take: 3000,
 
@@ -240,11 +377,22 @@ export default async function MastersReimaginedPage({
     },
   })
 
-  const reimaginedArtworks = artworks.filter(
-    (artwork) => {
-      const style = artwork.style as MasterStyle
+  /*
+   * Only stable, permanent Vercel Blob images are included.
+   * This removes records that would otherwise display broken icons.
+   */
+  const validReimaginedArtworks =
+    artworks.filter((artwork) => {
+      const style =
+        artwork.style as MasterStyle
 
       if (!MASTER_STYLES.includes(style)) {
+        return false
+      }
+
+      if (
+        !isStablePublicImage(artwork.thumbnail)
+      ) {
         return false
       }
 
@@ -252,13 +400,28 @@ export default async function MastersReimaginedPage({
         style,
         artwork.title
       )
-    }
-  )
+    })
 
   const allGroups = MASTER_STYLES.map((style) => {
-    const groupArtworks = reimaginedArtworks.filter(
-      (artwork) => artwork.style === style
-    )
+    const groupArtworks =
+      validReimaginedArtworks
+        .filter(
+          (artwork) =>
+            artwork.style === style
+        )
+        .sort((a, b) => {
+          const aPriority =
+            getPriorityIndex(style, a.id)
+
+          const bPriority =
+            getPriorityIndex(style, b.id)
+
+          if (aPriority !== bPriority) {
+            return aPriority - bPriority
+          }
+
+          return a.title.localeCompare(b.title)
+        })
 
     return {
       style,
@@ -267,13 +430,10 @@ export default async function MastersReimaginedPage({
     }
   })
 
-  /*
-   * When a style is selected, only that Master's reimagined library is shown.
-   * Otherwise, all 11 Master groups are displayed.
-   */
   const displayedGroups = selectedStyle
     ? allGroups.filter(
-        (group) => group.style === selectedStyle
+        (group) =>
+          group.style === selectedStyle
       )
     : allGroups
 
@@ -289,8 +449,8 @@ export default async function MastersReimaginedPage({
     : 'The Masters Reimagined'
 
   const pageDescription = selectedStyle
-    ? `Explore all published masterpieces transformed into the visual language of ${STYLE_LABELS[selectedStyle]}.`
-    : 'Discover famous artworks transformed through the visual languages of all 11 Masters.'
+    ? `Explore all available masterpieces transformed into the visual language of ${STYLE_LABELS[selectedStyle]}.`
+    : 'Discover famous and immediately recognisable artworks transformed through the visual languages of all 11 Masters.'
 
   return (
     <main className="space-y-14">
@@ -346,6 +506,7 @@ export default async function MastersReimaginedPage({
                 className="rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm font-medium text-slate-200 transition hover:border-amber-300/60 hover:text-amber-300"
               >
                 {group.label}
+
                 <span className="ml-2 text-slate-500">
                   {group.artworks.length}
                 </span>
@@ -367,12 +528,8 @@ export default async function MastersReimaginedPage({
               </h2>
 
               <p className="mt-2 text-sm text-slate-400">
-                {group.artworks.length}{' '}
-                {group.artworks.length === 1
-                  ? 'artwork'
-                  : 'artworks'}{' '}
-                transformed into the visual language of{' '}
-                {group.label}.
+                The most recognisable and visually
+                striking works are displayed first.
               </p>
             </div>
 
@@ -389,12 +546,13 @@ export default async function MastersReimaginedPage({
           {group.artworks.length === 0 ? (
             <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-7">
               <div className="font-semibold text-white">
-                No reimagined works found
+                Library awaiting review
               </div>
 
               <p className="mt-2 text-sm text-slate-400">
-                No published cross-master works are currently
-                available for {group.label}.
+                No stable published reimagined images
+                are currently available for{' '}
+                {group.label}.
               </p>
             </div>
           ) : (
@@ -412,12 +570,8 @@ export default async function MastersReimaginedPage({
                     : 'flex gap-5'
                 }
               >
-                {group.artworks.map((artwork) => {
-                  const previewUrl =
-                    `/api/artwork/preview/${artwork.id}` +
-                    '?w=800&v=masters-reimagined-v2'
-
-                  return (
+                {group.artworks.map(
+                  (artwork) => (
                     <Link
                       key={artwork.id}
                       href={`/artwork/${artwork.id}`}
@@ -428,19 +582,12 @@ export default async function MastersReimaginedPage({
                       }
                     >
                       <SafeImg
-                        /*
-                         * Use the stored thumbnail directly first.
-                         * This fixes many legacy artworks that do not
-                         * render through the preview endpoint.
-                         *
-                         * If the stored thumbnail fails, SafeImg then
-                         * tries the preview endpoint.
-                         */
                         src={
-                          artwork.thumbnail ||
-                          previewUrl
+                          artwork.thumbnail as string
                         }
-                        fallbackSrc={previewUrl}
+                        fallbackSrc={
+                          FALLBACK_DATA_URL
+                        }
                         alt={artwork.title}
                         className="aspect-[4/3] w-full object-cover transition duration-700 group-hover:scale-105"
                       />
@@ -456,25 +603,12 @@ export default async function MastersReimaginedPage({
                       </div>
                     </Link>
                   )
-                })}
+                )}
               </div>
             </div>
           )}
         </section>
       ))}
-
-      {displayedArtworkCount === 0 ? (
-        <section className="rounded-3xl border border-white/10 bg-white/[0.04] p-8">
-          <h2 className="text-xl font-semibold text-white">
-            No reimagined works found
-          </h2>
-
-          <p className="mt-2 text-sm text-slate-400">
-            No published cross-master artworks could currently
-            be identified.
-          </p>
-        </section>
-      ) : null}
     </main>
   )
 }
