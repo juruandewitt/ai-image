@@ -562,9 +562,10 @@ export default function HomePage() {
 
       <section className="space-y-6">
         <SectionHeader
-          title="The Masters Reimagined"
-          subtitle="Famous works transformed through the visual language of another Master."
-        />
+  title="The Masters Reimagined"
+  subtitle="Famous works transformed through the visual language of another Master."
+  href="/explore/masters-reimagined"
+/>
 
         <div className="-mx-4 overflow-x-auto px-4 pb-3">
           <div className="flex gap-5">
