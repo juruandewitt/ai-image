@@ -38,78 +38,78 @@ const MASTERS = [
     label: 'Leonardo da Vinci',
     href: '/explore/styles/leonardo-da-vinci',
     image:
-      '/api/artwork/preview/cmngh924c0000gfum690drnoh?w=700&v=home-masters-v4',
+      '/api/artwork/preview/cmngh924c0000gfum690drnoh?w=700&v=home-masters-v5',
     work: 'Mona Lisa',
   },
   {
     label: 'Michelangelo',
     href: '/explore/styles/michelangelo',
     image:
-      '/api/artwork/preview/cmo8fdmat00004fp854r2lodn?w=700&v=home-masters-v4',
-    work: 'The Creation of Adam',
+      'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/michelangelo/the-scream-in-michelangelo-style-uhrlG2bs3WxMg24vEymrsIUlB8XQtj.png',
+    work: 'The Scream — Michelangelo Style',
   },
   {
     label: 'Vincent van Gogh',
     href: '/explore/styles/van-gogh',
     image:
-      '/api/artwork/preview/cmnn9rage0000w3tg10mfkpev?w=700&v=home-masters-v4',
+      '/api/artwork/preview/cmnn9rage0000w3tg10mfkpev?w=700&v=home-masters-v5',
     work: 'The Starry Night',
   },
   {
     label: 'Claude Monet',
     href: '/explore/styles/claude-monet',
     image:
-      '/api/artwork/preview/cmnnla8tb0016rnlqgeqmkslu?w=700&v=home-masters-v4',
+      'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/monet/impression-sunrise-in-monet-style-public-domain-source-CaA4dkgwW30TtRkvXoA2GqC5OcuWbd',
     work: 'Impression, Sunrise',
   },
   {
     label: 'Rembrandt',
     href: '/explore/styles/rembrandt',
     image:
-      '/api/artwork/preview/cmnotftfu0000jd2lgw17a20y?w=700&v=home-masters-v4',
+      '/api/artwork/preview/cmnotftfu0000jd2lgw17a20y?w=700&v=home-masters-v5',
     work: 'The Night Watch',
   },
   {
     label: 'Caravaggio',
     href: '/explore/styles/caravaggio',
     image:
-      '/api/artwork/preview/cmnowyzys0000vtrya8t4lj2o?w=700&v=home-masters-v4',
-    work: 'The Calling of Saint Matthew',
+      'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/caravaggio/girl-with-a-pearl-earring-in-caravaggio-style-iIUSvkTN9tvpsnf8fp2JhvAReCe1WY.png',
+    work: 'Girl with a Pearl Earring — Caravaggio Style',
   },
   {
     label: 'Johannes Vermeer',
     href: '/explore/styles/johannes-vermeer',
     image:
-      '/api/artwork/preview/cmngfwqth000037jqrfa2havj?w=700&v=home-masters-v4',
+      'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/vermeer/girl-with-a-pearl-earring-in-vermeer-style-public-domain-source-2MjUdSMSxgVLEqaT3NNexE0NzuOSxH',
     work: 'Girl with a Pearl Earring',
   },
   {
     label: 'Edvard Munch',
     href: '/explore/styles/edvard-munch',
     image:
-      '/api/artwork/preview/cmnqg55x60000uijqc07vfxob?w=700&v=home-masters-v4',
+      '/api/artwork/preview/cmnqg55x60000uijqc07vfxob?w=700&v=home-masters-v5',
     work: 'The Scream',
   },
   {
     label: 'Jackson Pollock',
     href: '/explore/styles/jackson-pollock',
     image:
-      '/api/artwork/preview/cmnp0xr2j0000utfte34mxv4n?w=700&v=home-masters-v4',
+      '/api/artwork/preview/cmnp0xr2j0000utfte34mxv4n?w=700&v=home-masters-v5',
     work: 'Autumn Rhythm',
   },
   {
     label: 'Salvador Dalí',
     href: '/explore/styles/dali',
     image:
-      '/api/artwork/preview/cmokppri00000vg99j9we8g9v?w=700&v=home-masters-v4',
+      '/api/artwork/preview/cmokppri00000vg99j9we8g9v?w=700&v=home-masters-v5',
     work: 'Persistence of Memory Inspired',
   },
   {
     label: 'Pablo Picasso',
     href: '/explore/styles/pablo-picasso',
     image:
-      '/api/artwork/preview/cmolyv23t000011ndvoxcxgbw?w=700&v=home-masters-v4',
-    work: 'Cubist Collection',
+      'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/picasso/mona-lisa-in-picasso-style-S2Vwbt2gruejZTbiTNS6N0g7UjzZja.png',
+    work: 'Mona Lisa — Picasso Style',
   },
 ]
 
@@ -119,7 +119,7 @@ const MASTERS_REIMAGINED = [
     master: 'In Michelangelo Style',
     href: '/artwork/cmnbfkgtb000m76b7fxhnwvcf',
     image:
-      '/api/artwork/preview/cmnbfkgtb000m76b7fxhnwvcf?w=900&v=reimagined-v4',
+      'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/michelangelo/the-scream-in-michelangelo-style-uhrlG2bs3WxMg24vEymrsIUlB8XQtj.png',
     text: 'Munch’s emotional masterpiece reinterpreted with Michelangelo’s monumental sculptural power.',
   },
   {
@@ -127,7 +127,7 @@ const MASTERS_REIMAGINED = [
     master: 'In Van Gogh Style',
     href: '/artwork/cmnnbf5dw000u7arey9doysq6',
     image:
-      '/api/artwork/preview/cmnnbf5dw000u7arey9doysq6?w=900&v=reimagined-v4',
+      'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/van-gogh/mona-lisa-in-van-gogh-style-ZCAnXSHS9H7UPFWdmf5SEtbdf76gVk.png',
     text: 'Leonardo’s mysterious portrait transformed through expressive colour and swirling movement.',
   },
   {
@@ -135,7 +135,7 @@ const MASTERS_REIMAGINED = [
     master: 'In Monet Style',
     href: '/artwork/cmn7yhcwc000516ddv03zxjgc',
     image:
-      '/api/artwork/preview/cmn7yhcwc000516ddv03zxjgc?w=900&v=reimagined-v4',
+      'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/monet/starry-night-in-monet-style-XClaCopIFppIKq49pOoI0w9gzo95bG.png',
     text: 'Van Gogh’s celebrated night sky interpreted through atmospheric impressionist light.',
   },
   {
@@ -143,7 +143,7 @@ const MASTERS_REIMAGINED = [
     master: 'In Caravaggio Style',
     href: '/artwork/cmnox8u470006j89qcsbi57i5',
     image:
-      '/api/artwork/preview/cmnox8u470006j89qcsbi57i5?w=900&v=reimagined-v4',
+      'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/caravaggio/girl-with-a-pearl-earring-in-caravaggio-style-iIUSvkTN9tvpsnf8fp2JhvAReCe1WY.png',
     text: 'Vermeer’s intimate portrait recast with Caravaggio’s dramatic chiaroscuro.',
   },
   {
@@ -151,7 +151,7 @@ const MASTERS_REIMAGINED = [
     master: 'In Picasso Style',
     href: '/artwork/cmnnmtyr1000331x6h0sync7l',
     image:
-      '/api/artwork/preview/cmnnmtyr1000331x6h0sync7l?w=900&v=reimagined-v4',
+      'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/picasso/the-night-watch-in-picasso-style-R99D9eVFQJCetMGt3Al3FaLbQD9ITP.png',
     text: 'Rembrandt’s group portrait reconstructed through bold cubist geometry.',
   },
   {
@@ -159,7 +159,7 @@ const MASTERS_REIMAGINED = [
     master: 'In Pollock Style',
     href: '/artwork/cmnp1a7i2001rmgqe22rvk6o9',
     image:
-      '/api/artwork/preview/cmnp1a7i2001rmgqe22rvk6o9?w=900&v=reimagined-v4',
+      'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/pollock/impression-sunrise-in-pollock-style-yYBU0MY607MyHQWDW0RKRZUaU0DZXw.png',
     text: 'Monet’s harbour scene transformed into an energetic field of colour and motion.',
   },
   {
@@ -167,7 +167,7 @@ const MASTERS_REIMAGINED = [
     master: 'In Munch Style',
     href: '/artwork/cmnqg2yan0010mvtopbk1hgcz',
     image:
-      '/api/artwork/preview/cmnqg2yan0010mvtopbk1hgcz?w=900&v=reimagined-v4',
+      'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/munch/the-last-supper-in-munch-style-9OzzojXQ2ByWF497ZyThGAlIpVe875.png',
     text: 'Leonardo’s defining composition interpreted through psychological tension and symbolism.',
   },
   {
@@ -175,7 +175,7 @@ const MASTERS_REIMAGINED = [
     master: 'In Rembrandt Style',
     href: '/artwork/cmnotw7l2000o9edqyqvktxia',
     image:
-      '/api/artwork/preview/cmnotw7l2000o9edqyqvktxia?w=900&v=reimagined-v4',
+      'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/rembrandt/persistence-of-memory-in-rembrandt-style-mbmGzGwU5wvni3vkwrLUmoqWc33x1A.png',
     text: 'Dalí’s surreal imagery reinterpreted through rich shadows, restrained light and classical drama.',
   },
   {
@@ -183,7 +183,7 @@ const MASTERS_REIMAGINED = [
     master: 'In Vermeer Style',
     href: '/artwork/cmngg1i8l001937jqm4ojyyzd',
     image:
-      '/api/artwork/preview/cmngg1i8l001937jqm4ojyyzd?w=900&v=reimagined-v4',
+      'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/vermeer/guernica-in-vermeer-style-QaOXgAP2l1gGJjUkkKBdJpLP5Exfp6.png',
     text: 'Picasso’s monumental work translated into Vermeer’s controlled light and intimate atmosphere.',
   },
 ]
@@ -193,91 +193,91 @@ const FAVORITE_COLLECTIONS = [
     label: 'Fantasy Kingdoms',
     slug: 'fantasy-kingdoms',
     image:
-      '/api/artwork/preview/cmq80fdao0000o5blyggzox1h?w=800&v=home-favorites-v4',
+      '/api/artwork/preview/cmq80fdao0000o5blyggzox1h?w=800&v=home-favorites-v5',
   },
   {
     label: 'Ancient Civilizations',
     slug: 'ancient-civilizations',
     image:
-      '/api/artwork/preview/cmq6d1a57000014kn9c02er4x?w=800&v=home-favorites-v4',
+      '/api/artwork/preview/cmq6d1a57000014kn9c02er4x?w=800&v=home-favorites-v5',
   },
   {
     label: 'Space / Galaxy',
     slug: 'space-galaxy',
     image:
-      '/api/artwork/preview/cmq5e2xjx0000308bbd8u2uvd?w=800&v=home-favorites-v4',
+      '/api/artwork/preview/cmq5e2xjx0000308bbd8u2uvd?w=800&v=home-favorites-v5',
   },
   {
     label: 'Cars / Automotive',
     slug: 'cars-automotive',
     image:
-      '/api/artwork/preview/cmq4wthpl0000165iuvclc0xg?w=800&v=home-favorites-v4',
+      '/api/artwork/preview/cmq4wthpl0000165iuvclc0xg?w=800&v=home-favorites-v5',
   },
   {
     label: 'Seasonal / Holidays',
     slug: 'seasonal-holidays',
     image:
-      '/api/artwork/preview/cmq3u8dd10000k0dafyvhkg9l?w=800&v=home-favorites-v4',
+      '/api/artwork/preview/cmq3u8dd10000k0dafyvhkg9l?w=800&v=home-favorites-v5',
   },
   {
     label: 'Spiritual / Zen',
     slug: 'spiritual-zen',
     image:
-      '/api/artwork/preview/cmq3d8uhm0000u3feir9sucgq?w=800&v=home-favorites-v4',
+      '/api/artwork/preview/cmq3d8uhm0000u3feir9sucgq?w=800&v=home-favorites-v5',
   },
   {
     label: 'Food / Culinary',
     slug: 'food-culinary',
     image:
-      '/api/artwork/preview/cmpfxxocq00005d9waq7ulcng?w=800&v=home-favorites-v4',
+      '/api/artwork/preview/cmpfxxocq00005d9waq7ulcng?w=800&v=home-favorites-v5',
   },
   {
     label: 'Animals / Pets',
     slug: 'animals-pets',
     image:
-      '/api/artwork/preview/cmpyeyl3300002zoq2hvd1pio?w=800&v=home-favorites-v4',
+      '/api/artwork/preview/cmpyeyl3300002zoq2hvd1pio?w=800&v=home-favorites-v5',
   },
   {
     label: 'Gaming / Esports',
     slug: 'gaming-esports',
     image:
-      '/api/artwork/preview/cmq23ftj50000vj3vyeco8mh4?w=800&v=home-favorites-v4',
+      '/api/artwork/preview/cmq23ftj50000vj3vyeco8mh4?w=800&v=home-favorites-v5',
   },
   {
     label: 'Travel / Destinations',
     slug: 'travel-destinations',
     image:
-      '/api/artwork/preview/cmpku0pdu0000wrli6vj5ttbx?w=800&v=home-favorites-v4',
+      '/api/artwork/preview/cmpku0pdu0000wrli6vj5ttbx?w=800&v=home-favorites-v5',
   },
   {
     label: 'Luxury Lifestyle',
     slug: 'luxury-lifestyle',
     image:
-      '/api/artwork/preview/cmpllpx7y0000izhrrv1dl9q3?w=800&v=home-favorites-v4',
+      '/api/artwork/preview/cmpllpx7y0000izhrrv1dl9q3?w=800&v=home-favorites-v5',
   },
   {
     label: 'Nature / Botanical',
     slug: 'nature-botanical',
     image:
-      '/api/artwork/preview/cmpd6gbye0000inxmqaksp6cn?w=800&v=home-favorites-v4',
+      '/api/artwork/preview/cmpd6gbye0000inxmqaksp6cn?w=800&v=home-favorites-v5',
   },
   {
     label: 'Architecture',
     slug: 'architecture',
     image:
-      '/api/artwork/preview/cmp2yzmsu00006o55vsz0zogg?w=800&v=home-favorites-v4',
+      '/api/artwork/preview/cmp2yzmsu00006o55vsz0zogg?w=800&v=home-favorites-v5',
   },
   {
     label: 'Ocean / Marine',
     slug: 'ocean-marine',
     image:
-      '/api/artwork/preview/cmpbn3f0h0000ycb12edq3qk2?w=800&v=home-favorites-v4',
+      '/api/artwork/preview/cmpbn3f0h0000ycb12edq3qk2?w=800&v=home-favorites-v5',
   },
   {
     label: 'Vintage / Retro',
     slug: 'vintage-retro',
     image:
-      '/api/artwork/preview/cmpx5aw9j0000oxlq33ww14zi?w=800&v=home-favorites-v4',
+      '/api/artwork/preview/cmpx5aw9j0000oxlq33ww14zi?w=800&v=home-favorites-v5',
   },
 ]
 
@@ -287,42 +287,42 @@ const BESTSELLERS = [
     collection: 'Fantasy Kingdoms',
     href: '/artwork/cmq80fdao0000o5blyggzox1h',
     image:
-      '/api/artwork/preview/cmq80fdao0000o5blyggzox1h?w=900&v=bestsellers-v4',
+      '/api/artwork/preview/cmq80fdao0000o5blyggzox1h?w=900&v=bestsellers-v5',
   },
   {
     title: 'Great Pyramid of Giza',
     collection: 'Ancient Civilizations',
     href: '/artwork/cmq6d1a57000014kn9c02er4x',
     image:
-      '/api/artwork/preview/cmq6d1a57000014kn9c02er4x?w=900&v=bestsellers-v4',
+      '/api/artwork/preview/cmq6d1a57000014kn9c02er4x?w=900&v=bestsellers-v5',
   },
   {
     title: 'Luxury Space Station Observatory',
     collection: 'Space / Galaxy',
     href: '/artwork/cmq5e2xjx0000308bbd8u2uvd',
     image:
-      '/api/artwork/preview/cmq5e2xjx0000308bbd8u2uvd?w=900&v=bestsellers-v4',
+      '/api/artwork/preview/cmq5e2xjx0000308bbd8u2uvd?w=900&v=bestsellers-v5',
   },
   {
     title: 'Luxury Sports Car Showroom',
     collection: 'Cars / Automotive',
     href: '/artwork/cmq4wthpl0000165iuvclc0xg',
     image:
-      '/api/artwork/preview/cmq4wthpl0000165iuvclc0xg?w=900&v=bestsellers-v4',
+      '/api/artwork/preview/cmq4wthpl0000165iuvclc0xg?w=900&v=bestsellers-v5',
   },
   {
     title: 'Zen Meditation Temple',
     collection: 'Spiritual / Zen',
     href: '/artwork/cmq3d8uhm0000u3feir9sucgq',
     image:
-      '/api/artwork/preview/cmq3d8uhm0000u3feir9sucgq?w=900&v=bestsellers-v4',
+      '/api/artwork/preview/cmq3d8uhm0000u3feir9sucgq?w=900&v=bestsellers-v5',
   },
   {
     title: 'Gourmet Pasta Plate',
     collection: 'Food / Culinary',
     href: '/artwork/cmpfxxocq00005d9waq7ulcng',
     image:
-      '/api/artwork/preview/cmpfxxocq00005d9waq7ulcng?w=900&v=bestsellers-v4',
+      '/api/artwork/preview/cmpfxxocq00005d9waq7ulcng?w=900&v=bestsellers-v5',
   },
 ]
 
@@ -498,7 +498,7 @@ export default function HomePage() {
             className="group overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.04] shadow-2xl shadow-black/40"
           >
             <SafeImg
-              src="/api/artwork/preview/cmnbfkgtb000m76b7fxhnwvcf?w=1100&v=hero-v4"
+              src="https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/michelangelo/the-scream-in-michelangelo-style-uhrlG2bs3WxMg24vEymrsIUlB8XQtj.png"
               fallbackSrc={FALLBACK_DATA_URL}
               alt="The Scream in Michelangelo Style"
               className="aspect-[4/5] w-full object-cover transition duration-700 group-hover:scale-105"
