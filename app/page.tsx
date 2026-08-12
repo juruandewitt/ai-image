@@ -38,21 +38,21 @@ const MASTERS = [
     label: 'Leonardo da Vinci',
     href: '/explore/styles/leonardo-da-vinci',
     image:
-      '/api/artwork/preview/cmngh924c0000gfum690drnoh?w=700&v=home-masters-v5',
+      '/api/artwork/preview/cmngh924c0000gfum690drnoh?w=700&v=home-masters-v6',
     work: 'Mona Lisa',
   },
   {
     label: 'Michelangelo',
     href: '/explore/styles/michelangelo',
     image:
-      'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/michelangelo/the-scream-in-michelangelo-style-uhrlG2bs3WxMg24vEymrsIUlB8XQtj.png',
-    work: 'The Scream — Michelangelo Style',
+      'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/michelangelo/the-creation-of-adam-in-michelangelo-style-public-domain-source-cEmALjPHvrcsFGnUNu2tMmCJj4gvbj',
+    work: 'The Creation of Adam',
   },
   {
     label: 'Vincent van Gogh',
     href: '/explore/styles/van-gogh',
     image:
-      '/api/artwork/preview/cmnn9rage0000w3tg10mfkpev?w=700&v=home-masters-v5',
+      '/api/artwork/preview/cmnn9rage0000w3tg10mfkpev?w=700&v=home-masters-v6',
     work: 'The Starry Night',
   },
   {
@@ -66,7 +66,7 @@ const MASTERS = [
     label: 'Rembrandt',
     href: '/explore/styles/rembrandt',
     image:
-      '/api/artwork/preview/cmnotftfu0000jd2lgw17a20y?w=700&v=home-masters-v5',
+      '/api/artwork/preview/cmnotftfu0000jd2lgw17a20y?w=700&v=home-masters-v6',
     work: 'The Night Watch',
   },
   {
@@ -87,29 +87,29 @@ const MASTERS = [
     label: 'Edvard Munch',
     href: '/explore/styles/edvard-munch',
     image:
-      '/api/artwork/preview/cmnqg55x60000uijqc07vfxob?w=700&v=home-masters-v5',
+      '/api/artwork/preview/cmnqg55x60000uijqc07vfxob?w=700&v=home-masters-v6',
     work: 'The Scream',
   },
   {
     label: 'Jackson Pollock',
     href: '/explore/styles/jackson-pollock',
     image:
-      '/api/artwork/preview/cmnp0xr2j0000utfte34mxv4n?w=700&v=home-masters-v5',
+      '/api/artwork/preview/cmnp0xr2j0000utfte34mxv4n?w=700&v=home-masters-v6',
     work: 'Autumn Rhythm',
   },
   {
     label: 'Salvador Dalí',
     href: '/explore/styles/dali',
     image:
-      '/api/artwork/preview/cmokppri00000vg99j9we8g9v?w=700&v=home-masters-v5',
+      '/api/artwork/preview/cmokppri00000vg99j9we8g9v?w=700&v=home-masters-v6',
     work: 'Persistence of Memory Inspired',
   },
   {
     label: 'Pablo Picasso',
     href: '/explore/styles/pablo-picasso',
     image:
-      'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/picasso/mona-lisa-in-picasso-style-S2Vwbt2gruejZTbiTNS6N0g7UjzZja.png',
-    work: 'Mona Lisa — Picasso Style',
+      'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/picasso/guernica-in-picasso-style-jYGI4QJ8IGGGpIpCK2elvHxuAMjOSf.png',
+    work: 'Guernica',
   },
 ]
 
@@ -193,91 +193,91 @@ const FAVORITE_COLLECTIONS = [
     label: 'Fantasy Kingdoms',
     slug: 'fantasy-kingdoms',
     image:
-      '/api/artwork/preview/cmq80fdao0000o5blyggzox1h?w=800&v=home-favorites-v5',
+      '/api/artwork/preview/cmq80fdao0000o5blyggzox1h?w=800&v=home-favorites-v6',
   },
   {
     label: 'Ancient Civilizations',
     slug: 'ancient-civilizations',
     image:
-      '/api/artwork/preview/cmq6d1a57000014kn9c02er4x?w=800&v=home-favorites-v5',
+      '/api/artwork/preview/cmq6d1a57000014kn9c02er4x?w=800&v=home-favorites-v6',
   },
   {
     label: 'Space / Galaxy',
     slug: 'space-galaxy',
     image:
-      '/api/artwork/preview/cmq5e2xjx0000308bbd8u2uvd?w=800&v=home-favorites-v5',
+      '/api/artwork/preview/cmq5e2xjx0000308bbd8u2uvd?w=800&v=home-favorites-v6',
   },
   {
     label: 'Cars / Automotive',
     slug: 'cars-automotive',
     image:
-      '/api/artwork/preview/cmq4wthpl0000165iuvclc0xg?w=800&v=home-favorites-v5',
+      '/api/artwork/preview/cmq4wthpl0000165iuvclc0xg?w=800&v=home-favorites-v6',
   },
   {
     label: 'Seasonal / Holidays',
     slug: 'seasonal-holidays',
     image:
-      '/api/artwork/preview/cmq3u8dd10000k0dafyvhkg9l?w=800&v=home-favorites-v5',
+      '/api/artwork/preview/cmq3u8dd10000k0dafyvhkg9l?w=800&v=home-favorites-v6',
   },
   {
     label: 'Spiritual / Zen',
     slug: 'spiritual-zen',
     image:
-      '/api/artwork/preview/cmq3d8uhm0000u3feir9sucgq?w=800&v=home-favorites-v5',
+      '/api/artwork/preview/cmq3d8uhm0000u3feir9sucgq?w=800&v=home-favorites-v6',
   },
   {
     label: 'Food / Culinary',
     slug: 'food-culinary',
     image:
-      '/api/artwork/preview/cmpfxxocq00005d9waq7ulcng?w=800&v=home-favorites-v5',
+      '/api/artwork/preview/cmpfxxocq00005d9waq7ulcng?w=800&v=home-favorites-v6',
   },
   {
     label: 'Animals / Pets',
     slug: 'animals-pets',
     image:
-      '/api/artwork/preview/cmpyeyl3300002zoq2hvd1pio?w=800&v=home-favorites-v5',
+      '/api/artwork/preview/cmpyeyl3300002zoq2hvd1pio?w=800&v=home-favorites-v6',
   },
   {
     label: 'Gaming / Esports',
     slug: 'gaming-esports',
     image:
-      '/api/artwork/preview/cmq23ftj50000vj3vyeco8mh4?w=800&v=home-favorites-v5',
+      '/api/artwork/preview/cmq23ftj50000vj3vyeco8mh4?w=800&v=home-favorites-v6',
   },
   {
     label: 'Travel / Destinations',
     slug: 'travel-destinations',
     image:
-      '/api/artwork/preview/cmpku0pdu0000wrli6vj5ttbx?w=800&v=home-favorites-v5',
+      '/api/artwork/preview/cmpku0pdu0000wrli6vj5ttbx?w=800&v=home-favorites-v6',
   },
   {
     label: 'Luxury Lifestyle',
     slug: 'luxury-lifestyle',
     image:
-      '/api/artwork/preview/cmpllpx7y0000izhrrv1dl9q3?w=800&v=home-favorites-v5',
+      '/api/artwork/preview/cmpllpx7y0000izhrrv1dl9q3?w=800&v=home-favorites-v6',
   },
   {
     label: 'Nature / Botanical',
     slug: 'nature-botanical',
     image:
-      '/api/artwork/preview/cmpd6gbye0000inxmqaksp6cn?w=800&v=home-favorites-v5',
+      '/api/artwork/preview/cmpd6gbye0000inxmqaksp6cn?w=800&v=home-favorites-v6',
   },
   {
     label: 'Architecture',
     slug: 'architecture',
     image:
-      '/api/artwork/preview/cmp2yzmsu00006o55vsz0zogg?w=800&v=home-favorites-v5',
+      '/api/artwork/preview/cmp2yzmsu00006o55vsz0zogg?w=800&v=home-favorites-v6',
   },
   {
     label: 'Ocean / Marine',
     slug: 'ocean-marine',
     image:
-      '/api/artwork/preview/cmpbn3f0h0000ycb12edq3qk2?w=800&v=home-favorites-v5',
+      '/api/artwork/preview/cmpbn3f0h0000ycb12edq3qk2?w=800&v=home-favorites-v6',
   },
   {
     label: 'Vintage / Retro',
     slug: 'vintage-retro',
     image:
-      '/api/artwork/preview/cmpx5aw9j0000oxlq33ww14zi?w=800&v=home-favorites-v5',
+      '/api/artwork/preview/cmpx5aw9j0000oxlq33ww14zi?w=800&v=home-favorites-v6',
   },
 ]
 
@@ -287,42 +287,42 @@ const BESTSELLERS = [
     collection: 'Fantasy Kingdoms',
     href: '/artwork/cmq80fdao0000o5blyggzox1h',
     image:
-      '/api/artwork/preview/cmq80fdao0000o5blyggzox1h?w=900&v=bestsellers-v5',
+      '/api/artwork/preview/cmq80fdao0000o5blyggzox1h?w=900&v=bestsellers-v6',
   },
   {
     title: 'Great Pyramid of Giza',
     collection: 'Ancient Civilizations',
     href: '/artwork/cmq6d1a57000014kn9c02er4x',
     image:
-      '/api/artwork/preview/cmq6d1a57000014kn9c02er4x?w=900&v=bestsellers-v5',
+      '/api/artwork/preview/cmq6d1a57000014kn9c02er4x?w=900&v=bestsellers-v6',
   },
   {
     title: 'Luxury Space Station Observatory',
     collection: 'Space / Galaxy',
     href: '/artwork/cmq5e2xjx0000308bbd8u2uvd',
     image:
-      '/api/artwork/preview/cmq5e2xjx0000308bbd8u2uvd?w=900&v=bestsellers-v5',
+      '/api/artwork/preview/cmq5e2xjx0000308bbd8u2uvd?w=900&v=bestsellers-v6',
   },
   {
     title: 'Luxury Sports Car Showroom',
     collection: 'Cars / Automotive',
     href: '/artwork/cmq4wthpl0000165iuvclc0xg',
     image:
-      '/api/artwork/preview/cmq4wthpl0000165iuvclc0xg?w=900&v=bestsellers-v5',
+      '/api/artwork/preview/cmq4wthpl0000165iuvclc0xg?w=900&v=bestsellers-v6',
   },
   {
     title: 'Zen Meditation Temple',
     collection: 'Spiritual / Zen',
     href: '/artwork/cmq3d8uhm0000u3feir9sucgq',
     image:
-      '/api/artwork/preview/cmq3d8uhm0000u3feir9sucgq?w=900&v=bestsellers-v5',
+      '/api/artwork/preview/cmq3d8uhm0000u3feir9sucgq?w=900&v=bestsellers-v6',
   },
   {
     title: 'Gourmet Pasta Plate',
     collection: 'Food / Culinary',
     href: '/artwork/cmpfxxocq00005d9waq7ulcng',
     image:
-      '/api/artwork/preview/cmpfxxocq00005d9waq7ulcng?w=900&v=bestsellers-v5',
+      '/api/artwork/preview/cmpfxxocq00005d9waq7ulcng?w=900&v=bestsellers-v6',
   },
 ]
 
