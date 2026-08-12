@@ -38,99 +38,78 @@ const MASTERS = [
     label: 'Leonardo da Vinci',
     href: '/explore/styles/leonardo-da-vinci',
     image:
-      '/api/artwork/preview/cmngh924c0000gfum690drnoh?w=700&v=home-masters-v3',
+      '/api/artwork/preview/cmngh924c0000gfum690drnoh?w=700&v=home-masters-v4',
     work: 'Mona Lisa',
   },
   {
     label: 'Michelangelo',
     href: '/explore/styles/michelangelo',
     image:
-      '/api/artwork/preview/cmo8fdmat00004fp854r2lodn?w=700&v=home-masters-v3',
+      '/api/artwork/preview/cmo8fdmat00004fp854r2lodn?w=700&v=home-masters-v4',
     work: 'The Creation of Adam',
   },
   {
     label: 'Vincent van Gogh',
     href: '/explore/styles/van-gogh',
     image:
-      '/api/artwork/preview/cmnn9rage0000w3tg10mfkpev?w=700&v=home-masters-v3',
+      '/api/artwork/preview/cmnn9rage0000w3tg10mfkpev?w=700&v=home-masters-v4',
     work: 'The Starry Night',
   },
   {
     label: 'Claude Monet',
     href: '/explore/styles/claude-monet',
     image:
-      '/api/artwork/preview/cmnnla8tb0016rnlqgeqmkslu?w=700&v=home-masters-v3',
+      '/api/artwork/preview/cmnnla8tb0016rnlqgeqmkslu?w=700&v=home-masters-v4',
     work: 'Impression, Sunrise',
   },
   {
     label: 'Rembrandt',
     href: '/explore/styles/rembrandt',
     image:
-      '/api/artwork/preview/cmnotftfu0000jd2lgw17a20y?w=700&v=home-masters-v3',
+      '/api/artwork/preview/cmnotftfu0000jd2lgw17a20y?w=700&v=home-masters-v4',
     work: 'The Night Watch',
   },
   {
     label: 'Caravaggio',
     href: '/explore/styles/caravaggio',
     image:
-      '/api/artwork/preview/cmnowyzys0000vtrya8t4lj2o?w=700&v=home-masters-v3',
+      '/api/artwork/preview/cmnowyzys0000vtrya8t4lj2o?w=700&v=home-masters-v4',
     work: 'The Calling of Saint Matthew',
   },
   {
     label: 'Johannes Vermeer',
     href: '/explore/styles/johannes-vermeer',
     image:
-      '/api/artwork/preview/cmngfwqth000037jqrfa2havj?w=700&v=home-masters-v3',
+      '/api/artwork/preview/cmngfwqth000037jqrfa2havj?w=700&v=home-masters-v4',
     work: 'Girl with a Pearl Earring',
   },
   {
     label: 'Edvard Munch',
     href: '/explore/styles/edvard-munch',
     image:
-      '/api/artwork/preview/cmnqg55x60000uijqc07vfxob?w=700&v=home-masters-v3',
+      '/api/artwork/preview/cmnqg55x60000uijqc07vfxob?w=700&v=home-masters-v4',
     work: 'The Scream',
   },
   {
     label: 'Jackson Pollock',
     href: '/explore/styles/jackson-pollock',
     image:
-      '/api/artwork/preview/cmnp0xr2j0000utfte34mxv4n?w=700&v=home-masters-v3',
+      '/api/artwork/preview/cmnp0xr2j0000utfte34mxv4n?w=700&v=home-masters-v4',
     work: 'Autumn Rhythm',
   },
   {
     label: 'Salvador Dalí',
     href: '/explore/styles/dali',
     image:
-      '/api/artwork/preview/cmokppri00000vg99j9we8g9v?w=700&v=home-masters-v3',
+      '/api/artwork/preview/cmokppri00000vg99j9we8g9v?w=700&v=home-masters-v4',
     work: 'Persistence of Memory Inspired',
   },
   {
     label: 'Pablo Picasso',
     href: '/explore/styles/pablo-picasso',
     image:
-      '/api/artwork/preview/cmolyv23t000011ndvoxcxgbw?w=700&v=home-masters-v3',
+      '/api/artwork/preview/cmolyv23t000011ndvoxcxgbw?w=700&v=home-masters-v4',
     work: 'Cubist Collection',
-  },
-  {
-    label: 'Dalí Reimagined',
-    href: '/explore/styles/dali',
-    image:
-      '/api/artwork/preview/cmokppri00000vg99j9we8g9v?w=700&v=home-masters-v3',
-    work: 'Original surreal AI collection',
-  },
-  {
-    label: 'Picasso Reimagined',
-    href: '/explore/styles/pablo-picasso',
-    image:
-      '/api/artwork/preview/cmolyv23t000011ndvoxcxgbw?w=700&v=home-masters-v3',
-    work: 'Original cubist AI collection',
-  },
-  {
-    label: 'Pollock Reimagined',
-    href: '/explore/styles/jackson-pollock',
-    image:
-      '/api/artwork/preview/cmnp0xr2j0000utfte34mxv4n?w=700&v=home-masters-v3',
-    work: 'Original abstract AI collection',
   },
 ]
 
@@ -140,7 +119,7 @@ const MASTERS_REIMAGINED = [
     master: 'In Michelangelo Style',
     href: '/artwork/cmnbfkgtb000m76b7fxhnwvcf',
     image:
-      '/api/artwork/preview/cmnbfkgtb000m76b7fxhnwvcf?w=900&v=reimagined-v3',
+      '/api/artwork/preview/cmnbfkgtb000m76b7fxhnwvcf?w=900&v=reimagined-v4',
     text: 'Munch’s emotional masterpiece reinterpreted with Michelangelo’s monumental sculptural power.',
   },
   {
@@ -148,7 +127,7 @@ const MASTERS_REIMAGINED = [
     master: 'In Van Gogh Style',
     href: '/artwork/cmnnbf5dw000u7arey9doysq6',
     image:
-      '/api/artwork/preview/cmnnbf5dw000u7arey9doysq6?w=900&v=reimagined-v3',
+      '/api/artwork/preview/cmnnbf5dw000u7arey9doysq6?w=900&v=reimagined-v4',
     text: 'Leonardo’s mysterious portrait transformed through expressive colour and swirling movement.',
   },
   {
@@ -156,7 +135,7 @@ const MASTERS_REIMAGINED = [
     master: 'In Monet Style',
     href: '/artwork/cmn7yhcwc000516ddv03zxjgc',
     image:
-      '/api/artwork/preview/cmn7yhcwc000516ddv03zxjgc?w=900&v=reimagined-v3',
+      '/api/artwork/preview/cmn7yhcwc000516ddv03zxjgc?w=900&v=reimagined-v4',
     text: 'Van Gogh’s celebrated night sky interpreted through atmospheric impressionist light.',
   },
   {
@@ -164,7 +143,7 @@ const MASTERS_REIMAGINED = [
     master: 'In Caravaggio Style',
     href: '/artwork/cmnox8u470006j89qcsbi57i5',
     image:
-      '/api/artwork/preview/cmnox8u470006j89qcsbi57i5?w=900&v=reimagined-v3',
+      '/api/artwork/preview/cmnox8u470006j89qcsbi57i5?w=900&v=reimagined-v4',
     text: 'Vermeer’s intimate portrait recast with Caravaggio’s dramatic chiaroscuro.',
   },
   {
@@ -172,7 +151,7 @@ const MASTERS_REIMAGINED = [
     master: 'In Picasso Style',
     href: '/artwork/cmnnmtyr1000331x6h0sync7l',
     image:
-      '/api/artwork/preview/cmnnmtyr1000331x6h0sync7l?w=900&v=reimagined-v3',
+      '/api/artwork/preview/cmnnmtyr1000331x6h0sync7l?w=900&v=reimagined-v4',
     text: 'Rembrandt’s group portrait reconstructed through bold cubist geometry.',
   },
   {
@@ -180,7 +159,7 @@ const MASTERS_REIMAGINED = [
     master: 'In Pollock Style',
     href: '/artwork/cmnp1a7i2001rmgqe22rvk6o9',
     image:
-      '/api/artwork/preview/cmnp1a7i2001rmgqe22rvk6o9?w=900&v=reimagined-v3',
+      '/api/artwork/preview/cmnp1a7i2001rmgqe22rvk6o9?w=900&v=reimagined-v4',
     text: 'Monet’s harbour scene transformed into an energetic field of colour and motion.',
   },
   {
@@ -188,7 +167,7 @@ const MASTERS_REIMAGINED = [
     master: 'In Munch Style',
     href: '/artwork/cmnqg2yan0010mvtopbk1hgcz',
     image:
-      '/api/artwork/preview/cmnqg2yan0010mvtopbk1hgcz?w=900&v=reimagined-v3',
+      '/api/artwork/preview/cmnqg2yan0010mvtopbk1hgcz?w=900&v=reimagined-v4',
     text: 'Leonardo’s defining composition interpreted through psychological tension and symbolism.',
   },
   {
@@ -196,7 +175,7 @@ const MASTERS_REIMAGINED = [
     master: 'In Rembrandt Style',
     href: '/artwork/cmnotw7l2000o9edqyqvktxia',
     image:
-      '/api/artwork/preview/cmnotw7l2000o9edqyqvktxia?w=900&v=reimagined-v3',
+      '/api/artwork/preview/cmnotw7l2000o9edqyqvktxia?w=900&v=reimagined-v4',
     text: 'Dalí’s surreal imagery reinterpreted through rich shadows, restrained light and classical drama.',
   },
   {
@@ -204,7 +183,7 @@ const MASTERS_REIMAGINED = [
     master: 'In Vermeer Style',
     href: '/artwork/cmngg1i8l001937jqm4ojyyzd',
     image:
-      '/api/artwork/preview/cmngg1i8l001937jqm4ojyyzd?w=900&v=reimagined-v3',
+      '/api/artwork/preview/cmngg1i8l001937jqm4ojyyzd?w=900&v=reimagined-v4',
     text: 'Picasso’s monumental work translated into Vermeer’s controlled light and intimate atmosphere.',
   },
 ]
@@ -214,91 +193,91 @@ const FAVORITE_COLLECTIONS = [
     label: 'Fantasy Kingdoms',
     slug: 'fantasy-kingdoms',
     image:
-      '/api/artwork/preview/cmq80fdao0000o5blyggzox1h?w=800&v=home-favorites-v3',
+      '/api/artwork/preview/cmq80fdao0000o5blyggzox1h?w=800&v=home-favorites-v4',
   },
   {
     label: 'Ancient Civilizations',
     slug: 'ancient-civilizations',
     image:
-      '/api/artwork/preview/cmq6d1a57000014kn9c02er4x?w=800&v=home-favorites-v3',
+      '/api/artwork/preview/cmq6d1a57000014kn9c02er4x?w=800&v=home-favorites-v4',
   },
   {
     label: 'Space / Galaxy',
     slug: 'space-galaxy',
     image:
-      '/api/artwork/preview/cmq5e2xjx0000308bbd8u2uvd?w=800&v=home-favorites-v3',
+      '/api/artwork/preview/cmq5e2xjx0000308bbd8u2uvd?w=800&v=home-favorites-v4',
   },
   {
     label: 'Cars / Automotive',
     slug: 'cars-automotive',
     image:
-      '/api/artwork/preview/cmq4wthpl0000165iuvclc0xg?w=800&v=home-favorites-v3',
+      '/api/artwork/preview/cmq4wthpl0000165iuvclc0xg?w=800&v=home-favorites-v4',
   },
   {
     label: 'Seasonal / Holidays',
     slug: 'seasonal-holidays',
     image:
-      '/api/artwork/preview/cmq3u8dd10000k0dafyvhkg9l?w=800&v=home-favorites-v3',
+      '/api/artwork/preview/cmq3u8dd10000k0dafyvhkg9l?w=800&v=home-favorites-v4',
   },
   {
     label: 'Spiritual / Zen',
     slug: 'spiritual-zen',
     image:
-      '/api/artwork/preview/cmq3d8uhm0000u3feir9sucgq?w=800&v=home-favorites-v3',
+      '/api/artwork/preview/cmq3d8uhm0000u3feir9sucgq?w=800&v=home-favorites-v4',
   },
   {
     label: 'Food / Culinary',
     slug: 'food-culinary',
     image:
-      '/api/artwork/preview/cmpfxxocq00005d9waq7ulcng?w=800&v=home-favorites-v3',
+      '/api/artwork/preview/cmpfxxocq00005d9waq7ulcng?w=800&v=home-favorites-v4',
   },
   {
     label: 'Animals / Pets',
     slug: 'animals-pets',
     image:
-      '/api/artwork/preview/cmpyeyl3300002zoq2hvd1pio?w=800&v=home-favorites-v3',
+      '/api/artwork/preview/cmpyeyl3300002zoq2hvd1pio?w=800&v=home-favorites-v4',
   },
   {
     label: 'Gaming / Esports',
     slug: 'gaming-esports',
     image:
-      '/api/artwork/preview/cmq23ftj50000vj3vyeco8mh4?w=800&v=home-favorites-v3',
+      '/api/artwork/preview/cmq23ftj50000vj3vyeco8mh4?w=800&v=home-favorites-v4',
   },
   {
     label: 'Travel / Destinations',
     slug: 'travel-destinations',
     image:
-      '/api/artwork/preview/cmpku0pdu0000wrli6vj5ttbx?w=800&v=home-favorites-v3',
+      '/api/artwork/preview/cmpku0pdu0000wrli6vj5ttbx?w=800&v=home-favorites-v4',
   },
   {
     label: 'Luxury Lifestyle',
     slug: 'luxury-lifestyle',
     image:
-      '/api/artwork/preview/cmpllpx7y0000izhrrv1dl9q3?w=800&v=home-favorites-v3',
+      '/api/artwork/preview/cmpllpx7y0000izhrrv1dl9q3?w=800&v=home-favorites-v4',
   },
   {
     label: 'Nature / Botanical',
     slug: 'nature-botanical',
     image:
-      '/api/artwork/preview/cmpd6gbye0000inxmqaksp6cn?w=800&v=home-favorites-v3',
+      '/api/artwork/preview/cmpd6gbye0000inxmqaksp6cn?w=800&v=home-favorites-v4',
   },
   {
     label: 'Architecture',
     slug: 'architecture',
     image:
-      '/api/artwork/preview/cmp2yzmsu00006o55vsz0zogg?w=800&v=home-favorites-v3',
+      '/api/artwork/preview/cmp2yzmsu00006o55vsz0zogg?w=800&v=home-favorites-v4',
   },
   {
     label: 'Ocean / Marine',
     slug: 'ocean-marine',
     image:
-      '/api/artwork/preview/cmpbn3f0h0000ycb12edq3qk2?w=800&v=home-favorites-v3',
+      '/api/artwork/preview/cmpbn3f0h0000ycb12edq3qk2?w=800&v=home-favorites-v4',
   },
   {
     label: 'Vintage / Retro',
     slug: 'vintage-retro',
     image:
-      '/api/artwork/preview/cmpx5aw9j0000oxlq33ww14zi?w=800&v=home-favorites-v3',
+      '/api/artwork/preview/cmpx5aw9j0000oxlq33ww14zi?w=800&v=home-favorites-v4',
   },
 ]
 
@@ -308,42 +287,42 @@ const BESTSELLERS = [
     collection: 'Fantasy Kingdoms',
     href: '/artwork/cmq80fdao0000o5blyggzox1h',
     image:
-      '/api/artwork/preview/cmq80fdao0000o5blyggzox1h?w=900&v=bestsellers-v3',
+      '/api/artwork/preview/cmq80fdao0000o5blyggzox1h?w=900&v=bestsellers-v4',
   },
   {
     title: 'Great Pyramid of Giza',
     collection: 'Ancient Civilizations',
     href: '/artwork/cmq6d1a57000014kn9c02er4x',
     image:
-      '/api/artwork/preview/cmq6d1a57000014kn9c02er4x?w=900&v=bestsellers-v3',
+      '/api/artwork/preview/cmq6d1a57000014kn9c02er4x?w=900&v=bestsellers-v4',
   },
   {
     title: 'Luxury Space Station Observatory',
     collection: 'Space / Galaxy',
     href: '/artwork/cmq5e2xjx0000308bbd8u2uvd',
     image:
-      '/api/artwork/preview/cmq5e2xjx0000308bbd8u2uvd?w=900&v=bestsellers-v3',
+      '/api/artwork/preview/cmq5e2xjx0000308bbd8u2uvd?w=900&v=bestsellers-v4',
   },
   {
     title: 'Luxury Sports Car Showroom',
     collection: 'Cars / Automotive',
     href: '/artwork/cmq4wthpl0000165iuvclc0xg',
     image:
-      '/api/artwork/preview/cmq4wthpl0000165iuvclc0xg?w=900&v=bestsellers-v3',
+      '/api/artwork/preview/cmq4wthpl0000165iuvclc0xg?w=900&v=bestsellers-v4',
   },
   {
     title: 'Zen Meditation Temple',
     collection: 'Spiritual / Zen',
     href: '/artwork/cmq3d8uhm0000u3feir9sucgq',
     image:
-      '/api/artwork/preview/cmq3d8uhm0000u3feir9sucgq?w=900&v=bestsellers-v3',
+      '/api/artwork/preview/cmq3d8uhm0000u3feir9sucgq?w=900&v=bestsellers-v4',
   },
   {
     title: 'Gourmet Pasta Plate',
     collection: 'Food / Culinary',
     href: '/artwork/cmpfxxocq00005d9waq7ulcng',
     image:
-      '/api/artwork/preview/cmpfxxocq00005d9waq7ulcng?w=900&v=bestsellers-v3',
+      '/api/artwork/preview/cmpfxxocq00005d9waq7ulcng?w=900&v=bestsellers-v4',
   },
 ]
 
@@ -380,7 +359,11 @@ function SectionHeader({
   )
 }
 
-function MasterCard({ item }: { item: (typeof MASTERS)[number] }) {
+function MasterCard({
+  item,
+}: {
+  item: (typeof MASTERS)[number]
+}) {
   return (
     <Link
       href={item.href}
@@ -394,7 +377,10 @@ function MasterCard({ item }: { item: (typeof MASTERS)[number] }) {
       />
 
       <div className="p-5">
-        <div className="font-semibold text-white">{item.label}</div>
+        <div className="font-semibold text-white">
+          {item.label}
+        </div>
+
         <div className="mt-1 line-clamp-1 text-xs text-amber-300">
           {item.work}
         </div>
@@ -422,13 +408,18 @@ function ReimaginedCard({
 
       <div className="space-y-2 p-5">
         <div>
-          <div className="text-lg font-semibold text-white">{item.title}</div>
+          <div className="text-lg font-semibold text-white">
+            {item.title}
+          </div>
+
           <div className="mt-1 text-sm font-medium text-amber-300">
             {item.master}
           </div>
         </div>
 
-        <p className="text-sm leading-6 text-slate-400">{item.text}</p>
+        <p className="text-sm leading-6 text-slate-400">
+          {item.text}
+        </p>
       </div>
     </Link>
   )
@@ -452,8 +443,13 @@ function CollectionCard({
       />
 
       <div className="p-5">
-        <div className="font-semibold text-white">{item.label}</div>
-        <div className="mt-1 text-xs text-slate-400">50 artworks</div>
+        <div className="font-semibold text-white">
+          {item.label}
+        </div>
+
+        <div className="mt-1 text-xs text-slate-400">
+          50 artworks
+        </div>
       </div>
     </Link>
   )
@@ -502,7 +498,7 @@ export default function HomePage() {
             className="group overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.04] shadow-2xl shadow-black/40"
           >
             <SafeImg
-              src="/api/artwork/preview/cmnbfkgtb000m76b7fxhnwvcf?w=1100&v=hero-v3"
+              src="/api/artwork/preview/cmnbfkgtb000m76b7fxhnwvcf?w=1100&v=hero-v4"
               fallbackSrc={FALLBACK_DATA_URL}
               alt="The Scream in Michelangelo Style"
               className="aspect-[4/5] w-full object-cover transition duration-700 group-hover:scale-105"
@@ -512,6 +508,7 @@ export default function HomePage() {
               <div className="text-lg font-semibold text-white">
                 The Scream
               </div>
+
               <div className="text-sm text-slate-400">
                 Reimagined in Michelangelo Style
               </div>
@@ -522,39 +519,56 @@ export default function HomePage() {
 
       <section className="grid grid-cols-2 gap-4 rounded-[2rem] border border-white/10 bg-white/[0.04] p-6 text-center md:grid-cols-4">
         <div>
-          <div className="text-3xl font-semibold text-white">2000+</div>
-          <div className="text-sm text-slate-400">Launch artworks</div>
+          <div className="text-3xl font-semibold text-white">
+            2000+
+          </div>
+          <div className="text-sm text-slate-400">
+            Launch artworks
+          </div>
         </div>
 
         <div>
-          <div className="text-3xl font-semibold text-white">30+</div>
-          <div className="text-sm text-slate-400">Curated collections</div>
+          <div className="text-3xl font-semibold text-white">
+            30+
+          </div>
+          <div className="text-sm text-slate-400">
+            Curated collections
+          </div>
         </div>
 
         <div>
-          <div className="text-3xl font-semibold text-white">$9.99</div>
+          <div className="text-3xl font-semibold text-white">
+            $9.99
+          </div>
           <div className="text-sm text-slate-400">
             Standard artwork price
           </div>
         </div>
 
         <div>
-          <div className="text-3xl font-semibold text-white">HD</div>
-          <div className="text-sm text-slate-400">Instant downloads</div>
+          <div className="text-3xl font-semibold text-white">
+            HD
+          </div>
+          <div className="text-sm text-slate-400">
+            Instant downloads
+          </div>
         </div>
       </section>
 
       <section className="space-y-6">
         <SectionHeader
           title="The Masters"
-          subtitle="Explore the Master collections and the three original reimagined collections in one horizontal gallery."
+          subtitle="Explore all 11 Master collections in one horizontal gallery."
           href="/explore/masters"
         />
 
         <div className="-mx-4 overflow-x-auto px-4 pb-3">
           <div className="flex gap-5">
             {MASTERS.map((item) => (
-              <MasterCard key={`${item.label}-${item.work}`} item={item} />
+              <MasterCard
+                key={`${item.label}-${item.work}`}
+                item={item}
+              />
             ))}
           </div>
         </div>
@@ -562,10 +576,10 @@ export default function HomePage() {
 
       <section className="space-y-6">
         <SectionHeader
-  title="The Masters Reimagined"
-  subtitle="Famous works transformed through the visual language of another Master."
-  href="/explore/masters-reimagined"
-/>
+          title="The Masters Reimagined"
+          subtitle="Famous works transformed through the visual language of another Master."
+          href="/explore/masters-reimagined"
+        />
 
         <div className="-mx-4 overflow-x-auto px-4 pb-3">
           <div className="flex gap-5">
@@ -589,7 +603,10 @@ export default function HomePage() {
         <div className="-mx-4 overflow-x-auto px-4 pb-3">
           <div className="flex gap-5">
             {FAVORITE_COLLECTIONS.map((item) => (
-              <CollectionCard key={item.slug} item={item} />
+              <CollectionCard
+                key={item.slug}
+                item={item}
+              />
             ))}
           </div>
         </div>
