@@ -59,7 +59,8 @@ function mergeResults(
   previous: AuditResult[],
   incoming: AuditResult[]
 ) {
-  const map = new Map<string, AuditResult>()
+  const map =
+    new Map<string, AuditResult>()
 
   for (const item of previous) {
     map.set(item.id, item)
@@ -101,19 +102,42 @@ export default function ArtworkAuditPage() {
           STORAGE_KEY
         )
 
-      if (!saved) return
+      if (!saved) {
+        return
+      }
 
       const parsed =
         JSON.parse(saved)
 
       if (
         parsed &&
+        typeof parsed === 'object' &&
         Array.isArray(parsed.results)
       ) {
-        setAudit(parsed)
+        const restored: StoredAudit = {
+          nextOffset:
+            typeof parsed.nextOffset ===
+            'number'
+              ? parsed.nextOffset
+              : 0,
+
+          totalPublished:
+            typeof parsed.totalPublished ===
+            'number'
+              ? parsed.totalPublished
+              : 0,
+
+          complete:
+            Boolean(parsed.complete),
+
+          results:
+            parsed.results,
+        }
+
+        setAudit(restored)
       }
     } catch {
-      // Ignore corrupted local cache.
+      // Ignore corrupted browser cache.
     }
   }, [])
 
@@ -124,21 +148,25 @@ export default function ArtworkAuditPage() {
         JSON.stringify(audit)
       )
     } catch {
-      // LocalStorage failure should not stop scanning.
+      // Browser storage failure must not
+      // prevent the audit page from working.
     }
   }, [audit])
 
   const suspects = useMemo(() => {
     return audit.results
       .filter(
-        (item) => item.shouldReview
+        (item) =>
+          item.shouldReview
       )
       .sort((a, b) => {
         const severityDifference =
           severityRank(b.severity) -
           severityRank(a.severity)
 
-        if (severityDifference !== 0) {
+        if (
+          severityDifference !== 0
+        ) {
           return severityDifference
         }
 
@@ -167,7 +195,10 @@ export default function ArtworkAuditPage() {
       : 0
 
   async function scanOneBatch() {
-    if (running || audit.complete) {
+    if (
+      running ||
+      audit.complete
+    ) {
       return
     }
 
@@ -175,27 +206,34 @@ export default function ArtworkAuditPage() {
     setError('')
 
     try {
-      const response = await fetch(
-        '/api/quality/text-audit',
-        {
-          method: 'POST',
+      const response =
+        await fetch(
+          '/api/quality/text-audit',
+          {
+            method: 'POST',
 
-          headers: {
-            'Content-Type':
-              'application/json',
-          },
+            headers: {
+              'Content-Type':
+                'application/json',
+            },
 
-          body: JSON.stringify({
-            offset: audit.nextOffset,
-            limit: BATCH_SIZE,
-          }),
-        }
-      )
+            body: JSON.stringify({
+              offset:
+                audit.nextOffset,
+
+              limit:
+                BATCH_SIZE,
+            }),
+          }
+        )
 
       const data =
         await response.json()
 
-      if (!response.ok || !data.ok) {
+      if (
+        !response.ok ||
+        !data.ok
+      ) {
         throw new Error(
           data?.error ||
             'Artwork audit failed.'
@@ -208,19 +246,31 @@ export default function ArtworkAuditPage() {
           data.results ?? []
         )
 
-      setAudit({
-        nextOffset:
-          data.nextOffset ??
-          data.totalPublished ??
-          audit.nextOffset,
+      const nextOffset =
+        typeof data.nextOffset ===
+        'number'
+          ? data.nextOffset
+          : typeof data.totalPublished ===
+              'number'
+            ? data.totalPublished
+            : audit.nextOffset
 
-        totalPublished:
-          data.totalPublished ?? 0,
+      const totalPublished =
+        typeof data.totalPublished ===
+        'number'
+          ? data.totalPublished
+          : audit.totalPublished
+
+      setAudit({
+        nextOffset,
+
+        totalPublished,
 
         complete:
           Boolean(data.complete),
 
-        results: newResults,
+        results:
+          newResults,
       })
     } catch (err) {
       setError(
@@ -234,46 +284,58 @@ export default function ArtworkAuditPage() {
   }
 
   async function runContinuousAudit() {
-    if (running || audit.complete) {
+    if (
+      running ||
+      audit.complete
+    ) {
       return
     }
 
     setRunning(true)
     setError('')
 
-    let currentOffset =
+    let currentOffset: number =
       audit.nextOffset
 
-    let currentResults =
+    let currentResults: AuditResult[] =
       audit.results
 
-    let totalPublished =
+    let totalPublished: number =
       audit.totalPublished
 
-    let complete =
+    /*
+     * IMPORTANT:
+     *
+     * Explicit boolean annotation prevents
+     * TypeScript from narrowing this to the
+     * literal type "false".
+     */
+    let complete: boolean =
       audit.complete
 
     try {
       while (!complete) {
-        const response = await fetch(
-          '/api/quality/text-audit',
-          {
-            method: 'POST',
+        const response =
+          await fetch(
+            '/api/quality/text-audit',
+            {
+              method: 'POST',
 
-            headers: {
-              'Content-Type':
-                'application/json',
-            },
+              headers: {
+                'Content-Type':
+                  'application/json',
+              },
 
-            body: JSON.stringify({
-              offset:
-                currentOffset,
+              body:
+                JSON.stringify({
+                  offset:
+                    currentOffset,
 
-              limit:
-                BATCH_SIZE,
-            }),
-          }
-        )
+                  limit:
+                    BATCH_SIZE,
+                }),
+            }
+          )
 
         const data =
           await response.json()
@@ -294,15 +356,30 @@ export default function ArtworkAuditPage() {
             data.results ?? []
           )
 
-        totalPublished =
-          data.totalPublished ?? 0
+        if (
+          typeof data.totalPublished ===
+          'number'
+        ) {
+          totalPublished =
+            data.totalPublished
+        }
 
         complete =
           Boolean(data.complete)
 
-        currentOffset =
-          data.nextOffset ??
-          totalPublished
+        if (
+          typeof data.nextOffset ===
+          'number'
+        ) {
+          currentOffset =
+            data.nextOffset
+        } else if (complete) {
+          currentOffset =
+            totalPublished
+        } else {
+          currentOffset +=
+            BATCH_SIZE
+        }
 
         const updated: StoredAudit = {
           nextOffset:
@@ -324,17 +401,26 @@ export default function ArtworkAuditPage() {
             JSON.stringify(updated)
           )
         } catch {
-          // Continue if browser storage fails.
+          // Continue even if local storage fails.
         }
 
         /*
-         * Small pause reduces the chance of
-         * hammering the API repeatedly.
+         * Small pause between calls.
+         *
+         * This reduces unnecessary API bursts
+         * while still allowing the audit to
+         * progress automatically.
          */
-        await new Promise(
-          (resolve) =>
-            setTimeout(resolve, 750)
-        )
+        if (!complete) {
+          await new Promise<void>(
+            (resolve) => {
+              window.setTimeout(
+                () => resolve(),
+                750
+              )
+            }
+          )
+        }
       }
     } catch (err) {
       setError(
@@ -353,7 +439,9 @@ export default function ArtworkAuditPage() {
         'Reset the entire local audit and start again from artwork 1?'
       )
 
-    if (!confirmed) return
+    if (!confirmed) {
+      return
+    }
 
     window.localStorage.removeItem(
       STORAGE_KEY
@@ -361,6 +449,7 @@ export default function ArtworkAuditPage() {
 
     setAudit(EMPTY_STATE)
     setError('')
+    setShowAll(false)
   }
 
   function exportSuspects() {
@@ -380,31 +469,37 @@ export default function ArtworkAuditPage() {
       suspects,
     }
 
-    const blob = new Blob(
-      [
-        JSON.stringify(
-          exportData,
-          null,
-          2
-        ),
-      ],
-      {
-        type: 'application/json',
-      }
-    )
+    const blob =
+      new Blob(
+        [
+          JSON.stringify(
+            exportData,
+            null,
+            2
+          ),
+        ],
+        {
+          type:
+            'application/json',
+        }
+      )
 
     const url =
       URL.createObjectURL(blob)
 
     const anchor =
-      document.createElement('a')
+      document.createElement(
+        'a'
+      )
 
     anchor.href = url
 
     anchor.download =
       'ai-image-suspect-artworks.json'
 
-    document.body.appendChild(anchor)
+    document.body.appendChild(
+      anchor
+    )
 
     anchor.click()
 
@@ -428,14 +523,19 @@ export default function ArtworkAuditPage() {
         </h1>
 
         <p className="mt-4 max-w-3xl text-base leading-7 text-slate-400">
-          Visual pre-launch review of all published AI Image
-          artworks for unwanted, nonsensical, inappropriate or
-          contextually incorrect text.
+          Visual pre-launch review
+          of all published AI Image
+          artworks for unwanted,
+          nonsensical, inappropriate
+          or contextually incorrect
+          text.
         </p>
 
         <div className="mt-6 rounded-2xl border border-emerald-400/20 bg-emerald-400/10 p-4 text-sm text-emerald-200">
-          This page is read-only. It does not delete, unpublish or
-          alter any artwork.
+          This page is read-only.
+          It does not delete,
+          unpublish or alter any
+          artwork.
         </div>
       </section>
 
@@ -443,7 +543,10 @@ export default function ArtworkAuditPage() {
         <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
           <div>
             <div className="text-3xl font-semibold text-white">
-              {audit.results.length}
+              {
+                audit.results
+                  .length
+              }
             </div>
 
             <div className="text-sm text-slate-400">
@@ -453,7 +556,8 @@ export default function ArtworkAuditPage() {
 
           <div>
             <div className="text-3xl font-semibold text-white">
-              {audit.totalPublished || '—'}
+              {audit.totalPublished ||
+                '—'}
             </div>
 
             <div className="text-sm text-slate-400">
@@ -463,7 +567,9 @@ export default function ArtworkAuditPage() {
 
           <div>
             <div className="text-3xl font-semibold text-amber-300">
-              {suspects.length}
+              {
+                suspects.length
+              }
             </div>
 
             <div className="text-sm text-slate-400">
@@ -486,7 +592,8 @@ export default function ArtworkAuditPage() {
           <div
             className="h-full rounded-full bg-amber-300 transition-all"
             style={{
-              width: `${percent}%`,
+              width:
+                `${percent}%`,
             }}
           />
         </div>
@@ -494,7 +601,9 @@ export default function ArtworkAuditPage() {
         <div className="flex flex-wrap gap-3">
           <button
             type="button"
-            onClick={scanOneBatch}
+            onClick={
+              scanOneBatch
+            }
             disabled={
               running ||
               audit.complete
@@ -508,7 +617,9 @@ export default function ArtworkAuditPage() {
 
           <button
             type="button"
-            onClick={runContinuousAudit}
+            onClick={
+              runContinuousAudit
+            }
             disabled={
               running ||
               audit.complete
@@ -526,7 +637,8 @@ export default function ArtworkAuditPage() {
             type="button"
             onClick={() =>
               setShowAll(
-                (value) => !value
+                (value) =>
+                  !value
               )
             }
             className="rounded-xl border border-white/15 px-5 py-3 text-sm font-semibold text-white transition hover:border-amber-300/60"
@@ -538,7 +650,9 @@ export default function ArtworkAuditPage() {
 
           <button
             type="button"
-            onClick={exportSuspects}
+            onClick={
+              exportSuspects
+            }
             disabled={
               suspects.length === 0
             }
@@ -549,7 +663,9 @@ export default function ArtworkAuditPage() {
 
           <button
             type="button"
-            onClick={resetAudit}
+            onClick={
+              resetAudit
+            }
             className="rounded-xl border border-red-400/30 px-5 py-3 text-sm font-semibold text-red-300 transition hover:bg-red-400/10"
           >
             Reset audit
@@ -578,15 +694,19 @@ export default function ArtworkAuditPage() {
           </p>
         </div>
 
-        {displayedResults.length === 0 ? (
+        {displayedResults.length ===
+        0 ? (
           <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-8">
             <div className="text-lg font-semibold text-white">
               No results yet
             </div>
 
             <p className="mt-2 text-sm text-slate-400">
-              Start the visual audit above. Suspect artwork will
-              appear here automatically.
+              Start the visual
+              audit above.
+              Suspect artwork
+              will appear here
+              automatically.
             </p>
           </div>
         ) : (
@@ -594,7 +714,9 @@ export default function ArtworkAuditPage() {
             {displayedResults.map(
               (item) => (
                 <article
-                  key={item.id}
+                  key={
+                    item.id
+                  }
                   className="overflow-hidden rounded-3xl border border-white/10 bg-white/[0.04]"
                 >
                   {item.thumbnail ? (
@@ -602,12 +724,15 @@ export default function ArtworkAuditPage() {
                       src={
                         item.thumbnail
                       }
-                      alt={item.title}
+                      alt={
+                        item.title
+                      }
                       className="aspect-[4/3] w-full bg-black object-cover"
                     />
                   ) : (
                     <div className="flex aspect-[4/3] items-center justify-center bg-black text-sm text-slate-500">
-                      Image unavailable
+                      Image
+                      unavailable
                     </div>
                   )}
 
@@ -617,7 +742,9 @@ export default function ArtworkAuditPage() {
                         href={`/artwork/${item.id}`}
                         className="font-semibold text-white hover:text-amber-300"
                       >
-                        {item.title}
+                        {
+                          item.title
+                        }
                       </Link>
 
                       <div className="mt-1 text-xs text-slate-500">
@@ -645,11 +772,15 @@ export default function ArtworkAuditPage() {
                                 : 'bg-emerald-400/15 text-emerald-300'
                         }`}
                       >
-                        {item.severity}
+                        {
+                          item.severity
+                        }
                       </span>
 
                       <span className="rounded-full bg-white/[0.06] px-3 py-1 text-xs text-slate-300">
-                        {item.issueType}
+                        {
+                          item.issueType
+                        }
                       </span>
 
                       <span className="rounded-full bg-white/[0.06] px-3 py-1 text-xs text-slate-400">
@@ -664,11 +795,14 @@ export default function ArtworkAuditPage() {
                     {item.detectedText ? (
                       <div>
                         <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                          Detected text
+                          Detected
+                          text
                         </div>
 
                         <div className="mt-1 text-sm text-amber-200">
-                          {item.detectedText}
+                          {
+                            item.detectedText
+                          }
                         </div>
                       </div>
                     ) : null}
@@ -679,7 +813,9 @@ export default function ArtworkAuditPage() {
                       </div>
 
                       <p className="mt-1 text-sm leading-6 text-slate-300">
-                        {item.reason}
+                        {
+                          item.reason
+                        }
                       </p>
                     </div>
 
