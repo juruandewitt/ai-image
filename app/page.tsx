@@ -476,22 +476,7 @@ export default function HomePage() {
               Masters and 30 carefully curated themed collections.
             </p>
 
-            <div className="flex flex-wrap gap-4">
-              <Link
-                href="/explore"
-                className="rounded-2xl bg-amber-300 px-7 py-4 font-semibold text-black transition hover:bg-amber-200"
-              >
-                Explore Artworks
-              </Link>
-
-              <Link
-                href="/explore/masters"
-                className="rounded-2xl border border-white/15 bg-white/5 px-7 py-4 font-semibold text-white transition hover:border-amber-300/60"
-              >
-                Explore Masters
-              </Link>
-            </div>
-          </div>
+                    </div>
 
           <Link
             href="/artwork/cmnbfkgtb000m76b7fxhnwvcf"
