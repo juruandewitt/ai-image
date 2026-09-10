@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import SafeImg from '@/components/safe-img'
+import BackButton from '@/components/back-button'
 
 const THEME_ALIASES: Record<string, string> = {
   interiors: 'luxury-interior',
@@ -46,7 +47,6 @@ const THEMES: Record<string, string> = {
   'fashion-editorial': 'Fashion / Editorial',
   'ocean-marine': 'Ocean & Marine',
   'nature-botanical': 'Nature & Botanical',
-
   'food-culinary': 'Food / Culinary',
   'sports-action': 'Sports / Action',
   'music-performance': 'Music / Performance',
@@ -105,10 +105,13 @@ export default async function ThemeDetailPage({
         has: tag,
       },
     },
+
     orderBy: {
       createdAt: 'desc',
     },
+
     take: 200,
+
     select: {
       id: true,
       title: true,
@@ -118,9 +121,7 @@ export default async function ThemeDetailPage({
   return (
     <main className="space-y-10">
       <section className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-8 md:p-12">
-        <Link href="/explore/categories" className="text-sm font-semibold text-amber-300 hover:underline">
-          ← Back to Favorite Collections
-        </Link>
+        <BackButton />
 
         <h1 className="mt-6 text-4xl font-semibold text-white md:text-6xl">
           {themeName}
@@ -133,7 +134,10 @@ export default async function ThemeDetailPage({
 
       {artworks.length === 0 ? (
         <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-8">
-          <div className="text-xl font-semibold text-white">No artworks found</div>
+          <div className="text-xl font-semibold text-white">
+            No artworks found
+          </div>
+
           <p className="mt-2 text-sm text-slate-400">
             This collection exists, but no artworks were found with tag: {tag}
           </p>
