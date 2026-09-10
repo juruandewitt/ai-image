@@ -461,7 +461,7 @@ export default async function CheckoutSuccessPage({
           ...reference,
           artwork,
 
-          downloadUrl:
+          previewUrl:
             pickStableImgSrc(
               artwork
             ),
@@ -570,88 +570,95 @@ export default async function CheckoutSuccessPage({
 
         <div className="space-y-4">
           {purchasedItems.map(
-            (item, index) => (
-              <article
-                key={`${item.artwork.id}-${item.quality}-${index}`}
-                className="grid gap-5 rounded-2xl border border-white/10 bg-white/[0.04] p-4 sm:grid-cols-[130px_1fr_auto]"
-              >
-                <div className="overflow-hidden rounded-xl bg-slate-950">
-                  <SafeImg
-                    src={
-                      item.downloadUrl
-                    }
-                    fallbackSrc={
-                      FALLBACK_DATA_URL
-                    }
-                    alt={
-                      item.artwork
-                        .title
-                    }
-                    className="aspect-square h-full w-full object-cover"
-                  />
-                </div>
+            (item, index) => {
+              const individualDownloadUrl =
+                `/api/checkout/download-one?session_id=${encodeURIComponent(
+                  sessionId
+                )}&artwork_id=${encodeURIComponent(
+                  item.artwork.id
+                )}`
 
-                <div className="flex flex-col justify-center">
-                  <Link
-                    href={`/artwork/${item.artwork.id}`}
-                    className="text-lg font-semibold text-white hover:text-amber-300"
-                  >
-                    {
-                      item.artwork
-                        .title
-                    }
-                  </Link>
-
-                  <div className="mt-1 text-sm text-slate-400">
-                    {
-                      item.artwork
-                        .artist ||
-                      'AI Image'
-                    }
+              return (
+                <article
+                  key={`${item.artwork.id}-${item.quality}-${index}`}
+                  className="grid gap-5 rounded-2xl border border-white/10 bg-white/[0.04] p-4 sm:grid-cols-[130px_1fr_auto]"
+                >
+                  <div className="overflow-hidden rounded-xl bg-slate-950">
+                    <SafeImg
+                      src={
+                        item.previewUrl
+                      }
+                      fallbackSrc={
+                        FALLBACK_DATA_URL
+                      }
+                      alt={
+                        item.artwork
+                          .title
+                      }
+                      className="aspect-square h-full w-full object-cover"
+                    />
                   </div>
 
-                  <div className="mt-2 text-sm text-amber-300">
-                    {qualityLabel(
-                      item.quality
-                    )}
-                  </div>
-
-                  {item.amountTotal !==
-                  null ? (
-                    <div className="mt-1 text-xs text-slate-500">
+                  <div className="flex flex-col justify-center">
+                    <Link
+                      href={`/artwork/${item.artwork.id}`}
+                      className="text-lg font-semibold text-white hover:text-amber-300"
+                    >
                       {
-                        item.currency
-                      }{' '}
-                      {(
-                        item.amountTotal /
-                        100
-                      ).toFixed(
-                        2
+                        item.artwork
+                          .title
+                      }
+                    </Link>
+
+                    <div className="mt-1 text-sm text-slate-400">
+                      {
+                        item.artwork
+                          .artist ||
+                        'AI Image'
+                      }
+                    </div>
+
+                    <div className="mt-2 text-sm text-amber-300">
+                      {qualityLabel(
+                        item.quality
                       )}
                     </div>
-                  ) : null}
-                </div>
 
-                <div className="flex items-center">
-                  {isPaid ? (
-                    <a
-                      href={
-                        item.downloadUrl
-                      }
-                      target="_blank"
-                      rel="noreferrer"
-                      className="w-full rounded-xl border border-white/15 px-5 py-3 text-center text-sm font-semibold text-white transition hover:border-amber-300/60 hover:text-amber-300 sm:w-auto"
-                    >
-                      Download
-                    </a>
-                  ) : (
-                    <div className="text-sm text-slate-500">
-                      Awaiting payment
-                    </div>
-                  )}
-                </div>
-              </article>
-            )
+                    {item.amountTotal !==
+                    null ? (
+                      <div className="mt-1 text-xs text-slate-500">
+                        {
+                          item.currency
+                        }{' '}
+                        {(
+                          item.amountTotal /
+                          100
+                        ).toFixed(
+                          2
+                        )}
+                      </div>
+                    ) : null}
+                  </div>
+
+                  <div className="flex items-center">
+                    {isPaid ? (
+                      <a
+                        href={
+                          individualDownloadUrl
+                        }
+                        className="w-full rounded-xl border border-white/15 px-5 py-3 text-center text-sm font-semibold text-white transition hover:border-amber-300/60 hover:text-amber-300 sm:w-auto"
+                      >
+                        Download
+                      </a>
+                    ) : (
+                      <div className="text-sm text-slate-500">
+                        Awaiting payment
+                      </div>
+                    )}
+                  </div>
+                </article>
+              )
+            }
           )}
         </div>
       </section>
