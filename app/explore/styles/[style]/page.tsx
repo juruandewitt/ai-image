@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import SafeImg from '@/components/safe-img'
+import BackButton from '@/components/back-button'
 
 const PREVIEW_VERSION = 'v13'
 
@@ -19,33 +20,85 @@ const FALLBACK_DATA_URL =
     </svg>`
   )
 
-const STYLE_BY_SLUG: Record<string, { key: string; label: string }> = {
-  'van-gogh': { key: 'VAN_GOGH', label: 'Van Gogh' },
-  dali: { key: 'DALI', label: 'Dalí' },
-  'jackson-pollock': { key: 'POLLOCK', label: 'Jackson Pollock' },
-  'johannes-vermeer': { key: 'VERMEER', label: 'Johannes Vermeer' },
-  'claude-monet': { key: 'MONET', label: 'Claude Monet' },
-  'pablo-picasso': { key: 'PICASSO', label: 'Pablo Picasso' },
-  rembrandt: { key: 'REMBRANDT', label: 'Rembrandt' },
-  caravaggio: { key: 'CARAVAGGIO', label: 'Caravaggio' },
-  'leonardo-da-vinci': { key: 'DA_VINCI', label: 'Leonardo da Vinci' },
-  michelangelo: { key: 'MICHELANGELO', label: 'Michelangelo' },
-  'edvard-munch': { key: 'MUNCH', label: 'Edvard Munch' },
+const STYLE_BY_SLUG: Record<
+  string,
+  {
+    key: string
+    label: string
+  }
+> = {
+  'van-gogh': {
+    key: 'VAN_GOGH',
+    label: 'Van Gogh',
+  },
+
+  dali: {
+    key: 'DALI',
+    label: 'Dalí',
+  },
+
+  'jackson-pollock': {
+    key: 'POLLOCK',
+    label: 'Jackson Pollock',
+  },
+
+  'johannes-vermeer': {
+    key: 'VERMEER',
+    label: 'Johannes Vermeer',
+  },
+
+  'claude-monet': {
+    key: 'MONET',
+    label: 'Claude Monet',
+  },
+
+  'pablo-picasso': {
+    key: 'PICASSO',
+    label: 'Pablo Picasso',
+  },
+
+  rembrandt: {
+    key: 'REMBRANDT',
+    label: 'Rembrandt',
+  },
+
+  caravaggio: {
+    key: 'CARAVAGGIO',
+    label: 'Caravaggio',
+  },
+
+  'leonardo-da-vinci': {
+    key: 'DA_VINCI',
+    label: 'Leonardo da Vinci',
+  },
+
+  michelangelo: {
+    key: 'MICHELANGELO',
+    label: 'Michelangelo',
+  },
+
+  'edvard-munch': {
+    key: 'MUNCH',
+    label: 'Edvard Munch',
+  },
 }
 
 const blobBackedWhere = {
   OR: [
     {
       thumbnail: {
-        contains: '.public.blob.vercel-storage.com',
+        contains:
+          '.public.blob.vercel-storage.com',
         mode: 'insensitive' as const,
       },
     },
+
     {
       assets: {
         some: {
           originalUrl: {
-            contains: '.public.blob.vercel-storage.com',
+            contains:
+              '.public.blob.vercel-storage.com',
             mode: 'insensitive' as const,
           },
         },
@@ -56,15 +109,46 @@ const blobBackedWhere = {
 
 const cleanWhere = {
   NOT: [
-    { tags: { has: 'smoketest' } },
-    { title: { contains: 'smoketest', mode: 'insensitive' as const } },
-    { title: { contains: 'diagnostic', mode: 'insensitive' as const } },
-    { title: { contains: 'test artwork', mode: 'insensitive' as const } },
-    { title: { contains: 'db smoketest', mode: 'insensitive' as const } },
+    {
+      tags: {
+        has: 'smoketest',
+      },
+    },
+
+    {
+      title: {
+        contains: 'smoketest',
+        mode: 'insensitive' as const,
+      },
+    },
+
+    {
+      title: {
+        contains: 'diagnostic',
+        mode: 'insensitive' as const,
+      },
+    },
+
+    {
+      title: {
+        contains: 'test artwork',
+        mode: 'insensitive' as const,
+      },
+    },
+
+    {
+      title: {
+        contains: 'db smoketest',
+        mode: 'insensitive' as const,
+      },
+    },
   ],
 }
 
-const CORE_TITLE_PREFERENCES: Record<string, string[]> = {
+const CORE_TITLE_PREFERENCES: Record<
+  string,
+  string[]
+> = {
   VAN_GOGH: [
     'Starry Night in Van Gogh Style',
     'Sunflowers in Van Gogh Style',
@@ -77,6 +161,7 @@ const CORE_TITLE_PREFERENCES: Record<string, string[]> = {
     'Self Portrait in Van Gogh Style',
     'The Night Cafe in Van Gogh Style',
   ],
+
   DALI: [
     'Persistence of Memory Inspired',
     'Dreamlike Desert Clocks',
@@ -89,6 +174,7 @@ const CORE_TITLE_PREFERENCES: Record<string, string[]> = {
     'Hyperreal Dream Sequence',
     'Symbolic Surreal Study',
   ],
+
   POLLOCK: [
     'Autumn Rhythm in Pollock Style',
     'Lavender Mist in Pollock Style',
@@ -101,6 +187,7 @@ const CORE_TITLE_PREFERENCES: Record<string, string[]> = {
     'Black and White Energy in Pollock Style',
     'Dynamic Color Field in Pollock Style',
   ],
+
   VERMEER: [
     'Girl with a Pearl Earring in Vermeer Style',
     'The Milkmaid in Vermeer Style',
@@ -113,6 +200,7 @@ const CORE_TITLE_PREFERENCES: Record<string, string[]> = {
     'Young Woman with a Water Pitcher in Vermeer Style',
     'Woman with a Lute in Vermeer Style',
   ],
+
   MONET: [
     'Impression Sunrise in Monet Style',
     'Water Lilies in Monet Style',
@@ -125,6 +213,7 @@ const CORE_TITLE_PREFERENCES: Record<string, string[]> = {
     'Garden at Giverny in Monet Style',
     'Boats on the Seine in Monet Style',
   ],
+
   PICASSO: [
     'Guernica in Picasso Style',
     'Les Demoiselles d Avignon in Picasso Style',
@@ -137,6 +226,7 @@ const CORE_TITLE_PREFERENCES: Record<string, string[]> = {
     'Harlequin with Violin in Picasso Style',
     'Still Life with Guitar in Picasso Style',
   ],
+
   REMBRANDT: [
     'The Night Watch in Rembrandt Style',
     'The Return of the Prodigal Son in Rembrandt Style',
@@ -149,6 +239,7 @@ const CORE_TITLE_PREFERENCES: Record<string, string[]> = {
     'Scholar at Candlelight in Rembrandt Style',
     'Old Man in Shadow in Rembrandt Style',
   ],
+
   CARAVAGGIO: [
     'The Calling of Saint Matthew in Caravaggio Style',
     'The Supper at Emmaus in Caravaggio Style',
@@ -161,6 +252,7 @@ const CORE_TITLE_PREFERENCES: Record<string, string[]> = {
     'The Fortune Teller in Caravaggio Style',
     'The Cardsharps in Caravaggio Style',
   ],
+
   DA_VINCI: [
     'Mona Lisa in Da Vinci Style',
     'The Last Supper in Da Vinci Style',
@@ -173,6 +265,7 @@ const CORE_TITLE_PREFERENCES: Record<string, string[]> = {
     'Saint John the Baptist in Da Vinci Style',
     'The Baptism of Christ in Da Vinci Style',
   ],
+
   MICHELANGELO: [
     'The Creation of Adam in Michelangelo Style',
     'David in Michelangelo Style',
@@ -186,6 +279,7 @@ const CORE_TITLE_PREFERENCES: Record<string, string[]> = {
     'Renaissance Vault Fresco in Michelangelo Style',
     'The Scream in Michelangelo Style',
   ],
+
   MUNCH: [
     'The Scream in Munch Style',
     'The Dance of Life in Munch Style',
@@ -270,109 +364,228 @@ type ArtworkRow = {
   createdAt: Date
 }
 
-function isCrossoverTitle(title: string, styleLabel: string) {
-  return CROSSOVER_MARKERS.some((marker) => {
-    if (title === `${marker} in ${styleLabel} Style`) return false
-    return title.includes(marker)
-  })
+function isCrossoverTitle(
+  title: string,
+  styleLabel: string
+) {
+  return CROSSOVER_MARKERS.some(
+    (marker) => {
+      if (
+        title ===
+        `${marker} in ${styleLabel} Style`
+      ) {
+        return false
+      }
+
+      return title.includes(marker)
+    }
+  )
 }
 
-function sortArtworks(styleKey: string, styleLabel: string, artworks: ArtworkRow[]) {
-  const preferred = CORE_TITLE_PREFERENCES[styleKey] || []
-  const preferredIndex = new Map(preferred.map((title, index) => [title, index]))
+function sortArtworks(
+  styleKey: string,
+  styleLabel: string,
+  artworks: ArtworkRow[]
+) {
+  const preferred =
+    CORE_TITLE_PREFERENCES[
+      styleKey
+    ] || []
 
-  return [...artworks].sort((a, b) => {
-    const aPreferred = preferredIndex.has(a.title)
-    const bPreferred = preferredIndex.has(b.title)
+  const preferredIndex =
+    new Map(
+      preferred.map(
+        (title, index) => [
+          title,
+          index,
+        ]
+      )
+    )
 
-    if (aPreferred && bPreferred) {
-      return preferredIndex.get(a.title)! - preferredIndex.get(b.title)!
+  return [...artworks].sort(
+    (a, b) => {
+      const aPreferred =
+        preferredIndex.has(
+          a.title
+        )
+
+      const bPreferred =
+        preferredIndex.has(
+          b.title
+        )
+
+      if (
+        aPreferred &&
+        bPreferred
+      ) {
+        return (
+          preferredIndex.get(
+            a.title
+          )! -
+          preferredIndex.get(
+            b.title
+          )!
+        )
+      }
+
+      if (aPreferred) {
+        return -1
+      }
+
+      if (bPreferred) {
+        return 1
+      }
+
+      const aCrossover =
+        isCrossoverTitle(
+          a.title,
+          styleLabel
+        )
+
+      const bCrossover =
+        isCrossoverTitle(
+          b.title,
+          styleLabel
+        )
+
+      if (
+        aCrossover !==
+        bCrossover
+      ) {
+        return aCrossover
+          ? 1
+          : -1
+      }
+
+      return (
+        a.createdAt.getTime() -
+        b.createdAt.getTime()
+      )
     }
-
-    if (aPreferred) return -1
-    if (bPreferred) return 1
-
-    const aCrossover = isCrossoverTitle(a.title, styleLabel)
-    const bCrossover = isCrossoverTitle(b.title, styleLabel)
-
-    if (aCrossover !== bCrossover) {
-      return aCrossover ? 1 : -1
-    }
-
-    return a.createdAt.getTime() - b.createdAt.getTime()
-  })
+  )
 }
 
 export default async function ExploreStylePage({
   params,
 }: {
-  params: { style: string }
+  params: {
+    style: string
+  }
 }) {
-  const styleInfo = STYLE_BY_SLUG[params.style]
-  if (!styleInfo) notFound()
+  const styleInfo =
+    STYLE_BY_SLUG[
+      params.style
+    ]
 
-  const artworks = await prisma.artwork.findMany({
-    where: {
-      style: styleInfo.key as any,
-      status: 'PUBLISHED',
-      ...blobBackedWhere,
-      ...cleanWhere,
-    },
-    orderBy: { createdAt: 'asc' },
-    take: 200,
-    select: {
-      id: true,
-      title: true,
-      createdAt: true,
-    },
-  })
+  if (!styleInfo) {
+    notFound()
+  }
 
-  const sorted = sortArtworks(styleInfo.key, styleInfo.label, artworks)
+  const artworks =
+    await prisma.artwork.findMany(
+      {
+        where: {
+          style:
+            styleInfo.key as any,
+
+          status:
+            'PUBLISHED',
+
+          ...blobBackedWhere,
+
+          ...cleanWhere,
+        },
+
+        orderBy: {
+          createdAt: 'asc',
+        },
+
+        take: 200,
+
+        select: {
+          id: true,
+          title: true,
+          createdAt: true,
+        },
+      }
+    )
+
+  const sorted =
+    sortArtworks(
+      styleInfo.key,
+      styleInfo.label,
+      artworks
+    )
 
   return (
     <main className="space-y-6">
       <div className="space-y-2">
-        <Link href="/explore" className="text-sm text-amber-400 hover:underline">
-          ← Back to Explore
-        </Link>
-        <h1 className="text-3xl font-semibold">{styleInfo.label}</h1>
+        <BackButton />
+
+        <h1 className="text-3xl font-semibold">
+          {styleInfo.label}
+        </h1>
+
         <p className="text-sm text-slate-400">
-          {sorted.length} published works currently available
+          {sorted.length}{' '}
+          published works
+          currently available
         </p>
       </div>
 
       {sorted.length === 0 ? (
-        <div className="text-sm text-slate-400">No published works available yet.</div>
+        <div className="text-sm text-slate-400">
+          No published works
+          available yet.
+        </div>
       ) : (
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-4">
-          {sorted.map((art, index) => {
-            const isFirstMunchTile =
-              styleInfo.key === 'MUNCH' &&
-              index === 0 &&
-              art.title === 'The Scream in Munch Style'
+          {sorted.map(
+            (
+              art,
+              index
+            ) => {
+              const isFirstMunchTile =
+                styleInfo.key ===
+                  'MUNCH' &&
+                index === 0 &&
+                art.title ===
+                  'The Scream in Munch Style'
 
-            return (
-              <Link
-                key={art.id}
-                href={`/artwork/${art.id}`}
-                className="rounded-2xl overflow-hidden border border-slate-800 bg-slate-900/50 hover:border-amber-400/60 transition-colors"
-              >
-                <SafeImg
-                  src={
-                    isFirstMunchTile
-                      ? '/featured/munch-the-scream.png'
-                      : `/api/artwork/preview/${art.id}?w=520&v=${PREVIEW_VERSION}`
+              return (
+                <Link
+                  key={
+                    art.id
                   }
-                  fallbackSrc={FALLBACK_DATA_URL}
-                  alt={art.title}
-                  className="aspect-square w-full object-cover"
-                />
-                <div className="p-3">
-                  <div className="text-sm text-slate-100 line-clamp-2">{art.title}</div>
-                </div>
-              </Link>
-            )
-          })}
+                  href={`/artwork/${art.id}`}
+                  className="overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/50 transition-colors hover:border-amber-400/60"
+                >
+                  <SafeImg
+                    src={
+                      isFirstMunchTile
+                        ? '/featured/munch-the-scream.png'
+                        : `/api/artwork/preview/${art.id}?w=520&v=${PREVIEW_VERSION}`
+                    }
+                    fallbackSrc={
+                      FALLBACK_DATA_URL
+                    }
+                    alt={
+                      art.title
+                    }
+                    className="aspect-square w-full object-cover"
+                  />
+
+                  <div className="p-3">
+                    <div className="line-clamp-2 text-sm text-slate-100">
+                      {
+                        art.title
+                      }
+                    </div>
+                  </div>
+                </Link>
+              )
+            }
+          )}
         </div>
       )}
     </main>
