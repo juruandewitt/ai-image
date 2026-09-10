@@ -92,12 +92,13 @@ function qualityLabel(
     return 'Ultra High Resolution'
   }
 
-  return quality || 'Digital Artwork'
+  return (
+    quality ||
+    'Digital Artwork'
+  )
 }
 
 type StripeProduct = {
-  id?: string
-
   metadata?: {
     artworkId?: string
     quality?: string
@@ -106,14 +107,7 @@ type StripeProduct = {
 }
 
 type StripeLineItem = {
-  id?: string
-
-  description?: string
-
-  quantity?: number
-
   amount_total?: number
-
   currency?: string
 
   price?: {
@@ -141,7 +135,8 @@ export default async function CheckoutSuccessPage({
     searchParams.session_id || ''
 
   const stripeSecretKey =
-    process.env.STRIPE_SECRET_KEY
+    process.env
+      .STRIPE_SECRET_KEY
 
   if (
     !sessionId ||
@@ -167,9 +162,6 @@ export default async function CheckoutSuccessPage({
     )
   }
 
-  /*
-   * First retrieve the Stripe Checkout Session itself.
-   */
   const sessionResponse =
     await fetch(
       `https://api.stripe.com/v1/checkout/sessions/${encodeURIComponent(
@@ -188,7 +180,9 @@ export default async function CheckoutSuccessPage({
   const session =
     await sessionResponse.json()
 
-  if (!sessionResponse.ok) {
+  if (
+    !sessionResponse.ok
+  ) {
     return (
       <main className="mx-auto max-w-3xl space-y-6 px-4 py-12">
         <h1 className="text-3xl font-semibold text-white">
@@ -214,13 +208,6 @@ export default async function CheckoutSuccessPage({
     session?.payment_status ===
     'paid'
 
-  /*
-   * Retrieve ALL line items from the Checkout Session.
-   *
-   * We expand price.product because the artworkId and quality
-   * were stored in product metadata when the cart Checkout
-   * Session was created.
-   */
   const lineItemsUrl =
     new URL(
       `https://api.stripe.com/v1/checkout/sessions/${encodeURIComponent(
@@ -254,7 +241,9 @@ export default async function CheckoutSuccessPage({
   const lineItemsData =
     await lineItemsResponse.json()
 
-  if (!lineItemsResponse.ok) {
+  if (
+    !lineItemsResponse.ok
+  ) {
     return (
       <main className="mx-auto max-w-3xl space-y-6 px-4 py-12">
         <h1 className="text-3xl font-semibold text-white">
@@ -262,7 +251,8 @@ export default async function CheckoutSuccessPage({
         </h1>
 
         <p className="text-slate-400">
-          {lineItemsData?.error?.message ||
+          {lineItemsData?.error
+            ?.message ||
             'Stripe line item lookup failed.'}
         </p>
 
@@ -283,14 +273,12 @@ export default async function CheckoutSuccessPage({
       ? lineItemsData.data
       : []
 
-  /*
-   * Extract artwork references from each Stripe product.
-   */
   let purchasedReferences: PurchasedReference[] =
     stripeLineItems
       .map((lineItem) => {
         const product =
-          lineItem?.price?.product
+          lineItem?.price
+            ?.product
 
         if (
           !product ||
@@ -318,7 +306,6 @@ export default async function CheckoutSuccessPage({
 
         return {
           artworkId,
-
           quality,
 
           amountTotal:
@@ -342,10 +329,8 @@ export default async function CheckoutSuccessPage({
       )
 
   /*
-   * Backwards compatibility:
-   *
-   * Old single-artwork Stripe sessions stored artworkId
-   * and quality directly on session.metadata.
+   * Backwards compatibility with old
+   * single-artwork purchases.
    */
   if (
     purchasedReferences.length ===
@@ -396,10 +381,6 @@ export default async function CheckoutSuccessPage({
           references were attached to its line items.
         </p>
 
-        <p className="text-sm text-slate-500">
-          Session: {sessionId}
-        </p>
-
         <Link
           href="/"
           className="text-amber-400 hover:underline"
@@ -410,9 +391,6 @@ export default async function CheckoutSuccessPage({
     )
   }
 
-  /*
-   * Remove duplicate artwork IDs before querying Prisma.
-   */
   const artworkIds =
     Array.from(
       new Set(
@@ -428,7 +406,8 @@ export default async function CheckoutSuccessPage({
       {
         where: {
           id: {
-            in: artworkIds,
+            in:
+              artworkIds,
           },
         },
 
@@ -480,7 +459,6 @@ export default async function CheckoutSuccessPage({
 
         return {
           ...reference,
-
           artwork,
 
           downloadUrl:
@@ -494,33 +472,9 @@ export default async function CheckoutSuccessPage({
           item
         ): item is NonNullable<
           typeof item
-        > => item !== null
+        > =>
+          item !== null
       )
-
-  if (
-    purchasedItems.length ===
-    0
-  ) {
-    return (
-      <main className="mx-auto max-w-3xl space-y-6 px-4 py-12">
-        <h1 className="text-3xl font-semibold text-white">
-          Purchased artworks could not be loaded
-        </h1>
-
-        <p className="text-slate-400">
-          Stripe confirmed the order, but the purchased artwork
-          records could not be found in the AI Image database.
-        </p>
-
-        <Link
-          href="/"
-          className="text-amber-400 hover:underline"
-        >
-          Return home
-        </Link>
-      </main>
-    )
-  }
 
   const amountTotal =
     typeof session.amount_total ===
@@ -531,8 +485,14 @@ export default async function CheckoutSuccessPage({
 
   const currency =
     String(
-      session.currency || 'usd'
+      session.currency ||
+        'usd'
     ).toUpperCase()
+
+  const zipDownloadUrl =
+    `/api/checkout/download-all?session_id=${encodeURIComponent(
+      sessionId
+    )}`
 
   return (
     <main className="mx-auto max-w-7xl space-y-10 px-4 py-12">
@@ -569,25 +529,53 @@ export default async function CheckoutSuccessPage({
         ) : null}
       </section>
 
+      {isPaid ? (
+        <section className="overflow-hidden rounded-[2rem] border border-amber-300/30 bg-gradient-to-br from-amber-300/10 to-white/[0.03] p-7 md:p-9">
+          <div className="grid items-center gap-6 md:grid-cols-[1fr_auto]">
+            <div>
+              <h2 className="text-2xl font-semibold text-white md:text-3xl">
+                Download your complete order
+              </h2>
+
+              <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-400">
+                Download all {purchasedItems.length}{' '}
+                {purchasedItems.length ===
+                1
+                  ? 'artwork'
+                  : 'artworks'}{' '}
+                together in one ZIP file.
+              </p>
+            </div>
+
+            <a
+              href={zipDownloadUrl}
+              className="inline-flex min-w-[230px] items-center justify-center rounded-xl bg-amber-400 px-7 py-4 text-center font-semibold text-black transition hover:bg-amber-300"
+            >
+              Download All as ZIP
+            </a>
+          </div>
+        </section>
+      ) : null}
+
       <section className="space-y-6">
         <div>
           <h2 className="text-3xl font-semibold text-white">
-            Your artworks
+            Purchased Artworks
           </h2>
 
           <p className="mt-2 text-sm text-slate-400">
-            Download each purchased artwork below.
+            You can also download individual artworks below.
           </p>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+        <div className="space-y-4">
           {purchasedItems.map(
-            (item) => (
+            (item, index) => (
               <article
-                key={`${item.artwork.id}-${item.quality}`}
-                className="overflow-hidden rounded-3xl border border-white/10 bg-white/[0.04]"
+                key={`${item.artwork.id}-${item.quality}-${index}`}
+                className="grid gap-5 rounded-2xl border border-white/10 bg-white/[0.04] p-4 sm:grid-cols-[130px_1fr_auto]"
               >
-                <div className="overflow-hidden bg-slate-950">
+                <div className="overflow-hidden rounded-xl bg-slate-950">
                   <SafeImg
                     src={
                       item.downloadUrl
@@ -599,37 +587,38 @@ export default async function CheckoutSuccessPage({
                       item.artwork
                         .title
                     }
-                    className="aspect-square w-full object-contain"
+                    className="aspect-square h-full w-full object-cover"
                   />
                 </div>
 
-                <div className="space-y-4 p-5">
-                  <div>
-                    <div className="text-xl font-semibold text-white">
-                      {
-                        item.artwork
-                          .title
-                      }
-                    </div>
+                <div className="flex flex-col justify-center">
+                  <Link
+                    href={`/artwork/${item.artwork.id}`}
+                    className="text-lg font-semibold text-white hover:text-amber-300"
+                  >
+                    {
+                      item.artwork
+                        .title
+                    }
+                  </Link>
 
-                    <div className="mt-1 text-sm text-slate-400">
-                      {item.artwork
+                  <div className="mt-1 text-sm text-slate-400">
+                    {
+                      item.artwork
                         .artist ||
-                        item.artwork
-                          .style ||
-                        'AI Image'}
-                    </div>
+                      'AI Image'
+                    }
+                  </div>
 
-                    <div className="mt-2 text-sm text-amber-300">
-                      {qualityLabel(
-                        item.quality
-                      )}
-                    </div>
+                  <div className="mt-2 text-sm text-amber-300">
+                    {qualityLabel(
+                      item.quality
+                    )}
                   </div>
 
                   {item.amountTotal !==
                   null ? (
-                    <div className="text-sm text-slate-400">
+                    <div className="mt-1 text-xs text-slate-500">
                       {
                         item.currency
                       }{' '}
@@ -641,7 +630,9 @@ export default async function CheckoutSuccessPage({
                       )}
                     </div>
                   ) : null}
+                </div>
 
+                <div className="flex items-center">
                   {isPaid ? (
                     <a
                       href={
@@ -649,25 +640,15 @@ export default async function CheckoutSuccessPage({
                       }
                       target="_blank"
                       rel="noreferrer"
-                      className="block w-full rounded-xl bg-amber-400 px-4 py-3 text-center font-semibold text-black transition hover:bg-amber-300"
+                      className="w-full rounded-xl border border-white/15 px-5 py-3 text-center text-sm font-semibold text-white transition hover:border-amber-300/60 hover:text-amber-300 sm:w-auto"
                     >
-                      Download artwork
+                      Download
                     </a>
                   ) : (
-                    <div className="rounded-xl border border-white/10 bg-white/[0.04] p-3 text-sm text-slate-400">
-                      Download becomes
-                      available once
-                      payment is
-                      confirmed.
+                    <div className="text-sm text-slate-500">
+                      Awaiting payment
                     </div>
                   )}
-
-                  <Link
-                    href={`/artwork/${item.artwork.id}`}
-                    className="block text-center text-sm text-slate-400 hover:text-amber-300"
-                  >
-                    View artwork
-                  </Link>
                 </div>
               </article>
             )
@@ -681,8 +662,8 @@ export default async function CheckoutSuccessPage({
         </h2>
 
         <p className="mt-2 text-sm leading-6 text-slate-400">
-          Keep this page available until you have downloaded all
-          purchased files.
+          Your complete purchase can be downloaded as one ZIP file,
+          or each artwork can be downloaded individually above.
         </p>
 
         <div className="mt-5 flex flex-wrap gap-4">
