@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import SafeImg from '@/components/safe-img'
+import BackButton from '@/components/back-button'
 import {
   addToCart,
   CartQuality,
@@ -16,7 +17,7 @@ type Props = {
   style: string
 }
 
-const PREVIEW_VERSION = 'v6'
+const PREVIEW_VERSION = 'v7'
 
 export default function ArtworkDetailClient({
   artworkId,
@@ -47,23 +48,19 @@ export default function ArtworkDetailClient({
 
     setAddedQuality(quality)
 
-    if (!added) {
-      window.setTimeout(() => {
-        setAddedQuality(null)
-      }, 1800)
-
-      return
-    }
-
     window.setTimeout(() => {
       setAddedQuality(null)
     }, 1800)
+
+    return added
   }
 
   function buttonText(
     quality: CartQuality
   ) {
-    if (addedQuality === quality) {
+    if (
+      addedQuality === quality
+    ) {
       return 'Added to Cart ✓'
     }
 
@@ -72,6 +69,10 @@ export default function ArtworkDetailClient({
 
   return (
     <main className="mx-auto max-w-7xl space-y-8 px-4 py-10">
+      <div>
+        <BackButton />
+      </div>
+
       <div className="grid gap-8 lg:grid-cols-[minmax(0,1.15fr)_420px]">
         <section className="space-y-4">
           <div
