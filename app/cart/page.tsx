@@ -45,10 +45,10 @@ export default function CartPage() {
           </p>
 
           <Link
-            href="/explore"
+            href="/"
             className="mt-8 inline-block rounded-xl bg-amber-400 px-7 py-3 font-semibold text-black transition hover:bg-amber-300"
           >
-            Browse Artworks
+            Back to main page
           </Link>
         </div>
       </main>
@@ -84,7 +84,7 @@ export default function CartPage() {
                   className="overflow-hidden rounded-xl"
                 >
                   <SafeImg
-                    src={`/api/artwork/preview/${item.artworkId}?w=400&v=cart-v1`}
+                    src={`/api/artwork/preview/${item.artworkId}?w=400&v=cart-v2`}
                     alt={
                       item.title
                     }
@@ -98,21 +98,15 @@ export default function CartPage() {
                       href={`/artwork/${item.artworkId}`}
                       className="text-lg font-semibold text-white hover:text-amber-300"
                     >
-                      {
-                        item.title
-                      }
+                      {item.title}
                     </Link>
 
                     <div className="mt-1 text-sm text-slate-400">
-                      {
-                        item.artist
-                      }
+                      {item.artist}
                     </div>
 
                     <div className="mt-3 text-sm text-amber-300">
-                      {
-                        item.qualityLabel
-                      }
+                      {item.qualityLabel}
                     </div>
                   </div>
 
@@ -154,9 +148,7 @@ export default function CartPage() {
               </span>
 
               <span>
-                {
-                  items.length
-                }
+                {items.length}
               </span>
             </div>
 
@@ -182,10 +174,10 @@ export default function CartPage() {
           </Link>
 
           <Link
-            href="/explore"
+            href="/"
             className="mt-3 block text-center text-sm text-slate-400 hover:text-amber-300"
           >
-            Continue shopping
+            Back to main page
           </Link>
         </aside>
       </div>
