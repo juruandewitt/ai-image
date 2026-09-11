@@ -59,340 +59,234 @@ const STYLE_LABELS: Record<
   MasterStyle,
   string
 > = {
-  MICHELANGELO:
-    'Michelangelo',
-
-  VAN_GOGH:
-    'Vincent van Gogh',
-
-  MONET:
-    'Claude Monet',
-
-  CARAVAGGIO:
-    'Caravaggio',
-
-  PICASSO:
-    'Pablo Picasso',
-
-  MUNCH:
-    'Edvard Munch',
-
-  POLLOCK:
-    'Jackson Pollock',
-
-  REMBRANDT:
-    'Rembrandt',
-
-  VERMEER:
-    'Johannes Vermeer',
-
-  DALI:
-    'Salvador Dalí',
-
-  DA_VINCI:
-    'Leonardo da Vinci',
+  MICHELANGELO: 'Michelangelo',
+  VAN_GOGH: 'Vincent van Gogh',
+  MONET: 'Claude Monet',
+  CARAVAGGIO: 'Caravaggio',
+  PICASSO: 'Pablo Picasso',
+  MUNCH: 'Edvard Munch',
+  POLLOCK: 'Jackson Pollock',
+  REMBRANDT: 'Rembrandt',
+  VERMEER: 'Johannes Vermeer',
+  DALI: 'Salvador Dalí',
+  DA_VINCI: 'Leonardo da Vinci',
 }
 
 /*
- * FEATURED FIRST ARTWORK
+ * DESIGNATED FIRST REIMAGINED ARTWORK
  *
- * This is the most important ordering rule.
+ * These are deliberately independent of the artwork's stored
+ * Prisma style metadata.
  *
- * For each Master, this ID is deliberately pinned to position #1.
- *
- * Where a Master is represented on the homepage in
- * "The Masters Reimagined", the SAME artwork is used here.
+ * The homepage preview work must always be first on the matching
+ * Reimagined Master page.
  */
-const FEATURED_FIRST_ID: Record<
-  MasterStyle,
-  string
+const HERO_ARTWORKS: Partial<
+  Record<
+    MasterStyle,
+    {
+      id: string
+      title: string
+      image: string
+    }
+  >
 > = {
-  MICHELANGELO:
-    'cmnbfkgtb000m76b7fxhnwvcf',
+  MICHELANGELO: {
+    id: 'cmnbfkgtb000m76b7fxhnwvcf',
+    title: 'The Scream in Michelangelo Style',
+    image:
+      'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/michelangelo/the-scream-in-michelangelo-style-uhrlG2bs3WxMg24vEymrsIUlB8XQtj.png',
+  },
 
-  VAN_GOGH:
-    'cmnnbf5dw000u7arey9doysq6',
+  VAN_GOGH: {
+    id: 'cmnnbf5dw000u7arey9doysq6',
+    title: 'Mona Lisa in Van Gogh Style',
+    image:
+      'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/van-gogh/mona-lisa-in-van-gogh-style-ZCAnXSHS9H7UPFWdmf5SEtbdf76gVk.png',
+  },
 
-  MONET:
-    'cmn7yhcwc000516ddv03zxjgc',
+  MONET: {
+    id: 'cmn7yhcwc000516ddv03zxjgc',
+    title: 'Starry Night in Monet Style',
+    image:
+      'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/monet/starry-night-in-monet-style-XClaCopIFppIKq49pOoI0w9gzo95bG.png',
+  },
 
-  CARAVAGGIO:
-    'cmnox8u470006j89qcsbi57i5',
+  CARAVAGGIO: {
+    id: 'cmnox8u470006j89qcsbi57i5',
+    title: 'Girl with a Pearl Earring in Caravaggio Style',
+    image:
+      'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/caravaggio/girl-with-a-pearl-earring-in-caravaggio-style-iIUSvkTN9tvpsnf8fp2JhvAReCe1WY.png',
+  },
 
-  PICASSO:
-    'cmnnmtyr1000331x6h0sync7l',
+  PICASSO: {
+    id: 'cmnnmtyr1000331x6h0sync7l',
+    title: 'The Night Watch in Picasso Style',
+    image:
+      'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/picasso/the-night-watch-in-picasso-style-R99D9eVFQJCetMGt3Al3FaLbQD9ITP.png',
+  },
 
-  MUNCH:
-    'cmnqg2yan0010mvtopbk1hgcz',
+  MUNCH: {
+    id: 'cmnqg2yan0010mvtopbk1hgcz',
+    title: 'The Last Supper in Munch Style',
+    image:
+      'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/munch/the-last-supper-in-munch-style-9OzzojXQ2ByWF497ZyThGAlIpVe875.png',
+  },
 
-  POLLOCK:
-    'cmnp1a7i2001rmgqe22rvk6o9',
+  POLLOCK: {
+    id: 'cmnp1a7i2001rmgqe22rvk6o9',
+    title: 'Impression Sunrise in Pollock Style',
+    image:
+      'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/pollock/impression-sunrise-in-pollock-style-yYBU0MY607MyHQWDW0RKRZUaU0DZXw.png',
+  },
 
-  REMBRANDT:
-    'cmnotw7l2000o9edqyqvktxia',
+  REMBRANDT: {
+    id: 'cmnotw7l2000o9edqyqvktxia',
+    title: 'Persistence of Memory in Rembrandt Style',
+    image:
+      'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/rembrandt/persistence-of-memory-in-rembrandt-style-mbmGzGwU5wvni3vkwrLUmoqWc33x1A.png',
+  },
 
-  VERMEER:
-    'cmngg1i8l001937jqm4ojyyzd',
-
-  DALI:
-    'cmnnocpnp001i1wxb4f577qew',
-
-  DA_VINCI:
-    'cmnghrohc00168jrsuk5tqcmj',
+  VERMEER: {
+    id: 'cmngg1i8l001937jqm4ojyyzd',
+    title: 'Guernica in Vermeer Style',
+    image:
+      'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/vermeer/guernica-in-vermeer-style-QaOXgAP2l1gGJjUkkKBdJpLP5Exfp6.png',
+  },
 }
 
 /*
- * KNOWN-GOOD FEATURED IMAGE URLS
+ * SECONDARY PRIORITY TITLES
  *
- * Some older records have thumbnails that are not reliable even
- * though we know that a permanent Vercel Blob image exists.
- *
- * These explicit URLs ensure that the homepage-selected hero work
- * can never disappear from the corresponding reimagined page.
+ * After the designated homepage hero, recognizable works
+ * are displayed before less familiar reinterpretations.
  */
-const FEATURED_IMAGE_OVERRIDES:
-  Partial<Record<string, string>> = {
-  /*
-   * Michelangelo
-   * The Scream
-   */
-  cmnbfkgtb000m76b7fxhnwvcf:
-    'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/michelangelo/the-scream-in-michelangelo-style-uhrlG2bs3WxMg24vEymrsIUlB8XQtj.png',
-
-  /*
-   * Van Gogh
-   * Mona Lisa
-   */
-  cmnnbf5dw000u7arey9doysq6:
-    'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/van-gogh/mona-lisa-in-van-gogh-style-ZCAnXSHS9H7UPFWdmf5SEtbdf76gVk.png',
-
-  /*
-   * Monet
-   * Starry Night
-   */
-  cmn7yhcwc000516ddv03zxjgc:
-    'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/monet/starry-night-in-monet-style-XClaCopIFppIKq49pOoI0w9gzo95bG.png',
-
-  /*
-   * Caravaggio
-   * Girl with a Pearl Earring
-   */
-  cmnox8u470006j89qcsbi57i5:
-    'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/caravaggio/girl-with-a-pearl-earring-in-caravaggio-style-iIUSvkTN9tvpsnf8fp2JhvAReCe1WY.png',
-
-  /*
-   * Picasso
-   * The Night Watch
-   */
-  cmnnmtyr1000331x6h0sync7l:
-    'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/picasso/the-night-watch-in-picasso-style-R99D9eVFQJCetMGt3Al3FaLbQD9ITP.png',
-
-  /*
-   * Munch
-   * The Last Supper
-   */
-  cmnqg2yan0010mvtopbk1hgcz:
-    'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/munch/the-last-supper-in-munch-style-9OzzojXQ2ByWF497ZyThGAlIpVe875.png',
-
-  /*
-   * Pollock
-   * Impression, Sunrise
-   */
-  cmnp1a7i2001rmgqe22rvk6o9:
-    'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/pollock/impression-sunrise-in-pollock-style-yYBU0MY607MyHQWDW0RKRZUaU0DZXw.png',
-
-  /*
-   * Rembrandt
-   * Persistence of Memory
-   */
-  cmnotw7l2000o9edqyqvktxia:
-    'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/rembrandt/persistence-of-memory-in-rembrandt-style-mbmGzGwU5wvni3vkwrLUmoqWc33x1A.png',
-
-  /*
-   * Vermeer
-   * Guernica
-   */
-  cmngg1i8l001937jqm4ojyyzd:
-    'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/vermeer/guernica-in-vermeer-style-QaOXgAP2l1gGJjUkkKBdJpLP5Exfp6.png',
-}
-
-/*
- * DISPLAY PRIORITY
- *
- * The FIRST ID in every array matches FEATURED_FIRST_ID.
- *
- * The remaining works are ordered with easily recognisable
- * masterpieces first.
- */
-const PRIORITY_IDS: Record<
-  MasterStyle,
-  string[]
+const PRIORITY_TITLES: Partial<
+  Record<MasterStyle, string[]>
 > = {
   MICHELANGELO: [
-    'cmnbfkgtb000m76b7fxhnwvcf',
-    'cmn7ym0kf000h16ddrrenxjd9',
-    'cmn7ymb9l000i16ddkjc1ffq9',
-    'cmnhviorn000x841p3q2wq6uz',
-    'cmnhviysf0010841p5cbof0l3',
-    'cmnbflybt000t76b7m18h6rmj',
-    'cmnhw4t01000312bs0kvaj0ue',
+    'Mona Lisa in Michelangelo Style',
+    'The Last Supper in Michelangelo Style',
+    'Starry Night in Michelangelo Style',
+    'Girl with a Pearl Earring in Michelangelo Style',
+    'The Night Watch in Michelangelo Style',
+    'Persistence of Memory in Michelangelo Style',
+    'Guernica in Michelangelo Style',
   ],
 
   VAN_GOGH: [
-    'cmnnbf5dw000u7arey9doysq6',
-    'cmnnbgeqa00197are9hbivfeu',
-    'cmnnbff89000x7are5ub1qd5r',
-    'cmnnbg5on00167arehw39q113',
-    'cmnnbfozw00107are9qpn4qd5',
-    'cmnnbgndf001c7areup9eimvc',
+    'Girl with a Pearl Earring in Van Gogh Style',
+    'The Last Supper in Van Gogh Style',
+    'The Scream in Van Gogh Style',
+    'The Night Watch in Van Gogh Style',
+    'Persistence of Memory in Van Gogh Style',
+    'Guernica in Van Gogh Style',
   ],
 
   MONET: [
-    'cmn7yhcwc000516ddv03zxjgc',
-    'cmn7ygwpm000416ddfn08jx6n',
-    'cmnbfj0aj000d76b74vyhg5zt',
-    'cmnbfic9s000876b7l7e2g0k0',
-    'cmnnl5wnq0000rnlqqm0t94pi',
-    'cmnati0sd0008yr8cntvi3ov6',
-    'cmn7yilj3000916dd5fkazc7w',
+    'Mona Lisa in Monet Style',
+    'Girl with a Pearl Earring in Monet Style',
+    'The Last Supper in Monet Style',
+    'The Scream in Monet Style',
+    'The Night Watch in Monet Style',
+    'Persistence of Memory in Monet Style',
+    'Guernica in Monet Style',
   ],
 
   CARAVAGGIO: [
-    'cmnox8u470006j89qcsbi57i5',
-    'cmnox97k70009j89qgs9c4hjg',
-    'cmnoxa7ky000ij89qg5t0mz1p',
-    'cmnox8h020003j89qpjoihhtx',
-    'cmnozdzl70003z3ol3xw42ove',
-    'cmnox9ioq000cj89qrcllzb9g',
-    'cmnoxamga000lj89qxbncnld6',
+    'Mona Lisa in Caravaggio Style',
+    'The Last Supper in Caravaggio Style',
+    'Starry Night in Caravaggio Style',
+    'The Scream in Caravaggio Style',
+    'The Night Watch in Caravaggio Style',
+    'Persistence of Memory in Caravaggio Style',
+    'Guernica in Caravaggio Style',
   ],
 
   PICASSO: [
-    /*
-     * Homepage preview first:
-     * The Night Watch in Picasso Style
-     */
-    'cmnnmtyr1000331x6h0sync7l',
-
-    'cmnnmse1d001idff13avgm2uq',
-    'cmnnn0npw0000lm6a1slfafjr',
-    'cmnnmt8tz001rdff10ivzgfyy',
-    'cmnnmsqoy001ldff1odokex1x',
-    'cmnnmszsz001odff1yfzv9mfy',
-    'cmnnmubo6000631x6gzo0uvvh',
-    'cmnnmzl4g001r31x6l00cbuwz',
+    'Mona Lisa in Picasso Style',
+    'Girl with a Pearl Earring in Picasso Style',
+    'The Last Supper in Picasso Style',
+    'Starry Night in Picasso Style',
+    'The Scream in Picasso Style',
+    'Persistence of Memory in Picasso Style',
   ],
 
   MUNCH: [
-    /*
-     * Homepage preview first:
-     * The Last Supper in Munch Style
-     */
-    'cmnqg2yan0010mvtopbk1hgcz',
-
-    'cmnqg2f20000umvtoywjcdusb',
-    'cmnqg1jvr000lmvtok0v8cnge',
-    'cmnqg2pj4000xmvtoaxigb6tc',
-    'cmnqg3f840016mvto3pe9998o',
-    'cmnqg3po20019mvto3j1qmaky',
-    'cmnqgazmc002ruijqe3g19eyf',
+    'Mona Lisa in Munch Style',
+    'Girl with a Pearl Earring in Munch Style',
+    'Starry Night in Munch Style',
+    'The Night Watch in Munch Style',
+    'Persistence of Memory in Munch Style',
+    'Guernica in Munch Style',
   ],
 
   POLLOCK: [
-    /*
-     * Homepage preview first:
-     * Impression Sunrise in Pollock Style
-     */
-    'cmnp1a7i2001rmgqe22rvk6o9',
-
-    'cmnp14bje0000mgqegu1s7cdd',
-    'cmnp14xs60006mgqe0bbghj0f',
-    'cmnp13lht001uutftkc630xal',
-    'cmnp130lt001outftsb0z23na',
-    'cmnp13ahc001rutfthajeksch',
-    'cmnp14kqv0003mgqeyz3m4pr4',
-    'cmnp1574o0009mgqed76g9hxt',
+    'Mona Lisa in Pollock Style',
+    'Girl with a Pearl Earring in Pollock Style',
+    'The Last Supper in Pollock Style',
+    'Starry Night in Pollock Style',
+    'The Scream in Pollock Style',
+    'The Night Watch in Pollock Style',
+    'Persistence of Memory in Pollock Style',
+    'Guernica in Pollock Style',
   ],
 
   REMBRANDT: [
-    /*
-     * Homepage preview first:
-     * Persistence of Memory
-     */
-    'cmnotw7l2000o9edqyqvktxia',
-
-    'cmnotu8o900069edqbwdtcy8v',
-    'cmnotvyg7000l9edquvi4hr9k',
-    'cmnotujms00099edqcjzrc8sn',
-    'cmnotuyfo000c9edqtkq947db',
-    'cmnotv825000f9edq9uiqi3ai',
-    'cmnou3ipy000lnc18uwk9k4y7',
+    'Mona Lisa in Rembrandt Style',
+    'Girl with a Pearl Earring in Rembrandt Style',
+    'The Last Supper in Rembrandt Style',
+    'Starry Night in Rembrandt Style',
+    'The Scream in Rembrandt Style',
+    'Guernica in Rembrandt Style',
   ],
 
   VERMEER: [
-    /*
-     * Homepage preview first:
-     * Guernica
-     */
-    'cmngg1i8l001937jqm4ojyyzd',
-
-    'cmngg02kl000u37jq3sz6jvc0',
-    'cmngg1syo001c37jqnqsm9izv',
-    'cmngg0dwv000x37jqkrh942f6',
-    'cmngg0o3n001037jql606zr6f',
-    'cmngg2auf001i37jqp740of4g',
-    'cmngg17zb001637jqg83rzj4f',
-    'cmngip8p10010da471vobh1wa',
-  ],
-
-  DALI: [
-    'cmnnocpnp001i1wxb4f577qew',
-    'cmnnofivz000f10kfcu59ulp1',
-    'cmnnoehym000610kfpgeh2r47',
-    'cmnnocxj4001l1wxbl27ga9w4',
-    'cmnnod5qt001o1wxbs3bf6h26',
-    'cmnnof5ll000c10kfb66ypmvr',
-    'cmnnotz2i0009estpojnxdtbc',
-  ],
-
-  DA_VINCI: [
-    'cmnghrohc00168jrsuk5tqcmj',
-    'cmnghpvjf000u8jrsx9ft3i4q',
-    'cmnghqa54000x8jrsfvd1sxtt',
-    'cmnghrxpr00198jrsa45eqvhf',
-    'cmnghrbng00138jrsw2sbcdgq',
+    'Mona Lisa in Vermeer Style',
+    'The Last Supper in Vermeer Style',
+    'Starry Night in Vermeer Style',
+    'The Scream in Vermeer Style',
+    'The Night Watch in Vermeer Style',
+    'Persistence of Memory in Vermeer Style',
   ],
 }
 
 /*
- * ORIGINAL WORKS
- *
- * These titles represent the Master's own canonical/original
- * collection and must not appear in Masters Reimagined.
+ * These are the Master's own works.
+ * They must NOT appear on that same Master's
+ * Reimagined page.
  */
-const ORIGINAL_TITLES: Record<
-  MasterStyle,
-  string[]
+const ORIGINAL_TITLES: Partial<
+  Record<MasterStyle, string[]>
 > = {
   MICHELANGELO: [
     'The Creation of Adam in Michelangelo Style',
+    'David in Michelangelo Style',
+    'Pieta in Michelangelo Style',
+    'The Last Judgement in Michelangelo Style',
   ],
 
   VAN_GOGH: [
     'Starry Night in Van Gogh Style',
-    'Starry Night over the Rhone in Van Gogh Style',
+    'Sunflowers in Van Gogh Style',
+    'Cafe Terrace at Night in Van Gogh Style',
+    'Irises in Van Gogh Style',
   ],
 
   MONET: [
     'Impression Sunrise in Monet Style',
+    'Water Lilies in Monet Style',
+    'Japanese Bridge in Monet Style',
   ],
 
   CARAVAGGIO: [
     'The Calling of Saint Matthew in Caravaggio Style',
+    'The Supper at Emmaus in Caravaggio Style',
   ],
 
   PICASSO: [
     'Guernica in Picasso Style',
+    'The Weeping Woman in Picasso Style',
   ],
 
   MUNCH: [
@@ -471,7 +365,9 @@ const STYLE_SEARCH_NAMES: Record<
 
   DALI: [
     'dali',
+    'dalí',
     'salvador dali',
+    'salvador dalí',
   ],
 
   DA_VINCI: [
@@ -490,14 +386,8 @@ function normalizeText(
       ''
     )
     .toLowerCase()
-    .replace(
-      /[’‘]/g,
-      "'"
-    )
-    .replace(
-      /\s+/g,
-      ' '
-    )
+    .replace(/[’‘]/g, "'")
+    .replace(/\s+/g, ' ')
     .trim()
 }
 
@@ -505,12 +395,15 @@ function isOriginalArtwork(
   style: MasterStyle,
   title: string
 ) {
+  const originals =
+    ORIGINAL_TITLES[
+      style
+    ] ?? []
+
   const normalizedTitle =
     normalizeText(title)
 
-  return ORIGINAL_TITLES[
-    style
-  ].some(
+  return originals.some(
     (originalTitle) =>
       normalizeText(
         originalTitle
@@ -564,50 +457,27 @@ function isStablePublicImage(
   )
 }
 
-type ArtworkAsset = {
-  originalUrl:
-    | string
-    | null
-}
-
 type ArtworkRow = {
   id: string
   title: string
-  artist:
-    | string
-    | null
+  artist: string | null
   style: unknown
-  thumbnail:
-    | string
-    | null
-  assets:
-    ArtworkAsset[]
+  thumbnail: string | null
+
+  assets: {
+    originalUrl: string | null
+  }[]
 }
 
-/*
- * IMAGE RESOLUTION
- *
- * Priority:
- *
- * 1. Explicit known-good featured URL
- * 2. Stable artwork thumbnail
- * 3. Stable Asset.originalUrl
- *
- * This prevents older thumbnail metadata from hiding
- * otherwise perfectly valid reimagined artwork.
- */
-function getStableImage(
+type DisplayArtwork = {
+  id: string
+  title: string
+  image: string
+}
+
+function resolveImage(
   artwork: ArtworkRow
 ) {
-  const override =
-    FEATURED_IMAGE_OVERRIDES[
-      artwork.id
-    ]
-
-  if (override) {
-    return override
-  }
-
   if (
     isStablePublicImage(
       artwork.thumbnail
@@ -624,13 +494,10 @@ function getStableImage(
         )
     )
 
-  if (
-    stableAsset?.originalUrl
-  ) {
-    return stableAsset.originalUrl
-  }
-
-  return null
+  return (
+    stableAsset?.originalUrl ??
+    null
+  )
 }
 
 function getSelectedStyle(
@@ -639,34 +506,43 @@ function getSelectedStyle(
     | string[]
     | undefined
 ) {
-  const rawValue =
+  const raw =
     Array.isArray(value)
       ? value[0]
       : value
 
-  if (!rawValue) {
+  if (!raw) {
     return null
   }
 
-  const normalizedValue =
-    rawValue.toUpperCase() as MasterStyle
+  const normalized =
+    raw.toUpperCase() as MasterStyle
 
   return MASTER_STYLES.includes(
-    normalizedValue
+    normalized
   )
-    ? normalizedValue
+    ? normalized
     : null
 }
 
 function getPriorityIndex(
   style: MasterStyle,
-  artworkId: string
+  title: string
 ) {
-  const index =
-    PRIORITY_IDS[
+  const priorities =
+    PRIORITY_TITLES[
       style
-    ].indexOf(
-      artworkId
+    ] ?? []
+
+  const normalizedTitle =
+    normalizeText(title)
+
+  const index =
+    priorities.findIndex(
+      (priority) =>
+        normalizeText(
+          priority
+        ) === normalizedTitle
     )
 
   return index === -1
@@ -688,6 +564,27 @@ export default async function MastersReimaginedPage({
       searchParams?.style
     )
 
+  /*
+   * The hero IDs are included explicitly in the query.
+   *
+   * This is critical because some older artwork records have
+   * inconsistent style metadata.
+   */
+  const heroIds =
+    Object.values(
+      HERO_ARTWORKS
+    )
+      .map(
+        (hero) =>
+          hero?.id
+      )
+      .filter(
+        (
+          id
+        ): id is string =>
+          Boolean(id)
+      )
+
   const artworks =
     await prisma.artwork.findMany(
       {
@@ -695,18 +592,29 @@ export default async function MastersReimaginedPage({
           status:
             'PUBLISHED',
 
-          style: {
-            in: [
-              ...MASTER_STYLES,
-            ] as any,
-          },
+          OR: [
+            {
+              style: {
+                in: [
+                  ...MASTER_STYLES,
+                ] as any,
+              },
+            },
+
+            {
+              id: {
+                in:
+                  heroIds,
+              },
+            },
+          ],
         },
 
         orderBy: {
           title: 'asc',
         },
 
-        take: 3000,
+        take: 4000,
 
         select: {
           id: true,
@@ -732,138 +640,192 @@ export default async function MastersReimaginedPage({
       }
     )
 
-  /*
-   * Build valid Reimagined records.
-   *
-   * IMPORTANT:
-   *
-   * We no longer discard an artwork simply because its
-   * Artwork.thumbnail field is old or unstable.
-   *
-   * A permanent Asset.originalUrl or an explicit featured
-   * image override is equally valid.
-   */
-  const validReimaginedArtworks =
-    artworks
-      .filter(
-        (artwork) => {
-          const style =
-            artwork.style as MasterStyle
+  const artworkById =
+    new Map<
+      string,
+      ArtworkRow
+    >()
 
-          if (
-            !MASTER_STYLES.includes(
-              style
-            )
-          ) {
-            return false
-          }
-
-          if (
-            !isReimaginedArtwork(
-              style,
-              artwork.title
-            )
-          ) {
-            return false
-          }
-
-          return Boolean(
-            getStableImage(
-              artwork as ArtworkRow
-            )
-          )
-        }
-      )
-      .map(
-        (artwork) => ({
-          ...artwork,
-
-          resolvedImage:
-            getStableImage(
-              artwork as ArtworkRow
-            ) as string,
-        })
-      )
+  for (
+    const artwork of artworks
+  ) {
+    artworkById.set(
+      artwork.id,
+      artwork as ArtworkRow
+    )
+  }
 
   const allGroups =
     MASTER_STYLES.map(
       (style) => {
-        const groupArtworks =
-          validReimaginedArtworks
+        const hero =
+          HERO_ARTWORKS[
+            style
+          ]
+
+        const regularItems: DisplayArtwork[] =
+          artworks
             .filter(
               (artwork) =>
                 artwork.style ===
-                style
-            )
-            .sort(
-              (a, b) => {
-                /*
-                 * Absolute rule:
-                 *
-                 * Featured artwork always comes first.
-                 */
-                const aFeatured =
-                  a.id ===
-                  FEATURED_FIRST_ID[
-                    style
-                  ]
-
-                const bFeatured =
-                  b.id ===
-                  FEATURED_FIRST_ID[
-                    style
-                  ]
-
-                if (
-                  aFeatured &&
-                  !bFeatured
-                ) {
-                  return -1
-                }
-
-                if (
-                  bFeatured &&
-                  !aFeatured
-                ) {
-                  return 1
-                }
-
-                const aPriority =
-                  getPriorityIndex(
-                    style,
-                    a.id
-                  )
-
-                const bPriority =
-                  getPriorityIndex(
-                    style,
-                    b.id
-                  )
-
-                if (
-                  aPriority !==
-                  bPriority
-                ) {
-                  return (
-                    aPriority -
-                    bPriority
-                  )
-                }
-
-                return a.title.localeCompare(
-                  b.title
+                  style &&
+                isReimaginedArtwork(
+                  style,
+                  artwork.title
                 )
+            )
+            .map(
+              (artwork) => {
+                const image =
+                  resolveImage(
+                    artwork as ArtworkRow
+                  )
+
+                if (!image) {
+                  return null
+                }
+
+                return {
+                  id:
+                    artwork.id,
+
+                  title:
+                    artwork.title,
+
+                  image,
+                }
               }
             )
+            .filter(
+              (
+                artwork
+              ): artwork is DisplayArtwork =>
+                artwork !==
+                null
+            )
+
+        /*
+         * Remove the hero from the normal list if it already
+         * happened to survive the regular filtering.
+         *
+         * We will insert it manually at position zero.
+         */
+        const withoutHero =
+          hero
+            ? regularItems.filter(
+                (artwork) =>
+                  artwork.id !==
+                  hero.id
+              )
+            : regularItems
+
+        withoutHero.sort(
+          (a, b) => {
+            const aPriority =
+              getPriorityIndex(
+                style,
+                a.title
+              )
+
+            const bPriority =
+              getPriorityIndex(
+                style,
+                b.title
+              )
+
+            if (
+              aPriority !==
+              bPriority
+            ) {
+              return (
+                aPriority -
+                bPriority
+              )
+            }
+
+            return a.title.localeCompare(
+              b.title
+            )
+          }
+        )
+
+        /*
+         * HERO INJECTION
+         *
+         * The designated homepage artwork is inserted manually
+         * and therefore cannot disappear because of incorrect
+         * legacy style metadata.
+         */
+        let heroItem:
+          | DisplayArtwork
+          | null = null
+
+        if (hero) {
+          const databaseHero =
+            artworkById.get(
+              hero.id
+            )
+
+          heroItem = {
+            id:
+              hero.id,
+
+            title:
+              databaseHero
+                ?.title ||
+              hero.title,
+
+            /*
+             * We deliberately use the known-good image here.
+             */
+            image:
+              hero.image,
+          }
+        }
+
+        const groupArtworks =
+          heroItem
+            ? [
+                heroItem,
+                ...withoutHero,
+              ]
+            : withoutHero
+
+        /*
+         * Final de-duplication.
+         */
+        const seen =
+          new Set<string>()
+
+        const unique =
+          groupArtworks.filter(
+            (artwork) => {
+              if (
+                seen.has(
+                  artwork.id
+                )
+              ) {
+                return false
+              }
+
+              seen.add(
+                artwork.id
+              )
+
+              return true
+            }
+          )
 
         return {
           style,
+
           label:
             STYLE_LABELS[
               style
             ],
+
           artworks:
-            groupArtworks,
+            unique,
         }
       }
     )
@@ -896,17 +858,17 @@ export default async function MastersReimaginedPage({
 
   const pageDescription =
     selectedStyle
-      ? `Explore all available masterpieces transformed into the visual language of ${
+      ? `Explore masterpieces transformed into the visual language of ${
           STYLE_LABELS[
             selectedStyle
           ]
         }.`
-      : 'Discover famous and immediately recognisable artworks transformed through the visual languages of all 11 Masters.'
+      : 'Discover famous artworks transformed through the visual languages of the Masters.'
 
   return (
     <main className="space-y-14">
 
-      {/* PAGE HEADER */}
+      {/* HEADER */}
       <section className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-8 md:p-12">
         <BackButton />
 
@@ -941,7 +903,7 @@ export default async function MastersReimaginedPage({
         </div>
       </section>
 
-      {/* MASTER FILTER BUTTONS */}
+      {/* MASTER FILTERS */}
       {!selectedStyle ? (
         <section className="space-y-5">
           <h2 className="text-2xl font-semibold text-white">
@@ -976,7 +938,7 @@ export default async function MastersReimaginedPage({
         </section>
       ) : null}
 
-      {/* REIMAGINED COLLECTIONS */}
+      {/* MASTER GROUPS */}
       {displayedGroups.map(
         (group) => (
           <section
@@ -995,9 +957,8 @@ export default async function MastersReimaginedPage({
                 </h2>
 
                 <p className="mt-2 text-sm text-slate-400">
-                  The featured work is displayed first,
-                  followed by the most recognisable and
-                  visually striking reinterpretations.
+                  Recognisable masterpieces interpreted through
+                  the visual language of {group.label}.
                 </p>
               </div>
 
@@ -1011,17 +972,16 @@ export default async function MastersReimaginedPage({
               ) : null}
             </div>
 
-            {group.artworks
-              .length === 0 ? (
+            {group.artworks.length ===
+            0 ? (
               <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-7">
                 <div className="font-semibold text-white">
                   Library awaiting review
                 </div>
 
                 <p className="mt-2 text-sm text-slate-400">
-                  No stable
-                  published
-                  reimagined images
+                  No published
+                  reimagined works
                   are currently
                   available for{' '}
                   {group.label}.
@@ -1044,68 +1004,47 @@ export default async function MastersReimaginedPage({
                 >
                   {group.artworks.map(
                     (
-                      artwork,
-                      index
-                    ) => {
-                      const isFeatured =
-                        index ===
-                        0
+                      artwork
+                    ) => (
+                      <Link
+                        key={
+                          artwork.id
+                        }
+                        href={`/artwork/${artwork.id}`}
+                        className={
+                          selectedStyle
+                            ? 'group overflow-hidden rounded-3xl border border-white/10 bg-white/[0.04] transition hover:-translate-y-1 hover:border-amber-300/60'
+                            : 'group min-w-[250px] max-w-[250px] overflow-hidden rounded-3xl border border-white/10 bg-white/[0.04] transition hover:-translate-y-1 hover:border-amber-300/60 md:min-w-[310px] md:max-w-[310px]'
+                        }
+                      >
+                        <SafeImg
+                          src={
+                            artwork.image
+                          }
+                          fallbackSrc={
+                            FALLBACK_DATA_URL
+                          }
+                          alt={
+                            artwork.title
+                          }
+                          className="aspect-[4/3] w-full object-cover transition duration-700 group-hover:scale-105"
+                        />
 
-                      return (
-                        <Link
-                          key={
-                            artwork.id
-                          }
-                          href={`/artwork/${artwork.id}`}
-                          className={
-                            selectedStyle
-                              ? `group overflow-hidden rounded-3xl border bg-white/[0.04] transition hover:-translate-y-1 ${
-                                  isFeatured
-                                    ? 'border-amber-300/50 hover:border-amber-300'
-                                    : 'border-white/10 hover:border-amber-300/60'
-                                }`
-                              : `group min-w-[250px] max-w-[250px] overflow-hidden rounded-3xl border bg-white/[0.04] transition hover:-translate-y-1 md:min-w-[310px] md:max-w-[310px] ${
-                                  isFeatured
-                                    ? 'border-amber-300/50 hover:border-amber-300'
-                                    : 'border-white/10 hover:border-amber-300/60'
-                                }`
-                          }
-                        >
-                          <SafeImg
-                            src={
-                              artwork.resolvedImage
-                            }
-                            fallbackSrc={
-                              FALLBACK_DATA_URL
-                            }
-                            alt={
+                        <div className="p-5">
+                          <div className="line-clamp-2 font-semibold text-white">
+                            {
                               artwork.title
                             }
-                            className="aspect-[4/3] w-full object-cover transition duration-700 group-hover:scale-105"
-                          />
-
-                          <div className="p-5">
-                            {isFeatured ? (
-                              <div className="mb-3 inline-flex rounded-full border border-amber-300/30 bg-amber-300/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-amber-200">
-                                Featured
-                              </div>
-                            ) : null}
-
-                            <div className="line-clamp-2 font-semibold text-white">
-                              {
-                                artwork.title
-                              }
-                            </div>
-
-                            <div className="mt-2 text-sm text-amber-300">
-                              {
-                                group.label
-                              }
-                            </div>
                           </div>
-                        </Link>
-                      )
-                    }
+
+                          <div className="mt-2 text-sm text-amber-300">
+                            {
+                              group.label
+                            }
+                          </div>
+                        </div>
+                      </Link>
+                    )
                   )}
                 </div>
               </div>
