@@ -1,20 +1,32 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import {
+  isDownloadQuality,
+  qualityLabel,
+  renderPurchasedArtwork,
+} from '@/lib/download-quality'
 
-export const dynamic = 'force-dynamic'
-export const maxDuration = 300
+export const dynamic =
+  'force-dynamic'
+
+export const maxDuration =
+  300
 
 type StripeProduct = {
   metadata?: {
     artworkId?: string
     quality?: string
-    [key: string]: string | undefined
+    [key: string]:
+      | string
+      | undefined
   }
 }
 
 type StripeLineItem = {
   price?: {
-    product?: string | StripeProduct
+    product?:
+      | string
+      | StripeProduct
   }
 }
 
@@ -32,20 +44,27 @@ function isStableBlobSrc(
     )
 }
 
-function pickStableImgSrc(artwork: {
-  thumbnail?: string | null
+function pickStableImgSrc(
+  artwork: {
+    thumbnail?:
+      | string
+      | null
 
-  assets?: {
-    originalUrl: string | null
-  }[]
-}) {
+    assets?: {
+      originalUrl:
+        | string
+        | null
+    }[]
+  }
+) {
   const stableAsset =
     artwork.assets?.find(
       (asset) =>
         isStableBlobSrc(
           asset.originalUrl
         )
-    )?.originalUrl ?? null
+    )?.originalUrl ??
+    null
 
   const stableThumbnail =
     isStableBlobSrc(
@@ -82,50 +101,6 @@ function safeFilename(
     .slice(0, 120)
 }
 
-function extensionFromUrl(
-  url: string
-) {
-  try {
-    const pathname =
-      new URL(url).pathname
-
-    const match =
-      pathname.match(
-        /\.([a-zA-Z0-9]{2,5})$/
-      )
-
-    if (match?.[1]) {
-      return match[1].toLowerCase()
-    }
-  } catch {
-    // Ignore malformed URL.
-  }
-
-  return 'png'
-}
-
-function contentTypeFromExtension(
-  extension: string
-) {
-  switch (
-    extension.toLowerCase()
-  ) {
-    case 'jpg':
-    case 'jpeg':
-      return 'image/jpeg'
-
-    case 'webp':
-      return 'image/webp'
-
-    case 'gif':
-      return 'image/gif'
-
-    case 'png':
-    default:
-      return 'image/png'
-  }
-}
-
 export async function GET(
   request: Request
 ) {
@@ -134,7 +109,9 @@ export async function GET(
       process.env
         .STRIPE_SECRET_KEY
 
-    if (!stripeSecretKey) {
+    if (
+      !stripeSecretKey
+    ) {
       return NextResponse.json(
         {
           error:
@@ -157,6 +134,11 @@ export async function GET(
     const artworkId =
       requestUrl.searchParams.get(
         'artwork_id'
+      ) || ''
+
+    const quality =
+      requestUrl.searchParams.get(
+        'quality'
       ) || ''
 
     if (!sessionId) {
@@ -183,9 +165,22 @@ export async function GET(
       )
     }
 
-    /*
-     * Verify the Stripe session.
-     */
+    if (
+      !isDownloadQuality(
+        quality
+      )
+    ) {
+      return NextResponse.json(
+        {
+          error:
+            'Invalid or missing image quality.',
+        },
+        {
+          status: 400,
+        }
+      )
+    }
+
     const sessionResponse =
       await fetch(
         `https://api.stripe.com/v1/checkout/sessions/${encodeURIComponent(
@@ -197,7 +192,8 @@ export async function GET(
               `Bearer ${stripeSecretKey}`,
           },
 
-          cache: 'no-store',
+          cache:
+            'no-store',
         }
       )
 
@@ -235,10 +231,6 @@ export async function GET(
       )
     }
 
-    /*
-     * Retrieve purchased line items and expand
-     * each Stripe product.
-     */
     const lineItemsUrl =
       new URL(
         `https://api.stripe.com/v1/checkout/sessions/${encodeURIComponent(
@@ -265,7 +257,8 @@ export async function GET(
               `Bearer ${stripeSecretKey}`,
           },
 
-          cache: 'no-store',
+          cache:
+            'no-store',
         }
       )
 
@@ -289,7 +282,8 @@ export async function GET(
       )
     }
 
-    const lineItems: StripeLineItem[] =
+    const lineItems:
+      StripeLineItem[] =
       Array.isArray(
         lineItemsData?.data
       )
@@ -297,13 +291,17 @@ export async function GET(
         : []
 
     /*
-     * Confirm that this specific artwork belongs to the paid session.
+     * The artwork AND quality must both match.
+     *
+     * This prevents someone who purchased the
+     * 1024px tier from requesting the 4096px tier.
      */
-    const artworkPurchased =
+    const purchased =
       lineItems.some(
         (lineItem) => {
           const product =
-            lineItem?.price
+            lineItem
+              ?.price
               ?.product
 
           if (
@@ -317,31 +315,40 @@ export async function GET(
           return (
             String(
               product.metadata
-                ?.artworkId || ''
+                ?.artworkId ||
+                ''
             ).trim() ===
-            artworkId
+              artworkId &&
+            String(
+              product.metadata
+                ?.quality ||
+                ''
+            ).trim() ===
+              quality
           )
         }
       )
 
-    /*
-     * Backwards compatibility with older single-artwork sessions.
-     */
-    const legacyArtworkPurchased =
+    const legacyPurchased =
       String(
         session?.metadata
           ?.artworkId || ''
       ).trim() ===
-      artworkId
+        artworkId &&
+      String(
+        session?.metadata
+          ?.quality || ''
+      ).trim() ===
+        quality
 
     if (
-      !artworkPurchased &&
-      !legacyArtworkPurchased
+      !purchased &&
+      !legacyPurchased
     ) {
       return NextResponse.json(
         {
           error:
-            'This artwork was not purchased in this checkout session.',
+            'This artwork and resolution were not purchased in this checkout session.',
         },
         {
           status: 403,
@@ -411,7 +418,8 @@ export async function GET(
       await fetch(
         imageUrl,
         {
-          cache: 'no-store',
+          cache:
+            'no-store',
         }
       )
 
@@ -421,7 +429,7 @@ export async function GET(
       return NextResponse.json(
         {
           error:
-            'Artwork file could not be retrieved.',
+            'Artwork source file could not be retrieved.',
         },
         {
           status: 500,
@@ -429,17 +437,15 @@ export async function GET(
       )
     }
 
-    const arrayBuffer =
-      await imageResponse.arrayBuffer()
-
-    const imageBuffer =
+    const sourceBuffer =
       Buffer.from(
-        arrayBuffer
+        await imageResponse.arrayBuffer()
       )
 
-    const extension =
-      extensionFromUrl(
-        imageUrl
+    const rendered =
+      await renderPurchasedArtwork(
+        sourceBuffer,
+        quality
       )
 
     const filenameBase =
@@ -449,26 +455,33 @@ export async function GET(
       'AI-Image-Artwork'
 
     const filename =
-      `${filenameBase}.${extension}`
+      `${filenameBase} - ${rendered.width}x${rendered.height}.png`
 
     return new Response(
-      imageBuffer,
+      rendered.buffer,
       {
         status: 200,
 
         headers: {
           'Content-Type':
-            contentTypeFromExtension(
-              extension
-            ),
+            'image/png',
 
           'Content-Disposition':
             `attachment; filename="${filename}"`,
 
           'Content-Length':
             String(
-              imageBuffer.length
+              rendered.buffer
+                .length
             ),
+
+          'X-AI-Image-Quality':
+            qualityLabel(
+              quality
+            ),
+
+          'X-AI-Image-Dimensions':
+            `${rendered.width}x${rendered.height}`,
 
           'Cache-Control':
             'private, no-store, max-age=0',
