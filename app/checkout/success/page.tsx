@@ -77,25 +77,34 @@ function pickStableImgSrc(artwork: {
   )
 }
 
-function qualityLabel(
+function qualityDetails(
   quality: string
 ) {
   if (quality === 'high') {
-    return 'High Resolution'
+    return {
+      label: 'High Resolution',
+      dimensions: '1024 px',
+    }
   }
 
   if (quality === 'very_high') {
-    return 'Very High Resolution'
+    return {
+      label: 'Very High Resolution',
+      dimensions: '2048 px',
+    }
   }
 
   if (quality === 'ultra') {
-    return 'Ultra High Resolution'
+    return {
+      label: 'Ultra High Resolution',
+      dimensions: '4096 px',
+    }
   }
 
-  return (
-    quality ||
-    'Digital Artwork'
-  )
+  return {
+    label: 'Digital Artwork',
+    dimensions: '',
+  }
 }
 
 type StripeProduct = {
@@ -329,8 +338,7 @@ export default async function CheckoutSuccessPage({
       )
 
   /*
-   * Backwards compatibility with old
-   * single-artwork purchases.
+   * Backwards compatibility with older single-artwork purchases.
    */
   if (
     purchasedReferences.length ===
@@ -457,9 +465,21 @@ export default async function CheckoutSuccessPage({
           return null
         }
 
+        const quality =
+          qualityDetails(
+            reference.quality
+          )
+
         return {
           ...reference,
+
           artwork,
+
+          qualityLabel:
+            quality.label,
+
+          dimensions:
+            quality.dimensions,
 
           previewUrl:
             pickStableImgSrc(
@@ -512,8 +532,8 @@ export default async function CheckoutSuccessPage({
             ? `Your order containing ${purchasedItems.length} ${
                 purchasedItems.length ===
                 1
-                  ? 'artwork'
-                  : 'artworks'
+                  ? 'item'
+                  : 'items'
               } is ready.`
             : 'Stripe has not yet marked this checkout session as paid.'}
         </p>
@@ -539,11 +559,12 @@ export default async function CheckoutSuccessPage({
 
               <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-400">
                 Download all {purchasedItems.length}{' '}
+                purchased{' '}
                 {purchasedItems.length ===
                 1
-                  ? 'artwork'
-                  : 'artworks'}{' '}
-                together in one ZIP file.
+                  ? 'file'
+                  : 'files'}{' '}
+                together in one ZIP archive.
               </p>
             </div>
 
@@ -564,18 +585,30 @@ export default async function CheckoutSuccessPage({
           </h2>
 
           <p className="mt-2 text-sm text-slate-400">
-            You can also download individual artworks below.
+            Each purchased resolution is listed separately.
+            You can also download any file individually.
           </p>
         </div>
 
         <div className="space-y-4">
           {purchasedItems.map(
-            (item, index) => {
+            (
+              item,
+              index
+            ) => {
+              /*
+               * QUALITY IS NOW INCLUDED.
+               *
+               * This is essential when the same artwork was purchased
+               * at High, Very High and Ultra resolution.
+               */
               const individualDownloadUrl =
                 `/api/checkout/download-one?session_id=${encodeURIComponent(
                   sessionId
                 )}&artwork_id=${encodeURIComponent(
                   item.artwork.id
+                )}&quality=${encodeURIComponent(
+                  item.quality
                 )}`
 
               return (
@@ -618,15 +651,27 @@ export default async function CheckoutSuccessPage({
                       }
                     </div>
 
-                    <div className="mt-2 text-sm text-amber-300">
-                      {qualityLabel(
-                        item.quality
-                      )}
+                    <div className="mt-3">
+                      <div className="text-sm font-semibold text-amber-300">
+                        {
+                          item.qualityLabel
+                        }
+                      </div>
+
+                      {item.dimensions ? (
+                        <div className="mt-1 text-sm text-slate-400">
+                          Output size:{' '}
+                          {
+                            item.dimensions
+                          }{' '}
+                          maximum dimension
+                        </div>
+                      ) : null}
                     </div>
 
                     {item.amountTotal !==
                     null ? (
-                      <div className="mt-1 text-xs text-slate-500">
+                      <div className="mt-2 text-xs text-slate-500">
                         {
                           item.currency
                         }{' '}
@@ -648,7 +693,10 @@ export default async function CheckoutSuccessPage({
                         }
                         className="w-full rounded-xl border border-white/15 px-5 py-3 text-center text-sm font-semibold text-white transition hover:border-amber-300/60 hover:text-amber-300 sm:w-auto"
                       >
-                        Download
+                        Download{' '}
+                        {
+                          item.dimensions
+                        }
                       </a>
                     ) : (
                       <div className="text-sm text-slate-500">
@@ -670,7 +718,7 @@ export default async function CheckoutSuccessPage({
 
         <p className="mt-2 text-sm leading-6 text-slate-400">
           Your complete purchase can be downloaded as one ZIP file,
-          or each artwork can be downloaded individually above.
+          or each purchased resolution can be downloaded individually.
         </p>
 
         <div className="mt-5 flex flex-wrap gap-4">
