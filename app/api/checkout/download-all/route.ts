@@ -1,26 +1,44 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import {
+  DownloadQuality,
+  isDownloadQuality,
+  qualityLabel,
+  renderPurchasedArtwork,
+} from '@/lib/download-quality'
 
-export const dynamic = 'force-dynamic'
-export const maxDuration = 300
+export const dynamic =
+  'force-dynamic'
+
+export const maxDuration =
+  300
 
 type StripeProduct = {
   metadata?: {
     artworkId?: string
     quality?: string
-    [key: string]: string | undefined
+    [key: string]:
+      | string
+      | undefined
   }
 }
 
 type StripeLineItem = {
   price?: {
-    product?: string | StripeProduct
+    product?:
+      | string
+      | StripeProduct
   }
 }
 
 type PurchasedReference = {
   artworkId: string
-  quality: string
+  quality: DownloadQuality
+}
+
+type ZipInputFile = {
+  filename: string
+  data: Buffer
 }
 
 function isStableBlobSrc(
@@ -37,20 +55,27 @@ function isStableBlobSrc(
     )
 }
 
-function pickStableImgSrc(artwork: {
-  thumbnail?: string | null
+function pickStableImgSrc(
+  artwork: {
+    thumbnail?:
+      | string
+      | null
 
-  assets?: {
-    originalUrl: string | null
-  }[]
-}) {
+    assets?: {
+      originalUrl:
+        | string
+        | null
+    }[]
+  }
+) {
   const stableAsset =
     artwork.assets?.find(
       (asset) =>
         isStableBlobSrc(
           asset.originalUrl
         )
-    )?.originalUrl ?? null
+    )?.originalUrl ??
+    null
 
   const stableThumbnail =
     isStableBlobSrc(
@@ -64,24 +89,6 @@ function pickStableImgSrc(artwork: {
     stableThumbnail ||
     null
   )
-}
-
-function qualityLabel(
-  quality: string
-) {
-  if (quality === 'high') {
-    return 'High Resolution'
-  }
-
-  if (quality === 'very_high') {
-    return 'Very High Resolution'
-  }
-
-  if (quality === 'ultra') {
-    return 'Ultra High Resolution'
-  }
-
-  return 'Digital Artwork'
 }
 
 function safeFilename(
@@ -105,42 +112,20 @@ function safeFilename(
     .slice(0, 100)
 }
 
-function extensionFromUrl(
-  url: string
-) {
-  try {
-    const pathname =
-      new URL(url).pathname
-
-    const match =
-      pathname.match(
-        /\.([a-zA-Z0-9]{2,5})$/
-      )
-
-    if (match?.[1]) {
-      return match[1].toLowerCase()
-    }
-  } catch {
-    // Ignore malformed URL.
-  }
-
-  return 'png'
-}
-
-/*
- * CRC32 implementation used by the ZIP file format.
- */
 const CRC_TABLE =
   (() => {
     const table =
-      new Uint32Array(256)
+      new Uint32Array(
+        256
+      )
 
     for (
       let index = 0;
       index < 256;
       index++
     ) {
-      let value = index
+      let value =
+        index
 
       for (
         let bit = 0;
@@ -151,7 +136,8 @@ const CRC_TABLE =
           value & 1
             ? 0xedb88320 ^
               (value >>> 1)
-            : value >>> 1
+            : value >>>
+              1
       }
 
       table[index] =
@@ -164,29 +150,34 @@ const CRC_TABLE =
 function crc32(
   buffer: Buffer
 ) {
-  let crc = 0xffffffff
+  let crc =
+    0xffffffff
 
   for (
     let index = 0;
-    index < buffer.length;
+    index <
+    buffer.length;
     index++
   ) {
     crc =
       CRC_TABLE[
-        (crc ^ buffer[index]) &
+        (crc ^
+          buffer[index]) &
           0xff
       ] ^
       (crc >>> 8)
   }
 
   return (
-    (crc ^ 0xffffffff) >>>
+    (crc ^
+      0xffffffff) >>>
     0
   )
 }
 
 function getDosDateTime() {
-  const date = new Date()
+  const date =
+    new Date()
 
   const year =
     Math.max(
@@ -195,15 +186,20 @@ function getDosDateTime() {
     )
 
   const dosTime =
-    (date.getHours() << 11) |
-    (date.getMinutes() << 5) |
+    (date.getHours() <<
+      11) |
+    (date.getMinutes() <<
+      5) |
     Math.floor(
-      date.getSeconds() / 2
+      date.getSeconds() /
+        2
     )
 
   const dosDate =
-    ((year - 1980) << 9) |
-    ((date.getMonth() + 1) <<
+    ((year - 1980) <<
+      9) |
+    ((date.getMonth() +
+      1) <<
       5) |
     date.getDate()
 
@@ -213,23 +209,14 @@ function getDosDateTime() {
   }
 }
 
-type ZipInputFile = {
-  filename: string
-  data: Buffer
-}
-
-/*
- * Creates a standards-compliant ZIP using STORE mode.
- *
- * PNG/JPEG artwork files are already compressed, so additional
- * ZIP compression gives relatively little benefit. STORE mode
- * also lets us avoid adding another npm dependency.
- */
 function createZip(
   files: ZipInputFile[]
 ) {
-  const localParts: Buffer[] = []
-  const centralParts: Buffer[] = []
+  const localParts:
+    Buffer[] = []
+
+  const centralParts:
+    Buffer[] = []
 
   let offset = 0
 
@@ -238,20 +225,21 @@ function createZip(
     dosDate,
   } = getDosDateTime()
 
-  for (const file of files) {
+  for (
+    const file of files
+  ) {
     const filenameBuffer =
       Buffer.from(
         file.filename,
         'utf8'
       )
 
-    const data = file.data
+    const data =
+      file.data
+
     const checksum =
       crc32(data)
 
-    /*
-     * Local file header
-     */
     const localHeader =
       Buffer.alloc(30)
 
@@ -265,17 +253,11 @@ function createZip(
       4
     )
 
-    /*
-     * UTF-8 filename flag.
-     */
     localHeader.writeUInt16LE(
       0x0800,
       6
     )
 
-    /*
-     * Compression method 0 = STORE.
-     */
     localHeader.writeUInt16LE(
       0,
       8
@@ -322,9 +304,6 @@ function createZip(
       data
     )
 
-    /*
-     * Central directory header
-     */
     const centralHeader =
       Buffer.alloc(46)
 
@@ -425,14 +404,15 @@ function createZip(
   }
 
   const localDirectory =
-    Buffer.concat(localParts)
+    Buffer.concat(
+      localParts
+    )
 
   const centralDirectory =
-    Buffer.concat(centralParts)
+    Buffer.concat(
+      centralParts
+    )
 
-  /*
-   * End of central directory record
-   */
   const endRecord =
     Buffer.alloc(22)
 
@@ -491,7 +471,9 @@ export async function GET(
       process.env
         .STRIPE_SECRET_KEY
 
-    if (!stripeSecretKey) {
+    if (
+      !stripeSecretKey
+    ) {
       return NextResponse.json(
         {
           error:
@@ -523,9 +505,6 @@ export async function GET(
       )
     }
 
-    /*
-     * Verify the Stripe Checkout Session.
-     */
     const sessionResponse =
       await fetch(
         `https://api.stripe.com/v1/checkout/sessions/${encodeURIComponent(
@@ -537,7 +516,8 @@ export async function GET(
               `Bearer ${stripeSecretKey}`,
           },
 
-          cache: 'no-store',
+          cache:
+            'no-store',
         }
       )
 
@@ -575,10 +555,6 @@ export async function GET(
       )
     }
 
-    /*
-     * Retrieve purchased Stripe line items and expand
-     * each product so we can read artworkId metadata.
-     */
     const lineItemsUrl =
       new URL(
         `https://api.stripe.com/v1/checkout/sessions/${encodeURIComponent(
@@ -605,7 +581,8 @@ export async function GET(
               `Bearer ${stripeSecretKey}`,
           },
 
-          cache: 'no-store',
+          cache:
+            'no-store',
         }
       )
 
@@ -629,80 +606,105 @@ export async function GET(
       )
     }
 
-    const lineItems: StripeLineItem[] =
+    const lineItems:
+      StripeLineItem[] =
       Array.isArray(
         lineItemsData?.data
       )
         ? lineItemsData.data
         : []
 
-    let purchasedReferences: PurchasedReference[] =
+    let purchasedReferences:
+      PurchasedReference[] =
       lineItems
-        .map((lineItem) => {
-          const product =
-            lineItem?.price
-              ?.product
+        .map(
+          (
+            lineItem
+          ) => {
+            const product =
+              lineItem
+                ?.price
+                ?.product
 
-          if (
-            !product ||
-            typeof product ===
-              'string'
-          ) {
-            return null
+            if (
+              !product ||
+              typeof product ===
+                'string'
+            ) {
+              return null
+            }
+
+            const artworkId =
+              String(
+                product
+                  .metadata
+                  ?.artworkId ||
+                  ''
+              ).trim()
+
+            const quality =
+              String(
+                product
+                  .metadata
+                  ?.quality ||
+                  ''
+              ).trim()
+
+            if (
+              !artworkId ||
+              !isDownloadQuality(
+                quality
+              )
+            ) {
+              return null
+            }
+
+            return {
+              artworkId,
+              quality,
+            }
           }
-
-          const artworkId =
-            String(
-              product.metadata
-                ?.artworkId || ''
-            ).trim()
-
-          const quality =
-            String(
-              product.metadata
-                ?.quality || ''
-            ).trim()
-
-          if (!artworkId) {
-            return null
-          }
-
-          return {
-            artworkId,
-            quality,
-          }
-        })
+        )
         .filter(
           (
             item
           ): item is PurchasedReference =>
-            item !== null
+            item !==
+            null
         )
 
-    /*
-     * Backwards compatibility with older
-     * single-artwork sessions.
-     */
     if (
       purchasedReferences.length ===
         0 &&
-      session?.metadata?.artworkId
+      session?.metadata
+        ?.artworkId &&
+      isDownloadQuality(
+        String(
+          session
+            .metadata
+            .quality ||
+            ''
+        )
+      )
     ) {
-      purchasedReferences = [
-        {
-          artworkId:
-            String(
-              session.metadata
-                .artworkId
-            ),
+      purchasedReferences =
+        [
+          {
+            artworkId:
+              String(
+                session
+                  .metadata
+                  .artworkId
+              ),
 
-          quality:
-            String(
-              session.metadata
-                .quality || ''
-            ),
-        },
-      ]
+            quality:
+              String(
+                session
+                  .metadata
+                  .quality
+              ) as DownloadQuality,
+          },
+        ]
     }
 
     if (
@@ -773,104 +775,98 @@ export async function GET(
       )
 
     /*
-     * Download all purchased image files.
+     * Deliberately process sequentially.
+     *
+     * 4096px artwork can consume substantial memory,
+     * and this is safer on a serverless function.
      */
-    const downloaded =
-      await Promise.all(
-        purchasedReferences.map(
-          async (
-            reference,
-            index
-          ) => {
-            const artwork =
-              artworkMap.get(
-                reference.artworkId
-              )
+    const files:
+      ZipInputFile[] =
+      []
 
-            if (!artwork) {
-              return null
-            }
+    for (
+      let index = 0;
+      index <
+      purchasedReferences.length;
+      index++
+    ) {
+      const reference =
+        purchasedReferences[
+          index
+        ]
 
-            const imageUrl =
-              pickStableImgSrc(
-                artwork
-              )
-
-            if (!imageUrl) {
-              return null
-            }
-
-            try {
-              const imageResponse =
-                await fetch(
-                  imageUrl,
-                  {
-                    cache:
-                      'no-store',
-                  }
-                )
-
-              if (
-                !imageResponse.ok
-              ) {
-                return null
-              }
-
-              const arrayBuffer =
-                await imageResponse.arrayBuffer()
-
-              const imageBuffer =
-                Buffer.from(
-                  arrayBuffer
-                )
-
-              const extension =
-                extensionFromUrl(
-                  imageUrl
-                )
-
-              const title =
-                safeFilename(
-                  artwork.title
-                ) ||
-                `Artwork-${
-                  index + 1
-                }`
-
-              const quality =
-                safeFilename(
-                  qualityLabel(
-                    reference.quality
-                  )
-                )
-
-              const filename =
-                `${String(
-                  index + 1
-                ).padStart(
-                  2,
-                  '0'
-                )} - ${title} - ${quality}.${extension}`
-
-              return {
-                filename,
-                data:
-                  imageBuffer,
-              }
-            } catch {
-              return null
-            }
-          }
+      const artwork =
+        artworkMap.get(
+          reference.artworkId
         )
-      )
 
-    const files =
-      downloaded.filter(
-        (
-          item
-        ): item is ZipInputFile =>
-          item !== null
-      )
+      if (!artwork) {
+        continue
+      }
+
+      const imageUrl =
+        pickStableImgSrc(
+          artwork
+        )
+
+      if (!imageUrl) {
+        continue
+      }
+
+      try {
+        const imageResponse =
+          await fetch(
+            imageUrl,
+            {
+              cache:
+                'no-store',
+            }
+          )
+
+        if (
+          !imageResponse.ok
+        ) {
+          continue
+        }
+
+        const sourceBuffer =
+          Buffer.from(
+            await imageResponse.arrayBuffer()
+          )
+
+        const rendered =
+          await renderPurchasedArtwork(
+            sourceBuffer,
+            reference.quality
+          )
+
+        const title =
+          safeFilename(
+            artwork.title
+          ) ||
+          `Artwork-${
+            index + 1
+          }`
+
+        const filename =
+          `${String(
+            index + 1
+          ).padStart(
+            2,
+            '0'
+          )} - ${title} - ${qualityLabel(
+            reference.quality
+          )} - ${rendered.width}x${rendered.height}.png`
+
+        files.push({
+          filename,
+          data:
+            rendered.buffer,
+        })
+      } catch {
+        continue
+      }
+    }
 
     if (
       files.length === 0
@@ -878,7 +874,7 @@ export async function GET(
       return NextResponse.json(
         {
           error:
-            'None of the purchased artwork files could be downloaded.',
+            'None of the purchased artwork files could be prepared.',
         },
         {
           status: 500,
