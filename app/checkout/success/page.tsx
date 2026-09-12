@@ -3,6 +3,7 @@ export const dynamic = 'force-dynamic'
 import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
 import SafeImg from '@/components/safe-img'
+import ClearCartOnSuccess from '@/components/clear-cart-on-success'
 
 const FALLBACK_DATA_URL =
   'data:image/svg+xml;utf8,' +
@@ -337,9 +338,6 @@ export default async function CheckoutSuccessPage({
           item !== null
       )
 
-  /*
-   * Backwards compatibility with older single-artwork purchases.
-   */
   if (
     purchasedReferences.length ===
       0 &&
@@ -516,6 +514,20 @@ export default async function CheckoutSuccessPage({
 
   return (
     <main className="mx-auto max-w-7xl space-y-10 px-4 py-12">
+
+      {/*
+       * IMPORTANT:
+       *
+       * This component is rendered ONLY when Stripe has verified
+       * that the Checkout Session is paid.
+       *
+       * It clears localStorage on the customer's browser and
+       * updates the Cart counter in the Navbar.
+       */}
+      {isPaid ? (
+        <ClearCartOnSuccess />
+      ) : null}
+
       <section className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-8 md:p-10">
         <div className="flex h-14 w-14 items-center justify-center rounded-full bg-emerald-400/15 text-2xl text-emerald-300">
           ✓
@@ -596,12 +608,6 @@ export default async function CheckoutSuccessPage({
               item,
               index
             ) => {
-              /*
-               * QUALITY IS NOW INCLUDED.
-               *
-               * This is essential when the same artwork was purchased
-               * at High, Very High and Ultra resolution.
-               */
               const individualDownloadUrl =
                 `/api/checkout/download-one?session_id=${encodeURIComponent(
                   sessionId
