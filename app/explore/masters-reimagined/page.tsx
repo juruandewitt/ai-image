@@ -4,6 +4,9 @@ import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
 import SafeImg from '@/components/safe-img'
 import BackButton from '@/components/back-button'
+import {
+  shouldHideFromMasterGallery,
+} from '@/lib/master-artwork-exclusions'
 
 const FALLBACK_DATA_URL =
   'data:image/svg+xml;utf8,' +
@@ -59,27 +62,46 @@ const STYLE_LABELS: Record<
   MasterStyle,
   string
 > = {
-  MICHELANGELO: 'Michelangelo',
-  VAN_GOGH: 'Vincent van Gogh',
-  MONET: 'Claude Monet',
-  CARAVAGGIO: 'Caravaggio',
-  PICASSO: 'Pablo Picasso',
-  MUNCH: 'Edvard Munch',
-  POLLOCK: 'Jackson Pollock',
-  REMBRANDT: 'Rembrandt',
-  VERMEER: 'Johannes Vermeer',
-  DALI: 'Salvador Dalí',
-  DA_VINCI: 'Leonardo da Vinci',
+  MICHELANGELO:
+    'Michelangelo',
+
+  VAN_GOGH:
+    'Vincent van Gogh',
+
+  MONET:
+    'Claude Monet',
+
+  CARAVAGGIO:
+    'Caravaggio',
+
+  PICASSO:
+    'Pablo Picasso',
+
+  MUNCH:
+    'Edvard Munch',
+
+  POLLOCK:
+    'Jackson Pollock',
+
+  REMBRANDT:
+    'Rembrandt',
+
+  VERMEER:
+    'Johannes Vermeer',
+
+  DALI:
+    'Salvador Dalí',
+
+  DA_VINCI:
+    'Leonardo da Vinci',
 }
 
 /*
- * DESIGNATED FIRST REIMAGINED ARTWORK
+ * HOMEPAGE HERO ARTWORKS
  *
- * These are deliberately independent of the artwork's stored
- * Prisma style metadata.
- *
- * The homepage preview work must always be first on the matching
- * Reimagined Master page.
+ * These are deliberately injected into their intended
+ * Reimagined collection even if legacy Prisma metadata
+ * on the artwork itself is inconsistent.
  */
 const HERO_ARTWORKS: Partial<
   Record<
@@ -92,77 +114,116 @@ const HERO_ARTWORKS: Partial<
   >
 > = {
   MICHELANGELO: {
-    id: 'cmnbfkgtb000m76b7fxhnwvcf',
-    title: 'The Scream in Michelangelo Style',
+    id:
+      'cmnbfkgtb000m76b7fxhnwvcf',
+
+    title:
+      'The Scream in Michelangelo Style',
+
     image:
       'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/michelangelo/the-scream-in-michelangelo-style-uhrlG2bs3WxMg24vEymrsIUlB8XQtj.png',
   },
 
   VAN_GOGH: {
-    id: 'cmnnbf5dw000u7arey9doysq6',
-    title: 'Mona Lisa in Van Gogh Style',
+    id:
+      'cmnnbf5dw000u7arey9doysq6',
+
+    title:
+      'Mona Lisa in Van Gogh Style',
+
     image:
       'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/van-gogh/mona-lisa-in-van-gogh-style-ZCAnXSHS9H7UPFWdmf5SEtbdf76gVk.png',
   },
 
   MONET: {
-    id: 'cmn7yhcwc000516ddv03zxjgc',
-    title: 'Starry Night in Monet Style',
+    id:
+      'cmn7yhcwc000516ddv03zxjgc',
+
+    title:
+      'Starry Night in Monet Style',
+
     image:
       'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/monet/starry-night-in-monet-style-XClaCopIFppIKq49pOoI0w9gzo95bG.png',
   },
 
   CARAVAGGIO: {
-    id: 'cmnox8u470006j89qcsbi57i5',
-    title: 'Girl with a Pearl Earring in Caravaggio Style',
+    id:
+      'cmnox8u470006j89qcsbi57i5',
+
+    title:
+      'Girl with a Pearl Earring in Caravaggio Style',
+
     image:
       'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/caravaggio/girl-with-a-pearl-earring-in-caravaggio-style-iIUSvkTN9tvpsnf8fp2JhvAReCe1WY.png',
   },
 
   PICASSO: {
-    id: 'cmnnmtyr1000331x6h0sync7l',
-    title: 'The Night Watch in Picasso Style',
+    id:
+      'cmnnmtyr1000331x6h0sync7l',
+
+    title:
+      'The Night Watch in Picasso Style',
+
     image:
       'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/picasso/the-night-watch-in-picasso-style-R99D9eVFQJCetMGt3Al3FaLbQD9ITP.png',
   },
 
   MUNCH: {
-    id: 'cmnqg2yan0010mvtopbk1hgcz',
-    title: 'The Last Supper in Munch Style',
+    id:
+      'cmnqg2yan0010mvtopbk1hgcz',
+
+    title:
+      'The Last Supper in Munch Style',
+
     image:
       'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/munch/the-last-supper-in-munch-style-9OzzojXQ2ByWF497ZyThGAlIpVe875.png',
   },
 
   POLLOCK: {
-    id: 'cmnp1a7i2001rmgqe22rvk6o9',
-    title: 'Impression Sunrise in Pollock Style',
+    id:
+      'cmnp1a7i2001rmgqe22rvk6o9',
+
+    title:
+      'Impression Sunrise in Pollock Style',
+
     image:
       'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/pollock/impression-sunrise-in-pollock-style-yYBU0MY607MyHQWDW0RKRZUaU0DZXw.png',
   },
 
   REMBRANDT: {
-    id: 'cmnotw7l2000o9edqyqvktxia',
-    title: 'Persistence of Memory in Rembrandt Style',
+    id:
+      'cmnotw7l2000o9edqyqvktxia',
+
+    title:
+      'Persistence of Memory in Rembrandt Style',
+
     image:
       'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/rembrandt/persistence-of-memory-in-rembrandt-style-mbmGzGwU5wvni3vkwrLUmoqWc33x1A.png',
   },
 
   VERMEER: {
-    id: 'cmngg1i8l001937jqm4ojyyzd',
-    title: 'Guernica in Vermeer Style',
+    id:
+      'cmngg1i8l001937jqm4ojyyzd',
+
+    title:
+      'Guernica in Vermeer Style',
+
     image:
       'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/vermeer/guernica-in-vermeer-style-QaOXgAP2l1gGJjUkkKBdJpLP5Exfp6.png',
   },
 }
 
 /*
- * SECONDARY PRIORITY TITLES
+ * SECONDARY ORDER
  *
- * After the designated homepage hero, recognizable works
- * are displayed before less familiar reinterpretations.
+ * Homepage hero remains first.
+ * Recognisable works then follow.
  */
 const PRIORITY_TITLES: Partial<
-  Record<MasterStyle, string[]>
+  Record<
+    MasterStyle,
+    string[]
+  >
 > = {
   MICHELANGELO: [
     'Mona Lisa in Michelangelo Style',
@@ -197,7 +258,6 @@ const PRIORITY_TITLES: Partial<
     'Mona Lisa in Caravaggio Style',
     'The Last Supper in Caravaggio Style',
     'Starry Night in Caravaggio Style',
-    'The Scream in Caravaggio Style',
     'The Night Watch in Caravaggio Style',
     'Persistence of Memory in Caravaggio Style',
     'Guernica in Caravaggio Style',
@@ -237,7 +297,6 @@ const PRIORITY_TITLES: Partial<
     'Girl with a Pearl Earring in Rembrandt Style',
     'The Last Supper in Rembrandt Style',
     'Starry Night in Rembrandt Style',
-    'The Scream in Rembrandt Style',
     'Guernica in Rembrandt Style',
   ],
 
@@ -252,12 +311,16 @@ const PRIORITY_TITLES: Partial<
 }
 
 /*
- * These are the Master's own works.
- * They must NOT appear on that same Master's
- * Reimagined page.
+ * THE MASTER'S OWN WORKS
+ *
+ * These belong in the normal Master collection,
+ * not Masters Reimagined.
  */
 const ORIGINAL_TITLES: Partial<
-  Record<MasterStyle, string[]>
+  Record<
+    MasterStyle,
+    string[]
+  >
 > = {
   MICHELANGELO: [
     'The Creation of Adam in Michelangelo Style',
@@ -401,13 +464,16 @@ function isOriginalArtwork(
     ] ?? []
 
   const normalizedTitle =
-    normalizeText(title)
+    normalizeText(
+      title
+    )
 
   return originals.some(
-    (originalTitle) =>
+    (original) =>
       normalizeText(
-        originalTitle
-      ) === normalizedTitle
+        original
+      ) ===
+      normalizedTitle
   )
 }
 
@@ -425,7 +491,9 @@ function isReimaginedArtwork(
   }
 
   const normalizedTitle =
-    normalizeText(title)
+    normalizeText(
+      title
+    )
 
   if (
     normalizedTitle.includes(
@@ -437,12 +505,13 @@ function isReimaginedArtwork(
 
   return STYLE_SEARCH_NAMES[
     style
-  ].some((name) =>
-    normalizedTitle.includes(
-      `in ${normalizeText(
-        name
-      )} style`
-    )
+  ].some(
+    (name) =>
+      normalizedTitle.includes(
+        `in ${normalizeText(
+          name
+        )} style`
+      )
   )
 }
 
@@ -460,12 +529,19 @@ function isStablePublicImage(
 type ArtworkRow = {
   id: string
   title: string
-  artist: string | null
+  artist:
+    | string
+    | null
   style: unknown
-  thumbnail: string | null
+  thumbnail:
+    | string
+    | null
+  tags: string[]
 
   assets: {
-    originalUrl: string | null
+    originalUrl:
+      | string
+      | null
   }[]
 }
 
@@ -535,14 +611,17 @@ function getPriorityIndex(
     ] ?? []
 
   const normalizedTitle =
-    normalizeText(title)
+    normalizeText(
+      title
+    )
 
   const index =
     priorities.findIndex(
       (priority) =>
         normalizeText(
           priority
-        ) === normalizedTitle
+        ) ===
+        normalizedTitle
     )
 
   return index === -1
@@ -564,12 +643,6 @@ export default async function MastersReimaginedPage({
       searchParams?.style
     )
 
-  /*
-   * The hero IDs are included explicitly in the query.
-   *
-   * This is critical because some older artwork records have
-   * inconsistent style metadata.
-   */
   const heroIds =
     Object.values(
       HERO_ARTWORKS
@@ -611,7 +684,8 @@ export default async function MastersReimaginedPage({
         },
 
         orderBy: {
-          title: 'asc',
+          title:
+            'asc',
         },
 
         take: 4000,
@@ -622,6 +696,11 @@ export default async function MastersReimaginedPage({
           artist: true,
           style: true,
           thumbnail: true,
+
+          /*
+           * REQUIRED FOR THE GLOBAL THEME-CONTAMINATION FILTER.
+           */
+          tags: true,
 
           assets: {
             orderBy: {
@@ -663,16 +742,65 @@ export default async function MastersReimaginedPage({
             style
           ]
 
+        /*
+         * CRITICAL CHANGE:
+         *
+         * Every candidate must pass the global public-gallery
+         * blacklist BEFORE it is allowed into a Reimagined group.
+         */
         const regularItems: DisplayArtwork[] =
           artworks
             .filter(
-              (artwork) =>
-                artwork.style ===
-                  style &&
-                isReimaginedArtwork(
-                  style,
-                  artwork.title
-                )
+              (artwork) => {
+                if (
+                  artwork.style !==
+                  style
+                ) {
+                  return false
+                }
+
+                /*
+                 * This removes:
+                 *
+                 * Marble Youth
+                 * Monumental Figure in Shadow
+                 * Figure near Lily Pond
+                 * Cafe Terrace at Night
+                 * Rose Period Acrobat
+                 * Splintered Color Rain
+                 * Emotional Portrait
+                 * Self Portrait
+                 * David
+                 *
+                 * etc.
+                 */
+                if (
+                  shouldHideFromMasterGallery(
+                    {
+                      style,
+
+                      title:
+                        artwork.title,
+
+                      tags:
+                        artwork.tags,
+                    }
+                  )
+                ) {
+                  return false
+                }
+
+                if (
+                  !isReimaginedArtwork(
+                    style,
+                    artwork.title
+                  )
+                ) {
+                  return false
+                }
+
+                return true
+              }
             )
             .map(
               (artwork) => {
@@ -705,10 +833,8 @@ export default async function MastersReimaginedPage({
             )
 
         /*
-         * Remove the hero from the normal list if it already
-         * happened to survive the regular filtering.
-         *
-         * We will insert it manually at position zero.
+         * Remove hero duplicate before inserting the
+         * designated hero at position zero.
          */
         const withoutHero =
           hero
@@ -749,13 +875,6 @@ export default async function MastersReimaginedPage({
           }
         )
 
-        /*
-         * HERO INJECTION
-         *
-         * The designated homepage artwork is inserted manually
-         * and therefore cannot disappear because of incorrect
-         * legacy style metadata.
-         */
         let heroItem:
           | DisplayArtwork
           | null = null
@@ -766,24 +885,55 @@ export default async function MastersReimaginedPage({
               hero.id
             )
 
-          heroItem = {
-            id:
-              hero.id,
+          /*
+           * Even hero artwork must respect the blacklist.
+           *
+           * This prevents a future excluded hero from being
+           * manually re-injected by mistake.
+           */
+          const heroExcluded =
+            databaseHero
+              ? shouldHideFromMasterGallery(
+                  {
+                    style,
 
-            title:
-              databaseHero
-                ?.title ||
-              hero.title,
+                    title:
+                      databaseHero.title,
 
-            /*
-             * We deliberately use the known-good image here.
-             */
-            image:
-              hero.image,
+                    tags:
+                      databaseHero.tags,
+                  }
+                )
+              : shouldHideFromMasterGallery(
+                  {
+                    style,
+
+                    title:
+                      hero.title,
+
+                    tags: [],
+                  }
+                )
+
+          if (
+            !heroExcluded
+          ) {
+            heroItem = {
+              id:
+                hero.id,
+
+              title:
+                databaseHero
+                  ?.title ||
+                hero.title,
+
+              image:
+                hero.image,
+            }
           }
         }
 
-        const groupArtworks =
+        const combined =
           heroItem
             ? [
                 heroItem,
@@ -792,13 +942,43 @@ export default async function MastersReimaginedPage({
             : withoutHero
 
         /*
-         * Final de-duplication.
+         * Final safety pass.
+         *
+         * This intentionally checks the display list AGAIN.
+         * That way an excluded title cannot accidentally be
+         * reintroduced by future priority or hero logic.
+         */
+        const cleanedCombined =
+          combined.filter(
+            (artwork) => {
+              const source =
+                artworkById.get(
+                  artwork.id
+                )
+
+              return !shouldHideFromMasterGallery(
+                {
+                  style,
+
+                  title:
+                    artwork.title,
+
+                  tags:
+                    source?.tags ??
+                    [],
+                }
+              )
+            }
+          )
+
+        /*
+         * Remove duplicates.
          */
         const seen =
           new Set<string>()
 
         const unique =
-          groupArtworks.filter(
+          cleanedCombined.filter(
             (artwork) => {
               if (
                 seen.has(
@@ -843,7 +1023,8 @@ export default async function MastersReimaginedPage({
     displayedGroups.reduce(
       (total, group) =>
         total +
-        group.artworks.length,
+        group.artworks
+          .length,
       0
     )
 
@@ -891,13 +1072,16 @@ export default async function MastersReimaginedPage({
 
         <div className="mt-7 flex flex-wrap gap-3">
           <div className="inline-flex rounded-full border border-amber-300/30 bg-amber-300/10 px-4 py-2 text-sm font-semibold text-amber-200">
-            {displayedArtworkCount}{' '}
+            {
+              displayedArtworkCount
+            }{' '}
             reimagined artworks
           </div>
 
           {!selectedStyle ? (
             <div className="inline-flex rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm font-semibold text-slate-300">
-              11 Master collections
+              11 Master
+              collections
             </div>
           ) : null}
         </div>
@@ -957,8 +1141,12 @@ export default async function MastersReimaginedPage({
                 </h2>
 
                 <p className="mt-2 text-sm text-slate-400">
-                  Recognisable masterpieces interpreted through
-                  the visual language of {group.label}.
+                  Recognisable
+                  masterpieces
+                  interpreted
+                  through the visual
+                  language of{' '}
+                  {group.label}.
                 </p>
               </div>
 
@@ -972,11 +1160,12 @@ export default async function MastersReimaginedPage({
               ) : null}
             </div>
 
-            {group.artworks.length ===
-            0 ? (
+            {group.artworks
+              .length === 0 ? (
               <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-7">
                 <div className="font-semibold text-white">
-                  Library awaiting review
+                  Library awaiting
+                  review
                 </div>
 
                 <p className="mt-2 text-sm text-slate-400">
