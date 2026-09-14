@@ -10,7 +10,6 @@ import {
 import {
   usePathname,
   useRouter,
-  useSearchParams,
 } from 'next/navigation'
 import {
   CART_UPDATED_EVENT,
@@ -24,15 +23,15 @@ export default function Navbar() {
   const router =
     useRouter()
 
-  const searchParams =
-    useSearchParams()
-
   const [cartCount, setCartCount] =
     useState(0)
 
   const [searchText, setSearchText] =
     useState('')
 
+  /*
+   * Keep the cart counter synchronized with localStorage.
+   */
   useEffect(() => {
     function updateCount() {
       setCartCount(
@@ -66,24 +65,84 @@ export default function Navbar() {
   }, [])
 
   /*
-   * If we are already on the search page,
-   * keep the navbar search box synchronized
-   * with the current query.
+   * IMPORTANT:
+   *
+   * We deliberately DO NOT use useSearchParams() here.
+   *
+   * Navbar is a global component. In Next.js 14,
+   * using useSearchParams() here forces every page that renders
+   * the Navbar into the Suspense / CSR bailout behaviour that
+   * caused the Vercel build failures.
+   *
+   * Instead, when we are on /search, we read the browser URL
+   * after the client has mounted.
    */
   useEffect(() => {
     if (
-      pathname === '/search'
+      pathname !== '/search'
     ) {
+      return
+    }
+
+    if (
+      typeof window ===
+      'undefined'
+    ) {
+      return
+    }
+
+    const params =
+      new URLSearchParams(
+        window.location.search
+      )
+
+    setSearchText(
+      params.get('q') || ''
+    )
+  }, [pathname])
+
+  /*
+   * Also keep the field synchronized when the visitor uses
+   * the browser Back or Forward buttons while on /search.
+   */
+  useEffect(() => {
+    function syncSearchFromUrl() {
+      if (
+        typeof window ===
+        'undefined'
+      ) {
+        return
+      }
+
+      if (
+        window.location.pathname !==
+        '/search'
+      ) {
+        return
+      }
+
+      const params =
+        new URLSearchParams(
+          window.location.search
+        )
+
       setSearchText(
-        searchParams.get(
-          'q'
-        ) || ''
+        params.get('q') || ''
       )
     }
-  }, [
-    pathname,
-    searchParams,
-  ])
+
+    window.addEventListener(
+      'popstate',
+      syncSearchFromUrl
+    )
+
+    return () => {
+      window.removeEventListener(
+        'popstate',
+        syncSearchFromUrl
+      )
+    }
+  }, [])
 
   function handleSearch(
     event: FormEvent
@@ -107,6 +166,9 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-40 border-b border-slate-800 bg-slate-950/95 text-slate-100 backdrop-blur">
       <div className="container mx-auto flex min-h-16 items-center gap-4 px-4 py-2">
+        {/*
+         * LOGO
+         */}
         <Link
           href="/"
           className="flex shrink-0 items-center"
@@ -122,6 +184,10 @@ export default function Navbar() {
         </Link>
 
         <div className="ml-auto flex min-w-0 flex-1 items-center justify-end gap-3">
+
+          {/*
+           * DESKTOP SEARCH
+           */}
           <form
             onSubmit={
               handleSearch
@@ -138,8 +204,7 @@ export default function Navbar() {
                   event
                 ) =>
                   setSearchText(
-                    event.target
-                      .value
+                    event.target.value
                   )
                 }
                 placeholder="Search artworks…"
@@ -152,25 +217,42 @@ export default function Navbar() {
                 aria-label="Search"
                 className="absolute right-1 top-1 flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition hover:bg-white/10 hover:text-amber-300"
               >
-                <span
+                <svg
+                  viewBox="0 0 24 24"
                   aria-hidden="true"
-                  className="text-lg"
+                  className="h-4 w-4"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 >
-                  ⌕
-                </span>
+                  <circle
+                    cx="11"
+                    cy="11"
+                    r="7"
+                  />
+
+                  <path d="m20 20-3.5-3.5" />
+                </svg>
               </button>
             </div>
           </form>
 
+          {/*
+           * CART + CHECKOUT
+           */}
           <nav className="flex shrink-0 items-center gap-4 text-sm md:gap-6">
             <Link
               href="/cart"
               className={
                 'transition-colors hover:text-amber-400 ' +
-                (pathname ===
-                '/cart'
-                  ? 'font-semibold text-amber-400'
-                  : 'text-slate-300')
+                (
+                  pathname ===
+                  '/cart'
+                    ? 'font-semibold text-amber-400'
+                    : 'text-slate-300'
+                )
               }
             >
               {cartCount > 0
@@ -182,10 +264,12 @@ export default function Navbar() {
               href="/checkout"
               className={
                 'transition-colors hover:text-amber-400 ' +
-                (pathname ===
-                '/checkout'
-                  ? 'font-semibold text-amber-400'
-                  : 'text-slate-300')
+                (
+                  pathname ===
+                  '/checkout'
+                    ? 'font-semibold text-amber-400'
+                    : 'text-slate-300'
+                )
               }
             >
               Checkout
@@ -195,7 +279,7 @@ export default function Navbar() {
       </div>
 
       {/*
-       * Mobile search gets its own compact row.
+       * MOBILE SEARCH
        */}
       <div className="border-t border-white/5 px-4 pb-3 pt-2 md:hidden">
         <form
@@ -213,21 +297,37 @@ export default function Navbar() {
                 event
               ) =>
                 setSearchText(
-                  event.target
-                    .value
+                  event.target.value
                 )
               }
               placeholder="Search artworks…"
               aria-label="Search artworks"
-              className="h-10 w-full rounded-xl border border-white/10 bg-white/[0.05] pl-4 pr-11 text-sm text-white outline-none placeholder:text-slate-500 focus:border-amber-300/60"
+              className="h-10 w-full rounded-xl border border-white/10 bg-white/[0.05] pl-4 pr-11 text-sm text-white outline-none transition placeholder:text-slate-500 focus:border-amber-300/60 focus:bg-white/[0.07]"
             />
 
             <button
               type="submit"
               aria-label="Search"
-              className="absolute right-1 top-1 flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 hover:text-amber-300"
+              className="absolute right-1 top-1 flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition hover:bg-white/10 hover:text-amber-300"
             >
-              ⌕
+              <svg
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+                className="h-4 w-4"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <circle
+                  cx="11"
+                  cy="11"
+                  r="7"
+                />
+
+                <path d="m20 20-3.5-3.5" />
+              </svg>
             </button>
           </div>
         </form>
