@@ -4,6 +4,7 @@ export const dynamic =
 import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
 import SafeImg from '@/components/safe-img'
+import BackButton from '@/components/back-button'
 
 type SearchType =
   | 'all'
@@ -116,178 +117,120 @@ const THEMES = [
     label: 'Abstract',
   },
   {
-    slug:
-      'ancient-civilizations',
-    label:
-      'Ancient Civilizations',
+    slug: 'ancient-civilizations',
+    label: 'Ancient Civilizations',
   },
   {
-    slug:
-      'animals-pets',
-    label:
-      'Animals / Pets',
+    slug: 'animals-pets',
+    label: 'Animals / Pets',
   },
   {
-    slug:
-      'architecture',
-    label:
-      'Architecture',
+    slug: 'architecture',
+    label: 'Architecture',
   },
   {
-    slug:
-      'automotive',
-    label:
-      'Automotive',
+    slug: 'automotive',
+    label: 'Automotive',
   },
   {
-    slug:
-      'business-finance',
-    label:
-      'Business / Finance',
+    slug: 'business-finance',
+    label: 'Business / Finance',
   },
   {
-    slug:
-      'cars-automotive',
-    label:
-      'Cars / Automotive',
+    slug: 'cars-automotive',
+    label: 'Cars / Automotive',
   },
   {
-    slug:
-      'cyberpunk',
-    label:
-      'Cyberpunk',
+    slug: 'cyberpunk',
+    label: 'Cyberpunk',
   },
   {
-    slug:
-      'fantasy',
-    label:
-      'Fantasy',
+    slug: 'fantasy',
+    label: 'Fantasy',
   },
   {
-    slug:
-      'fantasy-kingdoms',
-    label:
-      'Fantasy Kingdoms',
+    slug: 'fantasy-kingdoms',
+    label: 'Fantasy Kingdoms',
   },
   {
-    slug:
-      'fashion-editorial',
-    label:
-      'Fashion / Editorial',
+    slug: 'fashion-editorial',
+    label: 'Fashion / Editorial',
   },
   {
-    slug:
-      'food-culinary',
-    label:
-      'Food / Culinary',
+    slug: 'food-culinary',
+    label: 'Food / Culinary',
   },
   {
-    slug:
-      'gaming-esports',
-    label:
-      'Gaming / Esports',
+    slug: 'gaming-esports',
+    label: 'Gaming / Esports',
   },
   {
-    slug:
-      'health-wellness',
-    label:
-      'Health / Wellness',
+    slug: 'health-wellness',
+    label: 'Health / Wellness',
   },
   {
-    slug:
-      'kids-nursery',
-    label:
-      'Kids / Nursery',
+    slug: 'kids-nursery',
+    label: 'Kids / Nursery',
   },
   {
-    slug:
-      'landscapes',
-    label:
-      'Landscapes',
+    slug: 'landscapes',
+    label: 'Landscapes',
   },
   {
-    slug:
-      'luxury-interior',
-    label:
-      'Luxury / Interior Decor',
+    slug: 'luxury-interior',
+    label: 'Luxury / Interior Decor',
   },
   {
-    slug:
-      'luxury-lifestyle',
-    label:
-      'Luxury Lifestyle',
+    slug: 'luxury-lifestyle',
+    label: 'Luxury Lifestyle',
   },
   {
-    slug:
-      'music-performance',
-    label:
-      'Music / Performance',
+    slug: 'music-performance',
+    label: 'Music / Performance',
   },
   {
-    slug:
-      'nature-botanical',
-    label:
-      'Nature / Botanical',
+    slug: 'nature-botanical',
+    label: 'Nature / Botanical',
   },
   {
-    slug:
-      'ocean-marine',
-    label:
-      'Ocean / Marine',
+    slug: 'ocean-marine',
+    label: 'Ocean / Marine',
   },
   {
-    slug:
-      'seasonal-holidays',
-    label:
-      'Seasonal / Holidays',
+    slug: 'seasonal-holidays',
+    label: 'Seasonal / Holidays',
   },
   {
-    slug:
-      'space-galaxy',
-    label:
-      'Space / Galaxy',
+    slug: 'space-galaxy',
+    label: 'Space / Galaxy',
   },
   {
-    slug:
-      'space-universe',
-    label:
-      'Space & Universe',
+    slug: 'space-universe',
+    label: 'Space & Universe',
   },
   {
-    slug:
-      'spiritual-zen',
-    label:
-      'Spiritual / Zen',
+    slug: 'spiritual-zen',
+    label: 'Spiritual / Zen',
   },
   {
-    slug:
-      'sports-action',
-    label:
-      'Sports / Action',
+    slug: 'sports-action',
+    label: 'Sports / Action',
   },
   {
-    slug:
-      'steampunk',
-    label:
-      'Steampunk',
+    slug: 'steampunk',
+    label: 'Steampunk',
   },
   {
-    slug:
-      'travel-destinations',
-    label:
-      'Travel / Destinations',
+    slug: 'travel-destinations',
+    label: 'Travel / Destinations',
   },
   {
-    slug:
-      'vintage-retro',
-    label:
-      'Vintage / Retro',
+    slug: 'vintage-retro',
+    label: 'Vintage / Retro',
   },
   {
-    slug:
-      'wildlife',
-    label:
-      'Wildlife',
+    slug: 'wildlife',
+    label: 'Wildlife',
   },
 ] as const
 
@@ -397,8 +340,7 @@ function getThemeLabel(
   return (
     THEMES.find(
       (theme) =>
-        theme.slug ===
-        slug
+        theme.slug === slug
     )?.label ?? slug
   )
 }
@@ -413,7 +355,9 @@ function isOriginalMasterWork(
     ] ?? []
 
   const normalized =
-    normalizeText(title)
+    normalizeText(
+      title
+    )
 
   return originals.some(
     (candidate) =>
@@ -522,7 +466,9 @@ function scoreArtwork(
   query: string
 ) {
   const q =
-    normalizeText(query)
+    normalizeText(
+      query
+    )
 
   const title =
     normalizeText(
@@ -552,22 +498,32 @@ function scoreArtwork(
 
   let score = 0
 
-  if (title === q) {
+  if (
+    title === q
+  ) {
     score += 1200
   } else if (
-    title.startsWith(q)
+    title.startsWith(
+      q
+    )
   ) {
     score += 900
   } else if (
-    title.includes(q)
+    title.includes(
+      q
+    )
   ) {
     score += 650
   }
 
-  if (artist === q) {
+  if (
+    artist === q
+  ) {
     score += 500
   } else if (
-    artist.includes(q)
+    artist.includes(
+      q
+    )
   ) {
     score += 300
   }
@@ -577,7 +533,9 @@ function scoreArtwork(
   ) {
     score += 500
   } else if (
-    styleLabel.includes(q)
+    styleLabel.includes(
+      q
+    )
   ) {
     score += 300
   }
@@ -587,7 +545,9 @@ function scoreArtwork(
   ) {
     score += 550
   } else if (
-    themeLabel.includes(q)
+    themeLabel.includes(
+      q
+    )
   ) {
     score += 320
   }
@@ -600,10 +560,8 @@ function validType(
 ): SearchType {
   if (
     value === 'masters' ||
-    value ===
-      'reimagined' ||
-    value ===
-      'collections'
+    value === 'reimagined' ||
+    value === 'collections'
   ) {
     return value
   }
@@ -629,20 +587,27 @@ export default async function SearchPage({
       searchParams.type
     )
 
+  /*
+   * EMPTY SEARCH PAGE
+   */
   if (!query) {
     return (
       <main className="mx-auto max-w-6xl space-y-8 py-12">
+
+        <div>
+          <BackButton />
+        </div>
+
         <section className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-8 md:p-12">
           <h1 className="text-4xl font-semibold text-white">
             Search AI Image
           </h1>
 
           <p className="mt-4 max-w-2xl text-slate-400">
-            Search by artwork
-            title, Master,
-            collection or
-            subject using the
-            search box above.
+            Search by artwork title,
+            Master, collection or
+            subject using the search
+            box above.
           </p>
         </section>
       </main>
@@ -650,7 +615,9 @@ export default async function SearchPage({
   }
 
   const normalizedQuery =
-    normalizeText(query)
+    normalizeText(
+      query
+    )
 
   const matchedStyleKeys =
     Object.entries(
@@ -845,8 +812,17 @@ export default async function SearchPage({
           )
         }
       )
-      .slice(0, 120)
+      .slice(
+        0,
+        120
+      )
 
+  /*
+   * Preserve the complete search URL.
+   *
+   * This is passed into artwork pages so the customer
+   * can use "Back to search results".
+   */
   const searchUrl =
     `/search?q=${encodeURIComponent(
       query
@@ -866,26 +842,46 @@ export default async function SearchPage({
       key: 'all',
       label: 'All',
     },
+
     {
       key: 'masters',
       label: 'Masters',
     },
+
     {
-      key:
-        'reimagined',
-      label:
-        'Reimagined',
+      key: 'reimagined',
+      label: 'Reimagined',
     },
+
     {
-      key:
-        'collections',
-      label:
-        'Collections',
+      key: 'collections',
+      label: 'Collections',
     },
   ]
 
   return (
     <main className="mx-auto max-w-7xl space-y-8 py-10">
+
+      {/*
+       * SAME BROWSER-STYLE BACK BUTTON USED
+       * THROUGHOUT THE REST OF THE SITE.
+       *
+       * Example:
+       *
+       * Homepage
+       *   → search
+       *   → Back
+       *   → Homepage
+       *
+       * Ancient Civilizations
+       *   → search
+       *   → Back
+       *   → Ancient Civilizations
+       */}
+      <div>
+        <BackButton />
+      </div>
+
       <section className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-7 md:p-10">
         <h1 className="text-3xl font-semibold text-white md:text-5xl">
           Search results
@@ -924,7 +920,9 @@ export default async function SearchPage({
                   key={
                     filter.key
                   }
-                  href={href}
+                  href={
+                    href
+                  }
                   className={
                     active
                       ? 'rounded-full bg-amber-300 px-4 py-2 text-sm font-semibold text-black'
@@ -945,16 +943,13 @@ export default async function SearchPage({
       0 ? (
         <section className="rounded-3xl border border-white/10 bg-white/[0.04] p-8">
           <h2 className="text-xl font-semibold text-white">
-            No matching
-            artworks found
+            No matching artworks found
           </h2>
 
           <p className="mt-2 text-sm text-slate-400">
-            Try a broader
-            artwork title,
-            Master name,
-            collection or
-            subject.
+            Try a broader artwork
+            title, Master name,
+            collection or subject.
           </p>
 
           <Link
@@ -984,7 +979,7 @@ export default async function SearchPage({
                   className="group overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] transition hover:-translate-y-1 hover:border-amber-300/60"
                 >
                   <SafeImg
-                    src={`/api/artwork/preview/${artwork.id}?w=620&v=search-v1`}
+                    src={`/api/artwork/preview/${artwork.id}?w=620&v=search-v2`}
                     alt={
                       artwork.title
                     }
