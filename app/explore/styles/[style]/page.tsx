@@ -5,8 +5,12 @@ import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import SafeImg from '@/components/safe-img'
 import BackButton from '@/components/back-button'
+import {
+  shouldHideFromMasterGallery,
+} from '@/lib/master-artwork-exclusions'
 
-const PREVIEW_VERSION = 'v13'
+const PREVIEW_VERSION =
+  'v14'
 
 const FALLBACK_DATA_URL =
   'data:image/svg+xml;utf8,' +
@@ -89,7 +93,8 @@ const blobBackedWhere = {
       thumbnail: {
         contains:
           '.public.blob.vercel-storage.com',
-        mode: 'insensitive' as const,
+        mode:
+          'insensitive' as const,
       },
     },
 
@@ -99,7 +104,9 @@ const blobBackedWhere = {
           originalUrl: {
             contains:
               '.public.blob.vercel-storage.com',
-            mode: 'insensitive' as const,
+
+            mode:
+              'insensitive' as const,
           },
         },
       },
@@ -117,29 +124,41 @@ const cleanWhere = {
 
     {
       title: {
-        contains: 'smoketest',
-        mode: 'insensitive' as const,
+        contains:
+          'smoketest',
+
+        mode:
+          'insensitive' as const,
       },
     },
 
     {
       title: {
-        contains: 'diagnostic',
-        mode: 'insensitive' as const,
+        contains:
+          'diagnostic',
+
+        mode:
+          'insensitive' as const,
       },
     },
 
     {
       title: {
-        contains: 'test artwork',
-        mode: 'insensitive' as const,
+        contains:
+          'test artwork',
+
+        mode:
+          'insensitive' as const,
       },
     },
 
     {
       title: {
-        contains: 'db smoketest',
-        mode: 'insensitive' as const,
+        contains:
+          'db smoketest',
+
+        mode:
+          'insensitive' as const,
       },
     },
   ],
@@ -220,7 +239,6 @@ const CORE_TITLE_PREFERENCES: Record<
     'The Weeping Woman in Picasso Style',
     'Girl before a Mirror in Picasso Style',
     'Three Musicians in Picasso Style',
-    'Woman with a Mandolin in Picasso Style',
     'Portrait of Dora Maar in Picasso Style',
     'The Old Guitarist in Picasso Style',
     'Harlequin with Violin in Picasso Style',
@@ -332,36 +350,13 @@ const CROSSOVER_MARKERS = [
   'Parliament in Fog',
   'Woman with Parasol',
   'Boats on the Seine',
-  'Golden Path through Flowers',
-  'Evening Glow over Pond',
-  'Rose Garden',
-  'Wildflowers beside Water',
-  'Garden Gate in Summer',
-  'Pond with White Lilies',
-  'Sunset Reflections',
-  'Quiet Garden after Rain',
-  'Golden Sky Reflections',
-  'Small Boats at Dawn',
-  'Evening Reflections on Water',
-  'Woman by the Water Garden',
-  'Morning Fog on Water',
-  'Soft Light through Trees',
-  'David',
-  'Moses',
-  'Sistine Chapel Ceiling Study',
-  'The Last Judgement',
-  'Renaissance Chapel Interior',
-  'Marble Cloister',
-  'Sacred Stone Arcade',
-  'High Renaissance Chapel',
-  'Vaulted Hall of Frescoes',
-  'Golden Apse Light',
 ]
 
 type ArtworkRow = {
   id: string
   title: string
   createdAt: Date
+  tags: string[]
 }
 
 function isCrossoverTitle(
@@ -377,7 +372,9 @@ function isCrossoverTitle(
         return false
       }
 
-      return title.includes(marker)
+      return title.includes(
+        marker
+      )
     }
   )
 }
@@ -402,7 +399,9 @@ function sortArtworks(
       )
     )
 
-  return [...artworks].sort(
+  return [
+    ...artworks,
+  ].sort(
     (a, b) => {
       const aPreferred =
         preferredIndex.has(
@@ -497,24 +496,54 @@ export default async function ExploreStylePage({
         },
 
         orderBy: {
-          createdAt: 'asc',
+          createdAt:
+            'asc',
         },
 
-        take: 200,
+        take: 500,
 
         select: {
           id: true,
           title: true,
           createdAt: true,
+          tags: true,
         },
       }
+    )
+
+  /*
+   * IMPORTANT PUBLIC-SITE CLEANUP
+   *
+   * 1. Explicitly rejected artworks are hidden.
+   *
+   * 2. ANY artwork carrying a theme:* collection tag is
+   *    excluded from every Master page.
+   *
+   * This is what removes the Space Universe / Landscape
+   * contamination found in Pollock.
+   */
+  const cleaned =
+    artworks.filter(
+      (art) =>
+        !shouldHideFromMasterGallery(
+          {
+            style:
+              styleInfo.key,
+
+            title:
+              art.title,
+
+            tags:
+              art.tags,
+          }
+        )
     )
 
   const sorted =
     sortArtworks(
       styleInfo.key,
       styleInfo.label,
-      artworks
+      cleaned
     )
 
   return (
@@ -528,63 +557,46 @@ export default async function ExploreStylePage({
 
         <p className="text-sm text-slate-400">
           {sorted.length}{' '}
-          published works
-          currently available
+          published works currently available
         </p>
       </div>
 
-      {sorted.length === 0 ? (
+      {sorted.length ===
+      0 ? (
         <div className="text-sm text-slate-400">
-          No published works
-          available yet.
+          No published works available yet.
         </div>
       ) : (
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-4">
           {sorted.map(
-            (
-              art,
-              index
-            ) => {
-              const isFirstMunchTile =
-                styleInfo.key ===
-                  'MUNCH' &&
-                index === 0 &&
-                art.title ===
-                  'The Scream in Munch Style'
-
-              return (
-                <Link
-                  key={
-                    art.id
+            (art) => (
+              <Link
+                key={
+                  art.id
+                }
+                href={`/artwork/${art.id}`}
+                className="overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/50 transition-colors hover:border-amber-400/60"
+              >
+                <SafeImg
+                  src={`/api/artwork/preview/${art.id}?w=520&v=${PREVIEW_VERSION}`}
+                  fallbackSrc={
+                    FALLBACK_DATA_URL
                   }
-                  href={`/artwork/${art.id}`}
-                  className="overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/50 transition-colors hover:border-amber-400/60"
-                >
-                  <SafeImg
-                    src={
-                      isFirstMunchTile
-                        ? '/featured/munch-the-scream.png'
-                        : `/api/artwork/preview/${art.id}?w=520&v=${PREVIEW_VERSION}`
-                    }
-                    fallbackSrc={
-                      FALLBACK_DATA_URL
-                    }
-                    alt={
+                  alt={
+                    art.title
+                  }
+                  className="aspect-square w-full object-cover"
+                />
+
+                <div className="p-3">
+                  <div className="line-clamp-2 text-sm text-slate-100">
+                    {
                       art.title
                     }
-                    className="aspect-square w-full object-cover"
-                  />
-
-                  <div className="p-3">
-                    <div className="line-clamp-2 text-sm text-slate-100">
-                      {
-                        art.title
-                      }
-                    </div>
                   </div>
-                </Link>
-              )
-            }
+                </div>
+              </Link>
+            )
           )}
         </div>
       )}
