@@ -62,23 +62,10 @@ function normalizeText(
     )
     .toLowerCase()
     .replace(/[’‘]/g, "'")
-    .replace(/[-_/]+/g, ' ')
     .replace(/\s+/g, ' ')
     .trim()
 }
 
-/*
- * Returns TRUE when a particular artwork title has been
- * explicitly rejected from that Master's public library.
- *
- * The matching deliberately catches both:
- *
- * "The Scream"
- *
- * and:
- *
- * "The Scream in Rembrandt Style"
- */
 export function isExplicitlyExcludedMasterArtwork(
   style: string,
   title: string
@@ -92,12 +79,24 @@ export function isExplicitlyExcludedMasterArtwork(
     normalizeText(title)
 
   return exclusions.some(
-    (excludedTitle) => {
+    (excluded) => {
       const normalizedExcluded =
         normalizeText(
-          excludedTitle
+          excluded
         )
 
+      /*
+       * Catch:
+       *
+       * Marble Youth
+       *
+       * AND:
+       *
+       * Marble Youth in Michelangelo Style
+       *
+       * But deliberately do NOT broadly hide unrelated titles
+       * such as "Self Portrait with Cigarette".
+       */
       return (
         normalizedTitle ===
           normalizedExcluded ||
@@ -109,17 +108,6 @@ export function isExplicitlyExcludedMasterArtwork(
   )
 }
 
-/*
- * Theme collections must NEVER leak into a Master library.
- *
- * Examples:
- *
- * theme:space-universe
- * theme:landscapes
- *
- * This is the safeguard that should remove the strange Pollock
- * contamination you noticed.
- */
 export function isThemeCollectionArtwork(
   tags?: string[]
 ) {
@@ -135,9 +123,6 @@ export function isThemeCollectionArtwork(
   )
 }
 
-/*
- * Main public Master-gallery guard.
- */
 export function shouldHideFromMasterGallery({
   style,
   title,
@@ -147,6 +132,12 @@ export function shouldHideFromMasterGallery({
   title: string
   tags?: string[]
 }) {
+  /*
+   * Absolute rule:
+   *
+   * Theme collections never belong inside
+   * Masters or Masters Reimagined.
+   */
   if (
     isThemeCollectionArtwork(
       tags
