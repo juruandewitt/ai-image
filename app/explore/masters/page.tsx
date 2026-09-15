@@ -68,89 +68,132 @@ const MASTER_CONFIG: Record<
   }
 > = {
   DA_VINCI: {
-    label: 'Leonardo da Vinci',
-    href: '/explore/styles/leonardo-da-vinci',
+    label:
+      'Leonardo da Vinci',
+
+    href:
+      '/explore/styles/leonardo-da-vinci',
+
     description:
       'Explore works inspired by the extraordinary artistic legacy of Leonardo da Vinci.',
   },
 
   MICHELANGELO: {
-    label: 'Michelangelo',
-    href: '/explore/styles/michelangelo',
+    label:
+      'Michelangelo',
+
+    href:
+      '/explore/styles/michelangelo',
+
     description:
       'Explore monumental Renaissance works inspired by Michelangelo.',
   },
 
   VAN_GOGH: {
-    label: 'Vincent van Gogh',
-    href: '/explore/styles/van-gogh',
+    label:
+      'Vincent van Gogh',
+
+    href:
+      '/explore/styles/van-gogh',
+
     description:
       'Explore expressive works inspired by the colour, movement and unmistakable visual language of Vincent van Gogh.',
   },
 
   MONET: {
-    label: 'Claude Monet',
-    href: '/explore/styles/claude-monet',
+    label:
+      'Claude Monet',
+
+    href:
+      '/explore/styles/claude-monet',
+
     description:
       'Explore atmospheric works inspired by the light and colour of Claude Monet.',
   },
 
   REMBRANDT: {
-    label: 'Rembrandt',
-    href: '/explore/styles/rembrandt',
+    label:
+      'Rembrandt',
+
+    href:
+      '/explore/styles/rembrandt',
+
     description:
       'Explore dramatic works inspired by Rembrandt’s extraordinary use of light and shadow.',
   },
 
   CARAVAGGIO: {
-    label: 'Caravaggio',
-    href: '/explore/styles/caravaggio',
+    label:
+      'Caravaggio',
+
+    href:
+      '/explore/styles/caravaggio',
+
     description:
       'Explore powerful works inspired by Caravaggio’s theatrical compositions and dramatic chiaroscuro.',
   },
 
   VERMEER: {
-    label: 'Johannes Vermeer',
-    href: '/explore/styles/johannes-vermeer',
+    label:
+      'Johannes Vermeer',
+
+    href:
+      '/explore/styles/johannes-vermeer',
+
     description:
       'Explore luminous and intimate works inspired by Johannes Vermeer.',
   },
 
   MUNCH: {
-    label: 'Edvard Munch',
-    href: '/explore/styles/edvard-munch',
+    label:
+      'Edvard Munch',
+
+    href:
+      '/explore/styles/edvard-munch',
+
     description:
       'Explore emotionally charged works inspired by Edvard Munch.',
   },
 
   POLLOCK: {
-    label: 'Jackson Pollock',
-    href: '/explore/styles/jackson-pollock',
+    label:
+      'Jackson Pollock',
+
+    href:
+      '/explore/styles/jackson-pollock',
+
     description:
       'Explore energetic abstract works inspired by Jackson Pollock.',
   },
 
   DALI: {
-    label: 'Salvador Dalí',
-    href: '/explore/styles/dali',
+    label:
+      'Salvador Dalí',
+
+    href:
+      '/explore/styles/dali',
+
     description:
       'Explore surreal works inspired by the dreamlike imagination of Salvador Dalí.',
   },
 
   PICASSO: {
-    label: 'Pablo Picasso',
-    href: '/explore/styles/pablo-picasso',
+    label:
+      'Pablo Picasso',
+
+    href:
+      '/explore/styles/pablo-picasso',
+
     description:
       'Explore bold works inspired by the revolutionary visual language of Pablo Picasso.',
   },
 }
 
-/*
- * These are the well-known works we want to appear
- * at the beginning of each Master row whenever present.
- */
 const PRIORITY_TITLES: Partial<
-  Record<MasterStyle, string[]>
+  Record<
+    MasterStyle,
+    string[]
+  >
 > = {
   DA_VINCI: [
     'Mona Lisa',
@@ -255,11 +298,6 @@ const PRIORITY_TITLES: Partial<
   ],
 }
 
-/*
- * Reimagined works should NOT appear on this page.
- *
- * Those belong exclusively in The Masters Reimagined.
- */
 const STYLE_SEARCH_NAMES: Record<
   MasterStyle,
   string[]
@@ -323,11 +361,15 @@ type ArtworkRow = {
   id: string
   title: string
   style: unknown
-  thumbnail: string | null
+  thumbnail:
+    | string
+    | null
   tags: string[]
 
   assets: {
-    originalUrl: string | null
+    originalUrl:
+      | string
+      | null
   }[]
 }
 
@@ -373,10 +415,19 @@ function isStablePublicImage(
   )
 }
 
+/*
+ * IMPORTANT FIX:
+ *
+ * This function is explicitly declared to return STRING.
+ *
+ * It can no longer return string | null, which was the
+ * cause of your Vercel TypeScript build failure.
+ */
 function resolveImage(
   artwork: ArtworkRow
-) {
+): string {
   if (
+    artwork.thumbnail &&
     isStablePublicImage(
       artwork.thumbnail
     )
@@ -387,20 +438,28 @@ function resolveImage(
   const stableAsset =
     artwork.assets.find(
       (asset) =>
-        isStablePublicImage(
-          asset.originalUrl
+        Boolean(
+          asset.originalUrl &&
+            isStablePublicImage(
+              asset.originalUrl
+            )
         )
     )
 
+  if (
+    stableAsset &&
+    stableAsset.originalUrl
+  ) {
+    return stableAsset.originalUrl
+  }
+
   /*
-   * If we cannot find a direct public Blob URL,
-   * use the existing preview API rather than dropping
-   * the artwork from the Master row.
+   * Guaranteed string fallback.
+   *
+   * The preview API will itself use its normal image/fallback
+   * logic if the database record has an unusual legacy source.
    */
-  return (
-    stableAsset?.originalUrl ??
-    `/api/artwork/preview/${artwork.id}?w=800&v=masters-explore-v1`
-  )
+  return `/api/artwork/preview/${artwork.id}?w=800&v=masters-explore-v2`
 }
 
 function isReimaginedArtwork(
@@ -408,7 +467,9 @@ function isReimaginedArtwork(
   title: string
 ) {
   const normalizedTitle =
-    normalizeText(title)
+    normalizeText(
+      title
+    )
 
   if (
     normalizedTitle.includes(
@@ -418,14 +479,6 @@ function isReimaginedArtwork(
     return true
   }
 
-  /*
-   * A work explicitly named "in [this Master] style"
-   * is not automatically reimagined. Many of the
-   * Master's own works use that naming convention.
-   *
-   * We therefore compare it against our priority/original
-   * titles first.
-   */
   const knownMasterTitles =
     PRIORITY_TITLES[
       style
@@ -433,9 +486,9 @@ function isReimaginedArtwork(
 
   const isKnownMasterWork =
     knownMasterTitles.some(
-      (titleValue) =>
+      (knownTitle) =>
         normalizeText(
-          titleValue
+          knownTitle
         ) ===
         normalizedTitle
     )
@@ -446,27 +499,21 @@ function isReimaginedArtwork(
     return false
   }
 
-  /*
-   * Titles containing another famous Master's signature
-   * work + "in this style" are generally reinterpretations.
-   *
-   * We identify the obvious cross-Master source works here.
-   */
-  const CROSS_MASTER_WORKS = [
-    'mona lisa',
-    'the last supper',
-    'starry night',
-    'the starry night',
-    'girl with a pearl earring',
-    'the scream',
-    'the night watch',
-    'persistence of memory',
-    'the persistence of memory',
-    'guernica',
-    'impression sunrise',
-    'impression sunrise',
-    'the creation of adam',
-  ]
+  const CROSS_MASTER_WORKS =
+    [
+      'mona lisa',
+      'the last supper',
+      'starry night',
+      'the starry night',
+      'girl with a pearl earring',
+      'the scream',
+      'the night watch',
+      'persistence of memory',
+      'the persistence of memory',
+      'guernica',
+      'impression sunrise',
+      'the creation of adam',
+    ]
 
   const mentionsStyle =
     STYLE_SEARCH_NAMES[
@@ -480,17 +527,23 @@ function isReimaginedArtwork(
         )
     )
 
-  if (!mentionsStyle) {
+  if (
+    !mentionsStyle
+  ) {
     return false
   }
 
   return CROSS_MASTER_WORKS.some(
     (work) =>
       normalizedTitle.includes(
-        normalizeText(work)
+        normalizeText(
+          work
+        )
       ) &&
       !knownMasterTitles.some(
-        (knownTitle) =>
+        (
+          knownTitle
+        ) =>
           normalizeText(
             knownTitle
           ) ===
@@ -509,7 +562,9 @@ function getPriorityIndex(
     ] ?? []
 
   const normalizedTitle =
-    normalizeText(title)
+    normalizeText(
+      title
+    )
 
   const index =
     priorities.findIndex(
@@ -530,7 +585,8 @@ export default async function MastersPage() {
     await prisma.artwork.findMany(
       {
         where: {
-          status: 'PUBLISHED',
+          status:
+            'PUBLISHED',
 
           style: {
             in: [
@@ -540,10 +596,12 @@ export default async function MastersPage() {
         },
 
         orderBy: {
-          title: 'asc',
+          title:
+            'asc',
         },
 
-        take: 4000,
+        take:
+          4000,
 
         select: {
           id: true,
@@ -592,8 +650,10 @@ export default async function MastersPage() {
                   shouldHideFromMasterGallery(
                     {
                       style,
+
                       title:
                         artwork.title,
+
                       tags:
                         artwork.tags,
                     }
@@ -603,8 +663,8 @@ export default async function MastersPage() {
                 }
 
                 /*
-                 * Keep Masters and Masters Reimagined
-                 * cleanly separated.
+                 * Reimagined works belong in the separate
+                 * Masters Reimagined section.
                  */
                 if (
                   isReimaginedArtwork(
@@ -619,13 +679,18 @@ export default async function MastersPage() {
               }
             )
             .map(
-              (artwork) => ({
+              (
+                artwork
+              ): DisplayArtwork => ({
                 id:
                   artwork.id,
 
                 title:
                   artwork.title,
 
+                /*
+                 * resolveImage() now ALWAYS returns string.
+                 */
                 image:
                   resolveImage(
                     artwork as ArtworkRow
@@ -634,7 +699,10 @@ export default async function MastersPage() {
             )
 
         masterArtworks.sort(
-          (a, b) => {
+          (
+            a,
+            b
+          ) => {
             const aPriority =
               getPriorityIndex(
                 style,
@@ -663,15 +731,14 @@ export default async function MastersPage() {
           }
         )
 
-        /*
-         * Remove duplicate database IDs defensively.
-         */
         const seen =
           new Set<string>()
 
         const unique =
           masterArtworks.filter(
-            (artwork) => {
+            (
+              artwork
+            ) => {
               if (
                 seen.has(
                   artwork.id
@@ -691,7 +758,8 @@ export default async function MastersPage() {
         return {
           style,
           ...config,
-          artworks: unique,
+          artworks:
+            unique,
         }
       }
     )
@@ -703,14 +771,15 @@ export default async function MastersPage() {
         group
       ) =>
         total +
-        group.artworks.length,
+        group.artworks
+          .length,
       0
     )
 
   return (
     <main className="space-y-14">
 
-      {/* PAGE HEADER */}
+      {/* HEADER */}
       <section className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-8 md:p-12">
         <BackButton />
 
@@ -728,14 +797,19 @@ export default async function MastersPage() {
           </div>
 
           <div className="inline-flex rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm font-semibold text-slate-300">
-            {totalArtworks} artworks
+            {
+              totalArtworks
+            }{' '}
+            artworks
           </div>
         </div>
       </section>
 
       {/* MASTER COLLECTIONS */}
       {groups.map(
-        (group) => (
+        (
+          group
+        ) => (
           <section
             key={
               group.style
@@ -745,7 +819,9 @@ export default async function MastersPage() {
             <div className="flex items-end justify-between gap-4">
               <div>
                 <h2 className="text-3xl font-semibold text-white md:text-4xl">
-                  {group.label}
+                  {
+                    group.label
+                  }
                 </h2>
 
                 <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-400">
@@ -765,7 +841,8 @@ export default async function MastersPage() {
               </Link>
             </div>
 
-            {group.artworks.length ===
+            {group.artworks
+              .length ===
             0 ? (
               <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-7">
                 <div className="font-semibold text-white">
