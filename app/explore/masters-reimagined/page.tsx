@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
 import SafeImg from '@/components/safe-img'
 import BackButton from '@/components/back-button'
+import HorizontalScrollRow from '@/components/horizontal-scroll-row'
 import {
   shouldHideFromMasterGallery,
 } from '@/lib/master-artwork-exclusions'
@@ -98,10 +99,6 @@ const STYLE_LABELS: Record<
 
 /*
  * HOMEPAGE HERO ARTWORKS
- *
- * These are deliberately injected into their intended
- * Reimagined collection even if legacy Prisma metadata
- * on the artwork itself is inconsistent.
  */
 const HERO_ARTWORKS: Partial<
   Record<
@@ -215,9 +212,6 @@ const HERO_ARTWORKS: Partial<
 
 /*
  * SECONDARY ORDER
- *
- * Homepage hero remains first.
- * Recognisable works then follow.
  */
 const PRIORITY_TITLES: Partial<
   Record<
@@ -311,10 +305,7 @@ const PRIORITY_TITLES: Partial<
 }
 
 /*
- * THE MASTER'S OWN WORKS
- *
- * These belong in the normal Master collection,
- * not Masters Reimagined.
+ * ORIGINAL MASTER WORKS
  */
 const ORIGINAL_TITLES: Partial<
   Record<
@@ -449,8 +440,14 @@ function normalizeText(
       ''
     )
     .toLowerCase()
-    .replace(/[’‘]/g, "'")
-    .replace(/\s+/g, ' ')
+    .replace(
+      /[’‘]/g,
+      "'"
+    )
+    .replace(
+      /\s+/g,
+      ' '
+    )
     .trim()
 }
 
@@ -583,7 +580,9 @@ function getSelectedStyle(
     | undefined
 ) {
   const raw =
-    Array.isArray(value)
+    Array.isArray(
+      value
+    )
       ? value[0]
       : value
 
@@ -688,7 +687,8 @@ export default async function MastersReimaginedPage({
             'asc',
         },
 
-        take: 4000,
+        take:
+          4000,
 
         select: {
           id: true,
@@ -696,10 +696,6 @@ export default async function MastersReimaginedPage({
           artist: true,
           style: true,
           thumbnail: true,
-
-          /*
-           * REQUIRED FOR THE GLOBAL THEME-CONTAMINATION FILTER.
-           */
           tags: true,
 
           assets: {
@@ -742,16 +738,12 @@ export default async function MastersReimaginedPage({
             style
           ]
 
-        /*
-         * CRITICAL CHANGE:
-         *
-         * Every candidate must pass the global public-gallery
-         * blacklist BEFORE it is allowed into a Reimagined group.
-         */
         const regularItems: DisplayArtwork[] =
           artworks
             .filter(
-              (artwork) => {
+              (
+                artwork
+              ) => {
                 if (
                   artwork.style !==
                   style
@@ -759,21 +751,6 @@ export default async function MastersReimaginedPage({
                   return false
                 }
 
-                /*
-                 * This removes:
-                 *
-                 * Marble Youth
-                 * Monumental Figure in Shadow
-                 * Figure near Lily Pond
-                 * Cafe Terrace at Night
-                 * Rose Period Acrobat
-                 * Splintered Color Rain
-                 * Emotional Portrait
-                 * Self Portrait
-                 * David
-                 *
-                 * etc.
-                 */
                 if (
                   shouldHideFromMasterGallery(
                     {
@@ -803,13 +780,17 @@ export default async function MastersReimaginedPage({
               }
             )
             .map(
-              (artwork) => {
+              (
+                artwork
+              ) => {
                 const image =
                   resolveImage(
                     artwork as ArtworkRow
                   )
 
-                if (!image) {
+                if (
+                  !image
+                ) {
                   return null
                 }
 
@@ -832,21 +813,22 @@ export default async function MastersReimaginedPage({
                 null
             )
 
-        /*
-         * Remove hero duplicate before inserting the
-         * designated hero at position zero.
-         */
         const withoutHero =
           hero
             ? regularItems.filter(
-                (artwork) =>
+                (
+                  artwork
+                ) =>
                   artwork.id !==
                   hero.id
               )
             : regularItems
 
         withoutHero.sort(
-          (a, b) => {
+          (
+            a,
+            b
+          ) => {
             const aPriority =
               getPriorityIndex(
                 style,
@@ -877,20 +859,17 @@ export default async function MastersReimaginedPage({
 
         let heroItem:
           | DisplayArtwork
-          | null = null
+          | null =
+          null
 
-        if (hero) {
+        if (
+          hero
+        ) {
           const databaseHero =
             artworkById.get(
               hero.id
             )
 
-          /*
-           * Even hero artwork must respect the blacklist.
-           *
-           * This prevents a future excluded hero from being
-           * manually re-injected by mistake.
-           */
           const heroExcluded =
             databaseHero
               ? shouldHideFromMasterGallery(
@@ -941,16 +920,11 @@ export default async function MastersReimaginedPage({
               ]
             : withoutHero
 
-        /*
-         * Final safety pass.
-         *
-         * This intentionally checks the display list AGAIN.
-         * That way an excluded title cannot accidentally be
-         * reintroduced by future priority or hero logic.
-         */
         const cleanedCombined =
           combined.filter(
-            (artwork) => {
+            (
+              artwork
+            ) => {
               const source =
                 artworkById.get(
                   artwork.id
@@ -964,22 +938,22 @@ export default async function MastersReimaginedPage({
                     artwork.title,
 
                   tags:
-                    source?.tags ??
+                    source
+                      ?.tags ??
                     [],
                 }
               )
             }
           )
 
-        /*
-         * Remove duplicates.
-         */
         const seen =
           new Set<string>()
 
         const unique =
           cleanedCombined.filter(
-            (artwork) => {
+            (
+              artwork
+            ) => {
               if (
                 seen.has(
                   artwork.id
@@ -1013,7 +987,9 @@ export default async function MastersReimaginedPage({
   const displayedGroups =
     selectedStyle
       ? allGroups.filter(
-          (group) =>
+          (
+            group
+          ) =>
             group.style ===
             selectedStyle
         )
@@ -1021,7 +997,10 @@ export default async function MastersReimaginedPage({
 
   const displayedArtworkCount =
     displayedGroups.reduce(
-      (total, group) =>
+      (
+        total,
+        group
+      ) =>
         total +
         group.artworks
           .length,
@@ -1096,7 +1075,9 @@ export default async function MastersReimaginedPage({
 
           <div className="flex flex-wrap gap-3">
             {allGroups.map(
-              (group) => (
+              (
+                group
+              ) => (
                 <Link
                   key={
                     group.style
@@ -1124,7 +1105,9 @@ export default async function MastersReimaginedPage({
 
       {/* MASTER GROUPS */}
       {displayedGroups.map(
-        (group) => (
+        (
+          group
+        ) => (
           <section
             key={
               group.style
@@ -1144,9 +1127,12 @@ export default async function MastersReimaginedPage({
                   Recognisable
                   masterpieces
                   interpreted
-                  through the visual
-                  language of{' '}
-                  {group.label}.
+                  through the
+                  visual language
+                  of{' '}
+                  {
+                    group.label
+                  }.
                 </p>
               </div>
 
@@ -1161,7 +1147,8 @@ export default async function MastersReimaginedPage({
             </div>
 
             {group.artworks
-              .length === 0 ? (
+              .length ===
+            0 ? (
               <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-7">
                 <div className="font-semibold text-white">
                   Library awaiting
@@ -1170,27 +1157,71 @@ export default async function MastersReimaginedPage({
 
                 <p className="mt-2 text-sm text-slate-400">
                   No published
-                  reimagined works
-                  are currently
+                  reimagined
+                  works are
+                  currently
                   available for{' '}
-                  {group.label}.
+                  {
+                    group.label
+                  }.
                 </p>
               </div>
+            ) : selectedStyle ? (
+              /*
+               * SINGLE MASTER:
+               *
+               * Keep the full collection as a normal grid.
+               */
+              <div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-4">
+                {group.artworks.map(
+                  (
+                    artwork
+                  ) => (
+                    <Link
+                      key={
+                        artwork.id
+                      }
+                      href={`/artwork/${artwork.id}`}
+                      className="group overflow-hidden rounded-3xl border border-white/10 bg-white/[0.04] transition hover:-translate-y-1 hover:border-amber-300/60"
+                    >
+                      <SafeImg
+                        src={
+                          artwork.image
+                        }
+                        fallbackSrc={
+                          FALLBACK_DATA_URL
+                        }
+                        alt={
+                          artwork.title
+                        }
+                        className="aspect-[4/3] w-full object-cover transition duration-700 group-hover:scale-105"
+                      />
+
+                      <div className="p-5">
+                        <div className="line-clamp-2 font-semibold text-white">
+                          {
+                            artwork.title
+                          }
+                        </div>
+
+                        <div className="mt-2 text-sm text-amber-300">
+                          {
+                            group.label
+                          }
+                        </div>
+                      </div>
+                    </Link>
+                  )
+                )}
+              </div>
             ) : (
-              <div
-                className={
-                  selectedStyle
-                    ? 'grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-4'
-                    : '-mx-4 overflow-x-auto px-4 pb-3'
-                }
-              >
-                <div
-                  className={
-                    selectedStyle
-                      ? 'contents'
-                      : 'flex gap-5'
-                  }
-                >
+              /*
+               * OVERVIEW PAGE:
+               *
+               * Same smart-arrow carousel used on homepage.
+               */
+              <HorizontalScrollRow>
+                <div className="flex gap-5">
                   {group.artworks.map(
                     (
                       artwork
@@ -1200,11 +1231,7 @@ export default async function MastersReimaginedPage({
                           artwork.id
                         }
                         href={`/artwork/${artwork.id}`}
-                        className={
-                          selectedStyle
-                            ? 'group overflow-hidden rounded-3xl border border-white/10 bg-white/[0.04] transition hover:-translate-y-1 hover:border-amber-300/60'
-                            : 'group min-w-[250px] max-w-[250px] overflow-hidden rounded-3xl border border-white/10 bg-white/[0.04] transition hover:-translate-y-1 hover:border-amber-300/60 md:min-w-[310px] md:max-w-[310px]'
-                        }
+                        className="group min-w-[250px] max-w-[250px] overflow-hidden rounded-3xl border border-white/10 bg-white/[0.04] transition hover:-translate-y-1 hover:border-amber-300/60 md:min-w-[310px] md:max-w-[310px]"
                       >
                         <SafeImg
                           src={
@@ -1236,7 +1263,7 @@ export default async function MastersReimaginedPage({
                     )
                   )}
                 </div>
-              </div>
+              </HorizontalScrollRow>
             )}
           </section>
         )
