@@ -2,6 +2,7 @@ export const dynamic = 'force-dynamic'
 
 import Link from 'next/link'
 import SafeImg from '@/components/safe-img'
+import HorizontalScrollRow from '@/components/horizontal-scroll-row'
 
 const FALLBACK_DATA_URL =
   'data:image/svg+xml;utf8,' +
@@ -35,121 +36,173 @@ const FALLBACK_DATA_URL =
 
 /*
  * THE MASTERS
- *
- * Homepage preview of the 11 Master collections.
- *
- * Each card links directly to that Master's full collection.
  */
 const MASTERS = [
   {
-    label: 'Leonardo da Vinci',
-    href: '/explore/styles/leonardo-da-vinci',
+    label:
+      'Leonardo da Vinci',
+
+    href:
+      '/explore/styles/leonardo-da-vinci',
+
     image:
-      '/api/artwork/preview/cmngh924c0000gfum690drnoh?w=700&v=home-masters-v8',
-    work: 'Mona Lisa',
+      '/api/artwork/preview/cmngh924c0000gfum690drnoh?w=700&v=home-masters-v9',
+
+    work:
+      'Mona Lisa',
   },
 
   {
-    label: 'Michelangelo',
-    href: '/explore/styles/michelangelo',
+    label:
+      'Michelangelo',
+
+    href:
+      '/explore/styles/michelangelo',
+
     image:
       'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/michelangelo/the-creation-of-adam-in-michelangelo-style-public-domain-source-cEmALjPHvrcsFGnUNu2tMmCJj4gvbj',
-    work: 'The Creation of Adam',
+
+    work:
+      'The Creation of Adam',
   },
 
   {
-    label: 'Vincent van Gogh',
-    href: '/explore/styles/van-gogh',
+    label:
+      'Vincent van Gogh',
+
+    href:
+      '/explore/styles/van-gogh',
+
     image:
-      '/api/artwork/preview/cmnn9rage0000w3tg10mfkpev?w=700&v=home-masters-v8',
-    work: 'The Starry Night',
+      '/api/artwork/preview/cmnn9rage0000w3tg10mfkpev?w=700&v=home-masters-v9',
+
+    work:
+      'The Starry Night',
   },
 
   {
-    label: 'Claude Monet',
-    href: '/explore/styles/claude-monet',
+    label:
+      'Claude Monet',
+
+    href:
+      '/explore/styles/claude-monet',
+
     image:
       'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/monet/impression-sunrise-in-monet-style-public-domain-source-CaA4dkgwW30TtRkvXoA2GqC5OcuWbd',
-    work: 'Impression, Sunrise',
+
+    work:
+      'Impression, Sunrise',
   },
 
   {
-    label: 'Rembrandt',
-    href: '/explore/styles/rembrandt',
+    label:
+      'Rembrandt',
+
+    href:
+      '/explore/styles/rembrandt',
+
     image:
-      '/api/artwork/preview/cmnotftfu0000jd2lgw17a20y?w=700&v=home-masters-v8',
-    work: 'The Night Watch',
+      '/api/artwork/preview/cmnotftfu0000jd2lgw17a20y?w=700&v=home-masters-v9',
+
+    work:
+      'The Night Watch',
   },
 
   {
-    label: 'Caravaggio',
-    href: '/explore/styles/caravaggio',
+    label:
+      'Caravaggio',
+
+    href:
+      '/explore/styles/caravaggio',
+
     image:
-      '/api/artwork/preview/cmnowyzys0000vtrya8t4lj2o?w=700&v=home-masters-v8',
-    work: 'The Calling of Saint Matthew',
+      '/api/artwork/preview/cmnowyzys0000vtrya8t4lj2o?w=700&v=home-masters-v9',
+
+    work:
+      'The Calling of Saint Matthew',
   },
 
   {
-    label: 'Johannes Vermeer',
-    href: '/explore/styles/johannes-vermeer',
+    label:
+      'Johannes Vermeer',
+
+    href:
+      '/explore/styles/johannes-vermeer',
+
     image:
       'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/vermeer/girl-with-a-pearl-earring-in-vermeer-style-public-domain-source-2MjUdSMSxgVLEqaT3NNexE0NzuOSxH',
-    work: 'Girl with a Pearl Earring',
+
+    work:
+      'Girl with a Pearl Earring',
   },
 
   {
-    label: 'Edvard Munch',
-    href: '/explore/styles/edvard-munch',
+    label:
+      'Edvard Munch',
+
+    href:
+      '/explore/styles/edvard-munch',
+
     image:
-      '/api/artwork/preview/cmnqg55x60000uijqc07vfxob?w=700&v=home-masters-v8',
-    work: 'The Scream',
+      '/api/artwork/preview/cmnqg55x60000uijqc07vfxob?w=700&v=home-masters-v9',
+
+    work:
+      'The Scream',
   },
 
   {
-    label: 'Jackson Pollock',
-    href: '/explore/styles/jackson-pollock',
+    label:
+      'Jackson Pollock',
+
+    href:
+      '/explore/styles/jackson-pollock',
+
     image:
-      '/api/artwork/preview/cmnp0xr2j0000utfte34mxv4n?w=700&v=home-masters-v8',
-    work: 'Autumn Rhythm',
+      '/api/artwork/preview/cmnp0xr2j0000utfte34mxv4n?w=700&v=home-masters-v9',
+
+    work:
+      'Autumn Rhythm',
   },
 
   {
-    label: 'Salvador Dalí',
-    href: '/explore/styles/dali',
+    label:
+      'Salvador Dalí',
+
+    href:
+      '/explore/styles/dali',
+
     image:
       'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/dali/persistence-of-memory-inspired-refined-FAH6lEl8284hpyKBhK3absZHhspPd6.png',
-    work: 'The Persistence of Memory',
+
+    work:
+      'The Persistence of Memory',
   },
 
   {
-    label: 'Pablo Picasso',
-    href: '/explore/styles/pablo-picasso',
+    label:
+      'Pablo Picasso',
+
+    href:
+      '/explore/styles/pablo-picasso',
+
     image:
       'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/picasso/guernica-in-picasso-style-jYGI4QJ8IGGGpIpCK2elvHxuAMjOSf.png',
-    work: 'Guernica',
+
+    work:
+      'Guernica',
   },
 ]
 
 /*
- * THE MASTERS REIMAGINED
- *
- * IMPORTANT:
- *
- * These cards no longer link to the individual artwork.
- *
- * Each card now opens ALL reimagined works for the Master
- * represented by that preview.
- *
- * Example:
- *
- * The Scream in Michelangelo Style
- *        ↓
- * All Michelangelo reinterpretations
+ * MASTERS REIMAGINED
  */
 const MASTERS_REIMAGINED = [
   {
-    title: 'The Scream',
-    master: 'In Michelangelo Style',
+    title:
+      'The Scream',
+
+    master:
+      'In Michelangelo Style',
 
     href:
       '/explore/masters-reimagined?style=MICHELANGELO',
@@ -162,8 +215,11 @@ const MASTERS_REIMAGINED = [
   },
 
   {
-    title: 'Mona Lisa',
-    master: 'In Van Gogh Style',
+    title:
+      'Mona Lisa',
+
+    master:
+      'In Van Gogh Style',
 
     href:
       '/explore/masters-reimagined?style=VAN_GOGH',
@@ -176,8 +232,11 @@ const MASTERS_REIMAGINED = [
   },
 
   {
-    title: 'Starry Night',
-    master: 'In Monet Style',
+    title:
+      'Starry Night',
+
+    master:
+      'In Monet Style',
 
     href:
       '/explore/masters-reimagined?style=MONET',
@@ -190,8 +249,11 @@ const MASTERS_REIMAGINED = [
   },
 
   {
-    title: 'Girl with a Pearl Earring',
-    master: 'In Caravaggio Style',
+    title:
+      'Girl with a Pearl Earring',
+
+    master:
+      'In Caravaggio Style',
 
     href:
       '/explore/masters-reimagined?style=CARAVAGGIO',
@@ -204,8 +266,11 @@ const MASTERS_REIMAGINED = [
   },
 
   {
-    title: 'The Night Watch',
-    master: 'In Picasso Style',
+    title:
+      'The Night Watch',
+
+    master:
+      'In Picasso Style',
 
     href:
       '/explore/masters-reimagined?style=PICASSO',
@@ -218,8 +283,11 @@ const MASTERS_REIMAGINED = [
   },
 
   {
-    title: 'Impression, Sunrise',
-    master: 'In Pollock Style',
+    title:
+      'Impression, Sunrise',
+
+    master:
+      'In Pollock Style',
 
     href:
       '/explore/masters-reimagined?style=POLLOCK',
@@ -232,8 +300,11 @@ const MASTERS_REIMAGINED = [
   },
 
   {
-    title: 'The Last Supper',
-    master: 'In Munch Style',
+    title:
+      'The Last Supper',
+
+    master:
+      'In Munch Style',
 
     href:
       '/explore/masters-reimagined?style=MUNCH',
@@ -246,8 +317,11 @@ const MASTERS_REIMAGINED = [
   },
 
   {
-    title: 'Persistence of Memory',
-    master: 'In Rembrandt Style',
+    title:
+      'Persistence of Memory',
+
+    master:
+      'In Rembrandt Style',
 
     href:
       '/explore/masters-reimagined?style=REMBRANDT',
@@ -260,8 +334,11 @@ const MASTERS_REIMAGINED = [
   },
 
   {
-    title: 'Guernica',
-    master: 'In Vermeer Style',
+    title:
+      'Guernica',
+
+    master:
+      'In Vermeer Style',
 
     href:
       '/explore/masters-reimagined?style=VERMEER',
@@ -276,171 +353,257 @@ const MASTERS_REIMAGINED = [
 
 /*
  * FAVORITE COLLECTIONS
- *
- * Homepage preview.
- *
- * "Explore all" opens the complete collection directory.
  */
 const FAVORITE_COLLECTIONS = [
   {
-    label: 'Fantasy Kingdoms',
-    slug: 'fantasy-kingdoms',
+    label:
+      'Fantasy Kingdoms',
+
+    slug:
+      'fantasy-kingdoms',
+
     image:
-      '/api/artwork/preview/cmq80fdao0000o5blyggzox1h?w=800&v=home-favorites-v8',
+      '/api/artwork/preview/cmq80fdao0000o5blyggzox1h?w=800&v=home-favorites-v9',
   },
 
   {
-    label: 'Ancient Civilizations',
-    slug: 'ancient-civilizations',
+    label:
+      'Ancient Civilizations',
+
+    slug:
+      'ancient-civilizations',
+
     image:
-      '/api/artwork/preview/cmq6d1a57000014kn9c02er4x?w=800&v=home-favorites-v8',
+      '/api/artwork/preview/cmq6d1a57000014kn9c02er4x?w=800&v=home-favorites-v9',
   },
 
   {
-    label: 'Space / Galaxy',
-    slug: 'space-galaxy',
+    label:
+      'Space / Galaxy',
+
+    slug:
+      'space-galaxy',
+
     image:
-      '/api/artwork/preview/cmq5e2xjx0000308bbd8u2uvd?w=800&v=home-favorites-v8',
+      '/api/artwork/preview/cmq5e2xjx0000308bbd8u2uvd?w=800&v=home-favorites-v9',
   },
 
   {
-    label: 'Cars / Automotive',
-    slug: 'cars-automotive',
+    label:
+      'Cars / Automotive',
+
+    slug:
+      'cars-automotive',
+
     image:
-      '/api/artwork/preview/cmq4wthpl0000165iuvclc0xg?w=800&v=home-favorites-v8',
+      '/api/artwork/preview/cmq4wthpl0000165iuvclc0xg?w=800&v=home-favorites-v9',
   },
 
   {
-    label: 'Seasonal / Holidays',
-    slug: 'seasonal-holidays',
+    label:
+      'Seasonal / Holidays',
+
+    slug:
+      'seasonal-holidays',
+
     image:
-      '/api/artwork/preview/cmq3u8dd10000k0dafyvhkg9l?w=800&v=home-favorites-v8',
+      '/api/artwork/preview/cmq3u8dd10000k0dafyvhkg9l?w=800&v=home-favorites-v9',
   },
 
   {
-    label: 'Spiritual / Zen',
-    slug: 'spiritual-zen',
+    label:
+      'Spiritual / Zen',
+
+    slug:
+      'spiritual-zen',
+
     image:
-      '/api/artwork/preview/cmq3d8uhm0000u3feir9sucgq?w=800&v=home-favorites-v8',
+      '/api/artwork/preview/cmq3d8uhm0000u3feir9sucgq?w=800&v=home-favorites-v9',
   },
 
   {
-    label: 'Food / Culinary',
-    slug: 'food-culinary',
+    label:
+      'Food / Culinary',
+
+    slug:
+      'food-culinary',
+
     image:
-      '/api/artwork/preview/cmpfxxocq00005d9waq7ulcng?w=800&v=home-favorites-v8',
+      '/api/artwork/preview/cmpfxxocq00005d9waq7ulcng?w=800&v=home-favorites-v9',
   },
 
   {
-    label: 'Animals / Pets',
-    slug: 'animals-pets',
+    label:
+      'Animals / Pets',
+
+    slug:
+      'animals-pets',
+
     image:
-      '/api/artwork/preview/cmpyeyl3300002zoq2hvd1pio?w=800&v=home-favorites-v8',
+      '/api/artwork/preview/cmpyeyl3300002zoq2hvd1pio?w=800&v=home-favorites-v9',
   },
 
   {
-    label: 'Gaming / Esports',
-    slug: 'gaming-esports',
+    label:
+      'Gaming / Esports',
+
+    slug:
+      'gaming-esports',
+
     image:
-      '/api/artwork/preview/cmq23ftj50000vj3vyeco8mh4?w=800&v=home-favorites-v8',
+      '/api/artwork/preview/cmq23ftj50000vj3vyeco8mh4?w=800&v=home-favorites-v9',
   },
 
   {
-    label: 'Travel / Destinations',
-    slug: 'travel-destinations',
+    label:
+      'Travel / Destinations',
+
+    slug:
+      'travel-destinations',
+
     image:
-      '/api/artwork/preview/cmpku0pdu0000wrli6vj5ttbx?w=800&v=home-favorites-v8',
+      '/api/artwork/preview/cmpku0pdu0000wrli6vj5ttbx?w=800&v=home-favorites-v9',
   },
 
   {
-    label: 'Luxury Lifestyle',
-    slug: 'luxury-lifestyle',
+    label:
+      'Luxury Lifestyle',
+
+    slug:
+      'luxury-lifestyle',
+
     image:
-      '/api/artwork/preview/cmpllpx7y0000izhrrv1dl9q3?w=800&v=home-favorites-v8',
+      '/api/artwork/preview/cmpllpx7y0000izhrrv1dl9q3?w=800&v=home-favorites-v9',
   },
 
   {
-    label: 'Nature / Botanical',
-    slug: 'nature-botanical',
+    label:
+      'Nature / Botanical',
+
+    slug:
+      'nature-botanical',
+
     image:
-      '/api/artwork/preview/cmpd6gbye0000inxmqaksp6cn?w=800&v=home-favorites-v8',
+      '/api/artwork/preview/cmpd6gbye0000inxmqaksp6cn?w=800&v=home-favorites-v9',
   },
 
   {
-    label: 'Architecture',
-    slug: 'architecture',
+    label:
+      'Architecture',
+
+    slug:
+      'architecture',
+
     image:
-      '/api/artwork/preview/cmp2yzmsu00006o55vsz0zogg?w=800&v=home-favorites-v8',
+      '/api/artwork/preview/cmp2yzmsu00006o55vsz0zogg?w=800&v=home-favorites-v9',
   },
 
   {
-    label: 'Ocean / Marine',
-    slug: 'ocean-marine',
+    label:
+      'Ocean / Marine',
+
+    slug:
+      'ocean-marine',
+
     image:
-      '/api/artwork/preview/cmpbn3f0h0000ycb12edq3qk2?w=800&v=home-favorites-v8',
+      '/api/artwork/preview/cmpbn3f0h0000ycb12edq3qk2?w=800&v=home-favorites-v9',
   },
 
   {
-    label: 'Vintage / Retro',
-    slug: 'vintage-retro',
+    label:
+      'Vintage / Retro',
+
+    slug:
+      'vintage-retro',
+
     image:
-      '/api/artwork/preview/cmpx5aw9j0000oxlq33ww14zi?w=800&v=home-favorites-v8',
+      '/api/artwork/preview/cmpx5aw9j0000oxlq33ww14zi?w=800&v=home-favorites-v9',
   },
 ]
 
 const BESTSELLERS = [
   {
-    title: 'Golden Dragon Kingdom',
-    collection: 'Fantasy Kingdoms',
+    title:
+      'Golden Dragon Kingdom',
+
+    collection:
+      'Fantasy Kingdoms',
+
     href:
       '/artwork/cmq80fdao0000o5blyggzox1h',
+
     image:
-      '/api/artwork/preview/cmq80fdao0000o5blyggzox1h?w=900&v=bestsellers-v8',
+      '/api/artwork/preview/cmq80fdao0000o5blyggzox1h?w=900&v=bestsellers-v9',
   },
 
   {
-    title: 'Great Pyramid of Giza',
-    collection: 'Ancient Civilizations',
+    title:
+      'Great Pyramid of Giza',
+
+    collection:
+      'Ancient Civilizations',
+
     href:
       '/artwork/cmq6d1a57000014kn9c02er4x',
+
     image:
-      '/api/artwork/preview/cmq6d1a57000014kn9c02er4x?w=900&v=bestsellers-v8',
+      '/api/artwork/preview/cmq6d1a57000014kn9c02er4x?w=900&v=bestsellers-v9',
   },
 
   {
-    title: 'Luxury Space Station Observatory',
-    collection: 'Space / Galaxy',
+    title:
+      'Luxury Space Station Observatory',
+
+    collection:
+      'Space / Galaxy',
+
     href:
       '/artwork/cmq5e2xjx0000308bbd8u2uvd',
+
     image:
-      '/api/artwork/preview/cmq5e2xjx0000308bbd8u2uvd?w=900&v=bestsellers-v8',
+      '/api/artwork/preview/cmq5e2xjx0000308bbd8u2uvd?w=900&v=bestsellers-v9',
   },
 
   {
-    title: 'Luxury Sports Car Showroom',
-    collection: 'Cars / Automotive',
+    title:
+      'Luxury Sports Car Showroom',
+
+    collection:
+      'Cars / Automotive',
+
     href:
       '/artwork/cmq4wthpl0000165iuvclc0xg',
+
     image:
-      '/api/artwork/preview/cmq4wthpl0000165iuvclc0xg?w=900&v=bestsellers-v8',
+      '/api/artwork/preview/cmq4wthpl0000165iuvclc0xg?w=900&v=bestsellers-v9',
   },
 
   {
-    title: 'Zen Meditation Temple',
-    collection: 'Spiritual / Zen',
+    title:
+      'Zen Meditation Temple',
+
+    collection:
+      'Spiritual / Zen',
+
     href:
       '/artwork/cmq3d8uhm0000u3feir9sucgq',
+
     image:
-      '/api/artwork/preview/cmq3d8uhm0000u3feir9sucgq?w=900&v=bestsellers-v8',
+      '/api/artwork/preview/cmq3d8uhm0000u3feir9sucgq?w=900&v=bestsellers-v9',
   },
 
   {
-    title: 'Gourmet Pasta Plate',
-    collection: 'Food / Culinary',
+    title:
+      'Gourmet Pasta Plate',
+
+    collection:
+      'Food / Culinary',
+
     href:
       '/artwork/cmpfxxocq00005d9waq7ulcng',
+
     image:
-      '/api/artwork/preview/cmpfxxocq00005d9waq7ulcng?w=900&v=bestsellers-v8',
+      '/api/artwork/preview/cmpfxxocq00005d9waq7ulcng?w=900&v=bestsellers-v9',
   },
 ]
 
@@ -480,7 +643,8 @@ function SectionHeader({
 function MasterCard({
   item,
 }: {
-  item: (typeof MASTERS)[number]
+  item:
+    (typeof MASTERS)[number]
 }) {
   return (
     <Link
@@ -489,7 +653,9 @@ function MasterCard({
     >
       <SafeImg
         src={item.image}
-        fallbackSrc={FALLBACK_DATA_URL}
+        fallbackSrc={
+          FALLBACK_DATA_URL
+        }
         alt={`${item.label} — ${item.work}`}
         className="aspect-square w-full object-cover transition duration-700 group-hover:scale-105"
       />
@@ -510,7 +676,8 @@ function MasterCard({
 function ReimaginedCard({
   item,
 }: {
-  item: (typeof MASTERS_REIMAGINED)[number]
+  item:
+    (typeof MASTERS_REIMAGINED)[number]
 }) {
   return (
     <Link
@@ -519,7 +686,9 @@ function ReimaginedCard({
     >
       <SafeImg
         src={item.image}
-        fallbackSrc={FALLBACK_DATA_URL}
+        fallbackSrc={
+          FALLBACK_DATA_URL
+        }
         alt={`${item.title} — ${item.master}`}
         className="aspect-[4/3] w-full object-cover transition duration-700 group-hover:scale-105"
       />
@@ -546,7 +715,8 @@ function ReimaginedCard({
 function CollectionCard({
   item,
 }: {
-  item: (typeof FAVORITE_COLLECTIONS)[number]
+  item:
+    (typeof FAVORITE_COLLECTIONS)[number]
 }) {
   return (
     <Link
@@ -555,7 +725,9 @@ function CollectionCard({
     >
       <SafeImg
         src={item.image}
-        fallbackSrc={FALLBACK_DATA_URL}
+        fallbackSrc={
+          FALLBACK_DATA_URL
+        }
         alt={item.label}
         className="aspect-[4/3] w-full object-cover transition duration-700 group-hover:scale-105"
       />
@@ -603,7 +775,9 @@ export default function HomePage() {
           >
             <SafeImg
               src="https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/michelangelo/the-scream-in-michelangelo-style-uhrlG2bs3WxMg24vEymrsIUlB8XQtj.png"
-              fallbackSrc={FALLBACK_DATA_URL}
+              fallbackSrc={
+                FALLBACK_DATA_URL
+              }
               alt="The Scream in Michelangelo Style"
               className="aspect-[4/5] w-full object-cover transition duration-700 group-hover:scale-105"
             />
@@ -621,7 +795,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* MARKETPLACE STATS */}
+      {/* STATS */}
       <section className="grid grid-cols-2 gap-4 rounded-[2rem] border border-white/10 bg-white/[0.04] p-6 text-center md:grid-cols-4">
         <div>
           <div className="text-3xl font-semibold text-white">
@@ -672,16 +846,18 @@ export default function HomePage() {
           href="/explore/masters"
         />
 
-        <div className="-mx-4 overflow-x-auto px-4 pb-3">
+        <HorizontalScrollRow>
           <div className="flex gap-5">
-            {MASTERS.map((item) => (
-              <MasterCard
-                key={`${item.label}-${item.work}`}
-                item={item}
-              />
-            ))}
+            {MASTERS.map(
+              (item) => (
+                <MasterCard
+                  key={`${item.label}-${item.work}`}
+                  item={item}
+                />
+              )
+            )}
           </div>
-        </div>
+        </HorizontalScrollRow>
       </section>
 
       {/* MASTERS REIMAGINED */}
@@ -692,16 +868,18 @@ export default function HomePage() {
           href="/explore/masters-reimagined"
         />
 
-        <div className="-mx-4 overflow-x-auto px-4 pb-3">
+        <HorizontalScrollRow>
           <div className="flex gap-5">
-            {MASTERS_REIMAGINED.map((item) => (
-              <ReimaginedCard
-                key={`${item.master}-${item.title}`}
-                item={item}
-              />
-            ))}
+            {MASTERS_REIMAGINED.map(
+              (item) => (
+                <ReimaginedCard
+                  key={`${item.master}-${item.title}`}
+                  item={item}
+                />
+              )
+            )}
           </div>
-        </div>
+        </HorizontalScrollRow>
       </section>
 
       {/* FAVORITE COLLECTIONS */}
@@ -712,16 +890,20 @@ export default function HomePage() {
           href="/explore/categories"
         />
 
-        <div className="-mx-4 overflow-x-auto px-4 pb-3">
+        <HorizontalScrollRow>
           <div className="flex gap-5">
-            {FAVORITE_COLLECTIONS.map((item) => (
-              <CollectionCard
-                key={item.slug}
-                item={item}
-              />
-            ))}
+            {FAVORITE_COLLECTIONS.map(
+              (item) => (
+                <CollectionCard
+                  key={
+                    item.slug
+                  }
+                  item={item}
+                />
+              )
+            )}
           </div>
-        </div>
+        </HorizontalScrollRow>
       </section>
 
       {/* BESTSELLERS */}
@@ -733,30 +915,46 @@ export default function HomePage() {
         />
 
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-          {BESTSELLERS.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="group overflow-hidden rounded-3xl border border-white/10 bg-white/[0.04] transition hover:-translate-y-1 hover:border-amber-300/60"
-            >
-              <SafeImg
-                src={item.image}
-                fallbackSrc={FALLBACK_DATA_URL}
-                alt={item.title}
-                className="aspect-[4/3] w-full object-cover transition duration-700 group-hover:scale-105"
-              />
+          {BESTSELLERS.map(
+            (item) => (
+              <Link
+                key={
+                  item.href
+                }
+                href={
+                  item.href
+                }
+                className="group overflow-hidden rounded-3xl border border-white/10 bg-white/[0.04] transition hover:-translate-y-1 hover:border-amber-300/60"
+              >
+                <SafeImg
+                  src={
+                    item.image
+                  }
+                  fallbackSrc={
+                    FALLBACK_DATA_URL
+                  }
+                  alt={
+                    item.title
+                  }
+                  className="aspect-[4/3] w-full object-cover transition duration-700 group-hover:scale-105"
+                />
 
-              <div className="p-5">
-                <div className="text-xl font-semibold text-white">
-                  {item.title}
-                </div>
+                <div className="p-5">
+                  <div className="text-xl font-semibold text-white">
+                    {
+                      item.title
+                    }
+                  </div>
 
-                <div className="mt-1 text-sm text-amber-300">
-                  {item.collection}
+                  <div className="mt-1 text-sm text-amber-300">
+                    {
+                      item.collection
+                    }
+                  </div>
                 </div>
-              </div>
-            </Link>
-          ))}
+              </Link>
+            )
+          )}
         </div>
       </section>
     </main>
