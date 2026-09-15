@@ -9,6 +9,9 @@ import {
   shouldHideFromMasterGallery,
 } from '@/lib/master-artwork-exclusions'
 
+const PREVIEW_VERSION =
+  'masters-overview-v3'
+
 const FALLBACK_DATA_URL =
   'data:image/svg+xml;utf8,' +
   encodeURIComponent(
@@ -39,9 +42,6 @@ const FALLBACK_DATA_URL =
     </svg>`
   )
 
-const PUBLIC_BLOB_PREFIX =
-  'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/'
-
 const MASTER_STYLES = [
   'DA_VINCI',
   'MICHELANGELO',
@@ -68,132 +68,91 @@ const MASTER_CONFIG: Record<
   }
 > = {
   DA_VINCI: {
-    label:
-      'Leonardo da Vinci',
-
-    href:
-      '/explore/styles/leonardo-da-vinci',
-
+    label: 'Leonardo da Vinci',
+    href: '/explore/styles/leonardo-da-vinci',
     description:
       'Explore works inspired by the extraordinary artistic legacy of Leonardo da Vinci.',
   },
 
   MICHELANGELO: {
-    label:
-      'Michelangelo',
-
-    href:
-      '/explore/styles/michelangelo',
-
+    label: 'Michelangelo',
+    href: '/explore/styles/michelangelo',
     description:
       'Explore monumental Renaissance works inspired by Michelangelo.',
   },
 
   VAN_GOGH: {
-    label:
-      'Vincent van Gogh',
-
-    href:
-      '/explore/styles/van-gogh',
-
+    label: 'Vincent van Gogh',
+    href: '/explore/styles/van-gogh',
     description:
       'Explore expressive works inspired by the colour, movement and unmistakable visual language of Vincent van Gogh.',
   },
 
   MONET: {
-    label:
-      'Claude Monet',
-
-    href:
-      '/explore/styles/claude-monet',
-
+    label: 'Claude Monet',
+    href: '/explore/styles/claude-monet',
     description:
       'Explore atmospheric works inspired by the light and colour of Claude Monet.',
   },
 
   REMBRANDT: {
-    label:
-      'Rembrandt',
-
-    href:
-      '/explore/styles/rembrandt',
-
+    label: 'Rembrandt',
+    href: '/explore/styles/rembrandt',
     description:
       'Explore dramatic works inspired by Rembrandt’s extraordinary use of light and shadow.',
   },
 
   CARAVAGGIO: {
-    label:
-      'Caravaggio',
-
-    href:
-      '/explore/styles/caravaggio',
-
+    label: 'Caravaggio',
+    href: '/explore/styles/caravaggio',
     description:
       'Explore powerful works inspired by Caravaggio’s theatrical compositions and dramatic chiaroscuro.',
   },
 
   VERMEER: {
-    label:
-      'Johannes Vermeer',
-
-    href:
-      '/explore/styles/johannes-vermeer',
-
+    label: 'Johannes Vermeer',
+    href: '/explore/styles/johannes-vermeer',
     description:
       'Explore luminous and intimate works inspired by Johannes Vermeer.',
   },
 
   MUNCH: {
-    label:
-      'Edvard Munch',
-
-    href:
-      '/explore/styles/edvard-munch',
-
+    label: 'Edvard Munch',
+    href: '/explore/styles/edvard-munch',
     description:
       'Explore emotionally charged works inspired by Edvard Munch.',
   },
 
   POLLOCK: {
-    label:
-      'Jackson Pollock',
-
-    href:
-      '/explore/styles/jackson-pollock',
-
+    label: 'Jackson Pollock',
+    href: '/explore/styles/jackson-pollock',
     description:
       'Explore energetic abstract works inspired by Jackson Pollock.',
   },
 
   DALI: {
-    label:
-      'Salvador Dalí',
-
-    href:
-      '/explore/styles/dali',
-
+    label: 'Salvador Dalí',
+    href: '/explore/styles/dali',
     description:
       'Explore surreal works inspired by the dreamlike imagination of Salvador Dalí.',
   },
 
   PICASSO: {
-    label:
-      'Pablo Picasso',
-
-    href:
-      '/explore/styles/pablo-picasso',
-
+    label: 'Pablo Picasso',
+    href: '/explore/styles/pablo-picasso',
     description:
       'Explore bold works inspired by the revolutionary visual language of Pablo Picasso.',
   },
 }
 
+/*
+ * IMPORTANT:
+ *
+ * These titles determine which recognizable works appear
+ * first in each horizontal row.
+ */
 const PRIORITY_TITLES: Partial<
-  Record<
-    MasterStyle,
-    string[]
-  >
+  Record<MasterStyle, string[]>
 > = {
   DA_VINCI: [
     'Mona Lisa',
@@ -202,7 +161,10 @@ const PRIORITY_TITLES: Partial<
     'The Last Supper in Da Vinci Style',
     'Lady with an Ermine',
     'Saint John the Baptist',
+    'Saint John the Baptist in Da Vinci Style',
     'Vitruvian Man',
+    'Salvator Mundi',
+    'Virgin of the Rocks',
   ],
 
   MICHELANGELO: [
@@ -214,6 +176,7 @@ const PRIORITY_TITLES: Partial<
     'Pieta in Michelangelo Style',
     'The Last Judgement',
     'The Last Judgement in Michelangelo Style',
+    'Moses',
   ],
 
   VAN_GOGH: [
@@ -226,6 +189,7 @@ const PRIORITY_TITLES: Partial<
     'Cafe Terrace at Night in Van Gogh Style',
     'Irises',
     'Irises in Van Gogh Style',
+    'Almond Blossoms',
   ],
 
   MONET: [
@@ -236,14 +200,18 @@ const PRIORITY_TITLES: Partial<
     'Water Lilies in Monet Style',
     'Japanese Bridge',
     'Japanese Bridge in Monet Style',
+    'Woman with a Parasol',
+    'Rouen Cathedral',
   ],
 
   REMBRANDT: [
     'The Night Watch',
     'The Night Watch in Rembrandt Style',
     'The Anatomy Lesson of Dr Nicolaes Tulp',
+    'The Anatomy Lesson',
     'The Jewish Bride',
     'Self Portrait',
+    'The Return of the Prodigal Son',
   ],
 
   CARAVAGGIO: [
@@ -253,6 +221,7 @@ const PRIORITY_TITLES: Partial<
     'The Supper at Emmaus in Caravaggio Style',
     'Judith Beheading Holofernes',
     'Bacchus',
+    'Medusa',
   ],
 
   VERMEER: [
@@ -261,6 +230,8 @@ const PRIORITY_TITLES: Partial<
     'The Milkmaid',
     'View of Delft',
     'The Art of Painting',
+    'Woman Holding a Balance',
+    'The Music Lesson',
   ],
 
   MUNCH: [
@@ -269,6 +240,8 @@ const PRIORITY_TITLES: Partial<
     'Madonna',
     'The Dance of Life',
     'Anxiety',
+    'The Sick Child',
+    'Vampire',
   ],
 
   POLLOCK: [
@@ -277,6 +250,8 @@ const PRIORITY_TITLES: Partial<
     'Number 1A',
     'Blue Poles',
     'Convergence',
+    'Lavender Mist',
+    'Mural',
   ],
 
   DALI: [
@@ -295,9 +270,14 @@ const PRIORITY_TITLES: Partial<
     'The Weeping Woman in Picasso Style',
     'Les Demoiselles d Avignon',
     'Three Musicians',
+    'The Old Guitarist',
   ],
 }
 
+/*
+ * These help distinguish a Master's own collection
+ * from Masters Reimagined.
+ */
 const STYLE_SEARCH_NAMES: Record<
   MasterStyle,
   string[]
@@ -357,26 +337,39 @@ const STYLE_SEARCH_NAMES: Record<
   ],
 }
 
+const REIMAGINED_SOURCE_WORKS = [
+  'Mona Lisa',
+  'The Last Supper',
+  'Starry Night',
+  'The Starry Night',
+  'Girl with a Pearl Earring',
+  'The Scream',
+  'The Night Watch',
+  'Persistence of Memory',
+  'The Persistence of Memory',
+  'Guernica',
+  'Impression Sunrise',
+  'Impression, Sunrise',
+  'The Creation of Adam',
+  'American Gothic',
+  'The Great Wave off Kanagawa',
+  'The School of Athens',
+  'Liberty Leading the People',
+] as const
+
 type ArtworkRow = {
   id: string
   title: string
   style: unknown
-  thumbnail:
-    | string
-    | null
   tags: string[]
-
-  assets: {
-    originalUrl:
-      | string
-      | null
-  }[]
+  createdAt: Date
 }
 
 type DisplayArtwork = {
   id: string
   title: string
   image: string
+  createdAt: Date
 }
 
 function normalizeText(
@@ -404,68 +397,63 @@ function normalizeText(
     .trim()
 }
 
-function isStablePublicImage(
-  value?: string | null
+/*
+ * This is deliberately simple and reliable.
+ *
+ * We do NOT attempt to locate the Blob URL here.
+ *
+ * Every image is served through the existing preview API,
+ * exactly like your working individual Master pages.
+ */
+function artworkPreviewUrl(
+  artworkId: string
+): string {
+  return `/api/artwork/preview/${artworkId}?w=800&v=${PREVIEW_VERSION}`
+}
+
+function isKnownMasterWork(
+  style: MasterStyle,
+  title: string
 ) {
-  return Boolean(
-    value &&
-      value.startsWith(
-        PUBLIC_BLOB_PREFIX
-      )
+  const priorities =
+    PRIORITY_TITLES[
+      style
+    ] ?? []
+
+  const normalized =
+    normalizeText(
+      title
+    )
+
+  return priorities.some(
+    (candidate) =>
+      normalizeText(
+        candidate
+      ) ===
+      normalized
   )
 }
 
 /*
- * IMPORTANT FIX:
+ * Determine whether this artwork belongs in
+ * Masters Reimagined rather than The Masters.
  *
- * This function is explicitly declared to return STRING.
- *
- * It can no longer return string | null, which was the
- * cause of your Vercel TypeScript build failure.
+ * We intentionally keep known canonical works in
+ * the normal Master library.
  */
-function resolveImage(
-  artwork: ArtworkRow
-): string {
-  if (
-    artwork.thumbnail &&
-    isStablePublicImage(
-      artwork.thumbnail
-    )
-  ) {
-    return artwork.thumbnail
-  }
-
-  const stableAsset =
-    artwork.assets.find(
-      (asset) =>
-        Boolean(
-          asset.originalUrl &&
-            isStablePublicImage(
-              asset.originalUrl
-            )
-        )
-    )
-
-  if (
-    stableAsset &&
-    stableAsset.originalUrl
-  ) {
-    return stableAsset.originalUrl
-  }
-
-  /*
-   * Guaranteed string fallback.
-   *
-   * The preview API will itself use its normal image/fallback
-   * logic if the database record has an unusual legacy source.
-   */
-  return `/api/artwork/preview/${artwork.id}?w=800&v=masters-explore-v2`
-}
-
 function isReimaginedArtwork(
   style: MasterStyle,
   title: string
 ) {
+  if (
+    isKnownMasterWork(
+      style,
+      title
+    )
+  ) {
+    return false
+  }
+
   const normalizedTitle =
     normalizeText(
       title
@@ -479,43 +467,7 @@ function isReimaginedArtwork(
     return true
   }
 
-  const knownMasterTitles =
-    PRIORITY_TITLES[
-      style
-    ] ?? []
-
-  const isKnownMasterWork =
-    knownMasterTitles.some(
-      (knownTitle) =>
-        normalizeText(
-          knownTitle
-        ) ===
-        normalizedTitle
-    )
-
-  if (
-    isKnownMasterWork
-  ) {
-    return false
-  }
-
-  const CROSS_MASTER_WORKS =
-    [
-      'mona lisa',
-      'the last supper',
-      'starry night',
-      'the starry night',
-      'girl with a pearl earring',
-      'the scream',
-      'the night watch',
-      'persistence of memory',
-      'the persistence of memory',
-      'guernica',
-      'impression sunrise',
-      'the creation of adam',
-    ]
-
-  const mentionsStyle =
+  const mentionsThisStyle =
     STYLE_SEARCH_NAMES[
       style
     ].some(
@@ -528,26 +480,17 @@ function isReimaginedArtwork(
     )
 
   if (
-    !mentionsStyle
+    !mentionsThisStyle
   ) {
     return false
   }
 
-  return CROSS_MASTER_WORKS.some(
-    (work) =>
-      normalizedTitle.includes(
+  return REIMAGINED_SOURCE_WORKS.some(
+    (sourceWork) =>
+      normalizedTitle.startsWith(
         normalizeText(
-          work
+          sourceWork
         )
-      ) &&
-      !knownMasterTitles.some(
-        (
-          knownTitle
-        ) =>
-          normalizeText(
-            knownTitle
-          ) ===
-          normalizedTitle
       )
   )
 }
@@ -596,7 +539,7 @@ export default async function MastersPage() {
         },
 
         orderBy: {
-          title:
+          createdAt:
             'asc',
         },
 
@@ -607,22 +550,8 @@ export default async function MastersPage() {
           id: true,
           title: true,
           style: true,
-          thumbnail: true,
           tags: true,
-
-          assets: {
-            orderBy: {
-              createdAt:
-                'desc',
-            },
-
-            take: 10,
-
-            select: {
-              originalUrl:
-                true,
-            },
-          },
+          createdAt: true,
         },
       }
     )
@@ -638,7 +567,9 @@ export default async function MastersPage() {
         const masterArtworks: DisplayArtwork[] =
           artworks
             .filter(
-              (artwork) => {
+              (
+                artwork
+              ) => {
                 if (
                   artwork.style !==
                   style
@@ -646,6 +577,10 @@ export default async function MastersPage() {
                   return false
                 }
 
+                /*
+                 * Apply our existing blacklist and automatically
+                 * remove theme:* contamination.
+                 */
                 if (
                   shouldHideFromMasterGallery(
                     {
@@ -663,8 +598,7 @@ export default async function MastersPage() {
                 }
 
                 /*
-                 * Reimagined works belong in the separate
-                 * Masters Reimagined section.
+                 * Reimagined artworks stay in their own section.
                  */
                 if (
                   isReimaginedArtwork(
@@ -688,12 +622,17 @@ export default async function MastersPage() {
                 title:
                   artwork.title,
 
+                createdAt:
+                  artwork.createdAt,
+
                 /*
-                 * resolveImage() now ALWAYS returns string.
+                 * KEY FIX:
+                 *
+                 * Always use the proven preview API.
                  */
                 image:
-                  resolveImage(
-                    artwork as ArtworkRow
+                  artworkPreviewUrl(
+                    artwork.id
                   ),
               })
             )
@@ -725,12 +664,16 @@ export default async function MastersPage() {
               )
             }
 
-            return a.title.localeCompare(
-              b.title
+            return (
+              a.createdAt.getTime() -
+              b.createdAt.getTime()
             )
           }
         )
 
+        /*
+         * Defensive ID de-duplication.
+         */
         const seen =
           new Set<string>()
 
@@ -757,7 +700,9 @@ export default async function MastersPage() {
 
         return {
           style,
+
           ...config,
+
           artworks:
             unique,
         }
@@ -779,7 +724,7 @@ export default async function MastersPage() {
   return (
     <main className="space-y-14">
 
-      {/* HEADER */}
+      {/* PAGE HEADER */}
       <section className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-8 md:p-12">
         <BackButton />
 
@@ -797,9 +742,7 @@ export default async function MastersPage() {
           </div>
 
           <div className="inline-flex rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm font-semibold text-slate-300">
-            {
-              totalArtworks
-            }{' '}
+            {totalArtworks}{' '}
             artworks
           </div>
         </div>
