@@ -43,21 +43,19 @@ export default function ContactForm() {
           formData.get('email') || ''
         ).trim(),
 
-      category:
-        String(
-          formData.get('category') || ''
-        ).trim(),
-
       subject:
         String(
           formData.get('subject') || ''
         ).trim(),
 
+      category:
+        String(
+          formData.get('category') || ''
+        ).trim(),
+
       orderReference:
         String(
-          formData.get(
-            'orderReference'
-          ) || ''
+          formData.get('orderReference') || ''
         ).trim(),
 
       message:
@@ -65,6 +63,10 @@ export default function ContactForm() {
           formData.get('message') || ''
         ).trim(),
 
+      /*
+       * Honeypot spam field.
+       * Real users never see this field.
+       */
       website:
         String(
           formData.get('website') || ''
@@ -126,7 +128,9 @@ export default function ContactForm() {
       className="space-y-6"
     >
       {/*
-       * SPAM HONEYPOT
+       * HONEYPOT
+       *
+       * Hidden from normal visitors.
        */}
       <div
         className="absolute -left-[10000px] top-auto h-px w-px overflow-hidden"
@@ -134,7 +138,6 @@ export default function ContactForm() {
       >
         <label>
           Website
-
           <input
             type="text"
             name="website"
@@ -273,7 +276,6 @@ export default function ContactForm() {
           className="mb-2 block text-sm font-medium text-slate-200"
         >
           Order / payment reference
-
           <span className="ml-2 font-normal text-slate-500">
             Optional
           </span>
@@ -325,9 +327,9 @@ export default function ContactForm() {
       {state ===
       'error' ? (
         <div className="rounded-xl border border-red-400/30 bg-red-400/10 p-4 text-sm text-red-200">
-          {errorMessage}{' '}
+          {errorMessage}
+          {' '}
           You can also email us directly at{' '}
-
           <a
             href="mailto:aiimagesupport@gmail.com"
             className="font-semibold underline"
