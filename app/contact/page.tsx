@@ -47,13 +47,6 @@ export default function ContactPage() {
           >
             aiimagesupport@gmail.com
           </a>
-
-          <a
-            href="mailto:aiimagesupport@gmail.com?subject=AI%20Image%20Support%20Request"
-            className="mt-8 inline-flex rounded-xl bg-amber-400 px-6 py-3 font-semibold text-black transition hover:bg-amber-300"
-          >
-            Email Support
-          </a>
         </div>
 
         <div className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-8 md:p-10">
