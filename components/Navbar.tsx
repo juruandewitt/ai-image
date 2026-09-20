@@ -30,7 +30,7 @@ export default function Navbar() {
     useState('')
 
   /*
-   * Keep the cart counter synchronized with localStorage.
+   * Keep cart count synchronized with localStorage.
    */
   useEffect(() => {
     function updateCount() {
@@ -65,17 +65,12 @@ export default function Navbar() {
   }, [])
 
   /*
-   * IMPORTANT:
+   * Keep the navbar search field synchronized with
+   * the current query whenever the user is on /search.
    *
-   * We deliberately DO NOT use useSearchParams() here.
-   *
-   * Navbar is a global component. In Next.js 14,
-   * using useSearchParams() here forces every page that renders
-   * the Navbar into the Suspense / CSR bailout behaviour that
-   * caused the Vercel build failures.
-   *
-   * Instead, when we are on /search, we read the browser URL
-   * after the client has mounted.
+   * We deliberately avoid useSearchParams() here because
+   * Navbar is global and that previously caused Next.js
+   * prerender/Suspense build errors across the entire site.
    */
   useEffect(() => {
     if (
@@ -102,8 +97,8 @@ export default function Navbar() {
   }, [pathname])
 
   /*
-   * Also keep the field synchronized when the visitor uses
-   * the browser Back or Forward buttons while on /search.
+   * Keep search synchronized if browser Back / Forward
+   * navigation changes the search URL.
    */
   useEffect(() => {
     function syncSearchFromUrl() {
@@ -166,9 +161,8 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-40 border-b border-slate-800 bg-slate-950/95 text-slate-100 backdrop-blur">
       <div className="container mx-auto flex min-h-16 items-center gap-4 px-4 py-2">
-        {/*
-         * LOGO
-         */}
+
+        {/* LOGO */}
         <Link
           href="/"
           className="flex shrink-0 items-center"
@@ -185,9 +179,7 @@ export default function Navbar() {
 
         <div className="ml-auto flex min-w-0 flex-1 items-center justify-end gap-3">
 
-          {/*
-           * DESKTOP SEARCH
-           */}
+          {/* DESKTOP SEARCH */}
           <form
             onSubmit={
               handleSearch
@@ -239,10 +231,9 @@ export default function Navbar() {
             </div>
           </form>
 
-          {/*
-           * CART + CHECKOUT
-           */}
+          {/* GLOBAL NAVIGATION */}
           <nav className="flex shrink-0 items-center gap-4 text-sm md:gap-6">
+
             <Link
               href="/cart"
               className={
@@ -274,13 +265,26 @@ export default function Navbar() {
             >
               Checkout
             </Link>
+
+            <Link
+              href="/contact"
+              className={
+                'transition-colors hover:text-amber-400 ' +
+                (
+                  pathname ===
+                  '/contact'
+                    ? 'font-semibold text-amber-400'
+                    : 'text-slate-300'
+                )
+              }
+            >
+              Contact Us
+            </Link>
           </nav>
         </div>
       </div>
 
-      {/*
-       * MOBILE SEARCH
-       */}
+      {/* MOBILE SEARCH */}
       <div className="border-t border-white/5 px-4 pb-3 pt-2 md:hidden">
         <form
           onSubmit={
