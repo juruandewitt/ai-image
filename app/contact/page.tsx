@@ -1,16 +1,14 @@
-import Link from 'next/link'
 import BackButton from '@/components/back-button'
-import ContactForm from '@/components/contact-form'
 
 export const metadata = {
   title: 'Contact Us | AI Image',
   description:
-    'Contact AI Image support for payment, download, account, artwork, recommendation and general support enquiries.',
+    'Contact AI Image support for payment, download, artwork and general enquiries.',
 }
 
 export default function ContactPage() {
   return (
-    <main className="mx-auto max-w-7xl space-y-10 py-10">
+    <main className="mx-auto max-w-5xl space-y-10 py-10">
       <div>
         <BackButton />
       </div>
@@ -26,132 +24,110 @@ export default function ContactPage() {
           </h1>
 
           <p className="mt-4 text-base leading-7 text-slate-400 md:text-lg">
-            Need help with an order, payment, download or artwork?
-            Send us a message and the AI Image support team will
-            assist you.
+            If you need assistance with an order, payment, download,
+            artwork, request, recommendation or any other issue,
+            please contact AI Image Support directly by email.
           </p>
         </div>
       </section>
 
-      <section className="grid gap-8 lg:grid-cols-[1.3fr_0.7fr]">
-        <div className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-6 md:p-9">
+      <section className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
+        <div className="rounded-[2rem] border border-amber-300/30 bg-gradient-to-br from-amber-300/10 to-white/[0.03] p-8 md:p-10">
           <h2 className="text-2xl font-semibold text-white">
-            Send us a message
+            Email AI Image Support
           </h2>
 
-          <p className="mt-2 text-sm leading-6 text-slate-400">
-            Complete the form below. Fields marked with an asterisk
-            are required.
+          <p className="mt-4 text-sm leading-7 text-slate-400">
+            Please contact us at:
           </p>
 
-          <div className="mt-7">
-            <ContactForm />
-          </div>
+          <a
+            href="mailto:aiimagesupport@gmail.com"
+            className="mt-4 block break-all text-2xl font-semibold text-amber-300 hover:underline md:text-3xl"
+          >
+            aiimagesupport@gmail.com
+          </a>
+
+          <a
+            href="mailto:aiimagesupport@gmail.com?subject=AI%20Image%20Support%20Request"
+            className="mt-8 inline-flex rounded-xl bg-amber-400 px-6 py-3 font-semibold text-black transition hover:bg-amber-300"
+          >
+            Email Support
+          </a>
         </div>
 
-        <aside className="space-y-6">
-          <div className="rounded-[2rem] border border-amber-300/30 bg-gradient-to-br from-amber-300/10 to-white/[0.03] p-7">
-            <h2 className="text-xl font-semibold text-white">
-              Prefer email?
-            </h2>
+        <div className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-8 md:p-10">
+          <h2 className="text-2xl font-semibold text-white">
+            Please use the subject line
+          </h2>
 
-            <p className="mt-3 text-sm leading-6 text-slate-400">
-              You can contact AI Image support directly at:
-            </p>
+          <p className="mt-4 text-sm leading-7 text-slate-400">
+            To help us identify and respond to your enquiry as quickly
+            as possible, please clearly describe the type of issue in
+            the subject line of your email.
+          </p>
 
-            <a
-              href="mailto:aiimagesupport@gmail.com"
-              className="mt-5 block break-all text-lg font-semibold text-amber-300 hover:underline"
-            >
-              aiimagesupport@gmail.com
-            </a>
+          <div className="mt-6 space-y-3 text-sm text-slate-300">
+            <div className="rounded-xl border border-white/10 bg-slate-950/40 p-4">
+              <span className="font-semibold text-white">
+                Payment issue:
+              </span>{' '}
+              Payment issue — Order reference
+            </div>
 
-            <a
-              href="mailto:aiimagesupport@gmail.com?subject=AI%20Image%20Support%20Request"
-              className="mt-6 inline-flex rounded-xl bg-amber-400 px-5 py-3 text-sm font-semibold text-black transition hover:bg-amber-300"
-            >
-              Email Support
-            </a>
-          </div>
+            <div className="rounded-xl border border-white/10 bg-slate-950/40 p-4">
+              <span className="font-semibold text-white">
+                Download problem:
+              </span>{' '}
+              Download issue — Artwork title
+            </div>
 
-          <div className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-7">
-            <h2 className="text-xl font-semibold text-white">
-              We can help with
-            </h2>
+            <div className="rounded-xl border border-white/10 bg-slate-950/40 p-4">
+              <span className="font-semibold text-white">
+                Complaint:
+              </span>{' '}
+              Complaint — Brief description
+            </div>
 
-            <div className="mt-5 space-y-4 text-sm text-slate-300">
-              <div>
-                <div className="font-semibold text-white">
-                  Payment issues
-                </div>
-                <p className="mt-1 text-slate-400">
-                  Questions about checkout, charges or payment
-                  confirmation.
-                </p>
-              </div>
+            <div className="rounded-xl border border-white/10 bg-slate-950/40 p-4">
+              <span className="font-semibold text-white">
+                Recommendation:
+              </span>{' '}
+              Recommendation — Suggested improvement
+            </div>
 
-              <div>
-                <div className="font-semibold text-white">
-                  Download problems
-                </div>
-                <p className="mt-1 text-slate-400">
-                  Purchased files that did not download or appear
-                  correctly.
-                </p>
-              </div>
+            <div className="rounded-xl border border-white/10 bg-slate-950/40 p-4">
+              <span className="font-semibold text-white">
+                Artwork request:
+              </span>{' '}
+              Artwork request — Subject or collection
+            </div>
 
-              <div>
-                <div className="font-semibold text-white">
-                  Artwork enquiries
-                </div>
-                <p className="mt-1 text-slate-400">
-                  Questions about images, resolutions, collections
-                  or licensing.
-                </p>
-              </div>
-
-              <div>
-                <div className="font-semibold text-white">
-                  Complaints & feedback
-                </div>
-                <p className="mt-1 text-slate-400">
-                  Tell us about a problem or suggest how AI Image
-                  could be improved.
-                </p>
-              </div>
-
-              <div>
-                <div className="font-semibold text-white">
-                  Requests & recommendations
-                </div>
-                <p className="mt-1 text-slate-400">
-                  Request artwork themes, collections or features
-                  you would like to see.
-                </p>
-              </div>
+            <div className="rounded-xl border border-white/10 bg-slate-950/40 p-4">
+              <span className="font-semibold text-white">
+                General enquiry:
+              </span>{' '}
+              General enquiry — Short description
             </div>
           </div>
+        </div>
+      </section>
 
-          <div className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-7">
-            <h2 className="text-lg font-semibold text-white">
-              Order-related enquiry?
-            </h2>
+      <section className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-8">
+        <h2 className="text-xl font-semibold text-white">
+          For order-related enquiries
+        </h2>
 
-            <p className="mt-2 text-sm leading-6 text-slate-400">
-              If your message relates to a purchase, please include
-              your checkout or payment reference where available.
-              Never send your full card number, password or other
-              sensitive payment information.
-            </p>
-          </div>
+        <p className="mt-3 text-sm leading-7 text-slate-400">
+          If your message relates to a purchase, please include your
+          order, checkout or payment reference where available, as well
+          as the artwork title and the resolution purchased.
+        </p>
 
-          <Link
-            href="/"
-            className="block text-center text-sm font-semibold text-amber-300 hover:underline"
-          >
-            Return to main page
-          </Link>
-        </aside>
+        <p className="mt-3 text-sm leading-7 text-slate-400">
+          Please do not send passwords, full credit card numbers or
+          other sensitive financial information by email.
+        </p>
       </section>
     </main>
   )
