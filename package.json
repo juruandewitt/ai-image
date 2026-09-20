@@ -15,6 +15,7 @@
     "classnames": "2.5.1",
     "framer-motion": "^12.23.24",
     "next": "14.2.4",
+    "nodemailer": "^6.10.1",
     "openai": "^6.9.0",
     "react": "18.3.1",
     "react-dom": "18.3.1",
@@ -25,6 +26,7 @@
   },
   "devDependencies": {
     "@types/node": "20.12.12",
+    "@types/nodemailer": "^6.4.17",
     "@types/react": "18.2.66",
     "autoprefixer": "10.4.19",
     "eslint": "9.10.0",
