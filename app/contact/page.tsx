@@ -1,4 +1,5 @@
 import BackButton from '@/components/back-button'
+import CopyEmail from '@/components/copy-email'
 
 export const metadata = {
   title: 'Contact Us | AI Image',
@@ -41,12 +42,7 @@ export default function ContactPage() {
             Please contact us at:
           </p>
 
-          <a
-            href="mailto:aiimagesupport@gmail.com"
-            className="mt-4 block break-all text-2xl font-semibold text-amber-300 hover:underline md:text-3xl"
-          >
-            aiimagesupport@gmail.com
-          </a>
+          <CopyEmail />
         </div>
 
         <div className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-8 md:p-10">
