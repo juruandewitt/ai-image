@@ -1,5 +1,4 @@
-export const dynamic =
-  'force-dynamic'
+export const dynamic = 'force-dynamic'
 
 import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
@@ -239,6 +238,9 @@ const THEMES = [
     label: 'Wildlife',
   },
 ] as const
+
+const BLOB_DOMAIN =
+  '.public.blob.vercel-storage.com'
 
 function normalizeText(
   value: string
@@ -509,7 +511,8 @@ export default async function SearchPage({
           </h1>
 
           <p className="mt-4 max-w-2xl text-slate-400">
-            Search by artwork title, Master, collection or subject using the search box above.
+            Search by artwork title, Master, collection or subject
+            using the search box above.
           </p>
         </section>
       </main>
@@ -627,6 +630,20 @@ export default async function SearchPage({
     })
   }
 
+  /*
+   * IMPORTANT SEARCH RULE:
+   *
+   * A result must satisfy BOTH:
+   *
+   * 1. the text/style/theme search
+   *
+   * AND
+   *
+   * 2. have a real Vercel Blob-backed image.
+   *
+   * This prevents database placeholder records from ever
+   * reaching the public Search results.
+   */
   const rawResults =
     await prisma.artwork.findMany(
       {
@@ -634,8 +651,89 @@ export default async function SearchPage({
           status:
             'PUBLISHED',
 
-          OR:
-            orConditions,
+          AND: [
+            {
+              OR:
+                orConditions,
+            },
+
+            {
+              OR: [
+                {
+                  thumbnail: {
+                    contains:
+                      BLOB_DOMAIN,
+
+                    mode:
+                      'insensitive',
+                  },
+                },
+
+                {
+                  assets: {
+                    some: {
+                      originalUrl: {
+                        contains:
+                          BLOB_DOMAIN,
+
+                        mode:
+                          'insensitive',
+                      },
+                    },
+                  },
+                },
+              ],
+            },
+          ],
+
+          NOT: [
+            {
+              tags: {
+                has:
+                  'smoketest',
+              },
+            },
+
+            {
+              title: {
+                contains:
+                  'smoketest',
+
+                mode:
+                  'insensitive',
+              },
+            },
+
+            {
+              title: {
+                contains:
+                  'diagnostic',
+
+                mode:
+                  'insensitive',
+              },
+            },
+
+            {
+              title: {
+                contains:
+                  'test artwork',
+
+                mode:
+                  'insensitive',
+              },
+            },
+
+            {
+              title: {
+                contains:
+                  'db smoketest',
+
+                mode:
+                  'insensitive',
+              },
+            },
+          ],
         },
 
         take: 500,
@@ -651,9 +749,10 @@ export default async function SearchPage({
     )
 
   /*
-   * CRITICAL PUBLIC SEARCH FILTER.
+   * SECOND PUBLIC SAFETY FILTER:
    *
-   * Excluded/corrupt works cannot come back through Search.
+   * Even if an artwork has an image, previously rejected
+   * artwork must never come back through Search.
    */
   const publicResults =
     rawResults.filter(
@@ -672,7 +771,7 @@ export default async function SearchPage({
         }
 
         /*
-         * Theme collections are allowed through Search.
+         * Theme collections are legitimate search results.
          */
         if (
           isThemeCollectionArtwork(
@@ -683,7 +782,8 @@ export default async function SearchPage({
         }
 
         /*
-         * But rejected Master/Reimagined works are not.
+         * Explicitly rejected Master / Reimagined works
+         * are globally hidden from Search.
          */
         if (
           isExplicitlyExcludedMasterArtwork(
@@ -904,7 +1004,7 @@ export default async function SearchPage({
                   className="group overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] transition hover:-translate-y-1 hover:border-amber-300/60"
                 >
                   <SafeImg
-                    src={`/api/artwork/preview/${artwork.id}?w=620&v=search-public-v1`}
+                    src={`/api/artwork/preview/${artwork.id}?w=620&v=search-real-images-v1`}
                     alt={
                       artwork.title
                     }
