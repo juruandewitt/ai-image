@@ -516,13 +516,7 @@ export default async function CheckoutSuccessPage({
     <main className="mx-auto max-w-7xl space-y-10 px-4 py-12">
 
       {/*
-       * IMPORTANT:
-       *
-       * This component is rendered ONLY when Stripe has verified
-       * that the Checkout Session is paid.
-       *
-       * It clears localStorage on the customer's browser and
-       * updates the Cart counter in the Navbar.
+       * Cart clears only after verified Stripe payment.
        */}
       {isPaid ? (
         <ClearCartOnSuccess />
@@ -727,19 +721,12 @@ export default async function CheckoutSuccessPage({
           or each purchased resolution can be downloaded individually.
         </p>
 
-        <div className="mt-5 flex flex-wrap gap-4">
+        <div className="mt-5">
           <Link
             href="/"
-            className="rounded-xl border border-white/15 px-5 py-3 text-sm font-semibold text-white transition hover:border-amber-300/60"
+            className="inline-flex rounded-xl border border-white/15 px-5 py-3 text-sm font-semibold text-white transition hover:border-amber-300/60"
           >
             Return home
-          </Link>
-
-          <Link
-            href="/explore"
-            className="rounded-xl bg-amber-400 px-5 py-3 text-sm font-semibold text-black transition hover:bg-amber-300"
-          >
-            Continue shopping
           </Link>
         </div>
       </section>
