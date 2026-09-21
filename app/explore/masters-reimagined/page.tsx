@@ -6,7 +6,9 @@ import SafeImg from '@/components/safe-img'
 import BackButton from '@/components/back-button'
 import HorizontalScrollRow from '@/components/horizontal-scroll-row'
 import {
-  shouldHideFromMasterGallery,
+  isExplicitlyExcludedMasterArtwork,
+  isThemeCollectionArtwork,
+  isPublicArtworkTitle,
 } from '@/lib/master-artwork-exclusions'
 
 const FALLBACK_DATA_URL =
@@ -98,7 +100,10 @@ const STYLE_LABELS: Record<
 }
 
 /*
- * HOMEPAGE HERO ARTWORKS
+ * IMPORTANT HERO WORKS
+ *
+ * These are the works we specifically selected as the first
+ * image for the corresponding Reimagined collection.
  */
 const HERO_ARTWORKS: Partial<
   Record<
@@ -211,7 +216,7 @@ const HERO_ARTWORKS: Partial<
 }
 
 /*
- * SECONDARY ORDER
+ * These works should follow each selected hero.
  */
 const PRIORITY_TITLES: Partial<
   Record<
@@ -230,6 +235,7 @@ const PRIORITY_TITLES: Partial<
   ],
 
   VAN_GOGH: [
+    'Mona Lisa in Van Gogh Style',
     'Girl with a Pearl Earring in Van Gogh Style',
     'The Last Supper in Van Gogh Style',
     'The Scream in Van Gogh Style',
@@ -239,6 +245,7 @@ const PRIORITY_TITLES: Partial<
   ],
 
   MONET: [
+    'Starry Night in Monet Style',
     'Mona Lisa in Monet Style',
     'Girl with a Pearl Earring in Monet Style',
     'The Last Supper in Monet Style',
@@ -249,6 +256,7 @@ const PRIORITY_TITLES: Partial<
   ],
 
   CARAVAGGIO: [
+    'Girl with a Pearl Earring in Caravaggio Style',
     'Mona Lisa in Caravaggio Style',
     'The Last Supper in Caravaggio Style',
     'Starry Night in Caravaggio Style',
@@ -258,6 +266,7 @@ const PRIORITY_TITLES: Partial<
   ],
 
   PICASSO: [
+    'The Night Watch in Picasso Style',
     'Mona Lisa in Picasso Style',
     'Girl with a Pearl Earring in Picasso Style',
     'The Last Supper in Picasso Style',
@@ -267,6 +276,7 @@ const PRIORITY_TITLES: Partial<
   ],
 
   MUNCH: [
+    'The Last Supper in Munch Style',
     'Mona Lisa in Munch Style',
     'Girl with a Pearl Earring in Munch Style',
     'Starry Night in Munch Style',
@@ -276,6 +286,7 @@ const PRIORITY_TITLES: Partial<
   ],
 
   POLLOCK: [
+    'Impression Sunrise in Pollock Style',
     'Mona Lisa in Pollock Style',
     'Girl with a Pearl Earring in Pollock Style',
     'The Last Supper in Pollock Style',
@@ -287,6 +298,7 @@ const PRIORITY_TITLES: Partial<
   ],
 
   REMBRANDT: [
+    'Persistence of Memory in Rembrandt Style',
     'Mona Lisa in Rembrandt Style',
     'Girl with a Pearl Earring in Rembrandt Style',
     'The Last Supper in Rembrandt Style',
@@ -295,6 +307,7 @@ const PRIORITY_TITLES: Partial<
   ],
 
   VERMEER: [
+    'Guernica in Vermeer Style',
     'Mona Lisa in Vermeer Style',
     'The Last Supper in Vermeer Style',
     'Starry Night in Vermeer Style',
@@ -302,10 +315,34 @@ const PRIORITY_TITLES: Partial<
     'The Night Watch in Vermeer Style',
     'Persistence of Memory in Vermeer Style',
   ],
+
+  DALI: [
+    'Mona Lisa in Dali Style',
+    'The Last Supper in Dali Style',
+    'Starry Night in Dali Style',
+    'Girl with a Pearl Earring in Dali Style',
+    'The Scream in Dali Style',
+    'The Night Watch in Dali Style',
+    'Guernica in Dali Style',
+  ],
+
+  DA_VINCI: [
+    'The Scream in Da Vinci Style',
+    'Starry Night in Da Vinci Style',
+    'Girl with a Pearl Earring in Da Vinci Style',
+    'The Night Watch in Da Vinci Style',
+    'Persistence of Memory in Da Vinci Style',
+    'Guernica in Da Vinci Style',
+  ],
 }
 
 /*
- * ORIGINAL MASTER WORKS
+ * THESE are the Master's own works.
+ *
+ * They must NOT appear in Masters Reimagined.
+ *
+ * We deliberately keep this separate from the normal Master
+ * gallery filtering logic.
  */
 const ORIGINAL_TITLES: Partial<
   Record<
@@ -314,60 +351,150 @@ const ORIGINAL_TITLES: Partial<
   >
 > = {
   MICHELANGELO: [
-    'The Creation of Adam in Michelangelo Style',
-    'David in Michelangelo Style',
-    'Pieta in Michelangelo Style',
-    'The Last Judgement in Michelangelo Style',
+    'The Creation of Adam',
+    'David',
+    'Pieta',
+    'The Last Judgement',
+    'Moses',
+    'Doni Tondo',
+    'Sistine Chapel Ceiling Study',
+    'Prophet on Ceiling Fresco',
+    'Ignudi Figure Study',
+    'Renaissance Vault Fresco',
   ],
 
   VAN_GOGH: [
-    'Starry Night in Van Gogh Style',
-    'Sunflowers in Van Gogh Style',
-    'Cafe Terrace at Night in Van Gogh Style',
-    'Irises in Van Gogh Style',
+    'Starry Night',
+    'The Starry Night',
+    'Sunflowers',
+    'Cafe Terrace at Night',
+    'Irises',
+    'Wheatfield with Crows',
+    'Bedroom in Arles',
+    'The Potato Eaters',
+    'Almond Blossoms',
+    'Self Portrait',
+    'The Night Cafe',
   ],
 
   MONET: [
-    'Impression Sunrise in Monet Style',
-    'Water Lilies in Monet Style',
-    'Japanese Bridge in Monet Style',
+    'Impression Sunrise',
+    'Impression, Sunrise',
+    'Water Lilies',
+    'Japanese Bridge',
+    'Woman with a Parasol',
+    'Rouen Cathedral',
+    'Parliament in Fog',
+    'Poppy Field',
+    'Haystacks',
+    'Garden at Giverny',
+    'Boats on the Seine',
   ],
 
   CARAVAGGIO: [
-    'The Calling of Saint Matthew in Caravaggio Style',
-    'The Supper at Emmaus in Caravaggio Style',
+    'The Calling of Saint Matthew',
+    'The Supper at Emmaus',
+    'The Taking of Christ',
+    'Bacchus',
+    'Boy with a Basket of Fruit',
+    'The Musicians',
+    'Medusa',
+    'Saint Jerome Writing',
+    'The Fortune Teller',
+    'The Cardsharps',
   ],
 
   PICASSO: [
-    'Guernica in Picasso Style',
-    'The Weeping Woman in Picasso Style',
+    'Guernica',
+    'Les Demoiselles d Avignon',
+    'The Weeping Woman',
+    'Girl before a Mirror',
+    'Three Musicians',
+    'Portrait of Dora Maar',
+    'The Old Guitarist',
+    'Harlequin with Violin',
+    'Still Life with Guitar',
   ],
 
   MUNCH: [
-    'The Scream in Munch Style',
+    'The Scream',
+    'The Dance of Life',
+    'Madonna',
+    'The Sick Child',
+    'Anxiety',
+    'Ashes',
+    'Vampire',
+    'Evening on Karl Johan Street',
+    'Girls on the Bridge',
+    'Self Portrait with Cigarette',
   ],
 
   POLLOCK: [
     'Autumn Rhythm',
-    'Autumn Rhythm in Pollock Style',
+    'Lavender Mist',
+    'Blue Poles',
+    'Convergence',
+    'Mural',
+    'Drip Composition',
+    'Action Painting',
+    'Splatter Field',
+    'Black and White Energy',
+    'Dynamic Color Field',
   ],
 
   REMBRANDT: [
-    'The Night Watch in Rembrandt Style',
+    'The Night Watch',
+    'The Return of the Prodigal Son',
+    'The Anatomy Lesson',
+    'The Anatomy Lesson of Dr Nicolaes Tulp',
+    'The Jewish Bride',
+    'Self Portrait',
+    'Self Portrait with Two Circles',
+    'The Storm on the Sea of Galilee',
+    'The Syndics',
+    'Scholar at Candlelight',
+    'Old Man in Shadow',
   ],
 
   VERMEER: [
-    'Girl with a Pearl Earring in Vermeer Style',
+    'Girl with a Pearl Earring',
+    'The Milkmaid',
+    'View of Delft',
+    'The Art of Painting',
+    'Woman in Blue Reading a Letter',
+    'Girl Reading a Letter by an Open Window',
+    'Woman Holding a Balance',
+    'The Music Lesson',
+    'Young Woman with a Water Pitcher',
+    'Woman with a Lute',
   ],
 
   DALI: [
+    'Persistence of Memory',
+    'The Persistence of Memory',
     'Persistence of Memory Inspired',
-    'Persistence of Memory in Dali Style',
+    'Dreamlike Desert Clocks',
+    'Time Collapse Landscape',
+    'Surreal Melting Landscape',
+    'Floating Objects Composition',
+    'Impossible Architecture Scene',
+    'Surreal Reflections Study',
+    'Distorted Reality Composition',
+    'Hyperreal Dream Sequence',
+    'Symbolic Surreal Study',
   ],
 
   DA_VINCI: [
-    'Mona Lisa in Da Vinci Style',
-    'The Last Supper in Da Vinci Style',
+    'Mona Lisa',
+    'The Last Supper',
+    'Lady with an Ermine',
+    'Vitruvian Man',
+    'Salvator Mundi',
+    'Virgin of the Rocks',
+    'Annunciation',
+    'Adoration of the Magi',
+    'Saint John the Baptist',
+    'The Baptism of Christ',
   ],
 }
 
@@ -440,53 +567,112 @@ function normalizeText(
       ''
     )
     .toLowerCase()
-    .replace(
-      /[’‘]/g,
-      "'"
-    )
-    .replace(
-      /\s+/g,
-      ' '
-    )
+    .replace(/[’‘]/g, "'")
+    .replace(/[-_/]+/g, ' ')
+    .replace(/\s+/g, ' ')
     .trim()
+}
+
+/*
+ * Strip:
+ *
+ * " in Michelangelo Style"
+ *
+ * from:
+ *
+ * "The Scream in Michelangelo Style"
+ *
+ * giving:
+ *
+ * "the scream"
+ */
+function getBaseTitle(
+  style: MasterStyle,
+  title: string
+) {
+  const normalizedTitle =
+    normalizeText(title)
+
+  for (
+    const styleName of STYLE_SEARCH_NAMES[
+      style
+    ]
+  ) {
+    const suffix =
+      ` in ${normalizeText(
+        styleName
+      )} style`
+
+    if (
+      normalizedTitle.endsWith(
+        suffix
+      )
+    ) {
+      return normalizedTitle
+        .slice(
+          0,
+          -suffix.length
+        )
+        .trim()
+    }
+  }
+
+  return null
 }
 
 function isOriginalArtwork(
   style: MasterStyle,
   title: string
 ) {
+  const baseTitle =
+    getBaseTitle(
+      style,
+      title
+    )
+
+  /*
+   * If there is no "... in X Style" suffix,
+   * treat a title that exactly matches one of the Master's
+   * own recognised works as original.
+   */
+  const candidate =
+    baseTitle ??
+    normalizeText(
+      title
+    )
+
   const originals =
     ORIGINAL_TITLES[
       style
     ] ?? []
-
-  const normalizedTitle =
-    normalizeText(
-      title
-    )
 
   return originals.some(
     (original) =>
       normalizeText(
         original
       ) ===
-      normalizedTitle
+      candidate
   )
 }
 
+/*
+ * Positive test for the Reimagined library.
+ *
+ * To appear here, an artwork must either:
+ *
+ * 1. explicitly include "reimagined"
+ *
+ * OR
+ *
+ * 2. follow:
+ *    "X in [Master] Style"
+ *
+ * AND X must NOT be one of that Master's own works.
+ */
 function isReimaginedArtwork(
   style: MasterStyle,
   title: string
 ) {
-  if (
-    isOriginalArtwork(
-      style,
-      title
-    )
-  ) {
-    return false
-  }
-
   const normalizedTitle =
     normalizeText(
       title
@@ -500,16 +686,26 @@ function isReimaginedArtwork(
     return true
   }
 
-  return STYLE_SEARCH_NAMES[
-    style
-  ].some(
-    (name) =>
-      normalizedTitle.includes(
-        `in ${normalizeText(
-          name
-        )} style`
-      )
-  )
+  const baseTitle =
+    getBaseTitle(
+      style,
+      title
+    )
+
+  if (!baseTitle) {
+    return false
+  }
+
+  if (
+    isOriginalArtwork(
+      style,
+      title
+    )
+  ) {
+    return false
+  }
+
+  return true
 }
 
 function isStablePublicImage(
@@ -529,10 +725,13 @@ type ArtworkRow = {
   artist:
     | string
     | null
+
   style: unknown
+
   thumbnail:
     | string
     | null
+
   tags: string[]
 
   assets: {
@@ -550,7 +749,7 @@ type DisplayArtwork = {
 
 function resolveImage(
   artwork: ArtworkRow
-) {
+): string | null {
   if (
     isStablePublicImage(
       artwork.thumbnail
@@ -626,6 +825,72 @@ function getPriorityIndex(
   return index === -1
     ? Number.MAX_SAFE_INTEGER
     : index
+}
+
+/*
+ * THIS is the Reimagined-page exclusion function.
+ *
+ * Notice that it does NOT use shouldHideFromMasterGallery().
+ *
+ * That function correctly hides Reimagined work from normal
+ * Master collections, so using it here would be disastrous.
+ */
+function shouldHideFromReimaginedGallery({
+  style,
+  title,
+  tags,
+}: {
+  style: MasterStyle
+  title: string
+  tags: string[]
+}) {
+  /*
+   * Remove bad/test/Study records.
+   */
+  if (
+    !isPublicArtworkTitle(
+      title
+    )
+  ) {
+    return true
+  }
+
+  /*
+   * Collections never belong here.
+   */
+  if (
+    isThemeCollectionArtwork(
+      tags
+    )
+  ) {
+    return true
+  }
+
+  /*
+   * User-approved blacklist.
+   */
+  if (
+    isExplicitlyExcludedMasterArtwork(
+      style,
+      title
+    )
+  ) {
+    return true
+  }
+
+  /*
+   * Only genuine reinterpretations belong here.
+   */
+  if (
+    !isReimaginedArtwork(
+      style,
+      title
+    )
+  ) {
+    return true
+  }
+
+  return false
 }
 
 export default async function MastersReimaginedPage({
@@ -741,18 +1006,23 @@ export default async function MastersReimaginedPage({
         const regularItems: DisplayArtwork[] =
           artworks
             .filter(
-              (
-                artwork
-              ) => {
+              (artwork) => {
                 if (
-                  artwork.style !==
+                  String(
+                    artwork.style
+                  ) !==
                   style
                 ) {
                   return false
                 }
 
+                /*
+                 * IMPORTANT:
+                 *
+                 * This is Reimagined-specific filtering.
+                 */
                 if (
-                  shouldHideFromMasterGallery(
+                  shouldHideFromReimaginedGallery(
                     {
                       style,
 
@@ -767,30 +1037,17 @@ export default async function MastersReimaginedPage({
                   return false
                 }
 
-                if (
-                  !isReimaginedArtwork(
-                    style,
-                    artwork.title
-                  )
-                ) {
-                  return false
-                }
-
                 return true
               }
             )
             .map(
-              (
-                artwork
-              ) => {
+              (artwork) => {
                 const image =
                   resolveImage(
                     artwork as ArtworkRow
                   )
 
-                if (
-                  !image
-                ) {
+                if (!image) {
                   return null
                 }
 
@@ -813,22 +1070,20 @@ export default async function MastersReimaginedPage({
                 null
             )
 
+        /*
+         * Hero will be reinserted at position 1.
+         */
         const withoutHero =
           hero
             ? regularItems.filter(
-                (
-                  artwork
-                ) =>
+                (artwork) =>
                   artwork.id !==
                   hero.id
               )
             : regularItems
 
         withoutHero.sort(
-          (
-            a,
-            b
-          ) => {
+          (a, b) => {
             const aPriority =
               getPriorityIndex(
                 style,
@@ -862,49 +1117,50 @@ export default async function MastersReimaginedPage({
           | null =
           null
 
-        if (
-          hero
-        ) {
+        if (hero) {
           const databaseHero =
             artworkById.get(
               hero.id
             )
 
-          const heroExcluded =
+          const heroTitle =
             databaseHero
-              ? shouldHideFromMasterGallery(
-                  {
-                    style,
+              ?.title ||
+            hero.title
 
-                    title:
-                      databaseHero.title,
+          const heroTags =
+            databaseHero
+              ?.tags ||
+            []
 
-                    tags:
-                      databaseHero.tags,
-                  }
-                )
-              : shouldHideFromMasterGallery(
-                  {
-                    style,
-
-                    title:
-                      hero.title,
-
-                    tags: [],
-                  }
-                )
+          /*
+           * Hero obeys the same rejected-title rules.
+           */
+          const heroAllowed =
+            isPublicArtworkTitle(
+              heroTitle
+            ) &&
+            !isThemeCollectionArtwork(
+              heroTags
+            ) &&
+            !isExplicitlyExcludedMasterArtwork(
+              style,
+              heroTitle
+            ) &&
+            isReimaginedArtwork(
+              style,
+              heroTitle
+            )
 
           if (
-            !heroExcluded
+            heroAllowed
           ) {
             heroItem = {
               id:
                 hero.id,
 
               title:
-                databaseHero
-                  ?.title ||
-                hero.title,
+                heroTitle,
 
               image:
                 hero.image,
@@ -920,40 +1176,43 @@ export default async function MastersReimaginedPage({
               ]
             : withoutHero
 
+        /*
+         * Final defensive Reimagined-only pass.
+         */
         const cleanedCombined =
           combined.filter(
-            (
-              artwork
-            ) => {
+            (artwork) => {
               const source =
                 artworkById.get(
                   artwork.id
                 )
 
-              return !shouldHideFromMasterGallery(
+              const tags =
+                source?.tags ??
+                []
+
+              return !shouldHideFromReimaginedGallery(
                 {
                   style,
 
                   title:
                     artwork.title,
 
-                  tags:
-                    source
-                      ?.tags ??
-                    [],
+                  tags,
                 }
               )
             }
           )
 
+        /*
+         * ID de-duplication.
+         */
         const seen =
           new Set<string>()
 
         const unique =
           cleanedCombined.filter(
-            (
-              artwork
-            ) => {
+            (artwork) => {
               if (
                 seen.has(
                   artwork.id
@@ -987,9 +1246,7 @@ export default async function MastersReimaginedPage({
   const displayedGroups =
     selectedStyle
       ? allGroups.filter(
-          (
-            group
-          ) =>
+          (group) =>
             group.style ===
             selectedStyle
         )
@@ -997,10 +1254,7 @@ export default async function MastersReimaginedPage({
 
   const displayedArtworkCount =
     displayedGroups.reduce(
-      (
-        total,
-        group
-      ) =>
+      (total, group) =>
         total +
         group.artworks
           .length,
@@ -1051,16 +1305,13 @@ export default async function MastersReimaginedPage({
 
         <div className="mt-7 flex flex-wrap gap-3">
           <div className="inline-flex rounded-full border border-amber-300/30 bg-amber-300/10 px-4 py-2 text-sm font-semibold text-amber-200">
-            {
-              displayedArtworkCount
-            }{' '}
+            {displayedArtworkCount}{' '}
             reimagined artworks
           </div>
 
           {!selectedStyle ? (
             <div className="inline-flex rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm font-semibold text-slate-300">
-              11 Master
-              collections
+              11 Master collections
             </div>
           ) : null}
         </div>
@@ -1075,9 +1326,7 @@ export default async function MastersReimaginedPage({
 
           <div className="flex flex-wrap gap-3">
             {allGroups.map(
-              (
-                group
-              ) => (
+              (group) => (
                 <Link
                   key={
                     group.style
@@ -1085,9 +1334,7 @@ export default async function MastersReimaginedPage({
                   href={`/explore/masters-reimagined?style=${group.style}`}
                   className="rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm font-medium text-slate-200 transition hover:border-amber-300/60 hover:text-amber-300"
                 >
-                  {
-                    group.label
-                  }
+                  {group.label}
 
                   <span className="ml-2 text-slate-500">
                     {
@@ -1105,9 +1352,7 @@ export default async function MastersReimaginedPage({
 
       {/* MASTER GROUPS */}
       {displayedGroups.map(
-        (
-          group
-        ) => (
+        (group) => (
           <section
             key={
               group.style
@@ -1124,12 +1369,8 @@ export default async function MastersReimaginedPage({
                 </h2>
 
                 <p className="mt-2 text-sm text-slate-400">
-                  Recognisable
-                  masterpieces
-                  interpreted
-                  through the
-                  visual language
-                  of{' '}
+                  Recognisable masterpieces interpreted through the visual
+                  language of{' '}
                   {
                     group.label
                   }.
@@ -1146,21 +1387,15 @@ export default async function MastersReimaginedPage({
               ) : null}
             </div>
 
-            {group.artworks
-              .length ===
+            {group.artworks.length ===
             0 ? (
               <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-7">
                 <div className="font-semibold text-white">
-                  Library awaiting
-                  review
+                  Library awaiting review
                 </div>
 
                 <p className="mt-2 text-sm text-slate-400">
-                  No published
-                  reimagined
-                  works are
-                  currently
-                  available for{' '}
+                  No published reimagined works are currently available for{' '}
                   {
                     group.label
                   }.
@@ -1168,15 +1403,12 @@ export default async function MastersReimaginedPage({
               </div>
             ) : selectedStyle ? (
               /*
-               * SINGLE MASTER:
-               *
-               * Keep the full collection as a normal grid.
+               * ONE MASTER:
+               * show its complete Reimagined collection as a grid.
                */
               <div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-4">
                 {group.artworks.map(
-                  (
-                    artwork
-                  ) => (
+                  (artwork) => (
                     <Link
                       key={
                         artwork.id
@@ -1216,16 +1448,13 @@ export default async function MastersReimaginedPage({
               </div>
             ) : (
               /*
-               * OVERVIEW PAGE:
-               *
-               * Same smart-arrow carousel used on homepage.
+               * OVERVIEW:
+               * smart-arrow horizontal carousel.
                */
               <HorizontalScrollRow>
                 <div className="flex gap-5">
                   {group.artworks.map(
-                    (
-                      artwork
-                    ) => (
+                    (artwork) => (
                       <Link
                         key={
                           artwork.id
