@@ -88,10 +88,6 @@ const cleanWhere = {
   ],
 }
 
-/*
- * These are the same ordering preferences used
- * by the existing individual Master pages.
- */
 const CORE_TITLE_PREFERENCES: Record<
   string,
   string[]
@@ -223,7 +219,6 @@ const CORE_TITLE_PREFERENCES: Record<
     'Prophet on Ceiling Fresco in Michelangelo Style',
     'Ignudi Figure Study in Michelangelo Style',
     'Renaissance Vault Fresco in Michelangelo Style',
-    'The Scream in Michelangelo Style',
   ],
 
   MUNCH: [
@@ -240,108 +235,8 @@ const CORE_TITLE_PREFERENCES: Record<
   ],
 }
 
-const CROSSOVER_MARKERS = [
-  'Mona Lisa',
-  'Girl with a Pearl Earring',
-  'The Last Supper',
-  'Starry Night',
-  'Water Lilies',
-  'The Night Watch',
-  'The Scream',
-  'Persistence of Memory',
-  'The Great Wave off Kanagawa',
-  'American Gothic',
-  'The School of Athens',
-  'Liberty Leading the People',
-  'Whistler Mother',
-  'The Thinker',
-  'View of Delft',
-  'The Art of Painting',
-  'The Music Lesson',
-  'The Milkmaid',
-  'The Love Letter',
-  'The Glass of Wine',
-  'Woman Holding a Balance',
-  'Young Woman with a Water Pitcher',
-  'Officer and Laughing Girl',
-  'Girl Reading a Letter by an Open Window',
-  'Woman with a Lute',
-  'The Hay Wain',
-  'The Red Vineyard',
-  'Impression Sunrise',
-  'Cafe Terrace at Night',
-  'Bridge in a Garden',
-  'Nighthawks',
-  'Sunflowers',
-  'Japanese Bridge',
-  'Rouen Cathedral',
-  'Parliament in Fog',
-  'Woman with Parasol',
-  'Boats on the Seine',
-]
-
-function isCrossoverTitle(
-  title: string,
-  styleLabel: string
-) {
-  return CROSSOVER_MARKERS.some(
-    (marker) => {
-      /*
-       * This Master's own correctly named work is allowed.
-       */
-      if (
-        title ===
-        `${marker} in ${styleLabel} Style`
-      ) {
-        return false
-      }
-
-      return title.includes(
-        marker
-      )
-    }
-  )
-}
-
-function isPlaceholderStudy(
-  title: string
-) {
-  const normalized =
-    title
-      .toLowerCase()
-      .trim()
-
-  /*
-   * Remove old database filler such as:
-   *
-   * Da Vinci Study #3
-   * Michelangelo Study #07
-   * Monet Study #12
-   *
-   * These should never appear on the public site.
-   */
-  if (
-    /\bstudy\s*#?\s*\d+\b/i.test(
-      normalized
-    )
-  ) {
-    return true
-  }
-
-  if (
-    /\bplaceholder\b/i.test(
-      normalized
-    )
-  ) {
-    return true
-  }
-
-  return false
-}
-
 function sortArtworks(
   styleKey: string,
-  styleLabel: string,
   artworks: MasterGalleryArtwork[]
 ) {
   const preferred =
@@ -395,27 +290,6 @@ function sortArtworks(
         return 1
       }
 
-      const aCrossover =
-        isCrossoverTitle(
-          a.title,
-          styleLabel
-        )
-
-      const bCrossover =
-        isCrossoverTitle(
-          b.title,
-          styleLabel
-        )
-
-      if (
-        aCrossover !==
-        bCrossover
-      ) {
-        return aCrossover
-          ? 1
-          : -1
-      }
-
       return (
         a.createdAt.getTime() -
         b.createdAt.getTime()
@@ -450,7 +324,7 @@ export async function getMasterGallery(
             'asc',
         },
 
-        take: 500,
+        take: 1000,
 
         select: {
           id: true,
@@ -462,44 +336,33 @@ export async function getMasterGallery(
     )
 
   /*
-   * Exactly the same public cleanup is now shared by
-   * BOTH the individual Master page and /explore/masters.
+   * This single filter now removes:
+   *
+   * - inappropriate rejected artworks
+   * - theme collection contamination
+   * - Study # placeholders
+   * - test data
+   * - ALL Masters Reimagined works
    */
   const cleaned =
     artworks.filter(
-      (artwork) => {
-        if (
-          shouldHideFromMasterGallery(
-            {
-              style:
-                styleKey,
+      (artwork) =>
+        !shouldHideFromMasterGallery(
+          {
+            style:
+              styleKey,
 
-              title:
-                artwork.title,
+            title:
+              artwork.title,
 
-              tags:
-                artwork.tags,
-            }
-          )
-        ) {
-          return false
-        }
-
-        if (
-          isPlaceholderStudy(
-            artwork.title
-          )
-        ) {
-          return false
-        }
-
-        return true
-      }
+            tags:
+              artwork.tags,
+          }
+        )
     )
 
   return sortArtworks(
     styleKey,
-    styleLabel,
     cleaned
   )
 }
