@@ -5,6 +5,12 @@ import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
 import SafeImg from '@/components/safe-img'
 import BackButton from '@/components/back-button'
+import {
+  isExplicitlyExcludedMasterArtwork,
+  isPublicArtworkTitle,
+  isReimaginedArtworkForStyle,
+  isThemeCollectionArtwork,
+} from '@/lib/master-artwork-exclusions'
 
 type SearchType =
   | 'all'
@@ -234,68 +240,6 @@ const THEMES = [
   },
 ] as const
 
-const ORIGINAL_TITLES: Record<
-  string,
-  string[]
-> = {
-  MICHELANGELO: [
-    'The Creation of Adam in Michelangelo Style',
-    'David in Michelangelo Style',
-    'Pieta in Michelangelo Style',
-    'The Last Judgement in Michelangelo Style',
-  ],
-
-  VAN_GOGH: [
-    'Starry Night in Van Gogh Style',
-    'Sunflowers in Van Gogh Style',
-    'Cafe Terrace at Night in Van Gogh Style',
-    'Irises in Van Gogh Style',
-  ],
-
-  MONET: [
-    'Impression Sunrise in Monet Style',
-    'Water Lilies in Monet Style',
-    'Japanese Bridge in Monet Style',
-  ],
-
-  CARAVAGGIO: [
-    'The Calling of Saint Matthew in Caravaggio Style',
-    'The Supper at Emmaus in Caravaggio Style',
-  ],
-
-  PICASSO: [
-    'Guernica in Picasso Style',
-    'The Weeping Woman in Picasso Style',
-  ],
-
-  MUNCH: [
-    'The Scream in Munch Style',
-  ],
-
-  POLLOCK: [
-    'Autumn Rhythm',
-    'Autumn Rhythm in Pollock Style',
-  ],
-
-  REMBRANDT: [
-    'The Night Watch in Rembrandt Style',
-  ],
-
-  VERMEER: [
-    'Girl with a Pearl Earring in Vermeer Style',
-  ],
-
-  DALI: [
-    'Persistence of Memory Inspired',
-    'Persistence of Memory in Dali Style',
-  ],
-
-  DA_VINCI: [
-    'Mona Lisa in Da Vinci Style',
-    'The Last Supper in Da Vinci Style',
-  ],
-}
-
 function normalizeText(
   value: string
 ) {
@@ -340,30 +284,9 @@ function getThemeLabel(
   return (
     THEMES.find(
       (theme) =>
-        theme.slug === slug
+        theme.slug ===
+        slug
     )?.label ?? slug
-  )
-}
-
-function isOriginalMasterWork(
-  style: string,
-  title: string
-) {
-  const originals =
-    ORIGINAL_TITLES[
-      style
-    ] ?? []
-
-  const normalized =
-    normalizeText(
-      title
-    )
-
-  return originals.some(
-    (candidate) =>
-      normalizeText(
-        candidate
-      ) === normalized
   )
 }
 
@@ -377,28 +300,16 @@ function classifyArtwork(
   SearchType,
   'all'
 > {
-  const theme =
-    getThemeSlug(
+  if (
+    isThemeCollectionArtwork(
       artwork.tags
     )
-
-  if (theme) {
+  ) {
     return 'collections'
   }
 
-  const normalized =
-    normalizeText(
-      artwork.title
-    )
-
-  const hasStylePhrase =
-    normalized.includes(
-      ' style'
-    )
-
   if (
-    hasStylePhrase &&
-    !isOriginalMasterWork(
+    isReimaginedArtworkForStyle(
       artwork.style,
       artwork.title
     )
@@ -587,16 +498,10 @@ export default async function SearchPage({
       searchParams.type
     )
 
-  /*
-   * EMPTY SEARCH PAGE
-   */
   if (!query) {
     return (
       <main className="mx-auto max-w-6xl space-y-8 py-12">
-
-        <div>
-          <BackButton />
-        </div>
+        <BackButton />
 
         <section className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-8 md:p-12">
           <h1 className="text-4xl font-semibold text-white">
@@ -604,10 +509,7 @@ export default async function SearchPage({
           </h1>
 
           <p className="mt-4 max-w-2xl text-slate-400">
-            Search by artwork title,
-            Master, collection or
-            subject using the search
-            box above.
+            Search by artwork title, Master, collection or subject using the search box above.
           </p>
         </section>
       </main>
@@ -736,7 +638,7 @@ export default async function SearchPage({
             orConditions,
         },
 
-        take: 300,
+        take: 500,
 
         select: {
           id: true,
@@ -748,8 +650,56 @@ export default async function SearchPage({
       }
     )
 
+  /*
+   * CRITICAL PUBLIC SEARCH FILTER.
+   *
+   * Excluded/corrupt works cannot come back through Search.
+   */
+  const publicResults =
+    rawResults.filter(
+      (artwork) => {
+        const style =
+          String(
+            artwork.style
+          )
+
+        if (
+          !isPublicArtworkTitle(
+            artwork.title
+          )
+        ) {
+          return false
+        }
+
+        /*
+         * Theme collections are allowed through Search.
+         */
+        if (
+          isThemeCollectionArtwork(
+            artwork.tags
+          )
+        ) {
+          return true
+        }
+
+        /*
+         * But rejected Master/Reimagined works are not.
+         */
+        if (
+          isExplicitlyExcludedMasterArtwork(
+            style,
+            artwork.title
+          )
+        ) {
+          return false
+        }
+
+        return true
+      }
+    )
+
   const ranked =
-    rawResults
+    publicResults
       .map(
         (artwork) => ({
           ...artwork,
@@ -785,6 +735,7 @@ export default async function SearchPage({
                 tags:
                   artwork.tags,
               },
+
               query
             ),
         })
@@ -817,12 +768,6 @@ export default async function SearchPage({
         120
       )
 
-  /*
-   * Preserve the complete search URL.
-   *
-   * This is passed into artwork pages so the customer
-   * can use "Back to search results".
-   */
   const searchUrl =
     `/search?q=${encodeURIComponent(
       query
@@ -861,26 +806,7 @@ export default async function SearchPage({
 
   return (
     <main className="mx-auto max-w-7xl space-y-8 py-10">
-
-      {/*
-       * SAME BROWSER-STYLE BACK BUTTON USED
-       * THROUGHOUT THE REST OF THE SITE.
-       *
-       * Example:
-       *
-       * Homepage
-       *   → search
-       *   → Back
-       *   → Homepage
-       *
-       * Ancient Civilizations
-       *   → search
-       *   → Back
-       *   → Ancient Civilizations
-       */}
-      <div>
-        <BackButton />
-      </div>
+      <BackButton />
 
       <section className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-7 md:p-10">
         <h1 className="text-3xl font-semibold text-white md:text-5xl">
@@ -893,6 +819,7 @@ export default async function SearchPage({
             ? 'result'
             : 'results'}{' '}
           for{' '}
+
           <span className="font-semibold text-white">
             “{query}”
           </span>
@@ -947,9 +874,7 @@ export default async function SearchPage({
           </h2>
 
           <p className="mt-2 text-sm text-slate-400">
-            Try a broader artwork
-            title, Master name,
-            collection or subject.
+            Try a broader artwork title, Master name, collection or subject.
           </p>
 
           <Link
@@ -979,7 +904,7 @@ export default async function SearchPage({
                   className="group overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] transition hover:-translate-y-1 hover:border-amber-300/60"
                 >
                   <SafeImg
-                    src={`/api/artwork/preview/${artwork.id}?w=620&v=search-v2`}
+                    src={`/api/artwork/preview/${artwork.id}?w=620&v=search-public-v1`}
                     alt={
                       artwork.title
                     }
@@ -994,23 +919,21 @@ export default async function SearchPage({
                     </div>
 
                     <div className="mt-2 line-clamp-1 text-xs text-amber-300">
-                      {resultSubtitle(
-                        {
-                          title:
-                            artwork.title,
+                      {resultSubtitle({
+                        title:
+                          artwork.title,
 
-                          artist:
-                            artwork.artist,
+                        artist:
+                          artwork.artist,
 
-                          style:
-                            String(
-                              artwork.style
-                            ),
+                        style:
+                          String(
+                            artwork.style
+                          ),
 
-                          tags:
-                            artwork.tags,
-                        }
-                      )}
+                        tags:
+                          artwork.tags,
+                      })}
                     </div>
                   </div>
                 </Link>
