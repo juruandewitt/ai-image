@@ -4,6 +4,14 @@ import Link from 'next/link'
 import SafeImg from '@/components/safe-img'
 import HorizontalScrollRow from '@/components/horizontal-scroll-row'
 
+const PREVIEW_VERSION = 'protected-home-v1'
+
+const preview = (
+  id: string,
+  width: number
+) =>
+  `/api/artwork/preview/${id}?w=${width}&v=${PREVIEW_VERSION}`
+
 const FALLBACK_DATA_URL =
   'data:image/svg+xml;utf8,' +
   encodeURIComponent(
@@ -36,315 +44,270 @@ const FALLBACK_DATA_URL =
 
 /*
  * THE MASTERS
+ *
+ * IMPORTANT:
+ * Every homepage image now goes through the protected
+ * /api/artwork/preview route.
  */
 const MASTERS = [
   {
-    label:
-      'Leonardo da Vinci',
-
-    href:
-      '/explore/styles/leonardo-da-vinci',
-
-    image:
-      '/api/artwork/preview/cmngh924c0000gfum690drnoh?w=700&v=home-masters-v9',
-
-    work:
-      'Mona Lisa',
+    label: 'Leonardo da Vinci',
+    href: '/explore/styles/leonardo-da-vinci',
+    image: preview(
+      'cmngh924c0000gfum690drnoh',
+      700
+    ),
+    work: 'Mona Lisa',
   },
 
   {
-    label:
-      'Michelangelo',
-
-    href:
-      '/explore/styles/michelangelo',
-
-    image:
-      'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/michelangelo/the-creation-of-adam-in-michelangelo-style-public-domain-source-cEmALjPHvrcsFGnUNu2tMmCJj4gvbj',
-
-    work:
-      'The Creation of Adam',
+    label: 'Michelangelo',
+    href: '/explore/styles/michelangelo',
+    image: preview(
+      'cmo8fdmat00004fp854r2lodn',
+      700
+    ),
+    work: 'The Creation of Adam',
   },
 
   {
-    label:
-      'Vincent van Gogh',
-
-    href:
-      '/explore/styles/van-gogh',
-
-    image:
-      '/api/artwork/preview/cmnn9rage0000w3tg10mfkpev?w=700&v=home-masters-v9',
-
-    work:
-      'The Starry Night',
+    label: 'Vincent van Gogh',
+    href: '/explore/styles/van-gogh',
+    image: preview(
+      'cmnn9rage0000w3tg10mfkpev',
+      700
+    ),
+    work: 'The Starry Night',
   },
 
   {
-    label:
-      'Claude Monet',
-
-    href:
-      '/explore/styles/claude-monet',
-
-    image:
-      'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/monet/impression-sunrise-in-monet-style-public-domain-source-CaA4dkgwW30TtRkvXoA2GqC5OcuWbd',
-
-    work:
-      'Impression, Sunrise',
+    label: 'Claude Monet',
+    href: '/explore/styles/claude-monet',
+    image: preview(
+      'cmnnla8tb0016rnlqgeqmkslu',
+      700
+    ),
+    work: 'Impression, Sunrise',
   },
 
   {
-    label:
-      'Rembrandt',
-
-    href:
-      '/explore/styles/rembrandt',
-
-    image:
-      '/api/artwork/preview/cmnotftfu0000jd2lgw17a20y?w=700&v=home-masters-v9',
-
-    work:
-      'The Night Watch',
+    label: 'Rembrandt',
+    href: '/explore/styles/rembrandt',
+    image: preview(
+      'cmnotftfu0000jd2lgw17a20y',
+      700
+    ),
+    work: 'The Night Watch',
   },
 
   {
-    label:
-      'Caravaggio',
-
-    href:
-      '/explore/styles/caravaggio',
-
-    image:
-      '/api/artwork/preview/cmnowyzys0000vtrya8t4lj2o?w=700&v=home-masters-v9',
-
-    work:
-      'The Calling of Saint Matthew',
+    label: 'Caravaggio',
+    href: '/explore/styles/caravaggio',
+    image: preview(
+      'cmnowyzys0000vtrya8t4lj2o',
+      700
+    ),
+    work: 'The Calling of Saint Matthew',
   },
 
   {
-    label:
-      'Johannes Vermeer',
-
-    href:
-      '/explore/styles/johannes-vermeer',
-
-    image:
-      'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/vermeer/girl-with-a-pearl-earring-in-vermeer-style-public-domain-source-2MjUdSMSxgVLEqaT3NNexE0NzuOSxH',
-
-    work:
-      'Girl with a Pearl Earring',
+    label: 'Johannes Vermeer',
+    href: '/explore/styles/johannes-vermeer',
+    image: preview(
+      'cmngfwqth000037jqrfa2havj',
+      700
+    ),
+    work: 'Girl with a Pearl Earring',
   },
 
   {
-    label:
-      'Edvard Munch',
-
-    href:
-      '/explore/styles/edvard-munch',
-
-    image:
-      '/api/artwork/preview/cmnqg55x60000uijqc07vfxob?w=700&v=home-masters-v9',
-
-    work:
-      'The Scream',
+    label: 'Edvard Munch',
+    href: '/explore/styles/edvard-munch',
+    image: preview(
+      'cmnqg55x60000uijqc07vfxob',
+      700
+    ),
+    work: 'The Scream',
   },
 
   {
-    label:
-      'Jackson Pollock',
-
-    href:
-      '/explore/styles/jackson-pollock',
-
-    image:
-      '/api/artwork/preview/cmnp0xr2j0000utfte34mxv4n?w=700&v=home-masters-v9',
-
-    work:
-      'Autumn Rhythm',
+    label: 'Jackson Pollock',
+    href: '/explore/styles/jackson-pollock',
+    image: preview(
+      'cmnp0xr2j0000utfte34mxv4n',
+      700
+    ),
+    work: 'Autumn Rhythm',
   },
 
   {
-    label:
-      'Salvador Dalí',
+    label: 'Salvador Dalí',
+    href: '/explore/styles/dali',
 
-    href:
-      '/explore/styles/dali',
+    /*
+     * Protected preview replaces the previous direct Blob URL.
+     */
+    image: preview(
+      'cmokppri00000vg99j9we8g9v',
+      700
+    ),
 
-    image:
-      'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/dali/persistence-of-memory-inspired-refined-FAH6lEl8284hpyKBhK3absZHhspPd6.png',
-
-    work:
-      'The Persistence of Memory',
+    work: 'The Persistence of Memory',
   },
 
   {
-    label:
-      'Pablo Picasso',
+    label: 'Pablo Picasso',
+    href: '/explore/styles/pablo-picasso',
 
-    href:
-      '/explore/styles/pablo-picasso',
+    /*
+     * Protected preview replaces the previous direct Blob URL.
+     */
+    image: preview(
+      'cmolyv23t000011ndvoxcxgbw',
+      700
+    ),
 
-    image:
-      'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/picasso/guernica-in-picasso-style-jYGI4QJ8IGGGpIpCK2elvHxuAMjOSf.png',
-
-    work:
-      'Guernica',
+    work: 'Guernica',
   },
 ]
 
 /*
  * MASTERS REIMAGINED
+ *
+ * These previously used direct Blob URLs.
+ * Every one now goes through the protected preview API.
  */
 const MASTERS_REIMAGINED = [
   {
-    title:
-      'The Scream',
-
-    master:
-      'In Michelangelo Style',
-
+    title: 'The Scream',
+    master: 'In Michelangelo Style',
     href:
       '/explore/masters-reimagined?style=MICHELANGELO',
 
-    image:
-      'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/michelangelo/the-scream-in-michelangelo-style-uhrlG2bs3WxMg24vEymrsIUlB8XQtj.png',
+    image: preview(
+      'cmnbfkgtb000m76b7fxhnwvcf',
+      700
+    ),
 
     text:
       'Munch’s emotional masterpiece reinterpreted with Michelangelo’s monumental sculptural power.',
   },
 
   {
-    title:
-      'Mona Lisa',
-
-    master:
-      'In Van Gogh Style',
-
+    title: 'Mona Lisa',
+    master: 'In Van Gogh Style',
     href:
       '/explore/masters-reimagined?style=VAN_GOGH',
 
-    image:
-      'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/van-gogh/mona-lisa-in-van-gogh-style-ZCAnXSHS9H7UPFWdmf5SEtbdf76gVk.png',
+    image: preview(
+      'cmnnbf5dw000u7arey9doysq6',
+      700
+    ),
 
     text:
       'Leonardo’s mysterious portrait transformed through expressive colour and swirling movement.',
   },
 
   {
-    title:
-      'Starry Night',
-
-    master:
-      'In Monet Style',
-
+    title: 'Starry Night',
+    master: 'In Monet Style',
     href:
       '/explore/masters-reimagined?style=MONET',
 
-    image:
-      'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/monet/starry-night-in-monet-style-XClaCopIFppIKq49pOoI0w9gzo95bG.png',
+    image: preview(
+      'cmn7yhcwc000516ddv03zxjgc',
+      700
+    ),
 
     text:
       'Van Gogh’s celebrated night sky interpreted through atmospheric impressionist light.',
   },
 
   {
-    title:
-      'Girl with a Pearl Earring',
-
-    master:
-      'In Caravaggio Style',
-
+    title: 'Girl with a Pearl Earring',
+    master: 'In Caravaggio Style',
     href:
       '/explore/masters-reimagined?style=CARAVAGGIO',
 
-    image:
-      'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/caravaggio/girl-with-a-pearl-earring-in-caravaggio-style-iIUSvkTN9tvpsnf8fp2JhvAReCe1WY.png',
+    image: preview(
+      'cmnox8u470006j89qcsbi57i5',
+      700
+    ),
 
     text:
       'Vermeer’s intimate portrait recast with Caravaggio’s dramatic chiaroscuro.',
   },
 
   {
-    title:
-      'The Night Watch',
-
-    master:
-      'In Picasso Style',
-
+    title: 'The Night Watch',
+    master: 'In Picasso Style',
     href:
       '/explore/masters-reimagined?style=PICASSO',
 
-    image:
-      'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/picasso/the-night-watch-in-picasso-style-R99D9eVFQJCetMGt3Al3FaLbQD9ITP.png',
+    image: preview(
+      'cmnnmtyr1000331x6h0sync7l',
+      700
+    ),
 
     text:
       'Rembrandt’s group portrait reconstructed through bold cubist geometry.',
   },
 
   {
-    title:
-      'Impression, Sunrise',
-
-    master:
-      'In Pollock Style',
-
+    title: 'Impression, Sunrise',
+    master: 'In Pollock Style',
     href:
       '/explore/masters-reimagined?style=POLLOCK',
 
-    image:
-      'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/pollock/impression-sunrise-in-pollock-style-yYBU0MY607MyHQWDW0RKRZUaU0DZXw.png',
+    image: preview(
+      'cmnp1a7i2001rmgqe22rvk6o9',
+      700
+    ),
 
     text:
       'Monet’s harbour scene transformed into an energetic field of colour and motion.',
   },
 
   {
-    title:
-      'The Last Supper',
-
-    master:
-      'In Munch Style',
-
+    title: 'The Last Supper',
+    master: 'In Munch Style',
     href:
       '/explore/masters-reimagined?style=MUNCH',
 
-    image:
-      'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/munch/the-last-supper-in-munch-style-9OzzojXQ2ByWF497ZyThGAlIpVe875.png',
+    image: preview(
+      'cmnqg2yan0010mvtopbk1hgcz',
+      700
+    ),
 
     text:
       'Leonardo’s defining composition interpreted through psychological tension and symbolism.',
   },
 
   {
-    title:
-      'Persistence of Memory',
-
-    master:
-      'In Rembrandt Style',
-
+    title: 'Persistence of Memory',
+    master: 'In Rembrandt Style',
     href:
       '/explore/masters-reimagined?style=REMBRANDT',
 
-    image:
-      'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/rembrandt/persistence-of-memory-in-rembrandt-style-mbmGzGwU5wvni3vkwrLUmoqWc33x1A.png',
+    image: preview(
+      'cmnotw7l2000o9edqyqvktxia',
+      700
+    ),
 
     text:
       'Dalí’s surreal imagery reinterpreted through rich shadows, restrained light and classical drama.',
   },
 
   {
-    title:
-      'Guernica',
-
-    master:
-      'In Vermeer Style',
-
+    title: 'Guernica',
+    master: 'In Vermeer Style',
     href:
       '/explore/masters-reimagined?style=VERMEER',
 
-    image:
-      'https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/vermeer/guernica-in-vermeer-style-QaOXgAP2l1gGJjUkkKBdJpLP5Exfp6.png',
+    image: preview(
+      'cmngg1i8l001937jqm4ojyyzd',
+      700
+    ),
 
     text:
       'Picasso’s monumental work translated into Vermeer’s controlled light and intimate atmosphere.',
@@ -356,168 +319,138 @@ const MASTERS_REIMAGINED = [
  */
 const FAVORITE_COLLECTIONS = [
   {
-    label:
-      'Fantasy Kingdoms',
-
-    slug:
-      'fantasy-kingdoms',
-
-    image:
-      '/api/artwork/preview/cmq80fdao0000o5blyggzox1h?w=800&v=home-favorites-v9',
+    label: 'Fantasy Kingdoms',
+    slug: 'fantasy-kingdoms',
+    image: preview(
+      'cmq80fdao0000o5blyggzox1h',
+      700
+    ),
   },
 
   {
-    label:
-      'Ancient Civilizations',
-
-    slug:
-      'ancient-civilizations',
-
-    image:
-      '/api/artwork/preview/cmq6d1a57000014kn9c02er4x?w=800&v=home-favorites-v9',
+    label: 'Ancient Civilizations',
+    slug: 'ancient-civilizations',
+    image: preview(
+      'cmq6d1a57000014kn9c02er4x',
+      700
+    ),
   },
 
   {
-    label:
-      'Space / Galaxy',
-
-    slug:
-      'space-galaxy',
-
-    image:
-      '/api/artwork/preview/cmq5e2xjx0000308bbd8u2uvd?w=800&v=home-favorites-v9',
+    label: 'Space / Galaxy',
+    slug: 'space-galaxy',
+    image: preview(
+      'cmq5e2xjx0000308bbd8u2uvd',
+      700
+    ),
   },
 
   {
-    label:
-      'Cars / Automotive',
-
-    slug:
-      'cars-automotive',
-
-    image:
-      '/api/artwork/preview/cmq4wthpl0000165iuvclc0xg?w=800&v=home-favorites-v9',
+    label: 'Cars / Automotive',
+    slug: 'cars-automotive',
+    image: preview(
+      'cmq4wthpl0000165iuvclc0xg',
+      700
+    ),
   },
 
   {
-    label:
-      'Seasonal / Holidays',
-
-    slug:
-      'seasonal-holidays',
-
-    image:
-      '/api/artwork/preview/cmq3u8dd10000k0dafyvhkg9l?w=800&v=home-favorites-v9',
+    label: 'Seasonal / Holidays',
+    slug: 'seasonal-holidays',
+    image: preview(
+      'cmq3u8dd10000k0dafyvhkg9l',
+      700
+    ),
   },
 
   {
-    label:
-      'Spiritual / Zen',
-
-    slug:
-      'spiritual-zen',
-
-    image:
-      '/api/artwork/preview/cmq3d8uhm0000u3feir9sucgq?w=800&v=home-favorites-v9',
+    label: 'Spiritual / Zen',
+    slug: 'spiritual-zen',
+    image: preview(
+      'cmq3d8uhm0000u3feir9sucgq',
+      700
+    ),
   },
 
   {
-    label:
-      'Food / Culinary',
-
-    slug:
-      'food-culinary',
-
-    image:
-      '/api/artwork/preview/cmpfxxocq00005d9waq7ulcng?w=800&v=home-favorites-v9',
+    label: 'Food / Culinary',
+    slug: 'food-culinary',
+    image: preview(
+      'cmpfxxocq00005d9waq7ulcng',
+      700
+    ),
   },
 
   {
-    label:
-      'Animals / Pets',
-
-    slug:
-      'animals-pets',
-
-    image:
-      '/api/artwork/preview/cmpyeyl3300002zoq2hvd1pio?w=800&v=home-favorites-v9',
+    label: 'Animals / Pets',
+    slug: 'animals-pets',
+    image: preview(
+      'cmpyeyl3300002zoq2hvd1pio',
+      700
+    ),
   },
 
   {
-    label:
-      'Gaming / Esports',
-
-    slug:
-      'gaming-esports',
-
-    image:
-      '/api/artwork/preview/cmq23ftj50000vj3vyeco8mh4?w=800&v=home-favorites-v9',
+    label: 'Gaming / Esports',
+    slug: 'gaming-esports',
+    image: preview(
+      'cmq23ftj50000vj3vyeco8mh4',
+      700
+    ),
   },
 
   {
-    label:
-      'Travel / Destinations',
-
-    slug:
-      'travel-destinations',
-
-    image:
-      '/api/artwork/preview/cmpku0pdu0000wrli6vj5ttbx?w=800&v=home-favorites-v9',
+    label: 'Travel / Destinations',
+    slug: 'travel-destinations',
+    image: preview(
+      'cmpku0pdu0000wrli6vj5ttbx',
+      700
+    ),
   },
 
   {
-    label:
-      'Luxury Lifestyle',
-
-    slug:
-      'luxury-lifestyle',
-
-    image:
-      '/api/artwork/preview/cmpllpx7y0000izhrrv1dl9q3?w=800&v=home-favorites-v9',
+    label: 'Luxury Lifestyle',
+    slug: 'luxury-lifestyle',
+    image: preview(
+      'cmpllpx7y0000izhrrv1dl9q3',
+      700
+    ),
   },
 
   {
-    label:
-      'Nature / Botanical',
-
-    slug:
-      'nature-botanical',
-
-    image:
-      '/api/artwork/preview/cmpd6gbye0000inxmqaksp6cn?w=800&v=home-favorites-v9',
+    label: 'Nature / Botanical',
+    slug: 'nature-botanical',
+    image: preview(
+      'cmpd6gbye0000inxmqaksp6cn',
+      700
+    ),
   },
 
   {
-    label:
-      'Architecture',
-
-    slug:
-      'architecture',
-
-    image:
-      '/api/artwork/preview/cmp2yzmsu00006o55vsz0zogg?w=800&v=home-favorites-v9',
+    label: 'Architecture',
+    slug: 'architecture',
+    image: preview(
+      'cmp2yzmsu00006o55vsz0zogg',
+      700
+    ),
   },
 
   {
-    label:
-      'Ocean / Marine',
-
-    slug:
-      'ocean-marine',
-
-    image:
-      '/api/artwork/preview/cmpbn3f0h0000ycb12edq3qk2?w=800&v=home-favorites-v9',
+    label: 'Ocean / Marine',
+    slug: 'ocean-marine',
+    image: preview(
+      'cmpbn3f0h0000ycb12edq3qk2',
+      700
+    ),
   },
 
   {
-    label:
-      'Vintage / Retro',
-
-    slug:
-      'vintage-retro',
-
-    image:
-      '/api/artwork/preview/cmpx5aw9j0000oxlq33ww14zi?w=800&v=home-favorites-v9',
+    label: 'Vintage / Retro',
+    slug: 'vintage-retro',
+    image: preview(
+      'cmpx5aw9j0000oxlq33ww14zi',
+      700
+    ),
   },
 ]
 
@@ -532,8 +465,10 @@ const BESTSELLERS = [
     href:
       '/artwork/cmq80fdao0000o5blyggzox1h',
 
-    image:
-      '/api/artwork/preview/cmq80fdao0000o5blyggzox1h?w=900&v=bestsellers-v9',
+    image: preview(
+      'cmq80fdao0000o5blyggzox1h',
+      700
+    ),
   },
 
   {
@@ -546,8 +481,10 @@ const BESTSELLERS = [
     href:
       '/artwork/cmq6d1a57000014kn9c02er4x',
 
-    image:
-      '/api/artwork/preview/cmq6d1a57000014kn9c02er4x?w=900&v=bestsellers-v9',
+    image: preview(
+      'cmq6d1a57000014kn9c02er4x',
+      700
+    ),
   },
 
   {
@@ -560,8 +497,10 @@ const BESTSELLERS = [
     href:
       '/artwork/cmq5e2xjx0000308bbd8u2uvd',
 
-    image:
-      '/api/artwork/preview/cmq5e2xjx0000308bbd8u2uvd?w=900&v=bestsellers-v9',
+    image: preview(
+      'cmq5e2xjx0000308bbd8u2uvd',
+      700
+    ),
   },
 
   {
@@ -574,8 +513,10 @@ const BESTSELLERS = [
     href:
       '/artwork/cmq4wthpl0000165iuvclc0xg',
 
-    image:
-      '/api/artwork/preview/cmq4wthpl0000165iuvclc0xg?w=900&v=bestsellers-v9',
+    image: preview(
+      'cmq4wthpl0000165iuvclc0xg',
+      700
+    ),
   },
 
   {
@@ -588,8 +529,10 @@ const BESTSELLERS = [
     href:
       '/artwork/cmq3d8uhm0000u3feir9sucgq',
 
-    image:
-      '/api/artwork/preview/cmq3d8uhm0000u3feir9sucgq?w=900&v=bestsellers-v9',
+    image: preview(
+      'cmq3d8uhm0000u3feir9sucgq',
+      700
+    ),
   },
 
   {
@@ -602,8 +545,10 @@ const BESTSELLERS = [
     href:
       '/artwork/cmpfxxocq00005d9waq7ulcng',
 
-    image:
-      '/api/artwork/preview/cmpfxxocq00005d9waq7ulcng?w=900&v=bestsellers-v9',
+    image: preview(
+      'cmpfxxocq00005d9waq7ulcng',
+      700
+    ),
   },
 ]
 
@@ -774,7 +719,10 @@ export default function HomePage() {
             className="group overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.04] shadow-2xl shadow-black/40"
           >
             <SafeImg
-              src="https://qdqgkmgfjhffc4cy.public.blob.vercel-storage.com/artworks/michelangelo/the-scream-in-michelangelo-style-uhrlG2bs3WxMg24vEymrsIUlB8XQtj.png"
+              src={preview(
+                'cmnbfkgtb000m76b7fxhnwvcf',
+                700
+              )}
               fallbackSrc={
                 FALLBACK_DATA_URL
               }
@@ -895,9 +843,7 @@ export default function HomePage() {
             {FAVORITE_COLLECTIONS.map(
               (item) => (
                 <CollectionCard
-                  key={
-                    item.slug
-                  }
+                  key={item.slug}
                   item={item}
                 />
               )
@@ -918,38 +864,26 @@ export default function HomePage() {
           {BESTSELLERS.map(
             (item) => (
               <Link
-                key={
-                  item.href
-                }
-                href={
-                  item.href
-                }
+                key={item.href}
+                href={item.href}
                 className="group overflow-hidden rounded-3xl border border-white/10 bg-white/[0.04] transition hover:-translate-y-1 hover:border-amber-300/60"
               >
                 <SafeImg
-                  src={
-                    item.image
-                  }
+                  src={item.image}
                   fallbackSrc={
                     FALLBACK_DATA_URL
                   }
-                  alt={
-                    item.title
-                  }
+                  alt={item.title}
                   className="aspect-[4/3] w-full object-cover transition duration-700 group-hover:scale-105"
                 />
 
                 <div className="p-5">
                   <div className="text-xl font-semibold text-white">
-                    {
-                      item.title
-                    }
+                    {item.title}
                   </div>
 
                   <div className="mt-1 text-sm text-amber-300">
-                    {
-                      item.collection
-                    }
+                    {item.collection}
                   </div>
                 </div>
               </Link>
